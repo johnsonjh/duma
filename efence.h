@@ -2,7 +2,7 @@
 /*
  * Electric Fence - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
- * Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -115,6 +115,30 @@ void _eff_assert(const char * exprstr, const char * filename, int lineno);
 
 #define EF_ASSERT(EXPR)    (  (EXPR) || ( _eff_assert(#EXPR, __FILE__, __LINE__), 0 )  )
 
+
+/*
+ * protection of functions return address
+ */
+#ifdef __GNUC__
+
+#define EF_FN_PROT_START      const void * EF_RET_ADDR = __builtin_return_address(0); {
+
+#define EF_FN_PROT_END        } EF_ASSERT( __builtin_return_address(0) == EF_RET_ADDR );
+
+#define EF_FN_PROT_RET(EXPR)  do {  EF_ASSERT( __builtin_return_address(0) == EF_RET_ADDR );  return( EXPR ); }  while (0)
+#define EF_FN_PROT_RET_VOID() do {  EF_ASSERT( __builtin_return_address(0) == EF_RET_ADDR );  return;         }  while (0)
+
+
+#else
+
+#define EF_FN_PROT_START      int aiEF_PROT[ 4 ] = { 'E', 'F', 'P', 'R' }; {
+
+#define EF_FN_PROT_END        } EF_ASSERT( 'E'==aiEF_PROT[0] && 'F'==aiEF_PROT[1] && 'P'==aiEF_PROT[2] && 'R'==aiEF_PROT[3] );
+
+#define EF_FN_PROT_RET(EXPR)  do {  EF_ASSERT( 'E'==aiEF_PROT[0] && 'F'==aiEF_PROT[1] && 'P'==aiEF_PROT[2] && 'R'==aiEF_PROT[3] );  return( EXPR ); }  while (0)
+#define EF_FN_PROT_RET_VOID() do {  EF_ASSERT( 'E'==aiEF_PROT[0] && 'F'==aiEF_PROT[1] && 'P'==aiEF_PROT[2] && 'R'==aiEF_PROT[3] );  return;         }  while (0)
+
+#endif
 
 /* declaration of an already defined array to enable checking at every reference
  * when using CA_REF()
