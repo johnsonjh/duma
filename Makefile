@@ -2,11 +2,23 @@ PIC= -fPIC
 # add "-DEF_NO_CPP_SUPPORT" (without quotes) to for not directing new/delete to malloc/free
 # add "-DEF_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
 
-CFLAGS= -g $(PIC)
+ifeq ($(OS), Windows_NT)
+  ifeq ($(OSTYPE), msys)
+    CFLAGS= -g
+    CPPFLAGS= -g
+    LIBS=
+    EFENCESO=
+  endif
+else
+  CFLAGS= -g $(PIC)
+  CPPFLAGS= -g $(PIC)
+  LIBS=-lpthread
+  EFENCESO=libefence.so.0.0
+endif
+
+
 CC=gcc
 CXX=g++
-CPPFLAGS= -g $(PIC)
-LIBS=-lpthread
 AR=ar
 INSTALL=install
 
@@ -14,7 +26,6 @@ prefix=/usr
 BIN_INSTALL_DIR= $(prefix)/bin
 LIB_INSTALL_DIR= $(prefix)/lib
 MAN_INSTALL_DIR= $(prefix)/man/man3
-
 
 
 PACKAGE_SOURCE= README CHANGES efence.3 Makefile \
@@ -25,7 +36,7 @@ PACKAGE_SOURCE= README CHANGES efence.3 Makefile \
 
 OBJECTS = efencepp.o efence.o
 
-all:	libefence.a libefence.so.0.0 tstheap eftest eftestpp
+all:	libefence.a $(EFENCESO) tstheap eftest eftestpp
 	@ echo
 	@ echo "Testing Electric Fence."
 	@ echo "After the last test, it should print that the test has PASSED."
@@ -64,9 +75,12 @@ libefence.a: efence_config.h $(OBJECTS)
 	- rm -f libefence.a
 	$(AR) crv libefence.a $(OBJECTS)
 
+
+ifneq ($(OS), Windows_NT)
 libefence.so.0.0: efence_config.h $(OBJECTS)
 	$(CXX) -g -shared -Wl,-soname,libefence.so.0 -o libefence.so.0.0 \
 		$(OBJECTS) -lpthread -lc 
+endif
 
 efence_config.h: createconf
 	- ./createconf >efence_config.h
