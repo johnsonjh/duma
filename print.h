@@ -179,17 +179,18 @@ static void
 EF_Abort(const char * pattern, ...)
 {
   char buffer[STRING_BUFFER_SIZE];
-  int len;
+  int lena, lenb;
   va_list  args;
   va_start(args, pattern);
 
   strcpy(buffer, "\nElectricFence Aborting: ");
-  len = EF_sprintf(&buffer[strlen(buffer)], pattern, args);
+  lena = strlen(buffer);
+  lenb = EF_sprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
 #endif
-  write(2, buffer, len);
+  write(2, buffer, lena + lenb + 1);
   va_end(args);
 
 #ifndef WIN32
@@ -241,17 +242,18 @@ static void
 EF_Exit(const char * pattern, ...)
 {
   char buffer[STRING_BUFFER_SIZE];
-  int len;
+  int lena, lenb;
   va_list  args;
   va_start(args, pattern);
 
   strcpy(buffer, "\nElectricFence Exiting: ");
-  len = EF_sprintf(&buffer[strlen(buffer)], pattern, args);
+  lena = strlen(buffer);
+  lenb = EF_sprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
 #endif
-  write(2, buffer, len);
+  write(2, buffer, lena + lenb + 1);
   va_end(args);
 
   /*
