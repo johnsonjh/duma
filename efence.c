@@ -138,6 +138,12 @@ struct _EF_Slot
 static int    frameno = 0;
 #endif
 
+/*
+ * EF_DISABLE_BANNER is a global variable used to control whether
+ * Electric Fence prints its usual startup message. If the value is
+ * -1, it will be set from the environment default to 0 at run time.
+ */
+static int    EF_DISABLE_BANNER = -1;
 
 /*
  * EF_ALIGNMENT is a global variable used to control the default alignment
@@ -190,6 +196,13 @@ static int    EF_ALLOW_MALLOC_0 = 1;
  * default to Exit on Fail
  */
 static int    EF_MALLOC_FAILEXIT = 1;
+
+/*
+ * EF_FREE_WIPES is set if Electric Fence is to wipe the memory content
+ * of freed blocks. This makes it easier to check if memory is freed or
+ * not
+ */
+static int    EF_FREE_WIPES = 0;
 
 /*
  * EF_FILL is set to 0-255 if Electric Fence should fill all new allocated
@@ -288,7 +301,10 @@ initialize(void)
   char            * string;
   struct _EF_Slot * slot;
 
-  EF_Print(version);
+  if ( (string = getenv("EF_DISABLE_BANNER")) != 0 )
+    EF_DISABLE_BANNER = (atoi(string) != 0);
+  if ( !EF_DISABLE_BANNER )
+    EF_Print(version);
 
   EF_GET_SEMAPHORE();
 
@@ -352,6 +368,12 @@ initialize(void)
    */
   if ( (string = getenv("EF_MALLOC_FAILEXIT")) != 0 )
     EF_MALLOC_FAILEXIT = (atoi(string) != 0);
+
+  /*
+   * See if the user wants us to wipe out freed memory
+   */
+  if ( (string = getenv("EF_FREE_WIPES")) != 0 )
+    EF_FREE_WIPES = (atoi(string) != 0);
 
   /*
    * Check if we should be filling new memory with a value.
@@ -791,6 +813,9 @@ void   _eff_free(void * address  EF_PARAMLIST_MODE)
 
   /* CHECK INTEGRITY OF NO MANS LAND */
   _eff_check_slot( slot );
+
+  if ( EF_FREE_WIPES )
+    memset(slot->userAddress, EF_FILL, slot->userSize);
 
   /*
    * Free memory is _always_ set to deny access. When EF_PROTECT_FREE
