@@ -1,6 +1,8 @@
 
+
 #include <new>
 #include "efencepp.h"
+
 
 
 class test
@@ -49,26 +51,47 @@ public:
 
 int main( int argc, char ** argv )
 {
+
 #if 1
+
   int i;
+
   CA_DEFINE(int,acTest,20);
 
+
+
   for (i=0; i<100; ++i)
+
     CA_REF(acTest,i) = i;
 
+
+
 #elif 0
+
   int * x, *y;
+
   test *z;
 
+
+
   x = (int*)malloc( sizeof(int) );
+
   y = new int;
+
   z = new test[2];
 
+
+
   free( x );
+
   delete y;
+
   delete []z;
 
+
+
 #elif 1
+
   test * x = new test(10);
 
   test *ax = new test[2];
@@ -79,9 +102,13 @@ int main( int argc, char ** argv )
 
   delete []ax;
 
+
   delete x;
+
 
 #endif
 
+
   return 0;
+
 }
