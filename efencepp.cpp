@@ -52,6 +52,13 @@ static const char unknown_cxx_file[] =
  "UNKNOWN (use #include \"efencepp.h\")";
 
 
+#ifndef EF_NO_LEAKDETECTION
+#define EF_PARAMS_UK          , unknown_cxx_file, 0
+#else
+#define EF_PARAMS_UK
+#endif
+
+
 /********************************************************************
 ********************************************************************/
 
@@ -61,11 +68,8 @@ static const char unknown_cxx_file[] =
 void * EF_CDECL operator new( EF_SIZE_T size )
 throw(std::bad_alloc)
 {
-#ifndef EF_NO_LEAKDETECTION
-  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, unknown_cxx_file, 0);
-#else
-  void *ptr = _eff_malloc(size);
-#endif
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM  EF_PARAMS_UK);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -75,11 +79,8 @@ throw(std::bad_alloc)
 void * EF_CDECL operator new( EF_SIZE_T size, const std::nothrow_t & )
 throw()
 {
-#ifndef EF_NO_LEAKDETECTION
-  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, unknown_cxx_file, 0);
-#else
-  void *ptr = _eff_malloc(size);
-#endif
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM  EF_PARAMS_UK);
   return ptr;
 }
 
@@ -88,11 +89,7 @@ throw()
 void   EF_CDECL operator delete( void *ptr )
 throw()
 {
-#ifndef EF_NO_LEAKDETECTION
-  _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
-#else
-  _eff_free(ptr);
-#endif
+  _eff_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM  EF_PARAMS_UK);
 }
 
 
@@ -100,11 +97,7 @@ throw()
 void   EF_CDECL operator delete( void * ptr, const std::nothrow_t & )
 throw()
 {
-#ifndef EF_NO_LEAKDETECTION
-  _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
-#else
-  _eff_free(ptr);
-#endif
+  _eff_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM  EF_PARAMS_UK);
 }
 
 
@@ -119,11 +112,8 @@ throw()
 void * EF_CDECL operator new[]( EF_SIZE_T size )
 throw(std::bad_alloc)
 {
-#ifndef EF_NO_LEAKDETECTION
-  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, unknown_cxx_file, 0);
-#else
-  void *ptr = _eff_malloc(size);
-#endif
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY  EF_PARAMS_UK);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -133,11 +123,8 @@ throw(std::bad_alloc)
 void * EF_CDECL operator new[]( EF_SIZE_T size, const std::nothrow_t & )
 throw()
 {
-#ifndef EF_NO_LEAKDETECTION
-  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, unknown_cxx_file, 0);
-#else
-  void *ptr = _eff_malloc(size);
-#endif
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY  EF_PARAMS_UK);
   return ptr;
 }
 
@@ -146,11 +133,7 @@ throw()
 void   EF_CDECL operator delete[]( void * ptr )
 throw()
 {
-#ifndef EF_NO_LEAKDETECTION
-  _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
-#else
-  _eff_free(ptr);
-#endif
+  _eff_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY  EF_PARAMS_UK);
 }
 
 
@@ -158,11 +141,7 @@ throw()
 void   EF_CDECL operator delete[]( void * ptr, const std::nothrow_t & )
 throw()
 {
-#ifndef EF_NO_LEAKDETECTION
-  _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
-#else
-  _eff_free(ptr);
-#endif
+  _eff_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY  EF_PARAMS_UK);
 }
 
 
@@ -179,7 +158,8 @@ throw()
 void * EF_CDECL operator new( EF_SIZE_T size, const char *filename, int lineno )
 throw( std::bad_alloc )
 {
-  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, filename, lineno);
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, filename, lineno);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -188,7 +168,8 @@ throw( std::bad_alloc )
 void * EF_CDECL operator new( EF_SIZE_T size, const std::nothrow_t &, const char *filename, int lineno )
 throw()
 {
-  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, filename, lineno);
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, filename, lineno);
   return ptr;
 }
 
@@ -197,7 +178,7 @@ throw()
 void   EF_CDECL operator delete( void *ptr, const char *filename, int lineno )
 throw()
 {
-  _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
+  _eff_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, filename, lineno);
 }
 
 
@@ -205,7 +186,7 @@ throw()
 void   EF_CDECL operator delete( void *ptr, const std::nothrow_t &, const char *filename, int lineno )
 throw()
 {
-  _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
+  _eff_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, filename, lineno);
 }
 
 
@@ -219,7 +200,8 @@ throw()
 void * EF_CDECL operator new[]( EF_SIZE_T size, const char *filename, int lineno )
 throw( std::bad_alloc )
 {
-  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, filename, lineno);
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, filename, lineno);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -229,7 +211,8 @@ throw( std::bad_alloc )
 void * EF_CDECL operator new[]( EF_SIZE_T size, const std::nothrow_t &, const char *filename, int lineno )
 throw()
 {
-  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, filename, lineno);
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, filename, lineno);
   return ptr;
 }
 
@@ -238,7 +221,7 @@ throw()
 void   EF_CDECL operator delete[]( void *ptr, const char *filename, int lineno )
 throw()
 {
-  _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
+  _eff_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, filename, lineno);
 }
 
 
@@ -246,9 +229,10 @@ throw()
 void   EF_CDECL operator delete[]( void *ptr, const std::nothrow_t &, const char *filename, int lineno )
 throw()
 {
-  _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
+  _eff_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, filename, lineno);
 }
 
 #endif /* end ifdef EF_NO_LEAKDETECTION */
 
 #endif /* EF_NO_CPP_SUPPORT */
+

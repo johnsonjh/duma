@@ -31,19 +31,60 @@
 static void
 reduceProtectedMemory( long reductionSizekB )
 {
-  struct _EF_Slot * slot            = allocationList;
+  struct _EF_Slot * slot            = _ef_allocList;
   size_t            count           = slotCount;
   long              alreadyReducekB = 0;
+  size_t            delSize, newSize;
 
+  /* 1- try reducing memory to just keep page(s) with userAddress */
   for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
-    if (EFST_PROTECTED == slot->mode)
+    if ( EFST_PROTECTED == slot->state )
     {
+      /* free memory above userAddr; keep userAddr protected  */
+      newSize = (char*)slot->userAddress - (char*)slot->internalAddress;
+      newSize = (newSize + EF_PAGE_SIZE) & ~(EF_PAGE_SIZE -1);
+      delSize = slot->internalSize - newSize;
+      Page_Delete( (char*)slot->internalAddress + newSize, delSize );
+      alreadyReducekB += (delSize+1023) >>10;
+      /* but keep the slot and userAddr */
+      slot->internalSize    = newSize;
+
+      if ( alreadyReducekB >= reductionSizekB )
+      {
+        sumProtectedMem -= alreadyReducekB;
+        sumAllocatedMem -= alreadyReducekB;
+        return;
+      }
+    }
+  /* 2- deallocated all page(s) with userAddress, empty whole slot */
+  slot  = _ef_allocList;
+  count = slotCount;
+  for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
+    if ( EFST_DEALLOCATED == slot->state )
+    {
+      /* free all the memory */
       Page_Delete(slot->internalAddress, slot->internalSize);
       alreadyReducekB += (slot->internalSize+1023) >>10;
-      slot->mode       = EFST_NOT_IN_USE;
+      /* but keep the slot and userAddr */
+      slot->internalAddress = slot->userAddress = 0;
+      slot->internalSize    = slot->userSize    = 0;
+      slot->state           = EFST_EMPTY;
+      slot->allocator       = EFA_INT_ALLOC;
+      #ifndef EF_NO_LEAKDETECTION
+      #ifdef EF_USE_FRAMENO
+        slot->frame         = 0;
+      #endif
+        slot->filename      = 0;
+        slot->lineno        = 0;
+      #endif
+
+      if ( alreadyReducekB >= reductionSizekB )
+      {
+        sumProtectedMem -= alreadyReducekB;
+        sumAllocatedMem -= alreadyReducekB;
+        return;
+      }
     }
-  sumProtectedMem -= alreadyReducekB;
-  sumAllocatedMem -= alreadyReducekB;
 }
 
 
@@ -53,7 +94,7 @@ reduceProtectedMemory( long reductionSizekB )
 static struct _EF_Slot *
 slotForUserAddress(void * address)
 {
-  struct _EF_Slot * slot  = allocationList;
+  struct _EF_Slot * slot  = _ef_allocList;
   size_t            count = slotCount;
 
   for ( ; count > 0; --count, ++slot )
@@ -69,7 +110,7 @@ slotForUserAddress(void * address)
 static struct _EF_Slot *
 nearestSlotForUserAddress(void * userAddress)
 {
-  struct _EF_Slot * slot  = allocationList;
+  struct _EF_Slot * slot  = _ef_allocList;
   size_t            count = slotCount;
 
   for ( ; count > 0; --count, ++slot )
@@ -87,7 +128,7 @@ nearestSlotForUserAddress(void * userAddress)
 static struct _EF_Slot *
 slotForInternalAddrNextTo(void * address)
 {
-  struct _EF_Slot * slot  = allocationList;
+  struct _EF_Slot * slot  = _ef_allocList;
   size_t            count = slotCount;
 
   for ( ; count > 0; --count, ++slot )
@@ -105,7 +146,7 @@ slotForInternalAddrNextTo(void * address)
 static struct _EF_Slot *
 slotForInternalAddrPrevTo(void * address)
 {
-  struct _EF_Slot * slot  = allocationList;
+  struct _EF_Slot * slot  = _ef_allocList;
   size_t            count = slotCount;
 
   for ( ; count > 0; --count, ++slot )
@@ -116,67 +157,93 @@ slotForInternalAddrPrevTo(void * address)
 
 
 /*
+ * Initialise the no mans land, for a given slot
+ */
+static
+void _eff_init_slack( struct _EF_Slot * slot )
+{
+  char * accBegAddr, * accEndAddr;
+  char * tmpBegAddr, * tmpEndAddr;
+
+  /* calculate accessible non-protectable address area */
+  /* check the no man's land; use internal knowledge to detect the EF_PROTECT_BELOW on allocation */
+  if ( (char*)slot->internalAddress + EF_PAGE_SIZE == (char*)slot->userAddress )
+  {
+    /* EF_PROTECT_BELOW was 1 when allocating this piece of memory */
+    accBegAddr = (char*)slot->internalAddress + EF_PAGE_SIZE;
+    accEndAddr = (char*)slot->internalAddress + slot->internalSize;
+  }
+  else
+  {
+    /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
+    accBegAddr = (char*)slot->internalAddress;
+    accEndAddr = (char*)slot->internalAddress + slot->internalSize - EF_PAGE_SIZE;
+  }
+
+  tmpBegAddr = accBegAddr;
+  tmpEndAddr = (char*)slot->userAddress;
+  while (tmpBegAddr < tmpEndAddr)
+    *tmpBegAddr++ = (char)EF_SLACKFILL;
+
+  tmpBegAddr = (char*)slot->userAddress + slot->userSize;
+  tmpEndAddr = accEndAddr;
+  while (tmpBegAddr < tmpEndAddr)
+    *tmpBegAddr++ = (char)EF_SLACKFILL;
+}
+
+
+/*
  * Checks the integrity of no mans land, for a given slot
  */
 static
-void _eff_check_slot( struct _EF_Slot * slot )
+void _eff_check_slack( struct _EF_Slot * slot )
 {
+  char    * accBegAddr, * accEndAddr;
   char    * tmpBegAddr, * tmpEndAddr;
-  size_t    userSlack,    pageSlack;
 
-  /* calculate userSlack */
-  if ( !EF_PROTECT_BELOW && EF_ALIGNMENT > 1 )
-  {
-    userSlack = slot->userSize % EF_ALIGNMENT;
-    if ( userSlack )
-      userSlack = EF_ALIGNMENT - userSlack;
-  }
-  else
-    userSlack = 0;
-
-  /* calculate pageSlack */
-  pageSlack = slot->internalSize - slot->userSize - userSlack - EF_PAGE_SIZE;
-
+  /* calculate accessible non-protectable address area */
   /* check the no man's land; use internal knowledge to detect the EF_PROTECT_BELOW on allocation */
-  if ( (char*)slot->userAddress != (char*)slot->internalAddress + EF_PAGE_SIZE )
-  {
-    /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
-    tmpBegAddr = (char*)slot->internalAddress;
-    tmpEndAddr = tmpBegAddr + pageSlack;
-    while (tmpBegAddr < tmpEndAddr)
-      if (*tmpBegAddr++ != (char)EF_FILL)
-        #ifndef EF_NO_LEAKDETECTION
-          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
-            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
-        #else
-          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
-        #endif
-
-    tmpBegAddr = (char*)slot->userAddress + slot->userSize;
-    tmpEndAddr = tmpBegAddr + userSlack;
-    while (tmpBegAddr < tmpEndAddr)
-      if (*tmpBegAddr++ != (char)EF_FILL)
-        #ifndef EF_NO_LEAKDETECTION
-          EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
-            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
-        #else
-          EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a", slot->userAddress);
-        #endif
-  }
-  else
+  if ( (char*)slot->internalAddress + EF_PAGE_SIZE == (char*)slot->userAddress )
   {
     /* EF_PROTECT_BELOW was 1 when allocating this piece of memory */
-    tmpBegAddr = (char*)slot->userAddress + slot->userSize;
-    tmpEndAddr = tmpBegAddr + pageSlack;
-    while (tmpBegAddr < tmpEndAddr)
-      if (*tmpBegAddr++ != (char)EF_FILL)
-        #ifndef EF_NO_LEAKDETECTION
-          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
-            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
-        #else
-          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
-        #endif
+    accBegAddr = (char*)slot->internalAddress + EF_PAGE_SIZE;
+    accEndAddr = (char*)slot->internalAddress + slot->internalSize;
+  }
+  else
+  {
+    /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
+    accBegAddr = (char*)slot->internalAddress;
+    accEndAddr = (char*)slot->internalAddress + slot->internalSize - EF_PAGE_SIZE;
   }
 
+  tmpBegAddr = accBegAddr;
+  tmpEndAddr = (char*)slot->userAddress;
+  while (tmpBegAddr < tmpEndAddr)
+  {
+    if ( (char)EF_SLACKFILL != *tmpBegAddr++ )
+    {
+      #ifndef EF_NO_LEAKDETECTION
+        EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
+          slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
+      #else
+        EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
+      #endif
+    }
+  }
+
+  tmpBegAddr = (char*)slot->userAddress + slot->userSize;
+  tmpEndAddr = accEndAddr;
+  while (tmpBegAddr < tmpEndAddr)
+  {
+    if ( (char)EF_SLACKFILL != *tmpBegAddr++ )
+    {
+      #ifndef EF_NO_LEAKDETECTION
+        EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
+          slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
+      #else
+        EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a", slot->userAddress);
+      #endif
+    }
+  }
 }
 

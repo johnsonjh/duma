@@ -33,23 +33,12 @@
 
 /* for enabling inclusion of efence.h after inclusion of efencint.h */
 /* remove previous definitions */
-#undef malloc
-#undef calloc
-#undef realloc
-#undef free
-#undef EF_newFrame
-#undef EF_delFrame
-
-#undef EF_STACK_PROT_START
-#undef EF_STACK_PROT_END
-
-#undef CA_DECLARE
-#undef CA_DEFINE
-#undef CA_REF
+#include "noefence.h"
 
 #ifndef _EFENCE_CONFIG_H_
 #include "efence_config.h"
 #endif
+
 
 #ifdef EF_NO_EFENCE
 
@@ -69,46 +58,71 @@
 extern "C" {
 #endif
 
-#ifndef _EFENCE_SLOT_STATE
-#define _EFENCE_SLOT_STATE
-/*
- * Enum _EF_Slot_State indicates the status of a slot
- * Warning: Also have a look at ALLOCATED_MASK in efence.c
- */
-enum _EF_Slot_State
+/* global Electric Fence variables */
+extern int  EF_PROTECT_BELOW;
+extern int  EF_ALIGNMENT;
+extern int  EF_FILL;
+extern struct _EF_Slot * _ef_allocList;
+
+
+#ifndef _EFENCE_ENUMS
+#define _EFENCE_ENUMS
+
+enum _EF_Allocator
 {
-    EFST_NOT_IN_USE      = 0   /* Available to represent a malloc buffer. */
-  , EFST_FREE            = 1   /* A free buffer. */
-  , EFST_ALLOC_MALLOC    = 2   /* allocated through C "malloc()", "calloc()", "realloc()" .. */
-  , EFST_ALLOC_NEW_ELEM  = 4   /* allocated through C++ "new"   */
-  , EFST_ALLOC_NEW_ARRAY = 8   /* allocated through C++ "new[]" */
-  , EFST_INTERNAL_USE    = 16  /* A buffer used internally by malloc(). */
-  , EFST_PROTECTED       = 32  /* A freed buffer that can not be allocated again. */
+    EFA_INT_ALLOC
+  , EFA_INT_DEALLOC
+  , EFA_MALLOC
+  , EFA_CALLOC
+  , EFA_FREE
+  , EFA_MEMALIGN
+  , EFA_REALLOC
+  , EFA_VALLOC
+  , EFA_NEW_ELEM
+  , EFA_NEW_ARRAY
+  , EFA_DEL_ELEM
+  , EFA_DEL_ARRAY
 };
-#endif /* _EFENCE_SLOT_STATE */
+
+#endif /* _EFENCE_ENUMS */
+
+
+void   _eff_init(void);
 
 
 #ifndef EF_NO_LEAKDETECTION
 
-void * _eff_malloc(size_t size, enum _EF_Slot_State, const char * filename, int lineno);
-void * _eff_calloc(size_t elemCount, size_t elemSize, enum _EF_Slot_State, const char * filename, int lineno);
-void * _eff_realloc(void * baseAdr, size_t newSize, enum _EF_Slot_State, const char * filename, int lineno);
-void   _eff_free(void * baseAdr, enum _EF_Slot_State);
+void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _EF_Allocator allocator, const char * filename, int lineno);
+void   _eff_deallocate(void * baseAdr, int protectAllocList, enum _EF_Allocator allocator, const char * filename, int lineno);
+
+void * _eff_malloc(size_t size, const char * filename, int lineno);
+void * _eff_calloc(size_t elemCount, size_t elemSize, const char * filename, int lineno);
+void   _eff_free(void * baseAdr, const char * filename, int lineno);
+void * _eff_memalign(size_t alignment, size_t userSize, const char * filename, int lineno);
+void * _eff_realloc(void * baseAdr, size_t newSize, const char * filename, int lineno);
+void * _eff_valloc(size_t size, const char * filename, int lineno);
 
 void  EF_newFrame(void);
 void  EF_delFrame(void);
 
-#define malloc(SIZE)                _eff_malloc(SIZE, EFST_ALLOC_MALLOC, __FILE__, __LINE__)
-#define calloc(ELEMCOUNT, ELEMSIZE) _eff_calloc(ELEMCOUNT, ELEMSIZE, EFST_ALLOC_MALLOC, __FILE__, __LINE__)
-#define realloc(BASEADR, NEWSIZE)   _eff_realloc(BASEADR, NEWSIZE, EFST_ALLOC_MALLOC, __FILE__, __LINE__)
-#define free(BASEADR)               _eff_free(BASEADR, EFST_ALLOC_MALLOC)
+#define malloc(SIZE)                _eff_malloc(SIZE, __FILE__, __LINE__)
+#define calloc(ELEMCOUNT, ELEMSIZE) _eff_calloc(ELEMCOUNT, ELEMSIZE, __FILE__, __LINE__)
+#define free(BASEADR)               _eff_free(BASEADR, __FILE__, __LINE__)
+#define memalign(ALIGNMENT, SIZE)   _eff_memalign(ALIGNMENT, SIZE, __FILE__, __LINE__)
+#define realloc(BASEADR, NEWSIZE)   _eff_realloc(BASEADR, NEWSIZE, __FILE__, __LINE__)
+#define valloc(SIZE)                _eff_valloc(SIZE, __FILE__, __LINE__)
 
 #else /* EF_NO_LEAKDETECTION */
 
+void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _EF_Allocator allocator);
+void   _eff_deallocate(void * baseAdr, int protectAllocList, enum _EF_Allocator allocator);
+
 void * _eff_malloc(size_t size);
 void * _eff_calloc(size_t elemCount, size_t elemSize);
-void * _eff_realloc(void * baseAdr, size_t newSize);
 void   _eff_free(void * baseAdr);
+void * _eff_memalign(size_t alignment, size_t userSize);
+void * _eff_realloc(void * baseAdr, size_t newSize);
+void * _eff_valloc(size_t size);
 
 #define EF_newFrame() do { } while(0)
 #define EF_delFrame() do { } while(0)
@@ -132,7 +146,6 @@ void _eff_assert(const char * exprstr, const char * filename, int lineno);
 
 #define EF_FN_PROT_RET(EXPR)  do {  EF_ASSERT( __builtin_return_address(0) == EF_RET_ADDR );  return( EXPR ); }  while (0)
 #define EF_FN_PROT_RET_VOID() do {  EF_ASSERT( __builtin_return_address(0) == EF_RET_ADDR );  return;         }  while (0)
-
 
 #else
 

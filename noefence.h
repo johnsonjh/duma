@@ -36,14 +36,6 @@
 #undef EF_delFrame
 #endif
 
-#ifdef EF_MALLOC_RETTYPE
-#undef EF_MALLOC_RETTYPE
-#endif
-
-#ifdef EF_newFrame
-#undef EF_newFrame
-#endif
-
 
 /* remove previous wrappers to standard C functions */
 
@@ -55,16 +47,20 @@
 #undef calloc
 #endif
 
-#ifdef realloc
-#undef realloc
-#endif
-
 #ifdef free
 #undef free
 #endif
 
 #ifdef memalign
 #undef memalign
+#endif
+
+#ifdef realloc
+#undef realloc
+#endif
+
+#ifdef valloc
+#undef valloc
 #endif
 
 
@@ -96,6 +92,45 @@
 #ifdef DEL_ARRAY
 #undef DEL_ARRAY
 #endif
+
+/* remove special assert definition */
+#ifdef EF_ASSERT
+#undef EF_ASSERT
+#endif
+
+
+/* remove definitions for protection of functions return address */
+
+#ifdef EF_FN_PROT_START
+#undef EF_FN_PROT_START
+#endif
+
+#ifdef EF_FN_PROT_END
+#undef EF_FN_PROT_END
+#endif
+
+#ifdef EF_FN_PROT_RET
+#undef EF_FN_PROT_RET
+#endif
+
+#ifdef EF_FN_PROT_RET_VOID
+#undef EF_FN_PROT_RET_VOID
+#endif
+
+/* remove (C)hecked (A)rray definitions */
+
+#ifdef CA_DECLARE
+#undef CA_DECLARE
+#endif
+
+#ifdef CA_DEFINE
+#undef CA_DEFINE
+#endif
+
+#ifdef CA_REF
+#undef CA_REF
+#endif
+
 
 /***************/
 /* END OF FILE */

@@ -3,6 +3,8 @@ TODO:
 test Makefile since 2.4.5
 modification of manual page efence.3
 create manual describing compilation and installation
+implement a list structure over pages rather than an array for all slots.
+  this would save copying all slot entries.
 implement EF_MALLOC_FAILEXIT which exits when allocation fails
 make new variants behave fully C++ conform
 store __func__ additionally to __FILE__ and __LINE__
@@ -20,7 +22,24 @@ new macro: EF_CHECK_NON_VM_PROTECTABLE()
 new macros: NEW_PROTECT_BELOW, NEW_PROTECT_ABOVE
 new macros: MALLOC_PROTECT_BELOW(), MALLOC_PROTECT_ABOVE()
 
+
 CHANGES:
+
+2.4.13 reworked/revised ALL internal functions !!!
+       freeing already freed memory is now detected (much better)
+         this disallows coalescing memory regions and also stores __FILE__
+         and __LINE__ of free() to be able to print position of first free.
+       added EF_USE_FRAMENO preprocessor flag. changed not to support
+         EF_newFrame() and EF_delFrame() by default.
+       (2005-02-07, HA)
+       applied bugfix posted by Luis Gonzalez. bug was occuring under
+         SuSE Linux 9.1 when calling eftest with a higher number f.e. 10000.
+       (2005-02-02, HA)
+       bugfixed memalign() which was not exported as extern "C". this bug lead
+         to crashes when freeing memory allocated by memalign(). bug was
+         reported by Grant Goodyear and Steven G. Johnson.
+       now defining macros/functions also for valloc()
+       (2005-02-03, HA)
 
 2.4.12 added EF_NO_GLOBAL_MALLOC_FREE preprocessor flag to workaround buggy environments:
        no malloc(),free(),realloc(),calloc() are put into the global namespace

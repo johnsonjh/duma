@@ -2,8 +2,10 @@ PIC= -fPIC
 # add "-DEF_NO_GLOBAL_MALLOC_FREE" (without quotes) to for not defining malloc/free in global namespace
 # add "-DEF_NO_CPP_SUPPORT" (without quotes) to for not directing new/delete to malloc/free
 # add "-DEF_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
+# add "-DEF_USE_FRAMENO" (without quotes) if wan't to use EF_newFrame() and EF_delFrame()
 
-EF_OPTIONS = 
+
+EF_OPTIONS =
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)

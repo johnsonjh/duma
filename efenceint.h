@@ -35,17 +35,14 @@
 /* remove previous definitions */
 
 #undef malloc
-
 #undef calloc
-
-#undef realloc
-
 #undef free
+#undef memalign
+#undef realloc
+#undef valloc
 
 #undef EF_newFrame
-
 #undef EF_delFrame
-
 
 
 #ifdef __cplusplus
