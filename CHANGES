@@ -2,11 +2,34 @@
 TODO:
 test Makefile since 2.4.5
 modification of manual page efence.3.
-implement EF_MALLOC_FAILEXIT
+implement EF_MALLOC_FAILEXIT which exits when allocation fails
 make new variants behave fully C++ conform
-
+store __func__ additionally to __FILE__ and __LINE__
+-config for
+ long int sysconf (int parameter)  	Function
+  This function is used to inquire about runtime system parameters. The parameter argument should be one of the _SC_ symbols listed below.
+  The normal return value from sysconf is the value you requested. A value of -1 is returned both if the implementation does not impose a limit, and in case of an error.
+  The following errno error conditions are defined for this function:
+  EINVAL           The value of the parameter is invalid.
+  enums:
+    _SC_PAGESIZE     Inquire about the virtual memory page size of the machine. getpagesize returns the same value (see Query Memory Parameters).
+    _SC_PHYS_PAGES   Inquire about the number of physical pages in the system.
+    _SC_AVPHYS_PAGES Inquire about the number of available physical pages in the system.
+new macro: EF_CHECK_NON_VM_PROTECTABLE()
+new macros: NEW_PROTECT_BELOW, NEW_PROTECT_ABOVE
+new macros: MALLOC_PROTECT_BELOW(), MALLOC_PROTECT_ABOVE()
 
 CHANGES:
+
+2.4.11 bugfixed signal handling in confidence test (eftest),
+         which lead to false errors with my newly installed MandrakeLinux 10.1 distribution
+       (2005-01-03, HA)
+
+       bugfixed checking at free(), when EF_PROTECT_BELOW flag changed:
+         which lead to false positives.
+       bugfixed error message output to stderr: length of messages were calculated too short
+         fixed functions EF_Abort() and EF_Exit()
+       (2004-08-15, HA)
 
 2.4.10 added preprocessor macros for CA_DECLARE, CA_DEFINE, CA_REF in efence.h
          for declaration, definition and reference to Checked Arrays.
@@ -102,7 +125,7 @@ CHANGES:
        (2002-10-06, HA)
 
 2.4.0  added support for C++ operators new, new[], delete and delete[].
-       added some project files in subdir "win32-msvc" for MS-Visual C++ 6.0      
+       added some project files in subdir "win32-msvc" for MS-Visual C++ 6.0
        (2002-10-03, HA)
 
 
@@ -114,7 +137,7 @@ CHANGES:
 	debian/ subdirectory used for building the Debian package
 
 2.0.1
-	Add work-arounds for kernel and library bugs under HP-UX.	
+	Add work-arounds for kernel and library bugs under HP-UX.
 	HP has been notified and will repair these soon.
 
 2.0.2
