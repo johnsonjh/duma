@@ -1,17 +1,28 @@
 PIC= -fPIC
+# add "-DEF_NO_GLOBAL_MALLOC_FREE" (without quotes) to for not defining malloc/free in global namespace
 # add "-DEF_NO_CPP_SUPPORT" (without quotes) to for not directing new/delete to malloc/free
 # add "-DEF_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
 
+EF_OPTIONS = 
+
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
-    CFLAGS= -g
-    CPPFLAGS= -g
+    CURPATH=./
+    CFLAGS= -g $(EF_OPTIONS)
+    CPPFLAGS= -g $(EF_OPTIONS)
+    LIBS=
+    EFENCESO=
+  else
+    CURPATH=
+    CFLAGS= -g  $(EF_OPTIONS)
+    CPPFLAGS= -g $(EF_OPTIONS)
     LIBS=
     EFENCESO=
   endif
 else
-  CFLAGS= -g $(PIC)
-  CPPFLAGS= -g $(PIC)
+  CURPATH=./
+  CFLAGS= -g $(PIC) $(EF_OPTIONS)
+  CPPFLAGS= -g $(PIC) $(EF_OPTIONS)
   LIBS=-lpthread
   EFENCESO=libefence.so.0.0
 endif
@@ -37,14 +48,11 @@ PACKAGE_SOURCE= README CHANGES efence.3 Makefile \
 OBJECTS = efencepp.o efence.o
 
 all:	libefence.a $(EFENCESO) tstheap eftest eftestpp
-	@ echo
 	@ echo "Testing Electric Fence."
 	@ echo "After the last test, it should print that the test has PASSED."
-	./eftest
-	./tstheap 3072
-	@ echo
+	$(CURPATH)eftest
+	$(CURPATH)tstheap 3072
 	@ echo "Electric Fence confidence test PASSED."
-	@ echo
 
 install: libefence.a efence.3 libefence.so.0.0
 	$(INSTALL) -m 755 ef.sh $(BIN_INSTALL_DIR)/ef
@@ -83,7 +91,7 @@ libefence.so.0.0: efence_config.h $(OBJECTS)
 endif
 
 efence_config.h: createconf
-	- ./createconf >efence_config.h
+	- $(CURPATH)createconf >efence_config.h
 
 createconf: createconf.o
 	- rm -f createconf
@@ -99,12 +107,12 @@ eftest: libefence.a eftest.o
 
 eftestpp: libefence.a eftestpp.o
 	- rm -f eftestpp
-	$(CXX) $(CFLAGS) $(CPPFLAGS) eftestpp.o libefence.a -o eftestpp $(LIBS)
+	$(CXX) $(CPPFLAGS) eftestpp.o libefence.a -o eftestpp $(LIBS)
 
 $(OBJECTS) tstheap.o eftest.o eftestpp.o: efence.h
 
 .c.o:
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 .cpp.o:
 	$(CXX) $(CPPFLAGS) -c $< -o $@

@@ -64,7 +64,7 @@ throw(std::bad_alloc)
 #ifndef EF_NO_LEAKDETECTION
   void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, unknown_cxx_file, 0);
 #else
-  void *ptr = malloc(size);
+  void *ptr = _eff_malloc(size);
 #endif
   if (!ptr) throw std::bad_alloc();
   return ptr;
@@ -78,7 +78,7 @@ throw()
 #ifndef EF_NO_LEAKDETECTION
   void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, unknown_cxx_file, 0);
 #else
-  void *ptr = malloc(size);
+  void *ptr = _eff_malloc(size);
 #endif
   return ptr;
 }
@@ -91,7 +91,7 @@ throw()
 #ifndef EF_NO_LEAKDETECTION
   _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
 #else
-  free(ptr);
+  _eff_free(ptr);
 #endif
 }
 
@@ -103,7 +103,7 @@ throw()
 #ifndef EF_NO_LEAKDETECTION
   _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
 #else
-  free(ptr);
+  _eff_free(ptr);
 #endif
 }
 
@@ -122,7 +122,7 @@ throw(std::bad_alloc)
 #ifndef EF_NO_LEAKDETECTION
   void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, unknown_cxx_file, 0);
 #else
-  void *ptr = malloc(size);
+  void *ptr = _eff_malloc(size);
 #endif
   if (!ptr) throw std::bad_alloc();
   return ptr;
@@ -136,7 +136,7 @@ throw()
 #ifndef EF_NO_LEAKDETECTION
   void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, unknown_cxx_file, 0);
 #else
-  void *ptr = malloc(size);
+  void *ptr = _eff_malloc(size);
 #endif
   return ptr;
 }
@@ -149,7 +149,7 @@ throw()
 #ifndef EF_NO_LEAKDETECTION
   _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
 #else
-  free(ptr);
+  _eff_free(ptr);
 #endif
 }
 
@@ -161,7 +161,7 @@ throw()
 #ifndef EF_NO_LEAKDETECTION
   _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
 #else
-  free(ptr);
+  _eff_free(ptr);
 #endif
 }
 

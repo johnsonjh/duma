@@ -85,13 +85,24 @@
 #include "paging.h"
 
 static const char  version[] = "\n"
-"Electric Fence 2.4.11\n"
+"Electric Fence 2.4.12\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n";
 
 
 static const char unknown_file[] =
   "UNKNOWN (use #include \"efence.h\")";
+
+
+#ifndef EF_NO_LEAKDETECTION
+#define EF_PARAMLIST_MFL      , enum _EF_Slot_State mode, const char * filename, int lineno
+#define EF_PARAMLIST_MODE     , enum _EF_Slot_State mode
+#define EF_PARAMLIST_DEFMODE
+#else
+#define EF_PARAMLIST_MFL
+#define EF_PARAMLIST_MODE
+#define EF_PARAMLIST_DEFMODE    enum _EF_Slot_State mode = EFST_ALLOC_MALLOC;
+#endif
 
 
 /*
@@ -742,16 +753,10 @@ memalign(
 }
 
 
-#ifndef EF_NO_LEAKDETECTION
-void   free(void * address) { _eff_free(address, EFST_ALLOC_MALLOC); }
 
-void   _eff_free(void * address, enum _EF_Slot_State mode)
+void   _eff_free(void * address  EF_PARAMLIST_MODE)
 {
-#else
-void   free(void * address)
-{
-  enum _EF_Slot_State mode = EFST_ALLOC_MALLOC;
-#endif
+  EF_PARAMLIST_DEFMODE
   struct _EF_Slot   * slot, * prevSlot, * nextSlot;
   long                internalSizekB;
 
@@ -864,16 +869,9 @@ void   free(void * address)
 }
 
 
-#ifndef EF_NO_LEAKDETECTION
-void * realloc(void * oldBuffer, size_t newSize) { return _eff_realloc(oldBuffer, newSize, EFST_ALLOC_MALLOC, unknown_file, 0); }
-
-void * _eff_realloc(void * oldBuffer, size_t newSize, enum _EF_Slot_State mode, const char * filename, int lineno)
+void * _eff_realloc(void * oldBuffer, size_t newSize  EF_PARAMLIST_MFL)
 {
-#else
-void * realloc(void * oldBuffer, size_t newSize)
-{
-  enum _EF_Slot_State mode = EFST_ALLOC_MALLOC;
-#endif
+  EF_PARAMLIST_DEFMODE
   void *  newBuffer;
 
   if ( allocationList == 0 )
@@ -918,17 +916,9 @@ void * realloc(void * oldBuffer, size_t newSize)
 }
 
 
-#ifndef EF_NO_LEAKDETECTION
-void * malloc(size_t size) { return _eff_malloc(size, EFST_ALLOC_MALLOC, unknown_file, 0); }
-
-void * _eff_malloc(size_t size, enum _EF_Slot_State mode, const char * filename, int lineno)
+void * _eff_malloc(size_t size  EF_PARAMLIST_MFL)
 {
-#else
-void * malloc(size_t size)
-{
-  enum _EF_Slot_State mode = EFST_ALLOC_MALLOC;
-#endif
-
+  EF_PARAMLIST_DEFMODE
   if ( allocationList == 0 )
     initialize();  /* This sets EF_ALIGNMENT */
 
@@ -940,16 +930,9 @@ void * malloc(size_t size)
 }
 
 
-#ifndef EF_NO_LEAKDETECTION
-void * calloc(size_t nelem, size_t elsize) { return _eff_calloc(nelem, elsize, EFST_ALLOC_MALLOC, unknown_file, 0); }
-
-void * _eff_calloc(size_t nelem, size_t elsize, enum _EF_Slot_State mode, const char * filename, int lineno)
+void * _eff_calloc(size_t nelem, size_t elsize  EF_PARAMLIST_MFL)
 {
-#else
-void * calloc(size_t nelem, size_t elsize)
-{
-  enum _EF_Slot_State mode = EFST_ALLOC_MALLOC;
-#endif
+  EF_PARAMLIST_DEFMODE
   size_t  size = nelem * elsize;
   void *  allocation; /* = malloc(size); */
 
@@ -966,19 +949,66 @@ void * calloc(size_t nelem, size_t elsize)
   return allocation;
 }
 
+
+
+#ifndef EF_NO_GLOBAL_MALLOC_FREE
+
+/*
+ * define global functions for malloc(), free(), ..
+ */
+
+void * realloc(void * oldBuffer, size_t newSize)
+{
+  #ifndef EF_NO_LEAKDETECTION
+    return _eff_realloc(oldBuffer, newSize, EFST_ALLOC_MALLOC, unknown_file, 0);
+  #else
+    return _eff_realloc(oldBuffer, newSize);
+  #endif
+}
+
+
+void   free(void * address)
+{
+  #ifndef EF_NO_LEAKDETECTION
+    _eff_free(address, EFST_ALLOC_MALLOC);
+  #else
+    _eff_free(address);
+  #endif
+}
+
+
+void * malloc(size_t size)
+{
+  #ifndef EF_NO_LEAKDETECTION
+    return _eff_malloc(size, EFST_ALLOC_MALLOC, unknown_file, 0);
+  #else
+    return _eff_malloc(size);
+  #endif
+}
+
+
+void * calloc(size_t nelem, size_t elsize)
+{
+  #ifndef EF_NO_LEAKDETECTION
+    return _eff_calloc(nelem, elsize, EFST_ALLOC_MALLOC, unknown_file, 0);
+  #else
+    return _eff_calloc(nelem, elsize);
+  #endif
+}
+
+
 /*
  * This will catch more bugs if you remove the page alignment, but it
  * will break some software.
  */
 void *valloc (size_t size)
 {
-#ifndef EF_NO_LEAKDETECTION
-  return memalign(EF_PAGE_SIZE, size, EFST_ALLOC_MALLOC, unknown_file, 0);
-#else
-  return memalign(EF_PAGE_SIZE, size, EFST_ALLOC_MALLOC);
-#endif
+  #ifndef EF_NO_LEAKDETECTION
+    return memalign(EF_PAGE_SIZE, size, EFST_ALLOC_MALLOC, unknown_file, 0);
+  #else
+    return memalign(EF_PAGE_SIZE, size, EFST_ALLOC_MALLOC);
+  #endif
 }
-
 
 #ifdef __hpux
 /*
@@ -990,7 +1020,11 @@ char *strcat(char *d, const char *s)
   strcpy(d+strlen(d), s);
   return d;
 }
-#endif
+#endif /* __hpux */
+
+#endif /* EF_NO_GLOBAL_MALLOC_FREE */
+
+
 
 
 
@@ -1045,3 +1079,4 @@ void  EF_delFrame(void)
 #endif /* end ifndef EF_NO_LEAKDETECTION */
 
 #endif /* ifndef EF_NO_EFENCE */
+

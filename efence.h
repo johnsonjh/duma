@@ -105,6 +105,11 @@ void  EF_delFrame(void);
 
 #else /* EF_NO_LEAKDETECTION */
 
+void * _eff_malloc(size_t size);
+void * _eff_calloc(size_t elemCount, size_t elemSize);
+void * _eff_realloc(void * baseAdr, size_t newSize);
+void   _eff_free(void * baseAdr);
+
 #define EF_newFrame() do { } while(0)
 #define EF_delFrame() do { } while(0)
 
