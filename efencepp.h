@@ -123,8 +123,8 @@ void   EF_CDECL operator delete[]( void *, const std::nothrow_t &, const char *,
   #define new                     new(__FILE__, __LINE__)
 #endif
 
-#define DEL_ELEM(PTR)             delete  (__FILE__, __LINE__, PTR)
-#define DEL_ARRAY(PTR)            delete[](__FILE__, __LINE__, PTR)
+#define DEL_ELEM(PTR)             operator delete  (PTR, __FILE__, __LINE__)
+#define DEL_ARRAY(PTR)            operator delete[](PTR, __FILE__, __LINE__)
 
 #endif /* end ifdef EF_NO_LEAKDETECTION */
 
