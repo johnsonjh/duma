@@ -1,7 +1,8 @@
 
 TODO:
 test Makefile since 2.4.5
-modification of manual page efence.3.
+modification of manual page efence.3
+create manual describing compilation and installation
 implement EF_MALLOC_FAILEXIT which exits when allocation fails
 make new variants behave fully C++ conform
 store __func__ additionally to __FILE__ and __LINE__
