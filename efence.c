@@ -732,6 +732,7 @@ memalign(
         *tmpBegAddr++ = (char)EF_FILL;
     }
 
+    /* => userAddress = internalAddress + EF_PAGE_SIZE */
     fullSlot->userAddress = address;
     fullSlot->userSize    = userSize;
   #ifndef EF_NO_LEAKDETECTION
@@ -874,9 +875,10 @@ void   free(void * address)
   /* calculate pageSlack */
   pageSlack = slot->internalSize - slot->userSize - userSlack - EF_PAGE_SIZE;
 
-  /* the check itself */
-  if ( !EF_PROTECT_BELOW)
+  /* check the no man's land; use internal knowledge to detect the EF_PROTECT_BELOW on allocation */
+  if ( (char*)slot->userAddress != (char*)slot->internalAddress + EF_PAGE_SIZE )
   {
+    /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
     tmpBegAddr = (char*)slot->internalAddress;
     tmpEndAddr = tmpBegAddr + pageSlack;
     while (tmpBegAddr < tmpEndAddr)
@@ -901,6 +903,7 @@ void   free(void * address)
   }
   else
   {
+    /* EF_PROTECT_BELOW was 1 when allocating this piece of memory */
     tmpBegAddr = (char*)slot->userAddress + slot->userSize;
     tmpEndAddr = tmpBegAddr + pageSlack;
     while (tmpBegAddr < tmpEndAddr)
