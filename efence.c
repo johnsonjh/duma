@@ -84,9 +84,8 @@
 #include "sem_inc.h"
 #include "paging.h"
 
-
 static const char  version[] = "\n"
-"Electric Fence 2.4.10\n"
+"Electric Fence 2.4.11\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
 
@@ -244,6 +243,13 @@ static long   sumAllocatedMem = 0;
  * internal variable: sum of protected memory in kB
  */
 static long   sumProtectedMem = 0;
+
+
+/*
+ * include helper functions
+ */
+#include "ef_hlp.h"
+
 
 
 void _eff_assert(const char * exprstr, const char * filename, int lineno)
@@ -433,32 +439,6 @@ allocateMoreSlots(void)
   internalUse = 0;
 }
 
-/*
- * delete reductionSizekB amount of memory, which has already
- * been freed but got protected
- */
-static void
-reduceProtectedMemory( long reductionSizekB )
-{
-  long              alreadyReducekB = 0;
-  struct _EF_Slot * slot            = allocationList;
-  struct _EF_Slot * endSlot         = allocationList + slotCount;
-  size_t            count           = slotCount;
-
-  while (alreadyReducekB < reductionSizekB && slot != endSlot)
-  {
-    if (EFST_PROTECTED == slot->mode)
-    {
-      Page_Delete(slot->internalAddress, slot->internalSize);
-      alreadyReducekB += (slot->internalSize+1023) >>10;
-      slot->mode = EFST_NOT_IN_USE;
-    }
-    slot++;
-  }
-  sumProtectedMem -= alreadyReducekB;
-  sumAllocatedMem -= alreadyReducekB;
-}
-
 
 /*
  * This is the memory allocator. When asked to allocate a buffer, allocate
@@ -575,7 +555,7 @@ memalign(
    * we have to create new memory and mark it as free.
    *
    */
-  for ( slot = allocationList, count = slotCount ; count > 0; count-- )
+  for ( slot = allocationList, count = slotCount ; count > 0; --count, ++slot )
   {
     if ( slot->mode == EFST_FREE && slot->internalSize >= internalSize )
     {
@@ -593,7 +573,6 @@ memalign(
       else if ( fullSlot && fullSlot->internalSize == internalSize )
         break;  /* All done. */
     }
-    slot++;
   }
   if ( !emptySlots[0] )
     EF_Abort("\nElectric Fence: Internal error in allocator: No empty slot 0.\n");
@@ -640,7 +619,7 @@ memalign(
       sumAllocatedMem          += ( (chunkSize+1023) >>10 );
       fullSlot->internalSize    = chunkSize;
       fullSlot->mode            = EFST_FREE;
-      unUsedSlots--;
+      --unUsedSlots;
     }
     else
     {
@@ -672,10 +651,11 @@ memalign(
       emptySlots[0]->internalAddress = ((char *)fullSlot->internalAddress) + internalSize;
       emptySlots[0]->mode            = EFST_FREE;
       fullSlot->internalSize         = internalSize;
-      unUsedSlots--;
+      --unUsedSlots;
     }
 
-    if ( !EF_PROTECT_BELOW ) {
+    if ( !EF_PROTECT_BELOW )
+    {
       /*
        * Arrange the buffer so that it is followed by an inaccessable
        * memory page. A buffer overrun that touches that page will
@@ -707,7 +687,8 @@ memalign(
       while (tmpBegAddr < tmpEndAddr)
         *tmpBegAddr++ = (char)EF_FILL;
     }
-    else {  /* EF_PROTECT_BELOW != 0 */
+    else /* EF_PROTECT_BELOW != 0 */
+    {
       /*
        * Arrange the buffer so that it is preceded by an inaccessable
        * memory page. A buffer underrun that touches that page will
@@ -760,62 +741,6 @@ memalign(
   return address;
 }
 
-/*
- * Find the slot structure for a user address.
- */
-static struct _EF_Slot *
-slotForUserAddress(void * address)
-{
-  struct _EF_Slot * slot  = allocationList;
-  size_t            count = slotCount;
-
-  for ( ; count > 0; count-- ) {
-    if ( slot->userAddress == address )
-      return slot;
-    slot++;
-  }
-
-  return 0;
-}
-
-/*
- * Find the slot structure for an internal address.
- */
-static struct _EF_Slot *
-slotForInternalAddrNextTo(void * address)
-{
-  struct _EF_Slot * slot  = allocationList;
-  size_t            count = slotCount;
-
-  for ( ; count > 0; count-- ) {
-    if ( slot->internalAddress == address )
-      return slot;
-    slot++;
-  }
-  return 0;
-}
-
-
-/*
- * Given the internal address of a buffer, find the buffer immediately
- * before that buffer in the address space. This is used by free() to
- * coalesce two free buffers into one.
- */
-static struct _EF_Slot *
-slotForInternalAddrPrevTo(void * address)
-{
-  struct _EF_Slot * slot  = allocationList;
-  size_t            count = slotCount;
-
-  for ( ; count > 0; count-- ) {
-    if ( ((char *)slot->internalAddress) + slot->internalSize == address )
-      return slot;
-    slot++;
-  }
-  return 0;
-}
-
-
 
 #ifndef EF_NO_LEAKDETECTION
 void   free(void * address) { _eff_free(address, EFST_ALLOC_MALLOC); }
@@ -828,8 +753,6 @@ void   free(void * address)
   enum _EF_Slot_State mode = EFST_ALLOC_MALLOC;
 #endif
   struct _EF_Slot   * slot, * prevSlot, * nextSlot;
-  char              * tmpBegAddr, * tmpEndAddr;
-  size_t              userSlack, pageSlack;
   long                internalSizekB;
 
   if ( address == 0 )
@@ -862,60 +785,7 @@ void   free(void * address)
   }
 
   /* CHECK INTEGRITY OF NO MANS LAND */
-
-  /* calculate userSlack */
-  if ( !EF_PROTECT_BELOW && EF_ALIGNMENT > 1 ) {
-    userSlack = slot->userSize % EF_ALIGNMENT;
-    if ( userSlack )
-      userSlack = EF_ALIGNMENT - userSlack;
-  }
-  else
-    userSlack = 0;
-
-  /* calculate pageSlack */
-  pageSlack = slot->internalSize - slot->userSize - userSlack - EF_PAGE_SIZE;
-
-  /* check the no man's land; use internal knowledge to detect the EF_PROTECT_BELOW on allocation */
-  if ( (char*)slot->userAddress != (char*)slot->internalAddress + EF_PAGE_SIZE )
-  {
-    /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
-    tmpBegAddr = (char*)slot->internalAddress;
-    tmpEndAddr = tmpBegAddr + pageSlack;
-    while (tmpBegAddr < tmpEndAddr)
-      if (*tmpBegAddr++ != (char)EF_FILL)
-        #ifndef EF_NO_LEAKDETECTION
-          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
-            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
-        #else
-          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
-        #endif
-
-    tmpBegAddr = (char*)slot->userAddress + slot->userSize;
-    tmpEndAddr = tmpBegAddr + userSlack;
-    while (tmpBegAddr < tmpEndAddr)
-      if (*tmpBegAddr++ != (char)EF_FILL)
-        #ifndef EF_NO_LEAKDETECTION
-          EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
-            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
-        #else
-          EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a", slot->userAddress);
-        #endif
-  }
-  else
-  {
-    /* EF_PROTECT_BELOW was 1 when allocating this piece of memory */
-    tmpBegAddr = (char*)slot->userAddress + slot->userSize;
-    tmpEndAddr = tmpBegAddr + pageSlack;
-    while (tmpBegAddr < tmpEndAddr)
-      if (*tmpBegAddr++ != (char)EF_FILL)
-        #ifndef EF_NO_LEAKDETECTION
-          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
-            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
-        #else
-          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
-        #endif
-  }
-
+  _eff_check_slot( slot );
 
   /*
    * Free memory is _always_ set to deny access. When EF_PROTECT_FREE
@@ -958,7 +828,7 @@ void   free(void * address)
       slot->internalSize      = slot->userSize      = 0;
       slot->mode              = EFST_NOT_IN_USE;
       slot                    = prevSlot;
-      unUsedSlots++;
+      ++unUsedSlots;
     }
     else
     {
@@ -970,7 +840,7 @@ void   free(void * address)
         nextSlot->internalAddress  = nextSlot->userAddress  = 0;
         nextSlot->internalSize     = nextSlot->userSize     = 0;
         nextSlot->mode             = EFST_NOT_IN_USE;
-        unUsedSlots++;
+        ++unUsedSlots;
       }
     }
 
@@ -1035,7 +905,7 @@ void * realloc(void * oldBuffer, size_t newSize)
     Page_DenyAccess(allocationList, allocationListSize);
 
     if ( size < newSize )
-      memset(&(((char *)newBuffer)[size]), 0, newSize - size);
+      memset( (char*)newBuffer + size, 0, newSize - size);
     
     /* Internal memory was re-protected in free() */
   }
@@ -1152,7 +1022,7 @@ void  EF_delFrame(void)
 
     Page_AllowAccess(allocationList, allocationListSize);
 
-    for ( ; count > 0; --count )
+    for ( ; count > 0; --count, ++slot )
     {
       if ( frameno == slot->frame && (slot->mode & ALLOCATED_MASK) )
       {
@@ -1160,7 +1030,6 @@ void  EF_delFrame(void)
           slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
         ++nonFreed;
       }
-      ++slot;
     }
     if (nonFreed)
       EF_Abort("\nElectric Fence: EF_delFrame(): Found non free'd pointers.\n");
