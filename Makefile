@@ -29,7 +29,7 @@ MAN_INSTALL_DIR= $(prefix)/man/man3
 
 
 PACKAGE_SOURCE= README CHANGES efence.3 Makefile \
-	efence.h efenceint.h efencpp.h paging.h print.h \
+	efence.h efenceint.h efencpp.h paging.h print.h ef_hlp.h \
 	efence.c efencepp.cpp \
 	eftest.c tstheap.c eftestpp.cpp \
 	createconf.c
@@ -43,7 +43,7 @@ all:	libefence.a $(EFENCESO) tstheap eftest eftestpp
 	./eftest
 	./tstheap 3072
 	@ echo
-	@ echo "Electric Fence confidence test PASSED." 
+	@ echo "Electric Fence confidence test PASSED."
 	@ echo
 
 install: libefence.a efence.3 libefence.so.0.0
@@ -79,7 +79,7 @@ libefence.a: efence_config.h $(OBJECTS)
 ifneq ($(OS), Windows_NT)
 libefence.so.0.0: efence_config.h $(OBJECTS)
 	$(CXX) -g -shared -Wl,-soname,libefence.so.0 -o libefence.so.0.0 \
-		$(OBJECTS) -lpthread -lc 
+	$(OBJECTS) -lpthread -lc
 endif
 
 efence_config.h: createconf
