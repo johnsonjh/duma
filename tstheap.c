@@ -11,7 +11,16 @@
  * through TEST_DURATION (or the argument) iterations of the loop.
  */
 
-extern C_LINKAGE double drand48(void); /* For pre-ANSI C systems */
+#ifdef	__cplusplus
+extern "C"
+#else
+extern
+#endif
+double drand48(void); /* For pre-ANSI C systems */
+
+#ifdef WIN32
+#define FAKE_DRAND48
+#endif
 
 #define	POOL_SIZE	1024
 #define	LARGEST_BUFFER	30000
@@ -32,7 +41,11 @@ void *	pool[POOL_SIZE];
 double
 drand48(void)
 {
+#ifdef WIN32
+  return (double)rand()/((double)RAND_MAX);
+#else
 	return (random() / (double)ULONG_MAX);
+#endif
 }
 #endif
 
@@ -45,17 +58,29 @@ main(int argc, char * * argv)
 	if ( argc >= 2 )
 		duration = atoi(argv[1]);
 
-	for ( ; count < duration; count++ ) {
-		void * *	element = &pool[(int)(drand48() * POOL_SIZE)];
-		size_t		size = (size_t)(drand48() * (LARGEST_BUFFER + 1));
+  for ( count = 0; count < POOL_SIZE; count++ )
+    pool[count] = 0;
 
-		if ( *element ) {
-			free( *element );
-			*element = 0;
-		}
-		else if ( size > 0 ) {
-			*element = malloc(size);
-		}
+	for ( count = 0; count < duration; count++ )
+  {
+    int       pool_idx;
+		void * *	element;
+		size_t		size;
+
+    pool_idx =(int)(drand48() * POOL_SIZE);
+    if (pool_idx >=0 && pool_idx<POOL_SIZE)
+    {
+		  element  = &pool[pool_idx];
+		  size     = (size_t)(drand48() * (LARGEST_BUFFER + 1));
+
+		  if ( *element ) {
+			  free( *element );
+			  *element = 0;
+		  }
+		  else if ( size > 0 ) {
+			  *element = malloc(size);
+		  }
+    }
 	}
 	return 0;
 }

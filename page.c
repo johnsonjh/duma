@@ -1,8 +1,47 @@
-#include "efence.h"
+/*
+ * Electric Fence - Red-Zone memory allocator.
+ * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
+ * Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * License: GNU GPL (GNU General Public License, see COPYING-GPL)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *
+ * FILE CONTENTS:
+ * internal implementation file
+ * contains system/platform dependent paging functions
+ */
+
+
+#ifndef NDEBUG
+
+#include "efenceint.h"
 #include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/mman.h>
+
+#ifndef WIN32
+  #include <unistd.h>
+  #include <fcntl.h>
+  #include <sys/mman.h>
+#else
+  #define WIN32_LEAN_AND_MEAN 1
+  #include <windows.h>
+  #include <winbase.h>
+
+  typedef LPVOID caddr_t;
+#endif
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -29,15 +68,32 @@
 
 static caddr_t	startAddr = (caddr_t) 0;
 
-#if ( !defined(sgi) && !defined(_AIX) &&!defined(__USE_BSD))
+#if ( !defined(sgi) && !defined(_AIX) && !defined(_MSC_VER) )
 extern int	sys_nerr;
 extern char *	sys_errlist[];
+/* extern const char *	const sys_errlist[]; */
 #endif
+
 
 static const char *
 stringErrorReport(void)
 {
-#if ( defined(sgi) )
+#if defined(WIN32)
+  DWORD LastError;
+  LPVOID lpMsgBuf;
+
+  LastError = GetLastError();
+  FormatMessage( 
+                  FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS
+                , NULL
+                , LastError
+                , MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT)   /* Default language */
+                , (LPTSTR) &lpMsgBuf
+                , 0
+                , NULL
+               );
+  return lpMsgBuf; /* "Unknown error.\n"; */
+#elif ( defined(sgi) )
 	return strerror(oserror());
 #elif ( defined(_AIX) )
 	return strerror(errno);
@@ -49,14 +105,42 @@ stringErrorReport(void)
 #endif
 }
 
+
+static void
+mprotectFailed(void)
+{
+#if defined(WIN32)
+	EF_Exit("VirtualProtect() failed: %s", stringErrorReport());
+#else
+	EF_Exit("mprotect() failed: %s", stringErrorReport());
+#endif
+}
+
+
 /*
  * Create memory.
+ * void *Page_Create(size_t size)
  */
-#if defined(MAP_ANONYMOUS)
 void *
 Page_Create(size_t size)
 {
 	caddr_t		allocation;
+
+#if defined(WIN32)
+
+  allocation = VirtualAlloc(
+                              NULL /* startAddr */   /* address of region to reserve or commit */
+                            , (DWORD) size            /* size of region */
+                            , (DWORD) MEM_COMMIT      /* type of allocation */
+                            , (DWORD) PAGE_READWRITE  /* type of access protection */
+                            );
+
+	startAddr = (char*)allocation + size;
+
+  if ( (caddr_t)0 == allocation )
+		EF_Exit("VirtualAlloc() failed: %s", stringErrorReport());
+
+#elif defined(MAP_ANONYMOUS)
 
 	/*
 	 * In this version, "startAddr" is a _hint_, not a demand.
@@ -76,31 +160,25 @@ Page_Create(size_t size)
 	,-1
 	,0);
 
-#ifndef	__hpux
-	/*
-	 * Set the "address hint" for the next mmap() so that it will abut
-	 * the mapping we just created.
-	 *
-	 * HP/UX 9.01 has a kernel bug that makes mmap() fail sometimes
-	 * when given a non-zero address hint, so we'll leave the hint set
-	 * to zero on that system. HP recently told me this is now fixed.
-	 * Someone please tell me when it is probable to assume that most
-	 * of those systems that were running 9.01 have been upgraded.
-	 */
-	startAddr = allocation + size;
-#endif
+  #ifndef	__hpux
+  	/*
+  	 * Set the "address hint" for the next mmap() so that it will abut
+  	 * the mapping we just created.
+  	 *
+  	 * HP/UX 9.01 has a kernel bug that makes mmap() fail sometimes
+  	 * when given a non-zero address hint, so we'll leave the hint set
+  	 * to zero on that system. HP recently told me this is now fixed.
+  	 * Someone please tell me when it is probable to assume that most
+  	 * of those systems that were running 9.01 have been upgraded.
+  	 */
+  	startAddr = allocation + size;
+  #endif
 
 	if ( allocation == (caddr_t)-1 )
 		EF_Exit("mmap() failed: %s", stringErrorReport());
 
-	return (void *)allocation;
-}
 #else
-void *
-Page_Create(size_t size)
-{
 	static int	devZeroFd = -1;
-	caddr_t		allocation;
 
 	if ( devZeroFd == -1 ) {
 		devZeroFd = open("/dev/zero", O_RDWR);
@@ -133,54 +211,148 @@ Page_Create(size_t size)
 	if ( allocation == (caddr_t)-1 )
 		EF_Exit("mmap() failed: %s", stringErrorReport());
 
-	return (void *)allocation;
-}
 #endif
 
-static void
-mprotectFailed(void)
-{
-	EF_Exit("mprotect() failed: %s", stringErrorReport());
+	return (void *)allocation;
 }
 
+
+/*
+ * allow memory access
+ * void  Page_AllowAccess(void * address, size_t size)
+ */
 void
 Page_AllowAccess(void * address, size_t size)
 {
+#if defined(WIN32)
+  DWORD OldProtect, retQuery;
+  MEMORY_BASIC_INFORMATION MemInfo;
+  size_t tail_size;
+  BOOL ret;
+
+  while (size >0)
+  {
+    retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
+    if (retQuery < sizeof(MemInfo))
+      EF_Exit("VirtualQuery() failed\n");
+    tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
+    ret = VirtualProtect(
+                          (LPVOID) address        /* address of region of committed pages */
+                        , (DWORD) tail_size       /* size of the region */
+                        , (DWORD) PAGE_READWRITE  /* desired access protection */
+                        , (PDWORD) &OldProtect    /* address of variable to get old protection */
+                        );
+    if (0 == ret)
+		  mprotectFailed();
+
+    address = ((char *)address) + tail_size;
+    size -= tail_size;
+  }
+
+#else
 	if ( mprotect((caddr_t)address, size, PROT_READ|PROT_WRITE) < 0 )
 		mprotectFailed();
+#endif
 }
 
+
+/*
+ * deny memory access
+ * void  Page_DenyAccess(void * address, size_t size)
+ */
 void
 Page_DenyAccess(void * address, size_t size)
 {
+#if defined(WIN32)
+  DWORD OldProtect, retQuery;
+  MEMORY_BASIC_INFORMATION MemInfo;
+  size_t tail_size;
+  BOOL ret;
+
+  while (size >0)
+  {
+    retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
+    if (retQuery < sizeof(MemInfo))
+      EF_Exit("VirtualQuery() failed\n");
+    tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
+    ret = VirtualProtect(
+                          (LPVOID) address        /* address of region of committed pages */
+                        , (DWORD) tail_size       /* size of the region */
+                        , (DWORD) PAGE_NOACCESS   /* desired access protection */
+                        , (PDWORD) &OldProtect    /* address of variable to get old protection */
+                        );
+    if (0 == ret)
+		  mprotectFailed();
+
+    address = ((char *)address) + tail_size;
+    size -= tail_size;
+  }
+
+#else
 	if ( mprotect((caddr_t)address, size, PROT_NONE) < 0 )
 		mprotectFailed();
+#endif
 }
 
+
+/*
+ * free memory
+ * void  Page_Delete(void * address, size_t size)
+ */
 void
 Page_Delete(void * address, size_t size)
 {
+#if defined(WIN32)
+  DWORD retQuery;
+  MEMORY_BASIC_INFORMATION MemInfo;
+  size_t tail_size;
+  BOOL ret;
+
+  while (size >0)
+  {
+    retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
+    if (retQuery < sizeof(MemInfo))
+      EF_Exit("VirtualQuery() failed\n");
+    tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
+    ret = VirtualFree(
+                       (LPVOID) address        /* address of region of committed pages */
+                     , (DWORD) tail_size       /* size of the region */
+                     , (DWORD) MEM_DECOMMIT    /* type of free operation */
+                     );
+    if (0 == ret)
+      Page_DenyAccess(address, tail_size);
+
+    address = ((char *)address) + tail_size;
+    size -= tail_size;
+  }
+
+#else
 	if ( munmap((caddr_t)address, size) < 0 )
 		Page_DenyAccess(address, size);
+#endif
 }
 
-#if defined(_SC_PAGESIZE)
+
+/*
+ * retrieve page size
+ * size_t  Page_Size(void)
+ */
 size_t
 Page_Size(void)
 {
+#if defined(WIN32)
+  SYSTEM_INFO SystemInfo;
+  GetSystemInfo( &SystemInfo );
+  return (size_t)SystemInfo.dwPageSize;
+#elif defined(_SC_PAGESIZE)
 	return (size_t)sysconf(_SC_PAGESIZE);
-}
 #elif defined(_SC_PAGE_SIZE)
-size_t
-Page_Size(void)
-{
 	return (size_t)sysconf(_SC_PAGE_SIZE);
-}
 #else
 /* extern int	getpagesize(); */
-size_t
-Page_Size(void)
-{
 	return getpagesize();
-}
 #endif
+}
+
+
+#endif /* NDEBUG */

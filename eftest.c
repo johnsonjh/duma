@@ -1,10 +1,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifndef WIN32
 #include <unistd.h>
+#else
+#include <io.h>
+#endif
 #include <setjmp.h>
 #include <signal.h>
+
 #include "efence.h"
+#include "efenceint.h"
 
 /*
  * Electric Fence confidence tests.

@@ -1,3 +1,106 @@
+
+Electric Fence - Red-Zone memory allocator.
+Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
+Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+License: GNU GPL (GNU General Public License, see COPYING-GPL) for all files except efencepp.h
+License: GNU LGPL (GNU Lesser General Public License, see COPYING-GPL) for efencepp.h
+
+--- GPL --
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+--- LGPL --
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+---
+
+
+This is Electric Fence 2.4
+
+Added Port to Windows from Electric Fence 2.2.2.
+
+Here some Compilation Notes for your Application in Debug Mode
+for the Microsoft Visual C++ (v6) Compiler:
+
+1) don't use Program Database for "Edit and Continue":
+   Project-Options -> C++ -> General -> Debug-Info
+2) don't use the "multithreaded-dll" runtime library:
+   Project-Options -> C++ -> Code Generation -> Runtime library
+3) switch off incremental linking
+   Project-Options -> Linker -> General
+4) add following Linker option "/FORCE:MULTIPLE"
+   Project-Options -> Linker -> General
+
+the labels may differ a bit cause i'm using the german version:
+
+german options:
+1) Projekteinstellungen -> C++ -> Kategorie =Allgemein -> Debug-Info =Programmdatenbank
+2) Projekteinstellungen -> C++ -> Kategorie =Codegeneration -> Laufzeitbibliothek anpassen (Release/Debug),
+				  nicht die DLL-Variante verwenden
+3) Projekteinstellungen -> Linker -> Kategorie =Allgemein - Inkrementelles Binden =Aus
+4) Projekteinstellungen -> Linker -> Projekt Optionen
+                  "/FORCE:MULTIPLE" unten eingeben
+
+now everything you have to do is to set a dependency to "efence" from your application.
+
+Leak Detection:
+---------------
+all memory allocation is protocoled from Electric Fence together with the filename/linenumber
+of the caller. atexit() it is checked if each allocated memory block was freed; if not an error
+occurs.
+with EF_newFrame() and EF_delFrame you can create a new memory frame. embracing a smaller (than
+the whole program) unit with these functions, you can check if the leak is in that smaller unit.
+to disable leak detection add following preprocessor definition
+EF_NO_LEAKDETECTION
+
+C++ memory operators and leak detection:
+----------------------------------------
+cause the c++ memory operators are syntactically different from normal functions there was the
+need for a different kind of solution:
+the following macros got introduced
+1) NEW_ELEM(TYPE)
+2) NEW_ARRAY(TYPE,COUNT)
+3) DEL_ELEM(PTR)
+4) DEL_ARRAY(PTR)
+to use Electric Fence functionality you have to replace new/new[]/delete/delete[] by these
+macros. these macros respect the EF_NO_LEAKDETECTION definition. because these macros need
+the change of your source to take effect, you have to include <efencepp.h>. to avoid rechange
+of your code these macros are expanded to "normal" new/delete when compiling release code.
+this is also the reason why solely efencepp.h is put under LGPL.
+to disable c++ new/delete/new[]/delete[] operator overload add following preprocessor definition
+EF_NO_CPP
+
+
+	Hayati Ayguen
+	hayati.ayguen@epost.de
+
+---
+
 This is Electric Fence 2.2
 
 Electric Fence is a different kind of malloc() debugger. It uses the virtual
@@ -21,3 +124,4 @@ using the web form at http://lists.perens.com/mailman/listinfo/electric-fence.
 
 	Bruce Perens
 	bruce@perens.com
+

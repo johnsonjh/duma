@@ -1,3 +1,43 @@
+
+TODO:
+modification of Makefile since 2.2.2
+modification of manual page efence.3.
+
+
+2.4.4 several modifications
+        seperation of c++ files: efencepp.h, efencepp.cpp
+        renamed EF_push()/EF_pop() to EF_newFrame()/EF_delFrame()
+        new compile option "EF_NO_LEAKDETECTION"
+        new compile option "EF_NO_CPP"
+        splitted efence.h to efence.h and efenceint.h
+        added Copyright and License information to many files
+        renamed COPYING to COPYING-GPL
+      (2002-11-03, HA)
+
+2.4.3 added following PreProcessor Macros for Release and Debug Mode
+        #define NEW_ELEM(TYPE)          new TYPE
+        #define NEW_ARRAY(TYPE,COUNT)   new (TYPE)[COUNT]
+        #define DEL_ELEM(PTR)           delete PTR
+        #define DEL_ARRAY(PTR)          delete []PTR
+      which are mapped to malloc() and free() in Debug Mode.
+      Use these macros to get filename and linenumber of a C++ style memory leak.
+      (2002-10-07, HA)
+
+2.4.2 added support for implicit and explicit leak checking:
+        void EF_push(void)  creates a new memory frame.
+        void EF_pop(void)   checks for memory leaks allocated after EF_push().
+                            this function is called automatically onexit(), even without EF_push().
+      (2002-10-07, HA)
+
+2.4.1 Port to Windows (NT/2000/XP) by adding sections to following functions
+      Page_AllowAccess(), Page_Create(), Page_Delete(), Page_DenyAccess(), Page_Size()
+      (2002-10-06, HA)
+
+2.4.0 added support for C++ operators new, new[], delete and delete[]
+      (2002-10-03, HA)
+
+
+
 2.2.2	Oops. Shared library must be position-independent code.
 
 2.2.0

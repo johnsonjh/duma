@@ -1,7 +1,26 @@
 /*
  * Electric Fence - Red-Zone memory allocator.
- * Bruce Perens, 1988, 1993
- * 
+ * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
+ * Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * License: GNU GPL (GNU General Public License, see COPYING-GPL)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *
+ * FILE CONTENTS:
+ * --------------
  * This is a special version of malloc() and company for debugging software
  * that is suspected of overrunning or underrunning the boundaries of a
  * malloc buffer, or touching free memory.
@@ -29,9 +48,13 @@
  * to increase the amount of swap space in order to debug large programs that
  * perform lots of allocation, because of the per-buffer overhead.
  */
-#include "efence.h"
+
+#ifndef NDEBUG
+
 #include <stdlib.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <memory.h>
 #include <string.h>
 #ifdef USE_SEMAPHORE
@@ -39,16 +62,19 @@
 # include <semaphore.h>
 #endif
 
-#ifdef	malloc
-#undef	malloc
-#endif
+#include "efence.h"
+#include "efenceint.h"
 
-#ifdef	calloc
-#undef	calloc
-#endif
 
-static const char	version[] = "\n  Electric Fence 2.2.0"
- " Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n";
+static const char	version[] = "\n"
+"Electric Fence 2.4.4\n"
+"Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
+"Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
+
+
+static const char unknown_file[] =
+ "UNKNOWN (use #include \"efence.h\")";
+
 
 /*
  * MEMORY_CREATION_SIZE is the amount of memory to get from the operating
@@ -74,6 +100,11 @@ typedef enum _Mode	Mode;
  * for the contents of its memory.
  */
 struct _Slot {
+#ifndef EF_NO_LEAKDETECTION
+  int       frame;
+  char *    filename; /* filename of allocation */
+  int       lineno;   /* linenumber of allocation */
+#endif
 	void *		userAddress;
 	void *		internalAddress;
 	size_t		userSize;
@@ -81,6 +112,12 @@ struct _Slot {
 	Mode		mode;
 };
 typedef struct _Slot	Slot;
+
+
+#ifndef EF_NO_LEAKDETECTION
+static int frameno = 0;
+#endif
+
 
 /*
  * EF_ALIGNMENT is a global variable used to control the default alignment
@@ -394,6 +431,13 @@ initialize(void)
 	 */
 	unUsedSlots = slotCount - 2;
 
+  /*
+   * Register atexit()
+   */
+#ifndef EF_NO_LEAKDETECTION
+  atexit( EF_delFrame );
+#endif
+
 	release();
 }
 
@@ -453,8 +497,16 @@ allocateMoreSlots(void)
  * so that it won't waste even more. It's slow, but thrashing because your
  * working set is too big for a system's RAM is even slower. 
  */
-extern C_LINKAGE void *
-memalign(size_t alignment, size_t userSize)
+
+/* extern C_LINKAGE */
+static
+void * memalign(
+           size_t alignment, size_t userSize
+  #ifndef EF_NO_LEAKDETECTION
+         , const char * filename
+         , int lineno
+  #endif
+        )
 {
 	register Slot *	slot;
 	register size_t	count;
@@ -657,6 +709,11 @@ memalign(size_t alignment, size_t userSize)
 
 	fullSlot->userAddress = address;
 	fullSlot->userSize = userSize;
+#ifndef EF_NO_LEAKDETECTION
+  fullSlot->frame = frameno;
+  fullSlot->filename = (char*)filename;
+  fullSlot->lineno = lineno;
+#endif
 
 	/*
 	 * Make the pool's internal memory inaccessable, so that the program
@@ -725,8 +782,16 @@ slotForInternalAddressPreviousTo(void * address)
 	return 0;
 }
 
-extern C_LINKAGE void
-free(void * address)
+
+extern C_LINKAGE
+#ifndef EF_NO_LEAKDETECTION
+void   free(void * address) { _eff_free(address); }
+
+extern C_LINKAGE
+void   _eff_free(void * address)
+#else
+void   free(void * address)
+#endif
 {
 	Slot *	slot;
 	Slot *	previousSlot = 0;
@@ -813,8 +878,16 @@ free(void * address)
 	release();
 }
 
-extern C_LINKAGE void *
-realloc(void * oldBuffer, size_t newSize)
+
+extern C_LINKAGE
+#ifndef EF_NO_LEAKDETECTION
+void * realloc(void * oldBuffer, size_t newSize) { return _eff_realloc(oldBuffer, newSize, unknown_file, 0); }
+
+extern C_LINKAGE
+void * _eff_realloc(void * oldBuffer, size_t newSize, const char * filename, int lineno)
+#else
+void * realloc(void * oldBuffer, size_t newSize)
+#endif
 {
 	void *	newBuffer = 0;
 
@@ -862,20 +935,49 @@ realloc(void * oldBuffer, size_t newSize)
 	return newBuffer;
 }
 
-extern C_LINKAGE void *
-malloc(size_t size)
+
+extern C_LINKAGE
+#ifndef EF_NO_LEAKDETECTION
+void * malloc(size_t size) { return _eff_malloc(size, unknown_file, 0); }
+
+extern C_LINKAGE
+void * _eff_malloc(size_t size, const char * filename, int lineno)
+#else
+void * malloc(size_t size)
+#endif
 {
 	if ( allocationList == 0 )
 		initialize();	/* This sets EF_ALIGNMENT */
 
-	return memalign(EF_ALIGNMENT, size);
+#ifdef EF_NO_LEAKDETECTION
+  return memalign(EF_ALIGNMENT, size);
+#else
+  return memalign(EF_ALIGNMENT, size, filename, lineno);
+#endif
 }
 
-extern C_LINKAGE void *
-calloc(size_t nelem, size_t elsize)
+
+extern C_LINKAGE
+#ifndef EF_NO_LEAKDETECTION
+void * calloc(size_t nelem, size_t elsize) { return _eff_calloc(nelem, elsize, unknown_file, 0); }
+
+extern C_LINKAGE
+void * _eff_calloc(size_t nelem, size_t elsize, const char * filename, int lineno)
+#else
+void * calloc(size_t nelem, size_t elsize)
+#endif
 {
 	size_t	size = nelem * elsize;
-	void *	allocation = malloc(size);
+	void *	allocation; /* = malloc(size); */
+
+	if ( allocationList == 0 )
+		initialize();	/* This sets EF_ALIGNMENT */
+
+#ifdef EF_NO_LEAKDETECTION
+  return memalign(EF_ALIGNMENT, size);
+#else
+  return memalign(EF_ALIGNMENT, size, filename, lineno);
+#endif
 
 	memset(allocation, 0, size);
 	return allocation;
@@ -888,8 +990,13 @@ calloc(size_t nelem, size_t elsize)
 extern C_LINKAGE void *
 valloc (size_t size)
 {
+#ifdef EF_NO_LEAKDETECTION
 	return memalign(bytesPerPage, size);
+#else
+	return memalign(bytesPerPage, size, unknown_file, 0);
+#endif
 }
+
 
 #ifdef __hpux
 /*
@@ -902,3 +1009,59 @@ char *strcat(char *d, const char *s)
 	return d;
 }
 #endif
+
+
+
+#ifndef EF_NO_LEAKDETECTION
+
+/* *********************************************************
+ *
+ *  void  EF_newFrame(void);
+ *
+ ***********************************************************/
+
+extern C_LINKAGE void  EF_newFrame(void)
+{
+  ++frameno;
+}
+
+
+/* *********************************************************
+ *
+ *  void  EF_delFrame(void);
+ *
+ ***********************************************************/
+
+extern C_LINKAGE void  EF_delFrame(void)
+{
+  if (-1 != frameno)
+  {
+    register Slot *	slot = allocationList;
+    register size_t	count = slotCount;
+    register int nonFreed = 0;
+
+    Page_AllowAccess(allocationList, allocationListSize);
+
+    for ( ; count > 0; --count )
+    {
+      if ( frameno == slot->frame && ALLOCATED == slot->mode )
+      {
+        EF_Print("\nptr=0x%a size=%d alloced from %s(%d) not freed",
+          slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
+        ++nonFreed;
+      }
+      ++slot;
+    }
+    if (nonFreed)
+      EF_Abort("\nEF_delFrame(): Found non free'd pointers.\n");
+
+    Page_DenyAccess(allocationList, allocationListSize);
+
+
+    --frameno;
+  }
+}
+
+#endif
+
+#endif /* NDEBUG */

@@ -1,8 +1,44 @@
-#include "efence.h"
+/*
+ * Electric Fence - Red-Zone memory allocator.
+ * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
+ * Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * License: GNU GPL (GNU General Public License, see COPYING-GPL)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *
+ * FILE CONTENTS:
+ * internal implementation file
+ * contains aborting, printing functions with minor system/platform dependencies
+ */
+
+#ifndef NDEBUG
+
 #include <stdlib.h>
+#ifndef WIN32
 #include <unistd.h>
+#else
+#include <stdarg.h>
+#include <io.h>
+typedef unsigned u_int;
+#endif
 #include <string.h>
 #include <signal.h>
+
+#include "efenceint.h"
+
 
 /*
  * These routines do their printing without using stdio. Stdio can't
@@ -24,7 +60,11 @@ do_abort()
 	 * mis-guided implementations of abort() flush stdio, which can
 	 * cause malloc() or free() to be called.
 	 */
+#ifndef WIN32
 	kill(getpid(), SIGILL);
+#else
+  abort();
+#endif
 	/* Just in case something handles SIGILL and returns, exit here. */
 	_exit(-1);
 }
@@ -45,9 +85,9 @@ printNumber(ef_number number, ef_number base)
 		digit = number % base;
 
 		if ( digit < 10 )
-			*s = '0' + digit;
+			*s = (char)('0' + digit);
 		else
-			*s = 'a' + digit - 10;
+			*s = (char)('a' + digit - 10);
 
 	} while ( (number /= base) > 0 );
 
@@ -158,6 +198,9 @@ EF_Exitv(const char * pattern, va_list args)
 	 * I use _exit() because the regular exit() flushes stdio,
 	 * which may cause malloc() or free() to be called.
 	 */
+#ifdef WIN32
+  abort();
+#endif
 	_exit(-1);
 }
 
@@ -195,3 +238,5 @@ EF_InternalError(const char * pattern, ...)
 	va_end(args);
 	do_abort();
 }
+
+#endif /* NDEBUG */
