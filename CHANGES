@@ -5,6 +5,10 @@ modification of manual page efence.3.
 
 CHANGES:
 
+2.4.9 added checks for no mans land (= space which cannot get watched from MMU):
+      this area get filled with EF_FILL on allocation, and gets checked on deallocation.
+      (2002-12-04, HA)
+
 2.4.8 one big fix and many improvements for C++ code. old macros NEW_ELEM, NEW_ARRAY were not
       usable when allocating classes, which have constructor/destructor. the usage of these
       macros has not changed (see 2.4.3).

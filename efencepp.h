@@ -56,7 +56,7 @@
 /* -> RELEASE */
 
 #define NEW_ELEM(TYPE)          new TYPE
-#define NEW_ARRAY(TYPE,COUNT)   new (TYPE)[COUNT]
+#define NEW_ARRAY(TYPE,COUNT)   new TYPE[COUNT]
 
 #define DEL_ELEM(PTR)           delete PTR
 #define DEL_ARRAY(PTR)          delete []PTR

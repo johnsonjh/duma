@@ -68,9 +68,9 @@
 
 
 static const char	version[] = "\n"
-"Electric Fence 2.4.8\n"
+"Electric Fence 2.4.9\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
-"Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
+"Copyright (C) 2002-2003 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
 
 
 static const char unknown_file[] =
@@ -519,8 +519,13 @@ void * memalign(
 	Slot *		fullSlot = 0;
 	Slot *		emptySlots[2];
 	size_t		internalSize;
-	size_t		slack;
+	/* size_t		slack; */
+  size_t    userSlack;
+  size_t    pageSlack;
+  size_t    chunkSlack;
 	char *		address;
+  char *    tmpBegAddr;
+  char *    tmpEndAddr;
 
 	if ( allocationList == 0 )
 		initialize();
@@ -535,18 +540,23 @@ void * memalign(
 	 * and company will be page-aligned.
  	 */
 	if ( !EF_PROTECT_BELOW && alignment > 1 ) {
-		if ( (slack = userSize % alignment) != 0 )
-			userSize += alignment - slack;
+    userSlack = userSize % alignment;
+		if ( userSlack )
+      userSlack = alignment - userSlack;
 	}
+  else
+    userSlack = 0;
 
 	/*
 	 * The internal size of the buffer is rounded up to the next page-size
 	 * boudary, and then we add another page's worth of memory for the
 	 * dead page.
 	 */
-	internalSize = userSize + bytesPerPage;
-	if ( (slack = internalSize % bytesPerPage) != 0 )
-		internalSize += bytesPerPage - slack;
+	internalSize = userSize + userSlack + bytesPerPage; /* userSize + bytesPerPage; */
+  pageSlack = internalSize % bytesPerPage;
+  if (pageSlack)
+    pageSlack = bytesPerPage - pageSlack;
+  internalSize += pageSlack;
 
 	/*
 	 * These will hold the addresses of two empty Slot structures, that
@@ -623,8 +633,8 @@ void * memalign(
 		if ( chunkSize < internalSize )
 			chunkSize = internalSize;
 
-		if ( (slack = chunkSize % bytesPerPage) != 0 )
-			chunkSize += bytesPerPage - slack;
+		if ( (chunkSlack = chunkSize % bytesPerPage) != 0 )
+			chunkSize += bytesPerPage - chunkSlack;
 
 		/* Use up one of the empty slots to make the full slot. */
 		fullSlot = emptySlots[0];
@@ -690,7 +700,19 @@ void * memalign(
 			Page_DenyAccess(address, bytesPerPage);
 
 		/* Figure out what address to give the user. */
-		address -= userSize;
+		address -= (userSize + userSlack);
+
+    /* write some pattern to mark the no mans land */
+    /* a- from start to begin */
+    tmpBegAddr = (char *)fullSlot->internalAddress;
+    tmpEndAddr = tmpBegAddr + pageSlack;
+    while (tmpBegAddr < tmpEndAddr)
+      *tmpBegAddr++ = EF_FILL;
+    /* b- from end to page boundary */
+    tmpBegAddr = address + userSize;
+    tmpEndAddr = tmpBegAddr + userSlack;
+    while (tmpBegAddr < tmpEndAddr)
+      *tmpBegAddr++ = EF_FILL;
 	}
 	else {	/* EF_PROTECT_BELOW != 0 */
 		/*
@@ -711,6 +733,13 @@ void * memalign(
 		/* Set up the "live" page. */
 		if ( internalSize - bytesPerPage > 0 )
 			Page_AllowAccess(address, internalSize - bytesPerPage);
+
+    /* write some pattern to mark the no mans land */
+    /* b- from end to page boundary */
+    tmpBegAddr = address + userSize;
+    tmpEndAddr = tmpBegAddr + pageSlack;
+    while (tmpBegAddr < tmpEndAddr)
+      *tmpBegAddr++ = EF_FILL;
 	}
 
 	fullSlot->userAddress = address;
@@ -797,7 +826,9 @@ void   _eff_free(void * address)
 void   free(void * address)
 #endif
 {
-	Slot *slot, *previousSlot, *nextSlot;
+	Slot   *slot, *previousSlot, *nextSlot;
+  char   *tmpBegAddr, *tmpEndAddr;
+  size_t userSlack, pageSlack;
 
 	if ( address == 0 )
 		return;
@@ -822,6 +853,61 @@ void   free(void * address)
 			EF_Abort("\nElectric Fence: free(%a): freeing free memory.", address);
 		}
 	}
+
+
+  /* CHECK INTEGRITY OF NO MANS LAND */
+
+  /* calculate userSlack */
+	if ( !EF_PROTECT_BELOW && EF_ALIGNMENT > 1 ) {
+    userSlack = slot->userSize % EF_ALIGNMENT;
+		if ( userSlack )
+      userSlack = EF_ALIGNMENT - userSlack;
+	}
+  else
+    userSlack = 0;
+
+  /* calculate pageSlack */
+  pageSlack = slot->internalSize - slot->userSize - userSlack - bytesPerPage;
+
+  /* the check itself */
+	if ( !EF_PROTECT_BELOW)
+  {
+    tmpBegAddr = slot->internalAddress;
+    tmpEndAddr = tmpBegAddr + pageSlack;
+    while (tmpBegAddr < tmpEndAddr)
+      if (*tmpBegAddr++ != EF_FILL)
+        #ifndef EF_NO_LEAKDETECTION
+          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
+        #else
+          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
+            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
+        #endif
+
+    tmpBegAddr = (char*)slot->userAddress + slot->userSize;
+    tmpEndAddr = tmpBegAddr + userSlack;
+    while (tmpBegAddr < tmpEndAddr)
+      if (*tmpBegAddr++ != EF_FILL)
+        #ifdef EF_NO_LEAKDETECTION
+          EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a", slot->userAddress);
+        #else
+          EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
+            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
+        #endif
+  }
+  else
+  {
+    tmpBegAddr = (char*)slot->userAddress + slot->userSize;
+    tmpEndAddr = tmpBegAddr + pageSlack;
+    while (tmpBegAddr < tmpEndAddr)
+      if (*tmpBegAddr++ != EF_FILL)
+        #ifndef EF_NO_LEAKDETECTION
+          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
+        #else
+          EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
+            slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
+        #endif
+  }
+
 
 	if ( EF_PROTECT_FREE )
 		slot->mode = PROTECTED;
