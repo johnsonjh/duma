@@ -3,10 +3,19 @@ TODO:
 test Makefile since 2.4.5
 modification of manual page efence.3.
 
+CHANGES:
+
+2.4.7 get to work with Borland Free Commandline Tools (Borland C++ Builder 5.5)
+      thrown away unnecessary declarations of malloc(), free(), .. Borland didn't like them,
+        and neither MS-Visual C++ 6.0 nor gcc (Dev-C++) needs them.
+      added project files in subdir "win32-vide" for VIDE 1.24 using Borland C++
+      Builder 5.5 (see http://www.objectcentral.com)
+      (2002-11-22, HA)
+
 2.4.6 remove memory leak in eftest
       allowed re-inclusion of efence.h after inclusion of efenceint.h
-      added some project files for Dev-C++ 4.9.6.0 (see http://www.bloodshed.net/, uses gcc)
-        and saved its generated makefiles
+      added some project files in subdir "win32-devcpp" for Dev-C++ 4.9.6 using gcc
+        (see http://www.bloodshed.net) and saved its generated makefiles
       left tstheap's memory leaks
       (2002-11-17, HA)
 
@@ -44,7 +53,8 @@ modification of manual page efence.3.
       Page_AllowAccess(), Page_Create(), Page_Delete(), Page_DenyAccess(), Page_Size()
       (2002-10-06, HA)
 
-2.4.0 added support for C++ operators new, new[], delete and delete[]
+2.4.0 added support for C++ operators new, new[], delete and delete[].
+      added some project files in subdir "win32-msvc" for MS-Visual C++ 6.0      
       (2002-10-03, HA)
 
 

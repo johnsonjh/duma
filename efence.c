@@ -1,3 +1,4 @@
+
 /*
  * Electric Fence - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
@@ -67,7 +68,7 @@
 
 
 static const char	version[] = "\n"
-"Electric Fence 2.4.6\n"
+"Electric Fence 2.4.7\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
 
@@ -107,7 +108,7 @@ struct _Slot {
 #endif
 	void *		userAddress;
 	void *		internalAddress;
-	size_t		userSize;
+	size_t		userSize;
 	size_t		internalSize;
 	Mode		mode;
 };
@@ -234,6 +235,11 @@ static int        semDepth = 0;
  * page, as returned by Page_Size().
  */
 static size_t		bytesPerPage = 0;
+
+/* define some prototype that BorlandC++ doesn't warn */
+static void lock(void);
+static void release(void);
+
 
 static void
 lock()
@@ -783,19 +789,15 @@ slotForInternalAddressPreviousTo(void * address)
 }
 
 
-extern C_LINKAGE
 #ifndef EF_NO_LEAKDETECTION
 void   free(void * address) { _eff_free(address); }
 
-extern C_LINKAGE
 void   _eff_free(void * address)
 #else
 void   free(void * address)
 #endif
 {
-	Slot *	slot;
-	Slot *	previousSlot = 0;
-	Slot *	nextSlot = 0;
+	Slot *slot, *previousSlot, *nextSlot;
 
 	if ( address == 0 )
 		return;
@@ -877,17 +879,15 @@ void   free(void * address)
 }
 
 
-extern C_LINKAGE
 #ifndef EF_NO_LEAKDETECTION
 void * realloc(void * oldBuffer, size_t newSize) { return _eff_realloc(oldBuffer, newSize, unknown_file, 0); }
 
-extern C_LINKAGE
 void * _eff_realloc(void * oldBuffer, size_t newSize, const char * filename, int lineno)
 #else
 void * realloc(void * oldBuffer, size_t newSize)
 #endif
 {
-	void *	newBuffer = 0;
+	void *	newBuffer;
 
 	if ( allocationList == 0 )
 		initialize();	/* This sets EF_ALIGNMENT */
@@ -931,11 +931,9 @@ void * realloc(void * oldBuffer, size_t newSize)
 }
 
 
-extern C_LINKAGE
 #ifndef EF_NO_LEAKDETECTION
 void * malloc(size_t size) { return _eff_malloc(size, unknown_file, 0); }
 
-extern C_LINKAGE
 void * _eff_malloc(size_t size, const char * filename, int lineno)
 #else
 void * malloc(size_t size)
@@ -952,11 +950,9 @@ void * malloc(size_t size)
 }
 
 
-extern C_LINKAGE
 #ifndef EF_NO_LEAKDETECTION
 void * calloc(size_t nelem, size_t elsize) { return _eff_calloc(nelem, elsize, unknown_file, 0); }
 
-extern C_LINKAGE
 void * _eff_calloc(size_t nelem, size_t elsize, const char * filename, int lineno)
 #else
 void * calloc(size_t nelem, size_t elsize)
@@ -969,9 +965,9 @@ void * calloc(size_t nelem, size_t elsize)
 		initialize();	/* This sets EF_ALIGNMENT */
 
 #ifdef EF_NO_LEAKDETECTION
-  return memalign(EF_ALIGNMENT, size);
+  allocation = memalign(EF_ALIGNMENT, size);
 #else
-  return memalign(EF_ALIGNMENT, size, filename, lineno);
+  allocation = memalign(EF_ALIGNMENT, size, filename, lineno);
 #endif
 
 	memset(allocation, 0, size);
@@ -982,8 +978,7 @@ void * calloc(size_t nelem, size_t elsize)
  * This will catch more bugs if you remove the page alignment, but it
  * will break some software.
  */
-extern C_LINKAGE void *
-valloc (size_t size)
+void * valloc (size_t size)
 {
 #ifdef EF_NO_LEAKDETECTION
 	return memalign(bytesPerPage, size);
@@ -1015,7 +1010,7 @@ char *strcat(char *d, const char *s)
  *
  ***********************************************************/
 
-extern C_LINKAGE void  EF_newFrame(void)
+void  EF_newFrame(void)
 {
   ++frameno;
 }
@@ -1027,7 +1022,7 @@ extern C_LINKAGE void  EF_newFrame(void)
  *
  ***********************************************************/
 
-extern C_LINKAGE void  EF_delFrame(void)
+void  EF_delFrame(void)
 {
   if (-1 != frameno)
   {

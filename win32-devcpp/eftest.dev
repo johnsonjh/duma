@@ -22,16 +22,16 @@ OverrideOutputName=tstheap.exe
 Folders=
 CommandLine=
 Focused=-1
-Order=-1
+Order=
 
 [Views]
 ProjectView=1
 
 [Unit1]
 FileName=..\eftest.c
-Open=1
+Open=0
 Folder=
-Top=1
+Top=0
 CursorCol=1
 CursorRow=1
 TopLine=1

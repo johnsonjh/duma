@@ -125,7 +125,8 @@ EF_sprintf(char* buffer, const char *pattern, va_list args)
   int len = 0;
   ef_number n;
 
-	while ( (c = *s++) )
+  c = *s++;
+	while ( c )
   {
 		if ( c == '%' )
     {
@@ -186,6 +187,8 @@ EF_sprintf(char* buffer, const char *pattern, va_list args)
 		}
 		else
       buffer[len++] = c;
+    
+    c = *s++;
 	}
 
   buffer[len] = '\0';

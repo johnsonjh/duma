@@ -31,6 +31,18 @@
 
 #include "efence.h"
 
+
+#ifdef __cplusplus
+/* C declarations from within C++ */
+#undef  EF_EXTERN_C
+#define EF_EXTERN_C
+extern "C" {
+#else
+#undef EF_EXTERN_C
+#define EF_EXTERN_C extern
+#endif
+
+
 /* assure that our functions do not use these macros */
 
 #ifdef malloc
@@ -73,16 +85,19 @@ typedef unsigned long		ef_number;
 #define	NBBY	8
 #endif
 
-extern C_LINKAGE void   Page_AllowAccess(void * address, size_t size);
-extern C_LINKAGE void * Page_Create(size_t size);
-extern C_LINKAGE void   Page_Delete(void * address, size_t size);
-extern C_LINKAGE void   Page_DenyAccess(void * address, size_t size);
-extern C_LINKAGE size_t Page_Size(void);
+EF_EXTERN_C  void   Page_AllowAccess(void * address, size_t size);
+EF_EXTERN_C  void * Page_Create(size_t size);
+EF_EXTERN_C  void   Page_Delete(void * address, size_t size);
+EF_EXTERN_C  void   Page_DenyAccess(void * address, size_t size);
+EF_EXTERN_C  size_t Page_Size(void);
 
-extern C_LINKAGE void   EF_Abort(const char * message, ...);
-extern C_LINKAGE void   EF_Exit(const char * message, ...);
-extern C_LINKAGE void   EF_Print(const char * message, ...);
+EF_EXTERN_C  void   EF_Abort(const char * message, ...);
+EF_EXTERN_C  void   EF_Exit(const char * message, ...);
+EF_EXTERN_C  void   EF_Print(const char * message, ...);
 
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* NDEBUG */
 #endif /* _EFENCE_INTERNAL_ */

@@ -44,6 +44,57 @@ This is Electric Fence 2.4
 
 Added Port to Windows from Electric Fence 2.2.2.
 
+
+SubDirectories:
+---------------
+win32-vide/*        project files for VIDE 1.24 (see http://www.objectcentral.com)
+                    using the Borland C++ Builder 5.5 compiler (FreeCommandLineTools,
+                    see http://www.borland.com)
+win32-devcpp/*      project files for Dev-C++ 4.9.6 (see http://www.bloodshed.net)
+                    using the gcc compiler (see http://gcc.gnu.org)
+win32-msvc/*        projects files for Microsoft Visual C++ 6.0 IDE/compiler
+                    (see http://www.microsoft.com)
+debian/*            don't know; maybe some files for the Debian Linux distribution?!
+
+Projects:
+---------
+efencelib           Electric Fence library. this library should be linked with YOUR program
+eftest              first small test program
+tstheap             second small test program
+
+File:
+------
+COPYING-*           License files; reade carefully!
+README              this text file
+CHANGES             text file listing done CHANGES
+
+efence.h		belongs to efencelib
+                    this header file should be included from within YOUR C source
+efencepp.h          belongs to efencelib
+                    this header file should be included from within YOUR C++ source
+efenceint.h         belongs to efencelib
+                    library internal header file
+efence.c            belongs to efencelib
+                    contains malloc/free/.. functions
+efencepp.cpp        belongs to efencelib
+                    contains C++ new/delete/.. functions redirecting them
+                      to ANSI C malloc/free
+page.c              belongs to efencelib
+                    library internal source file: contains paging functions
+print.c             belongs to efencelib
+                    library internal source file: contains printing/aborting functions
+eftest.c            belongs to eftest
+                    small test program; checks wether efencelib's paging does its job
+                    should work without any errors
+tstheap.c           belongs to tstheap
+                    small test program; checks wether efencelib's heap does its job
+                    should report many memory leaks after execution.
+Makefile            Makefile for UNIX/Linux/..
+efence.3            source for UNIX man page
+ef.sh               don't know; some script for UNIX/Linux
+
+
+
 Here some Compilation Notes for your Application in Debug Mode
 for the Microsoft Visual C++ (v6) Compiler:
 
@@ -58,7 +109,7 @@ for the Microsoft Visual C++ (v6) Compiler:
 
 the labels may differ a bit cause i'm using the german version:
 
-german options:
+options in german language:
 1) Projekteinstellungen -> C++ -> Kategorie =Allgemein -> Debug-Info =Programmdatenbank
 2) Projekteinstellungen -> C++ -> Kategorie =Codegeneration -> Laufzeitbibliothek anpassen (Release/Debug),
 				  nicht die DLL-Variante verwenden

@@ -31,6 +31,7 @@
 #error compile with a C++ compiler, or define EF_NO_CPP to remove this error
 #endif
 
+
 #include <stdlib.h>
 #include "efence.h"
 

@@ -31,6 +31,7 @@
 /* for enabling inclusion of efence.h after inclusion of efencint.h */
 #undef EF_newFrame
 #undef EF_delFrame
+#undef EF_MALLOC_RETTYPE
 
 
 #ifdef NDEBUG
@@ -45,8 +46,8 @@
 #else /* NDEBUG */
 /* -> DEBUG */
 
-#include <sys/types.h>
-#include <stddef.h>
+
+#include <stdlib.h>
 
 /* remove previous definitions */
 #ifdef malloc
@@ -65,28 +66,27 @@
 #undef free
 #endif
 
-/* C declarations from within C++ */
-#ifdef	__cplusplus
-#define	C_LINKAGE	"C"
-#else
-#define	C_LINKAGE
+#ifdef __cplusplus
+extern "C" {
 #endif
 
+#if 0
 /* default declarations */
-extern C_LINKAGE void *malloc(size_t size);
-extern C_LINKAGE void *calloc(size_t elemCount, size_t elemSize);
-extern C_LINKAGE void *realloc(void * baseAdr, size_t newSize);
-extern C_LINKAGE void  free(void * baseAdr);
+void * malloc(size_t size);
+void * calloc(size_t elemCount, size_t elemSize);
+void * realloc(void * baseAdr, size_t newSize);
+void   free(void * baseAdr);
+#endif
 
 #ifndef EF_NO_LEAKDETECTION
 
-extern C_LINKAGE void *_eff_malloc(size_t size, const char * filename, int lineno);
-extern C_LINKAGE void *_eff_calloc(size_t elemCount, size_t elemSize, const char * filename, int lineno);
-extern C_LINKAGE void *_eff_realloc(void * baseAdr, size_t newSize, const char * filename, int lineno);
-extern C_LINKAGE void  _eff_free(void * baseAdr);
+void * _eff_malloc(size_t size, const char * filename, int lineno);
+void * _eff_calloc(size_t elemCount, size_t elemSize, const char * filename, int lineno);
+void * _eff_realloc(void * baseAdr, size_t newSize, const char * filename, int lineno);
+void   _eff_free(void * baseAdr);
 
-extern C_LINKAGE void  EF_newFrame(void);
-extern C_LINKAGE void  EF_delFrame(void);
+void  EF_newFrame(void);
+void  EF_delFrame(void);
 
 #define malloc(SIZE)                _eff_malloc(SIZE, __FILE__, __LINE__)
 #define calloc(ELEMCOUNT, ELEMSIZE) _eff_calloc(ELEMCOUNT, ELEMSIZE, __FILE__, __LINE__)
@@ -100,6 +100,11 @@ extern C_LINKAGE void  EF_delFrame(void);
 
 #endif /* EF_NO_LEAKDETECTION */
 
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+
 #endif /* NDEBUG */
-/*
-#endif */ /* _EFENCE_H_ */
+/* #endif */ /* _EFENCE_H_ */
+

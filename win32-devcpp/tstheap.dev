@@ -20,7 +20,7 @@ ObjectOutput=
 OverrideOutput=0
 OverrideOutputName=tstheap.exe
 Folders=
-CommandLine=3072
+CommandLine=
 Focused=-1
 Order=
 
