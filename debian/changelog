@@ -1,0 +1,40 @@
+electric-fence (2.0.5-4.1) unstable; urgency=low
+
+  * Orphaned the package:
+    (Siggy Brentrup has left the project a long while ago)
+  * Now point to the correct manpage (Fix #8122).
+  * upstream changelog file named correctly (Fix #9618).
+  * Now point to the upstream location (Fix #17354, #28059).
+  * Don't install libefence.so.0 executable (Fix #25993).
+
+ -- Vincent Renardias <vincent@waw.com>  Wed, 13 Jan 1999 01:41:31 +0100
+
+electric-fence (2.0.5-4) unstable; urgency=low
+
+  * recompiled for libc6; added an extra condition around the sys_errlist
+    declaration.
+  * added a libefence.so.0.0 shared library. 
+  * non-maintainer release.
+  
+ -- joost witteveen <joostje@debian.org>  Fri, 19 Sep 1997 15:11:31 +0200
+
+electric-fence (2.0.5-3) unstable; urgency=low
+
+  * Changed to new package format (Bug #7118)
+  * Added extended description (Bug #3582)
+  * Multi-architecture support (hopefully) (Bug #4045)
+
+ -- Siggy Brentrup <bsb@debian.org>  Wed, 5 Feb 1997 17:17:17 +0100
+
+electric-fence (2.0.5-2) unstable; urgency=low
+
+  * converted to ELF directory structure
+  * cleaned up debian.control
+  * minor changes to debian.rules
+
+ -- Siggy Brentrup <bsb@uni-muenster.de>  Wed, 20 Jan 1996 00:00:00 +0100
+
+Local variables:
+mode: debian-changelog
+add-log-mailing-address: "bsb@debian.org"
+End:
