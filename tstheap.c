@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <limits.h>
+#include <memory.h>
 #include "efence.h"
 
 /*
@@ -52,35 +53,53 @@ drand48(void)
 int
 main(int argc, char * * argv)
 {
-	int	count;
-	int	duration = TEST_DURATION;
+  int  count;
+  int  duration = TEST_DURATION;
 
-	if ( argc >= 2 )
-		duration = atoi(argv[1]);
+  if ( argc >= 2 )
+    duration = atoi(argv[1]);
 
   for ( count = 0; count < POOL_SIZE; count++ )
     pool[count] = 0;
 
-	for ( count = 0; count < duration; count++ )
+  for ( count = 0; count < duration; count++ )
   {
     int       pool_idx;
-		void * *	element;
-		size_t		size;
+    void  * * element;
+    size_t    size;
 
     pool_idx =(int)(drand48() * POOL_SIZE);
     if (pool_idx >=0 && pool_idx<POOL_SIZE)
     {
-		  element  = &pool[pool_idx];
-		  size     = (size_t)(drand48() * (LARGEST_BUFFER + 1));
+      element  = &pool[pool_idx];
+      size     = (size_t)(drand48() * (LARGEST_BUFFER + 1));
 
-		  if ( *element ) {
-			  free( *element );
-			  *element = 0;
-		  }
-		  else if ( size > 0 ) {
-			  *element = malloc(size);
-		  }
+      if ( *element )
+      {
+        free( *element );
+        *element = 0;
+      }
+      
+      if ( size > 0 )
+      {
+        *element = malloc(size);
+        /* really use it, so that the system has to use real memory */
+        memset( *element, -1, size );
+      }
     }
-	}
-	return 0;
+  }
+
+#if 1
+  /* don't forget to free the allocated memory, else the
+     confidence test won't pass - without having set
+     "EF_NO_LEAKDETECTION" preprocessor definition
+  */
+  for ( count = 0; count < POOL_SIZE; count++ )
+  {
+    if ( pool[count] )
+      free( pool[count] );
+  }
+#endif
+
+  return 0;
 }

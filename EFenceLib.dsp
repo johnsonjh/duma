@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="EFenceLib" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
 CFG=EFenceLib - Win32 Debug
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "EFenceLib.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "EFenceLib.mak" CFG="EFenceLib - Win32 Debug"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "EFenceLib - Win32 Release" (based on "Win32 (x86) Static Library")
-!MESSAGE "EFenceLib - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "EFenceLib - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "EFenceLib - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -40,12 +40,13 @@ RSC=rc.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
-# ADD CPP -MD /W3 /I "$(QTDIR)\include" /I "$(QTDIR)\mkspecs\win32-msvc" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D UNICODE /D QT_THREAD_SUPPORT /D QT_DLL /D QT_THREAD_SUPPORT /FD /c -nologo -Zm200 -GX -O1 -MT
+# ADD CPP /nologo /MT /W3 /GX /O1 /I "$(QTDIR)\include" /I "$(QTDIR)\mkspecs\win32-msvc" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "UNICODE" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /FD -Zm200 /c
+# ADD BASE RSC /l 0x407
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD LIB32 /nologo 
+# ADD LIB32 /nologo
 
 !ELSEIF  "$(CFG)" == "EFenceLib - Win32 Debug"
 
@@ -59,12 +60,13 @@ LIB32=link.exe -lib
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD CPP -MDd /W3 /Gm /GZ /ZI /Od /I "$(QTDIR)\include" /I "$(QTDIR)\mkspecs\win32-msvc" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D UNICODE /D QT_THREAD_SUPPORT /D QT_DLL /D QT_THREAD_SUPPORT /FD /c -nologo -Zm200 -GX  -Z7 -MTd
+# ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /I "$(QTDIR)\include" /I "$(QTDIR)\mkspecs\win32-msvc" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "UNICODE" /D "QT_THREAD_SUPPORT" /D "QT_DLL" /FD /GZ -Zm200 /c
+# ADD BASE RSC /l 0x407
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD LIB32 /nologo 
+# ADD LIB32 /nologo
 
 !ENDIF 
 
@@ -81,17 +83,8 @@ SOURCE=efence.c
 # End Source File
 # Begin Source File
 
-SOURCE=page.c
-# End Source File
-# Begin Source File
-
-SOURCE=print.c
-# End Source File
-# Begin Source File
-
 SOURCE=efencepp.cpp
 # End Source File
-
 # End Group
 # Begin Group "Header Files"
 
@@ -99,39 +92,39 @@ SOURCE=efencepp.cpp
 # Begin Source File
 
 SOURCE=efence.h
-
 # End Source File
 # Begin Source File
 
-SOURCE=efencepp.h
-
+SOURCE=.\efence_config.h
 # End Source File
 # Begin Source File
 
 SOURCE=efenceint.h
-
 # End Source File
+# Begin Source File
 
+SOURCE=efencepp.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\paging.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\print.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\sem_inc.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
-
-
-
-
-
-
-
 # Begin Group "Generated"
 
-
-
-
-
-# Prop Default_Filter "moc"
+# PROP Default_Filter "moc"
 # End Group
 # End Target
 # End Project
-

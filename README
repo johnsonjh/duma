@@ -103,7 +103,9 @@ for the Microsoft Visual C++ (v6) Compiler:
    Project-Options -> C++ -> Code Generation -> Runtime library
 3) switch off incremental linking
    Project-Options -> Linker -> General
-4) add following Linker option "/FORCE:MULTIPLE"
+4) switch off precompiled headers:
+   Project-Options -> C++ -> Precompiled Headers
+5) add following Linker option "/FORCE:MULTIPLE"
    Project-Options -> Linker -> General
 
 the labels may differ a bit cause i'm using the german version:
@@ -130,20 +132,12 @@ EF_NO_LEAKDETECTION
 
 C++ memory operators and leak detection:
 ----------------------------------------
-cause the c++ memory operators are syntactically different from normal functions there was the
-need for a different kind of solution:
-the following macros got introduced
-1) NEW_ELEM(TYPE)
-2) NEW_ARRAY(TYPE,COUNT)
-3) DEL_ELEM(PTR)
-4) DEL_ARRAY(PTR)
-to use Electric Fence functionality you have to replace new/new[]/delete/delete[] by these
-macros. these macros respect the EF_NO_LEAKDETECTION definition. because these macros need
-the change of your source to take effect, you have to include <efencepp.h>. to avoid rechange
-of your code these macros are expanded to "normal" new/delete when compiling release code.
-this is also the reason why solely efencepp.h is put under LGPL.
+Just include <efencepp.h> and recompile. There is a "new" macro which gives the filename and
+line number of the source code to Electric Fence. The rest should behave as usual - but for
+new all the overloaded new/delete functions do not behave fully C++ conform. Leak detection
+and memory protection is done automatically as for malloc()/free().
 to disable c++ new/delete/new[]/delete[] operator overload add following preprocessor definition
-EF_NO_CPP
+EF_NO_CPP_SUPPORT to the Makefile.
 
 
 	Hayati Ayguen

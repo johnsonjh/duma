@@ -1,26 +1,31 @@
 PIC= -fPIC
-# add "-DEF_NO_CPP" (without quotes) to for not directing new/delete to malloc/free
+# add "-DEF_NO_CPP_SUPPORT" (without quotes) to for not directing new/delete to malloc/free
 # add "-DEF_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
-CFLAGS= -g -DUSE_SEMAPHORE $(PIC)
-LIBS= -lpthread
+
+CFLAGS= -g $(PIC)
+CC=gcc
+CXX=g++
+CPPFLAGS= -g $(PIC)
+LIBS=-lpthread
+AR=ar
+INSTALL=install
 
 prefix=/usr
 BIN_INSTALL_DIR= $(prefix)/bin
 LIB_INSTALL_DIR= $(prefix)/lib
 MAN_INSTALL_DIR= $(prefix)/man/man3
 
-CC= cc
-AR= ar
-INSTALL= install
+
 
 PACKAGE_SOURCE= README CHANGES efence.3 Makefile \
-	efence.h efenceint.h efencpp.h \
-	efence.c efencepp.cpp page.c print.c \
-	eftest.c tstheap.c
+	efence.h efenceint.h efencpp.h paging.h print.h \
+	efence.c efencepp.cpp \
+	eftest.c tstheap.c eftestpp.cpp \
+	createconf.c
 
-OBJECTS= efence.o efencepp.o page.o print.o
+OBJECTS = efencepp.o efence.o
 
-all:	libefence.a libefence.so.0.0 tstheap eftest
+all:	libefence.a libefence.so.0.0 tstheap eftest eftestpp
 	@ echo
 	@ echo "Testing Electric Fence."
 	@ echo "After the last test, it should print that the test has PASSED."
@@ -41,8 +46,10 @@ install: libefence.a efence.3 libefence.so.0.0
 	$(INSTALL) -m 644 efence.3 $(MAN_INSTALL_DIR)/efence.3
 
 clean:
-	- rm -f $(OBJECTS) tstheap.o eftest.o tstheap eftest \
-	 libefence.a libefence.so.0.0 libefence.cat ElectricFence.shar
+	- rm -f $(OBJECTS) tstheap.o eftest.o eftestpp.o createconf.o tstheap \
+		eftest eftestpp createconf \
+	 libefence.a libefence.so.0.0 libefence.cat ElectricFence.shar \
+	 efence_config.h
 
 roff:
 	nroff -man < efence.3 > efence.cat
@@ -53,13 +60,20 @@ ElectricFence.shar: $(PACKAGE_SOURCE)
 
 shar: ElectricFence.shar
 
-libefence.a: $(OBJECTS)
+libefence.a: efence_config.h $(OBJECTS)
 	- rm -f libefence.a
 	$(AR) crv libefence.a $(OBJECTS)
 
-libefence.so.0.0: $(OBJECTS)
-	gcc -g -shared -Wl,-soname,libefence.so.0 -o libefence.so.0.0 \
+libefence.so.0.0: efence_config.h $(OBJECTS)
+	$(CXX) -g -shared -Wl,-soname,libefence.so.0 -o libefence.so.0.0 \
 		$(OBJECTS) -lpthread -lc 
+
+efence_config.h: createconf
+	- ./createconf >efence_config.h
+
+createconf: createconf.o
+	- rm -f createconf
+	$(CC) $(CFLAGS) createconf.o -o createconf
 
 tstheap: libefence.a tstheap.o
 	- rm -f tstheap
@@ -69,7 +83,14 @@ eftest: libefence.a eftest.o
 	- rm -f eftest
 	$(CC) $(CFLAGS) eftest.o libefence.a -o eftest $(LIBS)
 
-$(OBJECTS) tstheap.o eftest.o: efence.h
+eftestpp: libefence.a eftestpp.o
+	- rm -f eftestpp
+	$(CXX) $(CFLAGS) $(CPPFLAGS) eftestpp.o libefence.a -o eftestpp $(LIBS)
+
+$(OBJECTS) tstheap.o eftest.o eftestpp.o: efence.h
 
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+.cpp.o:
+	$(CXX) $(CPPFLAGS) -c $< -o $@

@@ -1,7 +1,8 @@
+
 /*
  * Electric Fence - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
- * Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,46 +26,22 @@
 
 #ifndef _EFENCE_INTERNAL_
 #define _EFENCE_INTERNAL_
-#ifndef NDEBUG
-/* -> DEBUG */
-
 
 #include "efence.h"
 
+/* for enabling inclusion of efence.h after inclusion of efencint.h */
+/* remove previous definitions */
+#undef malloc
+#undef calloc
+#undef realloc
+#undef free
+#undef EF_newFrame
+#undef EF_delFrame
+
 
 #ifdef __cplusplus
-/* C declarations from within C++ */
-#undef  EF_EXTERN_C
-#define EF_EXTERN_C
-extern "C" {
-#else
-#undef EF_EXTERN_C
-#define EF_EXTERN_C extern
+  extern "C" {
 #endif
-
-
-/* assure that our functions do not use these macros */
-
-#ifdef malloc
-#undef malloc
-#endif
-
-#ifdef calloc
-#undef calloc
-#endif
-
-#ifdef realloc
-#undef realloc
-#endif
-
-#ifdef free
-#undef free
-#endif
-
-#ifdef memalign
-#undef memalign
-#endif
-
 
 
 /*
@@ -85,19 +62,8 @@ typedef unsigned long		ef_number;
 #define	NBBY	8
 #endif
 
-EF_EXTERN_C  void   Page_AllowAccess(void * address, size_t size);
-EF_EXTERN_C  void * Page_Create(size_t size);
-EF_EXTERN_C  void   Page_Delete(void * address, size_t size);
-EF_EXTERN_C  void   Page_DenyAccess(void * address, size_t size);
-EF_EXTERN_C  size_t Page_Size(void);
-
-EF_EXTERN_C  void   EF_Abort(const char * message, ...);
-EF_EXTERN_C  void   EF_Exit(const char * message, ...);
-EF_EXTERN_C  void   EF_Print(const char * message, ...);
-
 #ifdef __cplusplus
-} /* extern "C" */
+  } /* extern "C" */
 #endif
 
-#endif /* NDEBUG */
 #endif /* _EFENCE_INTERNAL_ */

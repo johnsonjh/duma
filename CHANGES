@@ -2,69 +2,108 @@
 TODO:
 test Makefile since 2.4.5
 modification of manual page efence.3.
+implement EF_MALLOC_FAILEXIT
+make new variants behave fully C++ conform
+
 
 CHANGES:
 
-2.4.9 added checks for no mans land (= space which cannot get watched from MMU):
-      this area get filled with EF_FILL on allocation, and gets checked on deallocation.
-      (2002-12-04, HA)
+2.4.10 added preprocessor macros for CA_DECLARE, CA_DEFINE, CA_REF in efence.h
+         for declaration, definition and reference to Checked Arrays.
+         these macros allow checks of arrays which are allocated on stack, but they are
+         very slow on references every reference has to be checked.
+       added EF_ASSERT() which definitely halts (for debugging)
+       precompiled headers have to be switched off in MS Visual C++ to get all the C++
+	     operators to work. but don't ask me why!
+       added all the various new/delete/new[]/delete[] C++ operator implementations.
+         the implementations are not C++ conform concerning their behaviour
+       added type mismatch detection between malloc()/free(), new/delete, new[]/delete[]
+         this is deactivated when EF_NO_LEAKDETECTION set.
+       added EF_MALLOC_FAILEXIT parameter. (for now not implemented)
+       extended semantics of EF_PROTECT_FREE.
+       added EF_MAX_ALLOC parameter.
+       bugfix: why should we ever use Page_Delete() when setting up the "dead" page?
+       bugfix: EF_PROTECT_FREE did exactly the opposite of that, what it should do
+        up from Bruce's version 2.2.2 maybe earlier.
+       (2004-07-16, HA)
 
-2.4.8 one big fix and many improvements for C++ code. old macros NEW_ELEM, NEW_ARRAY were not
-      usable when allocating classes, which have constructor/destructor. the usage of these
-      macros has not changed (see 2.4.3).
-      (2002-12-04, HA)
+       confidence test now PASSes again
+       removed problems when used EF_NO_LEAKDETECTION preprocessor flag
+       got Makefile to work again, also included automatic generation of efence_config.h
+       added automatic generation and inclusion of efence_config.h instead function Page_Size()
+       (2004-07-15, HA)
 
-2.4.7 get to work with Borland Free Commandline Tools (Borland C++ Builder 5.5)
-      thrown away unnecessary declarations of malloc(), free(), .. Borland didn't like them,
-        and neither MS-Visual C++ 6.0 nor gcc (Dev-C++) needs them.
-      added project files in subdir "win32-vide" for VIDE 1.24 using Borland C++
-      Builder 5.5 (see http://www.objectcentral.com)
-      (2002-11-22, HA)
+       added code for thread safety: only one thread at once is allowed to enter
+       some internal functions. this can be deactivated using the EF_NO_THREAD_SAFETY
+	   preprocessor flag. there may be flaws concering threads, when using the c++ operators
+	   for leak detection: use the EF_NO_LEAKDETECTION preprocessor flag if you encounter problems!
+	   some files (page.c and print.c) have turned to header files,
+	   the needed functions are now declared static
+	   and are no more visible outside efence.c this way
+	   the NDEBUG preprocessor flag has been replaced by EF_NO_EFENCE, EF_NO_CPP_SUPPORT.
+	   so be careful not to include efence in your release builds!
+	   (2004-03-21, HA)
 
-2.4.6 remove memory leak in eftest
-      allowed re-inclusion of efence.h after inclusion of efenceint.h
-      added some project files in subdir "win32-devcpp" for Dev-C++ 4.9.6 using gcc
-        (see http://www.bloodshed.net) and saved its generated makefiles
-      left tstheap's memory leaks
-      (2002-11-17, HA)
+2.4.9  added checks for no mans land (= space which cannot get protected from the MMU):
+       this area get filled with EF_FILL on allocation, and gets checked on deallocation.
+       (2002-12-04, HA)
 
-2.4.5 modifications in print routines (EF_Print, EF_Abort, ..)
-      added direct output to visual c++ debug output window.
-	  some additions to Makefile
-      (2002-11-17, HA)
+2.4.8  one big fix and many improvements for C++ code. old macros NEW_ELEM, NEW_ARRAY were not
+       usable when allocating classes, which have constructor/destructor. the usage of these
+       macros has not changed (see 2.4.3).
+       (2002-12-04, HA)
 
-2.4.4 several modifications
-        seperation of c++ files: efencepp.h, efencepp.cpp
-        renamed EF_push()/EF_pop() to EF_newFrame()/EF_delFrame()
-        new compile option "EF_NO_LEAKDETECTION"
-        new compile option "EF_NO_CPP"
-        splitted efence.h to efence.h and efenceint.h
-        added Copyright and License information to many files
-        renamed COPYING to COPYING-GPL
-      (2002-11-03, HA)
+2.4.7  get to work with Borland Free Commandline Tools (Borland C++ Builder 5.5)
+       thrown away unnecessary declarations of malloc(), free(), .. Borland didn't like them,
+         and neither MS-Visual C++ 6.0 nor gcc (Dev-C++) needs them.
+       added project files in subdir "win32-vide" for VIDE 1.24 using Borland C++
+       Builder 5.5 (see http://www.objectcentral.com)
+       (2002-11-22, HA)
 
-2.4.3 added following PreProcessor Macros for Release and Debug Mode
-        #define NEW_ELEM(TYPE)          new TYPE
-        #define NEW_ARRAY(TYPE,COUNT)   new (TYPE)[COUNT]
-        #define DEL_ELEM(PTR)           delete PTR
-        #define DEL_ARRAY(PTR)          delete []PTR
-      which are mapped to malloc() and free() in Debug Mode.
-      Use these macros to get filename and linenumber of a C++ style memory leak.
-      (2002-10-07, HA)
+2.4.6  remove memory leak in eftest
+       allowed re-inclusion of efence.h after inclusion of efenceint.h
+       added some project files in subdir "win32-devcpp" for Dev-C++ 4.9.6 using gcc
+         (see http://www.bloodshed.net) and saved its generated makefiles
+       left tstheap's memory leaks
+       (2002-11-17, HA)
 
-2.4.2 added support for implicit and explicit leak checking:
-        void EF_push(void)  creates a new memory frame.
-        void EF_pop(void)   checks for memory leaks allocated after EF_push().
+2.4.5  modifications in print routines (EF_Print, EF_Abort, ..)
+       added direct output to visual c++ debug output window.
+	   some additions to Makefile
+       (2002-11-17, HA)
+
+2.4.4  several modifications
+         seperation of c++ files: efencepp.h, efencepp.cpp
+         renamed EF_push()/EF_pop() to EF_newFrame()/EF_delFrame()
+         new compile option "EF_NO_LEAKDETECTION"
+         new compile option "EF_NO_CPP"
+         splitted efence.h to efence.h and efenceint.h
+         added Copyright and License information to many files
+         renamed COPYING to COPYING-GPL
+       (2002-11-03, HA)
+
+2.4.3  added following PreProcessor Macros for Release and Debug Mode
+         #define NEW_ELEM(TYPE)          new TYPE
+         #define NEW_ARRAY(TYPE,COUNT)   new (TYPE)[COUNT]
+         #define DEL_ELEM(PTR)           delete PTR
+         #define DEL_ARRAY(PTR)          delete []PTR
+       which are mapped to malloc() and free() in Debug Mode.
+       Use these macros to get filename and linenumber of a C++ style memory leak.
+       (2002-10-07, HA)
+
+2.4.2  added support for implicit and explicit leak checking:
+         void EF_push(void)  creates a new memory frame.
+         void EF_pop(void)   checks for memory leaks allocated after EF_push().
                             this function is called automatically onexit(), even without EF_push().
-      (2002-10-07, HA)
+       (2002-10-07, HA)
 
-2.4.1 Port to Windows (NT/2000/XP) by adding sections to following functions
-      Page_AllowAccess(), Page_Create(), Page_Delete(), Page_DenyAccess(), Page_Size()
-      (2002-10-06, HA)
+2.4.1  Port to Windows (NT/2000/XP) by adding sections to following functions
+       Page_AllowAccess(), Page_Create(), Page_Delete(), Page_DenyAccess(), Page_Size()
+       (2002-10-06, HA)
 
-2.4.0 added support for C++ operators new, new[], delete and delete[].
-      added some project files in subdir "win32-msvc" for MS-Visual C++ 6.0      
-      (2002-10-03, HA)
+2.4.0  added support for C++ operators new, new[], delete and delete[].
+       added some project files in subdir "win32-msvc" for MS-Visual C++ 6.0      
+       (2002-10-03, HA)
 
 
 

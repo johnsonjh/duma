@@ -1,7 +1,8 @@
+
 /*
  * Electric Fence - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
- * Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,80 +22,233 @@
  *
  * FILE CONTENTS:
  * internal implementation file
- * replaces global C++ operators using C malloc/free functions (replaced by Electric Fence)
+ * replaces various global C++ new/delete/new[]/delete[] operators
  */
 
-#ifndef NDEBUG
-#ifndef EF_NO_CPP
+#ifndef EF_NO_CPP_SUPPORT
 
-#ifndef	__cplusplus
-#error compile with a C++ compiler, or define EF_NO_CPP to remove this error
-#endif
 
+#include <new>
 
 #include <stdlib.h>
+
 #include "efence.h"
 
 
-/* memory stack for recursive new from constructors ! */
-const char * _ef_ovr_file;
-int _ef_ovr_line;
-int _ef_ovr_fl = 0;
+#if WIN32
+#define EF_CDECL  __cdecl
+#else
+#define EF_CDECL
+#endif
+
+#ifdef _MSC_VER
+#define EF_SIZE_T    size_t
+#else
+#define EF_SIZE_T    std::size_t
+#endif
 
 
-static const char unknown_file[] =
+static const char unknown_cxx_file[] =
  "UNKNOWN (use #include \"efencepp.h\")";
 
 
-/*
- * allocate memory for an array
- */
-void * operator new[] (size_t size)
+/********************************************************************
+********************************************************************/
+
+/* 1x : SINGLE OBJECT FORM - NO DEBUG INFORMATION */
+
+/* (11) = (a) ; ASW */
+void * EF_CDECL operator new( EF_SIZE_T size )
+throw(std::bad_alloc)
 {
 #ifndef EF_NO_LEAKDETECTION
-  if (_ef_ovr_fl)
-    return _eff_malloc(size, _ef_ovr_file, _ef_ovr_line);
-  else
-    return _eff_malloc(size, unknown_file, 0);
+  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, unknown_cxx_file, 0);
 #else
-  return malloc(size);
+  void *ptr = malloc(size);
+#endif
+  if (!ptr) throw std::bad_alloc();
+  return ptr;
+}
+
+
+/* (12) = (b) ; ASN */
+void * EF_CDECL operator new( EF_SIZE_T size, const std::nothrow_t & )
+throw()
+{
+#ifndef EF_NO_LEAKDETECTION
+  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, unknown_cxx_file, 0);
+#else
+  void *ptr = malloc(size);
+#endif
+  return ptr;
+}
+
+
+/* (13) = (c) ; FSW */
+void   EF_CDECL operator delete( void *ptr )
+throw()
+{
+#ifndef EF_NO_LEAKDETECTION
+  _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
+#else
+  free(ptr);
 #endif
 }
 
 
-/*
- * free memory of an array
- */
-void   operator delete[] (void* address)
-{
-  free(address);
-}
-
-
-/*
- * allocate memory for a single element
- */
-void * operator new(size_t size)
+/* (14) = (d) ; FSN */
+void   EF_CDECL operator delete( void * ptr, const std::nothrow_t & )
+throw()
 {
 #ifndef EF_NO_LEAKDETECTION
-  if (_ef_ovr_fl)
-    return _eff_malloc(size, _ef_ovr_file, _ef_ovr_line);
-  else
-    return _eff_malloc(size, unknown_file, 0);
+  _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
 #else
-  return malloc(size);
+  free(ptr);
 #endif
 }
 
 
-/*
- * free memory of a single element
- */
-void   operator delete(void* address)
+
+/********************************************************************
+********************************************************************/
+
+/* 2x : ARRAY OBJECT FORM - NO DEBUG INFORMATION */
+
+
+/* (21) = (a) ; AAW */
+void * EF_CDECL operator new[]( EF_SIZE_T size )
+throw(std::bad_alloc)
 {
-  free(address);
+#ifndef EF_NO_LEAKDETECTION
+  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, unknown_cxx_file, 0);
+#else
+  void *ptr = malloc(size);
+#endif
+  if (!ptr) throw std::bad_alloc();
+  return ptr;
 }
 
 
-#endif /* EF_NO_CPP */
-#endif /* NDEBUG */
+/* (22) = (b) ; AAN */
+void * EF_CDECL operator new[]( EF_SIZE_T size, const std::nothrow_t & )
+throw()
+{
+#ifndef EF_NO_LEAKDETECTION
+  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, unknown_cxx_file, 0);
+#else
+  void *ptr = malloc(size);
+#endif
+  return ptr;
+}
+
+
+/* (23) = (c) ; FAW */
+void   EF_CDECL operator delete[]( void * ptr )
+throw()
+{
+#ifndef EF_NO_LEAKDETECTION
+  _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
+#else
+  free(ptr);
+#endif
+}
+
+
+/* (24) = (d) ; FAN */
+void   EF_CDECL operator delete[]( void * ptr, const std::nothrow_t & )
+throw()
+{
+#ifndef EF_NO_LEAKDETECTION
+  _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
+#else
+  free(ptr);
+#endif
+}
+
+
+
+/********************************************************************
+********************************************************************/
+
+#ifndef EF_NO_LEAKDETECTION
+
+/* 3x : SINGLE OBJECT FORM - WITH DEBUG INFORMATION */
+
+
+/* (31) = (a) ; ASW */
+void * EF_CDECL operator new( EF_SIZE_T size, const char *filename, int lineno )
+throw( std::bad_alloc )
+{
+  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, filename, lineno);
+  if (!ptr) throw std::bad_alloc();
+  return ptr;
+}
+
+/* (32) = (b) ; ASN */
+void * EF_CDECL operator new( EF_SIZE_T size, const std::nothrow_t &, const char *filename, int lineno )
+throw()
+{
+  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ELEM, filename, lineno);
+  return ptr;
+}
+
+
+/* (33) = (c) ; FSW */
+void   EF_CDECL operator delete( void *ptr, const char *filename, int lineno )
+throw()
+{
+  _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
+}
+
+
+/* (34) = (d) ; FSN */
+void   EF_CDECL operator delete( void *ptr, const std::nothrow_t &, const char *filename, int lineno )
+throw()
+{
+  _eff_free(ptr, EFST_ALLOC_NEW_ELEM);
+}
+
+
+/********************************************************************
+********************************************************************/
+
+/* 4x : ARRAY OBJECT FORM - WITH DEBUG INFORMATION */
+
+
+/* (41) = (a) ; AAW */
+void * EF_CDECL operator new[]( EF_SIZE_T size, const char *filename, int lineno )
+throw( std::bad_alloc )
+{
+  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, filename, lineno);
+  if (!ptr) throw std::bad_alloc();
+  return ptr;
+}
+
+
+/* (42) = (b) ; AAN */
+void * EF_CDECL operator new[]( EF_SIZE_T size, const std::nothrow_t &, const char *filename, int lineno )
+throw()
+{
+  void *ptr = _eff_malloc(size, EFST_ALLOC_NEW_ARRAY, filename, lineno);
+  return ptr;
+}
+
+
+/* (43) = (c) ; FAW */
+void   EF_CDECL operator delete[]( void *ptr, const char *filename, int lineno )
+throw()
+{
+  _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
+}
+
+
+/* (44) = (d) ; FAN */
+void   EF_CDECL operator delete[]( void *ptr, const std::nothrow_t &, const char *filename, int lineno )
+throw()
+{
+  _eff_free(ptr, EFST_ALLOC_NEW_ARRAY);
+}
+
+#endif /* end ifdef EF_NO_LEAKDETECTION */
+
+#endif /* EF_NO_CPP_SUPPORT */

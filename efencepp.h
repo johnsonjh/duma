@@ -1,6 +1,7 @@
+
 /*
  * Electric Fence - Red-Zone memory allocator.
- * Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
  * License: GNU LGPL (GNU Lesser General Public License, see COPYING-GPL)
  *
  * This library is free software; you can redistribute it and/or
@@ -19,80 +20,94 @@
  *
  * FILE CONTENTS:
  * header file for inclusion from YOUR C++ application code
+ * various new/delete/new[]/delete[] declarations
+ * you must include <new>  before including this file.
  */
 
 #ifndef _EFENCEPP_H_
 #define _EFENCEPP_H_
 
+#ifndef	__cplusplus
+/* avoid usage of C++ operator replacements in C code */
+#error compile with a C++ compiler, or define EF_NO_CPP_SUPPORT to remove this error
+#endif
+
 #include "efence.h"
 
-#ifndef EF_NO_CPP
-/* avoid usage of C++ operator replacements in C code */
+#ifdef EF_NO_CPP_SUPPORT
 
-#ifndef	__cplusplus
-#error compile with a C++ compiler, or define EF_NO_CPP to remove this error
+#define new_NOTHROW new(std::nothrow)
+
+#else /* ifdef EF_NO_CPP_SUPPORT */
+
+#if WIN32
+#define EF_CDECL  __cdecl
+#else
+#define EF_CDECL
 #endif
 
-
-/* remove any previous definitions */
-#ifdef NEW_ELEM
-#undef NEW_ELEM
+#ifdef _MSC_VER
+#define EF_SIZE_T    size_t
+#else
+#define EF_SIZE_T    std::size_t
 #endif
 
-#ifdef NEW_ARRAY
-#undef NEW_ARRAY
-#endif
+/* (1) - (4) each throw a std::bad_alloc exception */
 
-#ifdef DEL_ELEM
-#undef DEL_ELEM
-#endif
+/*
+ * Classification
+ * A allocation          <-> F free
+ * S single object form  <-> A array form
+ * W without nothrow     <-> N with std::nothrow_t parameter
+*/
 
-#ifdef DEL_ARRAY
-#undef DEL_ARRAY
-#endif
+/* 1x : SINGLE OBJECT FORM - NO DEBUG INFORMATION */
+/* (11) = (a) ; ASW */
+/* (12) = (b) ; ASN */
+/* (13) = (c) ; FSW */
+/* (14) = (d) ; FSN */
+void * EF_CDECL operator new( EF_SIZE_T )                             throw(std::bad_alloc);
+void * EF_CDECL operator new( EF_SIZE_T , const std::nothrow_t & )    throw();
+void   EF_CDECL operator delete( void * )                             throw();
+void   EF_CDECL operator delete( void * , const std::nothrow_t & )    throw();
 
-
-#ifdef NDEBUG
-/* -> RELEASE */
-
-#define NEW_ELEM(TYPE)          new TYPE
-#define NEW_ARRAY(TYPE,COUNT)   new TYPE[COUNT]
-
-#define DEL_ELEM(PTR)           delete PTR
-#define DEL_ARRAY(PTR)          delete []PTR
-
-#else /* NDEBUG */
-/* -> DEBUG */
+/* 2x : ARRAY OBJECT FORM - NO DEBUG INFORMATION */
+/* (21) = (a) ; AAW */
+/* (22) = (b) ; AAN */
+/* (23) = (c) ; FAW */
+/* (24) = (d) ; FAN */
+void * EF_CDECL operator new[]( EF_SIZE_T )                           throw(std::bad_alloc);
+void * EF_CDECL operator new[]( EF_SIZE_T , const std::nothrow_t & )  throw();
+void   EF_CDECL operator delete[]( void * )                           throw();
+void   EF_CDECL operator delete[]( void *, const std::nothrow_t & )   throw();
 
 #ifndef EF_NO_LEAKDETECTION
 
-#define NEW_ELEM(TYPE)    ( \
-                            _ef_ovr_file = __FILE__, \
-                            _ef_ovr_line = __LINE__, \
-                            _ef_ovr_fl = 1, \
-                            new TYPE \
-                          )
+/* 3x : SINGLE OBJECT FORM - WITH DEBUG INFORMATION */
+/* (31) = (a) ; ASW */
+/* (32) = (b) ; ASN */
+/* (33) = (c) ; FSW */
+/* (34) = (d) ; FSN */
+void * EF_CDECL operator new( EF_SIZE_T, const char *, int )                         throw( std::bad_alloc );
+void * EF_CDECL operator new( EF_SIZE_T, const std::nothrow_t &, const char *, int ) throw();
+void   EF_CDECL operator delete( void *, const char *, int )                         throw();
+void   EF_CDECL operator delete( void *, const std::nothrow_t &, const char *, int ) throw();
 
-#define NEW_ARRAY(TYPE, COUNT)    ( \
-                            _ef_ovr_file = __FILE__, \
-                            _ef_ovr_line = __LINE__, \
-                            _ef_ovr_fl = 1, \
-                            new TYPE[COUNT] \
-                          )
+/* 4x : ARRAY OBJECT FORM - WITH DEBUG INFORMATION */
+/* (41) = (a) ; AAW */
+/* (42) = (b) ; AAN */
+/* (43) = (c) ; FAW */
+/* (44) = (d) ; FAN */
+void * EF_CDECL operator new[]( EF_SIZE_T, const char *, int )                         throw( std::bad_alloc );
+void * EF_CDECL operator new[]( EF_SIZE_T, const std::nothrow_t &, const char *, int ) throw();
+void   EF_CDECL operator delete[]( void *, const char *, int )                         throw();
+void   EF_CDECL operator delete[]( void *, const std::nothrow_t &, const char *, int ) throw();
 
-#else
+#define new_NOTHROW new(std::nothrow, __FILE__, __LINE__)
+#define new         new(__FILE__, __LINE__)
 
-#define NEW_ELEM(TYPE)    new TYPE
-#define NEW_ARRAY(TYPE, COUNT)  new TYPE[COUNT]
+#endif /* end ifdef EF_NO_LEAKDETECTION */
 
-#endif
-
-#define DEL_ELEM(PTR)           delete PTR
-#define DEL_ARRAY(PTR)          delete []PTR
-
-
-#endif /* NDEBUG */
-
-#endif /*	EF_NO_CPP */
+#endif /*	end ifdef EF_NO_CPP_SUPPORT */
 
 #endif /* _EFENCEPP_H_ */

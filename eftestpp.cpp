@@ -1,16 +1,7 @@
 
+#include <new>
 #include "efencepp.h"
 
-/*
-#define EF_MAX_DEPTH 10
-const char * EF_OVR_FILE[EF_MAX_DEPTH];
-int EF_OVR_LINE[EF_MAX_DEPTH];
-int EF_OVR_NUM = -1;
-
-#define EF_NEW(TYPE)  ( EF_OVR_FILE[++EF_OVR_NUM] = __FILE__, EF_OVR_LINE[EF_OVR_NUM] = __LINE__, \
-                      new TYPE )
-
-*/
 
 class test
 {
@@ -39,17 +30,17 @@ class testtest
 public:
   testtest()
   {
-    y = NEW_ELEM( test );   //new test();
+    y = new test;     //NEW_ELEM( test );   //new test();
   }
 
   testtest(int m)
   {
-    y = NEW_ELEM( test(m) );  //new test(m);
+    y = new test(m);  //NEW_ELEM( test(m) );  //new test(m);
   }
 
   ~testtest()
   {
-    //delete y;
+    delete y;
   }
 
   test *y;
@@ -58,16 +49,39 @@ public:
 
 int main( int argc, char ** argv )
 {
-  test * x = NEW_ELEM( test(10) );
+#if 1
+  int i;
+  CA_DEFINE(int,acTest,20);
 
-  //test *ax = NEW_ELEM( test[2] );
-  test *ax = NEW_ARRAY( test, 2 );
+  for (i=0; i<100; ++i)
+    CA_REF(acTest,i) = i;
 
-  testtest *y = NEW_ELEM( testtest );
+#elif 0
+  int * x, *y;
+  test *z;
 
-  DEL_ELEM(y);
+  x = (int*)malloc( sizeof(int) );
+  y = new int;
+  z = new test[2];
 
-  DEL_ARRAY( ax);
-  DEL_ELEM(x);
+  free( x );
+  delete y;
+  delete []z;
+
+#elif 1
+  test * x = new test(10);
+
+  test *ax = new test[2];
+
+  testtest *y = new testtest;
+
+  delete y;
+
+  delete []ax;
+
+  delete x;
+
+#endif
+
   return 0;
 }
