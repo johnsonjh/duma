@@ -2,7 +2,7 @@
 /*
  * Electric Fence - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
- * Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -87,7 +87,7 @@
 static const char  version[] = "\n"
 "Electric Fence 2.4.11\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
-"Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
+"Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n";
 
 
 static const char unknown_file[] =
@@ -821,7 +821,8 @@ void   free(void * address)
     sumProtectedMem += internalSizekB;
 
     prevSlot = slotForInternalAddrPrevTo( slot->internalAddress );
-    if ( prevSlot && prevSlot->mode == slot->mode ) {
+    if ( prevSlot && prevSlot->mode == slot->mode )
+    {
       /* Coalesce previous slot with this one. */
       prevSlot->internalSize += slot->internalSize;
       slot->internalAddress   = slot->userAddress   = 0;
@@ -834,7 +835,8 @@ void   free(void * address)
     {
       nextSlot = slotForInternalAddrNextTo(
                       ((char *)slot->internalAddress) +slot->internalSize  );
-      if ( nextSlot && nextSlot->mode == slot->mode ) {
+      if ( nextSlot && nextSlot->mode == slot->mode )
+      {
         /* Coalesce next slot with this one. */
         slot->internalSize        += nextSlot->internalSize;
         nextSlot->internalAddress  = nextSlot->userAddress  = 0;

@@ -1,7 +1,7 @@
 
 /*
  * Electric Fence - Red-Zone memory allocator.
- * Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU LGPL (GNU Lesser General Public License, see COPYING-GPL)
  *
  * This library is free software; you can redistribute it and/or

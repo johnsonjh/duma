@@ -2,7 +2,7 @@
 /*
  * Electric Fence - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
- * Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,18 +29,28 @@
 
 #include "efence.h"
 
+
 /* for enabling inclusion of efence.h after inclusion of efencint.h */
+
 /* remove previous definitions */
+
 #undef malloc
+
 #undef calloc
+
 #undef realloc
+
 #undef free
+
 #undef EF_newFrame
+
 #undef EF_delFrame
+
 
 
 #ifdef __cplusplus
   extern "C" {
+
 #endif
 
 
