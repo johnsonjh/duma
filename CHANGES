@@ -21,6 +21,18 @@ new macros: MALLOC_PROTECT_BELOW(), MALLOC_PROTECT_ABOVE()
 
 CHANGES:
 
+2.4.12 added EF_NO_GLOBAL_MALLOC_FREE preprocessor flag to workaround buggy environments:
+       no malloc(),free(),realloc(),calloc() are put into the global namespace
+       of the efence library, thus only files which include efence.h call the
+       efence malloc(),.. replacement functions.
+       this flag is also helpful where linking order cannot get controlled
+       f.e. when memory is allocated from a library not using efence but free
+       is called from efence using efence. this is a problem when using .dll
+       libraries which are linked against msvcrt.dll and its malloc/free under
+       MS Windows. the same problem applies when libstdc++ / libgcc is not
+       linked in correct order.
+       (2005-01-04, HA)
+
 2.4.11 bugfixed signal handling in confidence test (eftest),
          which lead to false errors with my newly installed MandrakeLinux 10.1 distribution
        (2005-01-03, HA)
