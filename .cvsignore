@@ -1,0 +1,7 @@
+*.o
+*.ncb
+*.opt
+*.plg
+createconf
+eftest
+tstheap
