@@ -92,7 +92,7 @@ stringErrorReport(void)
                 , 0
                 , NULL
                );
-  return lpMsgBuf; /* "Unknown error.\n"; */
+  return (char*)lpMsgBuf; /* "Unknown error.\n"; */
 #elif ( defined(sgi) )
 	return strerror(oserror());
 #elif ( defined(_AIX) )

@@ -9,8 +9,8 @@
 #include <setjmp.h>
 #include <signal.h>
 
-#include "efence.h"
 #include "efenceint.h"
+#include "efence.h"
 
 /*
  * Electric Fence confidence tests.
@@ -159,7 +159,7 @@ static struct diagnostic diagnostics[] = {
 	},
 	{
 		freeMemory, 0,
-		"Free memory: This test frees the allocated memory."
+		"Free memory 1: This test frees the allocated memory."
 	},
 	{
 		protectBelow, 0,
@@ -184,6 +184,10 @@ static struct diagnostic diagnostics[] = {
 		readMinus1, 1,
 		"Read underrun: This test reads before the beginning of the"
 		" buffer."
+	},
+	{
+		freeMemory, 0,
+		"Free memory 2: This test frees the allocated memory."
 	},
 	{
 		0, 0, 0

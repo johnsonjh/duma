@@ -67,7 +67,7 @@
 
 
 static const char	version[] = "\n"
-"Electric Fence 2.4.5\n"
+"Electric Fence 2.4.6\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
 
@@ -107,7 +107,7 @@ struct _Slot {
 #endif
 	void *		userAddress;
 	void *		internalAddress;
-	size_t		userSize;
+	size_t		userSize;
 	size_t		internalSize;
 	Mode		mode;
 };

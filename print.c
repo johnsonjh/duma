@@ -117,7 +117,7 @@ sprintNumber(char* obuffer, ef_number number, ef_number base)
  * int sprintf(char* buffer, const char *pattern, va_list args)
  */
 static int
-sprintf(char* buffer, const char *pattern, va_list args)
+EF_sprintf(char* buffer, const char *pattern, va_list args)
 {
 	char		c;
 	static const char	bad_pattern[] = "\nElectric Fence: Bad pattern specifier %%%c in EF_Print().\n";
@@ -207,7 +207,7 @@ EF_Print(const char * pattern, ...)
 	va_list	args;
 	va_start(args, pattern);
 
-  len = sprintf(buffer, pattern, args);
+  len = EF_sprintf(buffer, pattern, args);
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
 #endif
@@ -231,7 +231,7 @@ EF_Abort(const char * pattern, ...)
 	va_start(args, pattern);
 
   strcpy(buffer, "\nElectricFence Aborting: ");
-  len = sprintf(&buffer[strlen(buffer)], pattern, args);
+  len = EF_sprintf(&buffer[strlen(buffer)], pattern, args);
   strcat(buffer, "\n");
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
@@ -257,7 +257,7 @@ EF_Exit(const char * pattern, ...)
 	va_start(args, pattern);
 
   strcpy(buffer, "\nElectricFence Exiting: ");
-  len = sprintf(&buffer[strlen(buffer)], pattern, args);
+  len = EF_sprintf(&buffer[strlen(buffer)], pattern, args);
   strcat(buffer, "\n");
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);

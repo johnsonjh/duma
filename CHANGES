@@ -3,6 +3,13 @@ TODO:
 test Makefile since 2.4.5
 modification of manual page efence.3.
 
+2.4.6 remove memory leak in eftest
+      allowed re-inclusion of efence.h after inclusion of efenceint.h
+      added some project files for Dev-C++ 4.9.6.0 (see http://www.bloodshed.net/, uses gcc)
+        and saved its generated makefiles
+      left tstheap's memory leaks
+      (2002-11-17, HA)
+
 2.4.5 modifications in print routines (EF_Print, EF_Abort, ..)
       added direct output to visual c++ debug output window.
 	  some additions to Makefile

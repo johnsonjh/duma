@@ -23,8 +23,15 @@
  * header file for inclusion from YOUR application code
  */
 
+/*
 #ifndef _EFENCE_H_
 #define _EFENCE_H_
+*/
+
+/* for enabling inclusion of efence.h after inclusion of efencint.h */
+#undef EF_newFrame
+#undef EF_delFrame
+
 
 #ifdef NDEBUG
 /* -> RELEASE */
@@ -94,4 +101,5 @@ extern C_LINKAGE void  EF_delFrame(void);
 #endif /* EF_NO_LEAKDETECTION */
 
 #endif /* NDEBUG */
-#endif /* _EFENCE_H_ */
+/*
+#endif */ /* _EFENCE_H_ */
