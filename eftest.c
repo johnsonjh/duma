@@ -69,26 +69,38 @@ segmentationFaultHandler(
 #endif
 )
 {
+#ifdef WIN32
+  longjmp(env, 1);
+#else
   siglongjmp(env, 1);
+#endif
 }
 
 
 static int
 gotSegmentationFault(int (*test)(void))
 {
+#ifndef WIN32
   sigset_t newmask, oldmask;
-  void (*oldhandler)();
   int savemask;
+#endif
+  void (*oldhandler)(int);
   int status;
 
   oldhandler = SIG_ERR;
 
+#ifdef WIN32
+  if ( 0 == setjmp(env) )
+#else
   if ( 0 == sigsetjmp(env, savemask) )
+#endif
   {
+#ifndef WIN32
     /* unblock signal and save previous signal mask */
     sigemptyset(&newmask);
     sigaddset(&newmask, PAGE_PROTECTION_VIOLATED_SIGNAL);
     sigprocmask(SIG_UNBLOCK, &newmask, &oldmask);
+#endif
     oldhandler = signal(PAGE_PROTECTION_VIOLATED_SIGNAL, segmentationFaultHandler);
 
     status = (*test)();
@@ -99,9 +111,10 @@ gotSegmentationFault(int (*test)(void))
   /* install previous signal handler */
   if (SIG_ERR != oldhandler)
     signal(PAGE_PROTECTION_VIOLATED_SIGNAL, oldhandler);
+#ifndef WIN32
   /* restore signal mask */
   sigprocmask(SIG_SETMASK, &oldmask, NULL);
-
+#endif
   return status;
 }
 
