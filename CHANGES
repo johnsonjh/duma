@@ -1,6 +1,5 @@
 
 TODO:
-test Makefile since 2.4.5
 modification of manual page efence.3
 create manual describing compilation and installation
 implement a list structure over pages rather than an array for all slots.
@@ -25,7 +24,15 @@ new macros: MALLOC_PROTECT_BELOW(), MALLOC_PROTECT_ABOVE()
 
 CHANGES:
 
-2.4.13 reworked/revised ALL internal functions !!!
+2.4.13 added internal flag saving the source (allocation/deallocation)
+         for filename and lineno.
+       added EF_OLD_NEW_MACRO preprocessor flag to keep compatibility to old
+         NEW_ELEM() / NEW_ARRAY() macros. when not defined a macro for "new"
+         is defined which has standard conform syntax. unfortunately you have
+         to use DEL_ELEM/DEL_ARRAY further to utilize filename and linenumber
+         of deallocation calls.
+       (2005-02-10, HA)
+       reworked/revised ALL internal functions !!!
        freeing already freed memory is now detected (much better)
          this disallows coalescing memory regions and also stores __FILE__
          and __LINE__ of free() to be able to print position of first free.
