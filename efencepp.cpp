@@ -36,13 +36,29 @@
 #include "efence.h"
 
 
+/* memory stack for recursive new from constructors ! */
+const char * _ef_ovr_file;
+int _ef_ovr_line;
+int _ef_ovr_fl = 0;
+
+
+static const char unknown_file[] =
+ "UNKNOWN (use #include \"efencepp.h\")";
+
 
 /*
  * allocate memory for an array
  */
 void * operator new[] (size_t size)
 {
+#ifndef EF_NO_LEAKDETECTION
+  if (_ef_ovr_fl)
+    return _eff_malloc(size, _ef_ovr_file, _ef_ovr_line);
+  else
+    return _eff_malloc(size, unknown_file, 0);
+#else
   return malloc(size);
+#endif
 }
 
 
@@ -60,7 +76,14 @@ void   operator delete[] (void* address)
  */
 void * operator new(size_t size)
 {
+#ifndef EF_NO_LEAKDETECTION
+  if (_ef_ovr_fl)
+    return _eff_malloc(size, _ef_ovr_file, _ef_ovr_line);
+  else
+    return _eff_malloc(size, unknown_file, 0);
+#else
   return malloc(size);
+#endif
 }
 
 

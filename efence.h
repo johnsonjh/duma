@@ -66,9 +66,19 @@
 #undef free
 #endif
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#ifndef EF_NO_CPP
+
+extern const char * _ef_ovr_file;
+extern int _ef_ovr_line;
+extern int _ef_ovr_fl;
+
+#endif
+
 
 #if 0
 /* default declarations */

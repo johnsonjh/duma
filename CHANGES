@@ -5,6 +5,11 @@ modification of manual page efence.3.
 
 CHANGES:
 
+2.4.8 one big fix and many improvements for C++ code. old macros NEW_ELEM, NEW_ARRAY were not
+      usable when allocating classes, which have constructor/destructor. the usage of these
+      macros has not changed (see 2.4.3).
+      (2002-12-04, HA)
+
 2.4.7 get to work with Borland Free Commandline Tools (Borland C++ Builder 5.5)
       thrown away unnecessary declarations of malloc(), free(), .. Borland didn't like them,
         and neither MS-Visual C++ 6.0 nor gcc (Dev-C++) needs them.

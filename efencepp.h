@@ -24,7 +24,7 @@
 #ifndef _EFENCEPP_H_
 #define _EFENCEPP_H_
 
-#include <efence.h>
+#include "efence.h"
 
 #ifndef EF_NO_CPP
 /* avoid usage of C++ operator replacements in C code */
@@ -64,11 +64,32 @@
 #else /* NDEBUG */
 /* -> DEBUG */
 
-#define NEW_ELEM(TYPE)          (TYPE *)malloc(sizeof(TYPE))
-#define NEW_ARRAY(TYPE,COUNT)   (TYPE *)malloc((COUNT) * sizeof(TYPE))
+#ifndef EF_NO_LEAKDETECTION
 
-#define DEL_ELEM(PTR)           free(PTR)
-#define DEL_ARRAY(PTR)          free(PTR)
+#define NEW_ELEM(TYPE)    ( \
+                            _ef_ovr_file = __FILE__, \
+                            _ef_ovr_line = __LINE__, \
+                            _ef_ovr_fl = 1, \
+                            new TYPE \
+                          )
+
+#define NEW_ARRAY(TYPE, COUNT)    ( \
+                            _ef_ovr_file = __FILE__, \
+                            _ef_ovr_line = __LINE__, \
+                            _ef_ovr_fl = 1, \
+                            new TYPE[COUNT] \
+                          )
+
+#else
+
+#define NEW_ELEM(TYPE)    new TYPE
+#define NEW_ARRAY(TYPE, COUNT)  new TYPE[COUNT]
+
+#endif
+
+#define DEL_ELEM(PTR)           delete PTR
+#define DEL_ARRAY(PTR)          delete []PTR
+
 
 #endif /* NDEBUG */
 

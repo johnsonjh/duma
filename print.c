@@ -151,9 +151,16 @@ EF_sprintf(char* buffer, const char *pattern, va_list args)
 					size_t		length;
 
 					string = va_arg(args, char *);
-					length = strlen(string);
-
-          strcpy(&buffer[len], string);
+          if (string)
+          {
+            length = strlen(string);
+            strcpy(&buffer[len], string);
+          }
+          else
+          {
+            length = 4; /* = strlen("NULL") */
+            strcpy(&buffer[len], "NULL");
+          }
           len += length;
 				}
 				break;

@@ -68,7 +68,7 @@
 
 
 static const char	version[] = "\n"
-"Electric Fence 2.4.7\n"
+"Electric Fence 2.4.8\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
 
@@ -889,6 +889,15 @@ void * realloc(void * oldBuffer, size_t newSize)
 {
 	void *	newBuffer;
 
+#if !defined(EF_NO_CPP) && !defined(EF_NO_LEAKDETECTION)
+  if (_ef_ovr_fl)
+  {
+    filename = _ef_ovr_file;
+    lineno = _ef_ovr_line;
+    _ef_ovr_fl = 0;
+  }
+#endif
+
 	if ( allocationList == 0 )
 		initialize();	/* This sets EF_ALIGNMENT */
 
@@ -939,6 +948,16 @@ void * _eff_malloc(size_t size, const char * filename, int lineno)
 void * malloc(size_t size)
 #endif
 {
+
+#if !defined(EF_NO_CPP) && !defined(EF_NO_LEAKDETECTION)
+  if (_ef_ovr_fl)
+  {
+    filename = _ef_ovr_file;
+    lineno = _ef_ovr_line;
+    _ef_ovr_fl = 0;
+  }
+#endif
+
 	if ( allocationList == 0 )
 		initialize();	/* This sets EF_ALIGNMENT */
 
@@ -960,6 +979,15 @@ void * calloc(size_t nelem, size_t elsize)
 {
 	size_t	size = nelem * elsize;
 	void *	allocation; /* = malloc(size); */
+
+#if !defined(EF_NO_CPP) && !defined(EF_NO_LEAKDETECTION)
+  if (_ef_ovr_fl)
+  {
+    filename = _ef_ovr_file;
+    lineno = _ef_ovr_line;
+    _ef_ovr_fl = 0;
+  }
+#endif
 
 	if ( allocationList == 0 )
 		initialize();	/* This sets EF_ALIGNMENT */
