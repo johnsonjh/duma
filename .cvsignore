@@ -1,7 +1,9 @@
 *.o
+*.a
 *.ncb
 *.opt
 *.plg
+*.exe
 createconf
 eftest
 tstheap
