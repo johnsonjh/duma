@@ -2,7 +2,7 @@
 /*
  * Electric Fence - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
- * Copyright (C) 2002-2004 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH
+ * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -45,10 +45,11 @@
 #define  PAGE_PROTECTION_VIOLATED_SIGNAL  SIGSEGV
 #endif
 
-struct diagnostic {
-  int    (*test)(void);
-  int    expectedStatus;
-  const char *  explanation;
+struct diagnostic
+{
+  int           (*test)(void);      /* pointer to some test function returning int */
+  int           expectedStatus;     /* expected return value/status */
+  const char  * explanation;        /* explanation of that test */
 };
 
 extern int  EF_PROTECT_BELOW;
@@ -62,31 +63,48 @@ static jmp_buf  env;
  */
 static void
 segmentationFaultHandler(
-int signalNumber
+  int signalNumber
 #if ( defined(_AIX) )
-, ...
+  , ...
 #endif
 )
- {
-  signal(PAGE_PROTECTION_VIOLATED_SIGNAL, SIG_DFL);
-  longjmp(env, 1);
+{
+  siglongjmp(env, 1);
 }
+
 
 static int
 gotSegmentationFault(int (*test)(void))
 {
-  if ( setjmp(env) == 0 ) {
-    int      status;
+  sigset_t newmask, oldmask;
+  void (*oldhandler)();
+  int savemask;
+  int status;
 
-    signal(PAGE_PROTECTION_VIOLATED_SIGNAL
-    ,segmentationFaultHandler);
+  oldhandler = SIG_ERR;
+
+  if ( 0 == sigsetjmp(env, savemask) )
+  {
+    /* unblock signal and save previous signal mask */
+    sigemptyset(&newmask);
+    sigaddset(&newmask, PAGE_PROTECTION_VIOLATED_SIGNAL);
+    sigprocmask(SIG_UNBLOCK, &newmask, &oldmask);
+    oldhandler = signal(PAGE_PROTECTION_VIOLATED_SIGNAL, segmentationFaultHandler);
+
     status = (*test)();
-    signal(PAGE_PROTECTION_VIOLATED_SIGNAL, SIG_DFL);
-    return status;
   }
   else
-    return 1;
+    status = 1;
+
+  /* install previous signal handler */
+  if (SIG_ERR != oldhandler)
+    signal(PAGE_PROTECTION_VIOLATED_SIGNAL, oldhandler);
+  /* restore signal mask */
+  sigprocmask(SIG_SETMASK, &oldmask, NULL);
+
+  return status;
 }
+
 
 static char *  allocation;
 /* c is global so that assignments to it won't be optimized out. */
@@ -118,6 +136,7 @@ static int
 freeMemory(void)
 {
   free(allocation);
+  allocation = 0;
   return 0;
 }
 
@@ -129,10 +148,16 @@ protectBelow(void)
 }
 
 static int
+protectAbove(void)
+{
+  EF_PROTECT_BELOW = 0;
+  return 0;
+}
+
+static int
 read0(void)
 {
   c = *allocation;
-
   return 0;
 }
 
@@ -140,7 +165,6 @@ static int
 write0(void)
 {
   *allocation = 1;
-
   return 0;
 }
 
@@ -148,7 +172,6 @@ static int
 read1(void)
 {
   c = allocation[1];
-
   return 0;
 }
 
@@ -159,9 +182,16 @@ readMinus1(void)
   return 0;
 }
 
-static struct diagnostic diagnostics[] = {
+
+static struct diagnostic diagnostics[] =
+{
   {
     testSizes, 0,      "Please add -DLONG_LONG to the compiler flags and recompile."
+  },
+#if 1
+  {
+    protectAbove, 0,   "Protect above: This sets Electric Fence to protect\n"
+                       "the upper boundary of a malloc buffer, rather than the lower boundary."
   },
   {
     allocateMemory, 0, "Allocation 1: This test allocates a single byte of memory."
@@ -173,15 +203,19 @@ static struct diagnostic diagnostics[] = {
     write0, 0,         "Write valid memory 1: This test writes the allocated memory."
   },
   {
+    readMinus1, 0,     "Read underrun: This test reads before the beginning of the buffer."
+  },
+  {
     read1, 1,          "Read overrun: This test reads beyond the end of the buffer."
   },
   {
     freeMemory, 0,     "Free memory 1: This test frees the allocated memory."
   },
+#endif
+#if 1
   {
     protectBelow, 0,   "Protect below: This sets Electric Fence to protect\n"
-                       "the lower boundary of a malloc buffer, rather than the\n"
-                       "upper boundary."
+                       "the lower boundary of a malloc buffer, rather than the upper boundary."
   },
   {
     allocateMemory, 0, "Allocation 2: This allocates memory with the lower boundary protected."
@@ -198,27 +232,41 @@ static struct diagnostic diagnostics[] = {
   {
     freeMemory, 0,     "Free memory 2: This test frees the allocated memory."
   },
+#endif
   {
     0, 0, 0
   }
 };
 
-static const char  failedTest[] = "Electric Fence confidence test failed.\n";
 
+static const char  failedTest[] = "Electric Fence confidence test failed.\n";
 static const char  newline = '\n';
+
 
 int
 main(int argc, char * * argv)
 {
   static const struct diagnostic *  diag = diagnostics;
+  int testno;
 
   EF_PROTECT_BELOW = 0;
   EF_ALIGNMENT = 0;
 
-  while ( diag->explanation != 0 ) {
-    int  status = gotSegmentationFault(diag->test);
+  allocation = 0;
 
-    if ( status != diag->expectedStatus ) {
+  for (testno=0; diag->explanation != 0; ++testno, ++diag)
+  {
+    int status;
+
+#if 0
+    write(0, diag->explanation, strlen(diag->explanation));
+    write(0, &newline, 1);
+#endif
+
+    status = gotSegmentationFault(diag->test);
+
+    if ( status != diag->expectedStatus )
+    {
       /*
        * Don't use stdio to print here, because stdio
        * uses malloc() and we've just proven that malloc()
@@ -230,7 +278,11 @@ main(int argc, char * * argv)
       write(2, &newline, 1);
       _exit(-1);
     }
-    diag++;
   }
+
+  /* avoid memory leak */
+  if (allocation)
+    freeMemory();
+
   return 0;
 }
