@@ -139,7 +139,7 @@ struct _EF_Slot
   size_t            internalSize;
   size_t            userSize;
 
-#if 1
+#if 0
   /* just for checking compiler warnings / errors */
   enum _EF_SlotState        state;
   enum _EF_Allocator        allocator;
