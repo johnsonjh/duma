@@ -34,6 +34,9 @@
 #include <io.h>
 typedef unsigned u_int;
 #endif
+#ifdef _MSC_VER
+#include <crtdbg.h>
+#endif
 #include <string.h>
 #include <signal.h>
 
@@ -52,65 +55,84 @@ typedef unsigned u_int;
  */
 #define	NUMBER_BUFFER_SIZE	(sizeof(ef_number) * NBBY)
 
+#define STRING_BUFFER_SIZE  1024
+
+
+/*
+ * internal abort function
+ * void do_abort(void)
+ */
 static void
-do_abort()
+do_abort(void)
 {
+#ifndef WIN32
 	/*
 	 * I use kill(getpid(), SIGILL) instead of abort() because some
 	 * mis-guided implementations of abort() flush stdio, which can
 	 * cause malloc() or free() to be called.
 	 */
-#ifndef WIN32
 	kill(getpid(), SIGILL);
 #else
+  /* Windows doesn't have a kill() */
   abort();
 #endif
 	/* Just in case something handles SIGILL and returns, exit here. */
 	_exit(-1);
 }
 
-static void
-printNumber(ef_number number, ef_number base)
+
+/*
+ * internal function to print a number into a buffer
+ * int sprintNumber(char* obuffer, ef_number number, ef_number base)
+ */
+static int
+sprintNumber(char* obuffer, ef_number number, ef_number base)
 {
-	char		buffer[NUMBER_BUFFER_SIZE];
+	char		buffer[NUMBER_BUFFER_SIZE+1];
 	char *		s = &buffer[NUMBER_BUFFER_SIZE];
 	int		size;
-	
-	do {
-		ef_number	digit;
+	ef_number	digit;
 
+	do
+  {
 		if ( --s == buffer )
-			EF_Abort("Internal error printing number.");
+			EF_Abort("\nElectric Fence: Internal error printing number.");
 
 		digit = number % base;
-
-		if ( digit < 10 )
-			*s = (char)('0' + digit);
-		else
-			*s = (char)('a' + digit - 10);
+    *s = (char)( (digit < 10) ? ('0' + digit) : ('a' + digit -10) );
 
 	} while ( (number /= base) > 0 );
 
 	size = &buffer[NUMBER_BUFFER_SIZE] - s;
-
-	if ( size > 0 )
-		write(2, s, size);
+  buffer[NUMBER_BUFFER_SIZE] = '\0';
+  strcpy(obuffer, s);
+  return size;
 }
 
-void
-EF_Printv(const char * pattern, va_list args)
-{
-	static const char	bad_pattern[] =
-	 "\nBad pattern specifier %%%c in EF_Print().\n";
-	const char *	s = pattern;
-	char		c;
 
-	while ( (c = *s++) != '\0' ) {
-		if ( c == '%' ) {
+
+
+/*
+ * internal function to print a formatted string into a buffer
+ * int sprintf(char* buffer, const char *pattern, va_list args)
+ */
+static int
+sprintf(char* buffer, const char *pattern, va_list args)
+{
+	char		c;
+	static const char	bad_pattern[] = "\nElectric Fence: Bad pattern specifier %%%c in EF_Print().\n";
+	const char *	s = pattern;
+  int len = 0;
+  ef_number n;
+
+	while ( (c = *s++) )
+  {
+		if ( c == '%' )
+    {
 			c = *s++;
 			switch ( c ) {
 			case '%':
-				(void) write(2, &c, 1);
+        buffer[len++] = c;
 				break;
 			case 'a':
 				/*
@@ -119,9 +141,8 @@ EF_Printv(const char * pattern, va_list args)
 				 * it is large enough to contain all of the
 				 * bits of a void pointer.
 				 */
-				printNumber(
-				 (ef_number)va_arg(args, void *)
-				,0x10);
+        n = (ef_number) va_arg(args, void *);
+        len += sprintNumber(&buffer[len], n, 0x10);
 				break;
 			case 's':
 				{
@@ -131,29 +152,29 @@ EF_Printv(const char * pattern, va_list args)
 					string = va_arg(args, char *);
 					length = strlen(string);
 
-					(void) write(2, string, length);
+          strcpy(&buffer[len], string);
+          len += length;
 				}
 				break;
 			case 'd':
 				{
 					int	n = va_arg(args, int);
-
-					if ( n < 0 ) {
-						char	c = '-';
-						write(2, &c, 1);
+					if ( n < 0 )
+          {
+            buffer[len++] = '-';
 						n = -n;
 					}
-					printNumber(n, 10);
+          len += sprintNumber(&buffer[len], n, 10);
 				}
 				break;
 			case 'x':
-				printNumber(va_arg(args, u_int), 0x10);
+        n = (ef_number) va_arg(args, u_int);
+        len += sprintNumber(&buffer[len], n, 0x10);
 				break;
 			case 'c':
 				{
 					char	c = va_arg(args, char);
-					
-					(void) write(2, &c, 1);
+          buffer[len++] = c;
 				}
 				break;
 			default:
@@ -164,79 +185,92 @@ EF_Printv(const char * pattern, va_list args)
 			}
 		}
 		else
-			(void) write(2, &c, 1);
+      buffer[len++] = c;
 	}
+
+  buffer[len] = '\0';
+  return len;
 }
 
+
+
+/*
+ * external print function
+ * on Visual C++ it additionally prints to Debug Output of the IDE
+ * void EF_Print(const char * pattern, ...)
+ */
 void
-EF_Abortv(const char * pattern, va_list args)
+EF_Print(const char * pattern, ...)
 {
-	EF_Print("\nElectricFence Aborting: ");
-	EF_Printv(pattern, args);
-	EF_Print("\n");
-	do_abort();
+  char buffer[STRING_BUFFER_SIZE];
+  int len;
+	va_list	args;
+	va_start(args, pattern);
+
+  len = sprintf(buffer, pattern, args);
+#ifdef _MSC_VER
+  _RPT0(_CRT_WARN, buffer);
+#endif
+  write(2, buffer, len);
+	va_end(args);
 }
 
+
+
+/*
+ * external abort function
+ * on Visual C++ it additionally prints to Debug Output of the IDE
+ * void EF_Abort(const char * pattern, ...)
+ */
 void
 EF_Abort(const char * pattern, ...)
 {
+  char buffer[STRING_BUFFER_SIZE];
+  int len;
 	va_list	args;
-
 	va_start(args, pattern);
-	EF_Abortv(pattern, args);
-	/* Not reached: va_end(args); */
+
+  strcpy(buffer, "\nElectricFence Aborting: ");
+  len = sprintf(&buffer[strlen(buffer)], pattern, args);
+  strcat(buffer, "\n");
+#ifdef _MSC_VER
+  _RPT0(_CRT_WARN, buffer);
+#endif
+  write(2, buffer, len);
+	va_end(args);
+	do_abort();
 }
 
+
+
+/*
+ * external exit function
+ * on Visual C++ it additionally prints to Debug Output of the IDE
+ * void EF_Exit(const char * pattern, ...)
+ */
 void
-EF_Exitv(const char * pattern, va_list args)
+EF_Exit(const char * pattern, ...)
 {
-	EF_Print("\nElectricFence Exiting: ");
-	EF_Printv(pattern, args);
-	EF_Print("\n");
+  char buffer[STRING_BUFFER_SIZE];
+  int len;
+	va_list	args;
+	va_start(args, pattern);
+
+  strcpy(buffer, "\nElectricFence Exiting: ");
+  len = sprintf(&buffer[strlen(buffer)], pattern, args);
+  strcat(buffer, "\n");
+#ifdef _MSC_VER
+  _RPT0(_CRT_WARN, buffer);
+#endif
+  write(2, buffer, len);
+	va_end(args);
 
 	/*
 	 * I use _exit() because the regular exit() flushes stdio,
 	 * which may cause malloc() or free() to be called.
 	 */
-#ifdef WIN32
-  abort();
-#endif
 	_exit(-1);
 }
 
-void
-EF_Exit(const char * pattern, ...)
-{
-	va_list	args;
-
-	va_start(args, pattern);
-
-	EF_Exitv(pattern, args);
-
-	/* Not reached: va_end(args); */
-}
-
-void
-EF_Print(const char * pattern, ...)
-{
-	va_list	args;
-
-	va_start(args, pattern);
-	EF_Printv(pattern, args);
-	va_end(args);
-}
-
-void
-EF_InternalError(const char * pattern, ...)
-{
-	va_list	args;
-
-	EF_Print("\nInternal error in allocator: ");
-	va_start(args, pattern);
-	EF_Printv(pattern, args);
-	EF_Print("\n");
-	va_end(args);
-	do_abort();
-}
 
 #endif /* NDEBUG */

@@ -82,7 +82,6 @@ extern C_LINKAGE size_t Page_Size(void);
 extern C_LINKAGE void   EF_Abort(const char * message, ...);
 extern C_LINKAGE void   EF_Exit(const char * message, ...);
 extern C_LINKAGE void   EF_Print(const char * message, ...);
-extern C_LINKAGE void   EF_InternalError(const char * pattern, ...);
 
 
 #endif /* NDEBUG */

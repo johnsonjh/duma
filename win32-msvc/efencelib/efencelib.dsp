@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -116,5 +116,29 @@ SOURCE=..\..\efenceint.h
 SOURCE=..\..\efencepp.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\..\CHANGES
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\COPYING-GPL"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\COPYING-LGPL"
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\efence.3
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Makefile
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\README
+# End Source File
 # End Target
 # End Project

@@ -1,8 +1,12 @@
 
 TODO:
-modification of Makefile since 2.2.2
+test Makefile since 2.4.5
 modification of manual page efence.3.
 
+2.4.5 modifications in print routines (EF_Print, EF_Abort, ..)
+      added direct output to visual c++ debug output window.
+	  some additions to Makefile
+      (2002-11-17, HA)
 
 2.4.4 several modifications
         seperation of c++ files: efencepp.h, efencepp.cpp

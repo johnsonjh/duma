@@ -110,9 +110,9 @@ static void
 mprotectFailed(void)
 {
 #if defined(WIN32)
-	EF_Exit("VirtualProtect() failed: %s", stringErrorReport());
+	EF_Exit("\nElectric Fence: VirtualProtect() failed: %s", stringErrorReport());
 #else
-	EF_Exit("mprotect() failed: %s", stringErrorReport());
+	EF_Exit("\nElectric Fence: mprotect() failed: %s", stringErrorReport());
 #endif
 }
 
@@ -138,7 +138,7 @@ Page_Create(size_t size)
 	startAddr = (char*)allocation + size;
 
   if ( (caddr_t)0 == allocation )
-		EF_Exit("VirtualAlloc() failed: %s", stringErrorReport());
+		EF_Exit("\nElectric Fence: VirtualAlloc() failed: %s", stringErrorReport());
 
 #elif defined(MAP_ANONYMOUS)
 
@@ -234,7 +234,7 @@ Page_AllowAccess(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("VirtualQuery() failed\n");
+      EF_Exit("\nElectric Fence: VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualProtect(
                           (LPVOID) address        /* address of region of committed pages */
@@ -273,7 +273,7 @@ Page_DenyAccess(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("VirtualQuery() failed\n");
+      EF_Exit("\nElectric Fence: VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualProtect(
                           (LPVOID) address        /* address of region of committed pages */
@@ -312,7 +312,7 @@ Page_Delete(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("VirtualQuery() failed\n");
+      EF_Exit("\nElectric Fence: VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualFree(
                        (LPVOID) address        /* address of region of committed pages */

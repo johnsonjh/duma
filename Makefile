@@ -1,4 +1,6 @@
 PIC= -fPIC
+# add "-DEF_NO_CPP" (without quotes) to for not directing new/delete to malloc/free
+# add "-DEF_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
 CFLAGS= -g -DUSE_SEMAPHORE $(PIC)
 LIBS= -lpthread
 
@@ -11,10 +13,12 @@ CC= cc
 AR= ar
 INSTALL= install
 
-PACKAGE_SOURCE= README efence.3 Makefile efence.h \
-	efence.c page.c print.c eftest.c tstheap.c CHANGES
+PACKAGE_SOURCE= README CHANGES efence.3 Makefile \
+	efence.h efenceint.h efencpp.h \
+	efence.c efencepp.cpp page.c print.c \
+	eftest.c tstheap.c
 
-OBJECTS= efence.o page.o print.o
+OBJECTS= efence.o efencepp.o page.o print.o
 
 all:	libefence.a libefence.so.0.0 tstheap eftest
 	@ echo

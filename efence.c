@@ -67,7 +67,7 @@
 
 
 static const char	version[] = "\n"
-"Electric Fence 2.4.4\n"
+"Electric Fence 2.4.5\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002 Hayati Ayguen <hayati.ayguen@epost.de>, Procitec GmbH\n";
 
@@ -522,7 +522,7 @@ void * memalign(
 	lock();
 
 	if ( userSize == 0 && !EF_ALLOW_MALLOC_0 )
-		EF_Abort("Allocating 0 bytes, probably a bug.");
+		EF_Abort("\nElectric Fence: Allocating 0 bytes, probably a bug.");
 
 	/*
 	 * If EF_PROTECT_BELOW is set, all addresses returned by malloc()
@@ -600,7 +600,7 @@ void * memalign(
 		slot++;
 	}
 	if ( !emptySlots[0] )
-		EF_InternalError("No empty slot 0.");
+		EF_Abort("\nElectric Fence: Internal error in allocator: No empty slot 0.\n");
 
 	if ( !fullSlot ) {
 		/*
@@ -612,7 +612,7 @@ void * memalign(
 		size_t	chunkSize = MEMORY_CREATION_SIZE;
 
 		if ( !emptySlots[1] )
-			EF_InternalError("No empty slot 1.");
+			EF_Abort("\nElectric Fence: Internal error in allocator: No empty slot 1.\n");
 
 		if ( chunkSize < internalSize )
 			chunkSize = internalSize;
@@ -801,7 +801,7 @@ void   free(void * address)
 		return;
 
 	if ( allocationList == 0 )
-		EF_Abort("free() called before first malloc().");
+		EF_Abort("\nElectric Fence: free() called before first malloc().");
 
 	lock();
 
@@ -811,15 +811,13 @@ void   free(void * address)
 	slot = slotForUserAddress(address);
 
 	if ( !slot )
-		EF_Abort("free(%a): address not from malloc().", address);
+		EF_Abort("\nElectric Fence: free(%a): address not from malloc().", address);
 
 	if ( slot->mode != ALLOCATED ) {
 		if ( internalUse && slot->mode == INTERNAL_USE )
 			/* Do nothing. */;
 		else {
-			EF_Abort(
-			 "free(%a): freeing free memory."
-			,address);
+			EF_Abort("\nElectric Fence: free(%a): freeing free memory.", address);
 		}
 	}
 
@@ -909,10 +907,7 @@ void * realloc(void * oldBuffer, size_t newSize)
 		slot = slotForUserAddress(oldBuffer);
 
 		if ( slot == 0 )
-			EF_Abort(
-			 "realloc(%a, %d): address not from malloc()."
-			,oldBuffer
-			,newSize);
+			EF_Abort("\nElectric Fence: realloc(%a, %d): address not from malloc().", oldBuffer, newSize);
 
 		if ( newSize < (size = slot->userSize) )
 			size = newSize;
@@ -1046,14 +1041,14 @@ extern C_LINKAGE void  EF_delFrame(void)
     {
       if ( frameno == slot->frame && ALLOCATED == slot->mode )
       {
-        EF_Print("\nptr=0x%a size=%d alloced from %s(%d) not freed",
+        EF_Print("\nElectric Fence: ptr=0x%a size=%d alloced from %s(%d) not freed",
           slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
         ++nonFreed;
       }
       ++slot;
     }
     if (nonFreed)
-      EF_Abort("\nEF_delFrame(): Found non free'd pointers.\n");
+      EF_Abort("\nElectric Fence: EF_delFrame(): Found non free'd pointers.\n");
 
     Page_DenyAccess(allocationList, allocationListSize);
 
