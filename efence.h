@@ -79,8 +79,8 @@ enum _EF_Allocator
   , EFA_REALLOC
   , EFA_VALLOC
   , EFA_NEW_ELEM
-  , EFA_NEW_ARRAY
   , EFA_DEL_ELEM
+  , EFA_NEW_ARRAY
   , EFA_DEL_ARRAY
 };
 

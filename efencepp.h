@@ -34,11 +34,22 @@
 
 #include "efence.h"
 
-#ifdef EF_NO_CPP_SUPPORT
+/* remove previous macro definitions */
+#include "noefence.h"
 
-#define new_NOTHROW new(std::nothrow)
 
-#else /* ifdef EF_NO_CPP_SUPPORT */
+#if ( defined(EF_NO_CPP_SUPPORT) || defined(EF_NO_LEAKDETECTION) )
+
+/* define macros as wrapper without special functionality */
+#define NEW_ELEM(TYPE)                  new TYPE
+#define NEW_ARRAY(TYPE, COUNT)          new TYPE[COUNT]
+#define DEL_ELEM(PTR)                   delete PTR
+#define DEL_ARRAY(PTR)                  delete []PTR
+
+#endif /* ( defined(EF_NO_CPP_SUPPORT) || defined(EF_NO_LEAKDETECTION) ) */
+
+
+#ifndef EF_NO_CPP_SUPPORT
 
 #if WIN32
 #define EF_CDECL  __cdecl
@@ -103,11 +114,21 @@ void * EF_CDECL operator new[]( EF_SIZE_T, const std::nothrow_t &, const char *,
 void   EF_CDECL operator delete[]( void *, const char *, int )                         throw();
 void   EF_CDECL operator delete[]( void *, const std::nothrow_t &, const char *, int ) throw();
 
-#define new_NOTHROW new(std::nothrow, __FILE__, __LINE__)
-#define new         new(__FILE__, __LINE__)
+/* define macros as wrapper for our special operators */
+
+#ifdef EF_OLD_NEW_MACRO
+  #define NEW_ELEM(TYPE)          new(__FILE__,__LINE__) TYPE
+  #define NEW_ARRAY(TYPE, COUNT)  new(__FILE__,__LINE__) TYPE[COUNT]
+#else
+  #define new                     new(__FILE__, __LINE__)
+#endif
+
+#define DEL_ELEM(PTR)             delete  (__FILE__, __LINE__, PTR)
+#define DEL_ARRAY(PTR)            delete[](__FILE__, __LINE__, PTR)
 
 #endif /* end ifdef EF_NO_LEAKDETECTION */
 
 #endif /*	end ifdef EF_NO_CPP_SUPPORT */
 
 #endif /* _EFENCEPP_H_ */
+

@@ -71,6 +71,7 @@ reduceProtectedMemory( long reductionSizekB )
       slot->state           = EFST_EMPTY;
       slot->allocator       = EFA_INT_ALLOC;
       #ifndef EF_NO_LEAKDETECTION
+      slot->fileSource      = EFFS_EMPTY;
       #ifdef EF_USE_FRAMENO
         slot->frame         = 0;
       #endif

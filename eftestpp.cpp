@@ -1,9 +1,11 @@
 
+#include <stdio.h>
 
 #include <new>
 #include "efencepp.h"
 
 
+#if 0
 
 class test
 {
@@ -26,7 +28,6 @@ public:
   int x;
 };
 
-
 class testtest
 {
 public:
@@ -47,68 +48,79 @@ public:
 
   test *y;
 };
-
+#endif
 
 int main( int argc, char ** argv )
 {
 
-#if 1
-
+#if 0
+  /* this test should fail */
   int i;
-
   CA_DEFINE(int,acTest,20);
 
-
-
   for (i=0; i<100; ++i)
-
     CA_REF(acTest,i) = i;
-
-
-
 #elif 0
-
-  int * x, *y;
-
-  test *z;
-
-
-
-  x = (int*)malloc( sizeof(int) );
+  /* this test should not fail */
+  int *y, *z;
 
   y = new int;
-
-  z = new test[2];
-
-
-
-  free( x );
-
-  delete y;
-
-  delete []z;
-
-
+  z = new int[2];
+  DEL_ARRAY( z );
+  DEL_ARRAY( z );
+  DEL_ELEM( y );
+  DEL_ELEM( y );
 
 #elif 1
+  int *y, *z;
+  #undef new
+  #undef delete
+  #undef NEW_ELEM
+  #undef DEL_ELEM
+  
+//  #define new   new(__FILE__,__LINE__)
+//  #define DEL_ELEM(PTR)   delete(__FILE__,__LINE__, PTR)
 
-  test * x = new test(10);
+  y = new(__FILE__, __LINE__) int;
+  delete(__FILE__, __LINE__, y);
+  delete(__FILE__, __LINE__, y);
 
-  test *ax = new test[2];
+  //y = new int;
+  //DEL_ELEM(y);
+  //DEL_ELEM(y);
 
-  testtest *y = new testtest;
+  //y = new(__FILE__,__LINE__) int;
+  //delete (__FILE__, __LINE__, y);
 
+  //y = new(std::nothrow) int;
+  //delete (std::nothrow, y);
+
+  //y = new(std::nothrow, __FILE__, __LINE__) int;
+  //delete (std::nothrow, __FILE__, __LINE__, y);
+#elif 0
+  /* this test should not fail */
+  int *y;
+  y = NEW_ARRAY( int, 2 );
+  DEL_ARRAY( y );
+#elif 0
+  /* this test should not fail */
+  int * x, *y;
+  test *z;
+  x = (int*)malloc( sizeof(int) );
+  y = new int;
+  z = new test[2];
+  free( x );
   delete y;
-
+  delete []z;
+#elif 0
+  /* this test should not fail */
+  test * x = new test(10);
+  test *ax = new test[2];
+  testtest *y = new testtest;
+  delete y;
   delete []ax;
-
-
   delete x;
-
-
 #endif
-
-
   return 0;
 
 }

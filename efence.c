@@ -121,6 +121,13 @@ enum _EF_SlotState
   , EFST_DEALLOCATED      /* memory deallocated; slot holds userAddress, userSize and allocator */
 };
 
+enum _EF_Slot_FileSource
+{
+    EFFS_EMPTY            /* no filename, lineno */
+  , EFFS_ALLOCATION       /* filename, lineno from allocation */
+  , EFFS_DEALLOCATION     /* filename, lineno from deallocation */
+};
+
 /*
  * Struct Slot contains all of the information about a malloc buffer except
  * for the contents of its memory.
@@ -131,15 +138,25 @@ struct _EF_Slot
   void            * userAddress;
   size_t            internalSize;
   size_t            userSize;
-  #if 0
+
+#if 1
   /* just for checking compiler warnings / errors */
-  enum _EF_SlotState  state;
-  enum _EF_Allocator  allocator;
-  #else
-  /* save space in production */
-  unsigned short    state     :16;
-  unsigned short    allocator :16;
+  enum _EF_SlotState        state;
+  enum _EF_Allocator        allocator;
+  #ifndef EF_NO_LEAKDETECTION
+  enum _EF_Slot_FileSource  fileSource;
   #endif
+#else
+  /* save (some) space in production */
+  unsigned short    state       :16;
+  #ifdef EF_NO_LEAKDETECTION
+  unsigned short    allocator   :16;
+  #else
+  unsigned short    allocator   :8;
+  unsigned short    fileSource  :8;
+  #endif
+#endif
+
 #ifndef EF_NO_LEAKDETECTION
 #ifdef EF_USE_FRAMENO
   int               frame;
@@ -457,6 +474,7 @@ void _eff_init(void)
   slot[0].state             = EFST_IN_USE;
   slot[0].allocator         = EFA_INT_ALLOC;
 #ifndef EF_NO_LEAKDETECTION
+  slot[0].fileSource        = EFFS_ALLOCATION;
 #ifdef EF_USE_FRAMENO
   slot[0].frame             = 0;
 #endif
@@ -472,6 +490,7 @@ void _eff_init(void)
     slot[1].state           = EFST_FREE;
     slot[1].allocator       = EFA_INT_ALLOC;
 #ifndef EF_NO_LEAKDETECTION
+    slot[1].fileSource      = EFFS_ALLOCATION;
 #ifdef EF_USE_FRAMENO
     slot[1].frame           = 0;
 #endif
@@ -796,6 +815,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
     fullSlot->state       = EFST_IN_USE;
     fullSlot->allocator   = allocator;
   #ifndef EF_NO_LEAKDETECTION
+    fullSlot->fileSource  = EFFS_ALLOCATION;
   #ifdef EF_USE_FRAMENO
     fullSlot->frame       = frameno;
   #endif
@@ -850,12 +870,16 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
     if ( (slot = nearestSlotForUserAddress(address)) )
     {
     #ifndef EF_NO_LEAKDETECTION
-      EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a allocated from %s(%d)",
-               address, slot->userAddress, slot->filename, slot->lineno);
-    #else
-      EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a.",
-               address, slot->userAddress);
+      if ( EFFS_ALLOCATION == slot->fileSource )
+        EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a allocated from %s(%d)",
+                 address, slot->userAddress, slot->filename, slot->lineno);
+      else if ( EFFS_DEALLOCATION == slot->fileSource )
+        EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a deallocated at %s(%d)",
+                 address, slot->userAddress, slot->filename, slot->lineno);
+      else
     #endif
+        EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a.",
+                 address, slot->userAddress);
     }
     else
       EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed.", address);
@@ -864,22 +888,31 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   if ( EFST_PROTECTED == slot->state || EFST_DEALLOCATED == slot->state )
   {
   #ifndef EF_NO_LEAKDETECTION
-    EF_Abort("\nElectric Fence: free(%a): memory already freed at %s(%d)",
-             address, slot->filename, slot->lineno);
-  #else
-    EF_Abort("\nElectric Fence: free(%a): memory already freed.", address);
+    if ( EFFS_ALLOCATION == slot->fileSource )
+      EF_Abort("\nElectric Fence: free(%a): memory already freed. allocated from %s(%d)",
+               address, slot->filename, slot->lineno);
+    else if ( EFFS_DEALLOCATION == slot->fileSource )
+      EF_Abort("\nElectric Fence: free(%a): memory already freed at %s(%d)",
+               address, slot->filename, slot->lineno);
+    else
   #endif
+      EF_Abort("\nElectric Fence: free(%a): memory already freed.", address);
   }
   else if ( _eff_allocDesc[slot->allocator].type != _eff_allocDesc[allocator].type )
   {
   #ifndef EF_NO_LEAKDETECTION
-    EF_Abort("\nFree mismatch: allocator '%s' used  at %s(%d)\n  but  deallocator '%s' called at %s(%d)!",
-             _eff_allocDesc[slot->allocator].name, slot->filename, slot->lineno,
-             _eff_allocDesc[allocator].name, filename, lineno );
-  #else
+    if ( EFFS_ALLOCATION == slot->fileSource )
+      EF_Abort("\nFree mismatch: allocator '%s' used  at %s(%d)\n  but  deallocator '%s' called at %s(%d)!",
+               _eff_allocDesc[slot->allocator].name, slot->filename, slot->lineno,
+               _eff_allocDesc[allocator].name, filename, lineno );
+    else if ( EFFS_DEALLOCATION == slot->fileSource )
+      EF_Abort("\nFree mismatch: allocator '%s' used \nbut deallocator '%s' called at %s(%d)!",
+               _eff_allocDesc[slot->allocator].name,
+               _eff_allocDesc[allocator].name, filename, lineno );
+    else
+  #endif
     EF_Abort("\nFree mismatch: allocator '%s' used  but  deallocator '%s' called!",
              _eff_allocDesc[slot->allocator].name, _eff_allocDesc[allocator].name );
-  #endif
   }
 
   /* CHECK INTEGRITY OF NO MANS LAND */
@@ -919,6 +952,15 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
     Page_Delete(slot->internalAddress, slot->internalSize);
     sumAllocatedMem -= ( (slot->internalSize+1023) >>10 );
   }
+
+  #ifndef EF_NO_LEAKDETECTION
+    if ( lineno )
+    {
+      slot->fileSource  = EFFS_DEALLOCATION;
+      slot->filename    = (char*)filename;
+      slot->lineno      = lineno;
+    }
+  #endif
 
   if ( protectAllocList )
   {

@@ -93,6 +93,11 @@
 #undef DEL_ARRAY
 #endif
 
+#ifdef new
+#undef new
+#endif
+
+
 /* remove special assert definition */
 #ifdef EF_ASSERT
 #undef EF_ASSERT
