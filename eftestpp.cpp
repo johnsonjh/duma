@@ -73,17 +73,11 @@ int main( int argc, char ** argv )
 
 #elif 1
   int *y, *z;
-  #undef new
-  #undef delete
-  #undef NEW_ELEM
-  #undef DEL_ELEM
-  
-//  #define new   new(__FILE__,__LINE__)
-//  #define DEL_ELEM(PTR)   delete(__FILE__,__LINE__, PTR)
 
-  y = new(__FILE__, __LINE__) int;
-  delete(__FILE__, __LINE__, y);
-  delete(__FILE__, __LINE__, y);
+  y = new int;
+  z = new int[2];
+  DEL_ARRAY(z);
+  DEL_ELEM(y);
 
   //y = new int;
   //DEL_ELEM(y);
