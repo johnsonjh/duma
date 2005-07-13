@@ -38,14 +38,15 @@ reduceProtectedMemory( long reductionSizekB )
 
   /* 1- try reducing memory to just keep page(s) with userAddress */
   for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
-    if ( EFST_PROTECTED == slot->state )
+    if ( EFST_ALL_PROTECTED == slot->state )
     {
-      /* free memory above userAddr; keep userAddr protected  */
+      /* free memory above userAddr; keep userAddr protected */
       newSize = (char*)slot->userAddress - (char*)slot->internalAddress;
       newSize = (newSize + EF_PAGE_SIZE) & ~(EF_PAGE_SIZE -1);
       delSize = slot->internalSize - newSize;
       Page_Delete( (char*)slot->internalAddress + newSize, delSize );
       alreadyReducekB += (delSize+1023) >>10;
+      slot->state           = EFST_BEGIN_PROTECTED;
       /* but keep the slot and userAddr */
       slot->internalSize    = newSize;
 
@@ -56,16 +57,16 @@ reduceProtectedMemory( long reductionSizekB )
         return;
       }
     }
-  /* 2- deallocated all page(s) with userAddress, empty whole slot */
+  /* 2- deallocate all page(s) with userAddress, empty whole slot */
   slot  = _ef_allocList;
   count = slotCount;
   for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
-    if ( EFST_DEALLOCATED == slot->state )
+    if ( EFST_BEGIN_PROTECTED == slot->state )
     {
       /* free all the memory */
       Page_Delete(slot->internalAddress, slot->internalSize);
       alreadyReducekB += (slot->internalSize+1023) >>10;
-      /* but keep the slot and userAddr */
+      /* free slot and userAddr */
       slot->internalAddress = slot->userAddress = 0;
       slot->internalSize    = slot->userSize    = 0;
       slot->state           = EFST_EMPTY;
