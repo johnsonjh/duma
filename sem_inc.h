@@ -81,7 +81,7 @@ static int        semInited = 0;
 static int        semDepth  = 0;
 
 
-/* define prototypes to warnings of BorlandC++ compiler */
+/* define prototypes to avoid warnings of BorlandC++ compiler */
 
 static void EF_init_sem(void);
 static void EF_get_sem(void);
