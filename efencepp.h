@@ -37,6 +37,10 @@
 /* remove previous macro definitions */
 #include "noefence.h"
 
+/* set Maximum Delete Depth (depth of recursive destructor calls) */
+#ifndef EF_MAX_DEL_DEPTH
+#define EF_MAX_DEL_DEPTH    256
+#endif
 
 #if ( defined(EF_NO_CPP_SUPPORT) || defined(EF_NO_LEAKDETECTION) )
 
@@ -121,10 +125,45 @@ void   EF_CDECL operator delete[]( void *, const std::nothrow_t &, const char *,
   #define NEW_ARRAY(TYPE, COUNT)  new(__FILE__,__LINE__) TYPE[COUNT]
 #else
   #define new                     new(__FILE__, __LINE__)
-#endif
+#endif /* EF_OLD_NEW_MACRO */
 
-#define DEL_ELEM(PTR)             operator delete  (PTR, __FILE__, __LINE__)
-#define DEL_ARRAY(PTR)            operator delete[](PTR, __FILE__, __LINE__)
+#ifdef EF_OLD_DEL_MACRO
+  #define DEL_ELEM(PTR)           operator delete  (PTR, __FILE__, __LINE__)
+  #define DEL_ARRAY(PTR)          operator delete[](PTR, __FILE__, __LINE__)
+#else
+  static int          EF_Magic = 0;
+  static int          EF_DeletePtr = 0;
+  static const char * EF_DeleteFile[EF_MAX_DEL_DEPTH];
+  static int          EF_DeleteLine[EF_MAX_DEL_DEPTH];
+
+  #ifndef EF_NO_THREAD_SAFETY
+    /* define a thread safe delete */
+    #define delete        for( EF_GET_SEMAPHORE(),                      \
+                               EF_Magic = 1,                            \
+                               EF_DeleteFile[EF_DeletePtr] = __FILE__,  \
+                               EF_DeleteLine[EF_DeletePtr] = __LINE__,  \
+                               ++EF_DeletePtr;                          \
+                               EF_Magic;                                \
+                               --EF_DeletePtr;                          \
+                               EF_Magic = 0,                            \
+                               EF_RELEASE_SEMAPHORE()                   \
+                             ) delete
+
+  #else
+
+    #define delete        for( EF_Magic = 1,                            \
+                               EF_DeleteFile[EF_DeletePtr] = __FILE__,  \
+                               EF_DeleteLine[EF_DeletePtr] = __LINE__,  \
+                               ++EF_DeletePtr;                          \
+                               EF_Magic;                                \
+                               --EF_DeletePtr;                          \
+                               EF_Magic = 0                             \
+                             ) delete
+
+  #endif /* EF_NO_THREAD_SAFETY */
+
+#endif /* EF_OLD_DEL_MACRO */
+
 
 #endif /* end ifdef EF_NO_LEAKDETECTION */
 
