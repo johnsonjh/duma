@@ -41,6 +41,13 @@
 #undef realloc
 #undef valloc
 
+#undef strdup
+#undef memcpy
+#undef strcpy
+#undef strncpy
+#undef strcat
+#undef strncat
+
 #undef EF_newFrame
 #undef EF_delFrame
 
