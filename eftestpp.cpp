@@ -72,6 +72,15 @@ int main( int argc, char ** argv )
   DEL_ELEM( y );
 
 #elif 1
+
+  int *y, *z;
+
+  y = new int;
+  z = new int[2];
+  delete []z;
+  delete y;
+
+#elif 0
   int *y, *z;
 
   y = new int;
