@@ -936,7 +936,7 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   {
     volatile char *start = slot->userAddress;
     volatile char *cur;
-    for (cur = slot->userAddress+slot->userSize; --cur >= start; )
+    for (cur = (char*)slot->userAddress+slot->userSize; --cur >= start; )
     {
       char c = *cur;
       *cur = c-1;
