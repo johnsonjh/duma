@@ -93,6 +93,14 @@ SOURCE=..\..\efence.c
 
 SOURCE=..\..\efencepp.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\print.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\sem_inc.c
+# End Source File
 # End Group
 # Begin Group "Header-Dateien"
 

@@ -51,7 +51,7 @@ PACKAGE_SOURCE= README CHANGES efence.3 Makefile \
 	eftest.c tstheap.c eftestpp.cpp \
 	createconf.c
 
-OBJECTS = efencepp.o efence.o
+OBJECTS = efencepp.o efence.o sem_inc.o print.o
 
 all:	libefence.a $(EFENCESO) tstheap eftest eftestpp
 	@ echo "Testing Electric Fence."
