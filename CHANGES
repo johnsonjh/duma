@@ -24,6 +24,28 @@ new macros: MALLOC_PROTECT_BELOW(), MALLOC_PROTECT_ABOVE()
 
 CHANGES:
 
+2.4.14 integrated a patch from Zbynek Vyskovsky <kvr@centrum.cz>
+         in his words: "I modified Electric Efence a little, to be able
+           to catch free-ing memory via watch point in debugger. The patch
+           (attached) solves the problem when you are watching expression for
+           change and suddenly realize the memory containing expression
+           disappeared. It has no other effect, just makes debugging easier."
+       (2005-07-11, HA)
+       bugfix for internal slot mode EFST_DEALLOCATED reported by Mikolas Patocka.
+         error occured when userSpace memory region of freed memory is reused
+         from system and freed again: efence claimed freeing already freed memory.
+       (2005-03-02, HA)
+       now defining macros/functions also for str[n]cpy() and str[n]cat()
+         checking for overlapping memory regions.
+       (2005-02-17, HA)
+       now defining macros/functions also for strdup(), memcpy().
+         memcpy() checks if memory regions overlap.
+       (2005-02-16, HA)
+       added EF_OLD_DEL_MACRO preprocessor flag to keep compatibility to old
+         DEL_ELEM() / DEL_ARRAY() macros. when not defined a macro for "delete"
+         is defined which has standard conform syntax.
+       (2005-02-14, HA)
+
 2.4.13 added internal flag saving the source (allocation/deallocation)
          for filename and lineno.
        added EF_OLD_NEW_MACRO preprocessor flag to keep compatibility to old
