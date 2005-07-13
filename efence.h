@@ -78,6 +78,7 @@ enum _EF_Allocator
   , EFA_MEMALIGN
   , EFA_REALLOC
   , EFA_VALLOC
+  , EFA_STRDUP
   , EFA_NEW_ELEM
   , EFA_DEL_ELEM
   , EFA_NEW_ARRAY
@@ -101,6 +102,13 @@ void   _eff_free(void * baseAdr, const char * filename, int lineno);
 void * _eff_memalign(size_t alignment, size_t userSize, const char * filename, int lineno);
 void * _eff_realloc(void * baseAdr, size_t newSize, const char * filename, int lineno);
 void * _eff_valloc(size_t size, const char * filename, int lineno);
+char * _eff_strdup(const char *str, const char * filename, int lineno);
+void * _eff_memcpy(void *dest, const void *src, size_t size, const char * filename, int lineno);
+char * _eff_strcpy(char *dest, const char *src, const char * filename, int lineno);
+char * _eff_strncpy(char *dest, const char *src, size_t size, const char * filename, int lineno);
+char * _eff_strcat(char *dest, const char *src, const char * filename, int lineno);
+char * _eff_strncat(char *dest, const char *src, size_t size, const char * filename, int lineno);
+
 
 void  EF_newFrame(void);
 void  EF_delFrame(void);
@@ -111,6 +119,12 @@ void  EF_delFrame(void);
 #define memalign(ALIGNMENT, SIZE)   _eff_memalign(ALIGNMENT, SIZE, __FILE__, __LINE__)
 #define realloc(BASEADR, NEWSIZE)   _eff_realloc(BASEADR, NEWSIZE, __FILE__, __LINE__)
 #define valloc(SIZE)                _eff_valloc(SIZE, __FILE__, __LINE__)
+#define strdup(STR)                 _eff_strdup(STR, __FILE__, __LINE__)
+#define memcpy(DEST, SRC, SIZE)     _eff_memcpy(DEST, SRC, SIZE, __FILE__, __LINE__)
+#define strcpy(DEST, SRC)           _eff_strcpy(DEST, SRC, __FILE__, __LINE__)
+#define strncpy(DEST, SRC, SIZE)    _eff_strncpy(DEST, SRC, SIZE, __FILE__, __LINE__)
+#define strcat(DEST, SRC)           _eff_strcat(DEST, SRC, __FILE__, __LINE__)
+#define strncat(DEST, SRC, SIZE)    _eff_strncat(DEST, SRC, SIZE, __FILE__, __LINE__)
 
 #else /* EF_NO_LEAKDETECTION */
 
@@ -123,6 +137,12 @@ void   _eff_free(void * baseAdr);
 void * _eff_memalign(size_t alignment, size_t userSize);
 void * _eff_realloc(void * baseAdr, size_t newSize);
 void * _eff_valloc(size_t size);
+char * _eff_strdup(const char *str);
+void * _eff_memcpy(void *dest, const void *src, size_t size);
+char * _eff_strcpy(char *dest, const char *src);
+char * _eff_strncpy(char *dest, const char *src, size_t size);
+char * _eff_strcat(char *dest, const char *src);
+char * _eff_strncat(char *dest, const char *src, size_t size);
 
 #define EF_newFrame() do { } while(0)
 #define EF_delFrame() do { } while(0)
