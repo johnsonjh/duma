@@ -2,14 +2,14 @@ PIC= -fPIC
 # add "-DEF_NO_GLOBAL_MALLOC_FREE" (without quotes) to for not defining malloc/free in global namespace
 # add "-DEF_NO_CPP_SUPPORT" (without quotes) to for not directing new/delete to malloc/free
 # add "-DEF_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
-# add "-DEF_USE_FRAMENO" (without quotes) if you wan't to use EF_newFrame() and EF_delFrame()
-# add "-DEF_OLD_NEW_MACRO" (without quotes) if you wan't to use Electric Fence' old
+# add "-DEF_USE_FRAMENO" (without quotes) if you want to use EF_newFrame() and EF_delFrame()
+# add "-DEF_OLD_NEW_MACRO" (without quotes) if you want to use Electric Fence' old
 #                          style NEW_ELEM() / NEW_ARRAY() macros. when not defining
 #                          this option, a standard conform new syntax can get used.
 #                          unfortunately you have to use DEL_ELEM/DEL_ARRAY further
 #                          to utilize filename and linenumber of deallocation calls
 
-EF_OPTIONS =
+EF_OPTIONS = -DEF_OLD_NEW_MACRO
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
