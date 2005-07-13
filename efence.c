@@ -85,7 +85,7 @@
 #include "paging.h"
 
 static const char  version[] = "\n"
-"Electric Fence 2.4.13\n"
+"Electric Fence 2.4.14\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n";
 
@@ -117,8 +117,10 @@ enum _EF_SlotState
     EFST_EMPTY            /* slot not in use */
   , EFST_FREE             /* internal memory reserved, unused by user */
   , EFST_IN_USE           /* memory in use by allocator; see following enum AllocType */
-  , EFST_PROTECTED        /* memory no more used by allocator; memory is not deallocated but protected */
-  , EFST_DEALLOCATED      /* memory deallocated; slot holds userAddress, userSize and allocator */
+  , EFST_ALL_PROTECTED    /* memory no more used by allocator; memory is not deallocated but protected */
+  , EFST_BEGIN_PROTECTED  /* most memory deallocated, but not page covering userAddress:
+                           * slot holds userAddress, userSize and allocator.
+                           */
 };
 
 enum _EF_Slot_FileSource
@@ -189,6 +191,7 @@ _eff_allocDesc[] =
   , { "memalign()"          , EFAT_MALLOC    }
   , { "realloc()"           , EFAT_MALLOC    }
   , { "valloc()"            , EFAT_MALLOC    }
+  , { "strdup()"            , EFAT_MALLOC    }
   , { "new (element)"       , EFAT_NEW_ELEM  }
   , { "delete (element)"    , EFAT_NEW_ELEM  }
   , { "new[] (array)"       , EFAT_NEW_ARRAY }
@@ -280,6 +283,13 @@ static int    EF_ALLOW_MALLOC_0 = 1;
  * default to Exit on Fail
  */
 static int    EF_MALLOC_FAILEXIT = 1;
+
+/*
+ * EF_FREE_ACCESS is set if Electric Fence is to write access memory before
+ * freeing it. This makes easier using watch expressions in debuggers as the
+ * process is interrupted even if the memory is going to be freed.
+ */
+static int    EF_FREE_ACCESS = 0;
 
 /*
  * EF_FREE_WIPES is set if Electric Fence is to wipe the memory content
@@ -426,6 +436,12 @@ void _eff_init(void)
    */
   if ( (string = getenv("EF_MALLOC_FAILEXIT")) != 0 )
     EF_MALLOC_FAILEXIT = (atoi(string) != 0);
+
+  /*
+   * See if the user wants to write access freed memory
+   */
+  if ( (string = getenv("EF_FREE_ACCESS")) != 0 )
+    EF_FREE_ACCESS = (atoi(string) != 0);
 
   /*
    * See if the user wants us to wipe out freed memory
@@ -584,8 +600,6 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   struct _EF_Slot * fullSlot;
   struct _EF_Slot * emptySlots[2];
   char            * address;
-  char            * tmpBegAddr;
-  char            * tmpEndAddr;
   size_t            internalSize;
 
   EF_ASSERT( 0 != _ef_allocList );
@@ -616,7 +630,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
     #endif
     alignment = EF_PAGE_SIZE;
   }
-  else if ( alignment != (alignment & -alignment) )
+  else if ( (int)alignment != ((int)alignment & -(int)alignment) )
   {
     #ifndef EF_NO_LEAKDETECTION
       EF_Abort("\nElectric Fence: alignment (=%d) is not a power of 2 requested from %s(%d)",
@@ -850,7 +864,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
 
 void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator allocator  EF_PARAMLIST_FL)
 {
-  struct _EF_Slot   * slot, * prevSlot, * nextSlot;
+  struct _EF_Slot   * slot;
   long                internalSizekB;
 
   if ( 0 == _ef_allocList )
@@ -885,7 +899,7 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
       EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed.", address);
   }
 
-  if ( EFST_PROTECTED == slot->state || EFST_DEALLOCATED == slot->state )
+  if ( EFST_ALL_PROTECTED == slot->state || EFST_BEGIN_PROTECTED == slot->state )
   {
   #ifndef EF_NO_LEAKDETECTION
     if ( EFFS_ALLOCATION == slot->fileSource )
@@ -918,22 +932,32 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   /* CHECK INTEGRITY OF NO MANS LAND */
   _eff_check_slack( slot );
 
+  if ( EF_FREE_ACCESS )
+  {
+    volatile char *start = slot->userAddress;
+    volatile char *cur;
+    for (cur = slot->userAddress+slot->userSize; --cur >= start; )
+    {
+      char c = *cur;
+      *cur = c-1;
+      *cur = c;
+    }
+  }
+
   if ( EF_FREE_WIPES )
     memset(slot->userAddress, EF_FILL, slot->userSize);
 
-  /* protect memory, that nobody can access it */
-  if ( EF_PROTECT_FREE > 0L )
-  {
-    /* Free as much protected memory, that we can protect this one */
-    internalSizekB = (slot->internalSize+1023) >>10;
+  internalSizekB = (slot->internalSize+1023) >>10;
 
+  /* protect memory, that nobody can access it */
+  /* Free as much protected memory, that we can protect this one */
     /* is there need? and is there a way to free such much? */
-    if (   sumProtectedMem  + internalSizekB >  EF_PROTECT_FREE
-        &&                    internalSizekB <  EF_PROTECT_FREE
-        && sumProtectedMem >= internalSizekB
-       )
-      reduceProtectedMemory( internalSizekB );
-  }
+  if ( EF_PROTECT_FREE > 0L
+      && sumProtectedMem  + internalSizekB >  EF_PROTECT_FREE
+      &&                    internalSizekB <  EF_PROTECT_FREE
+      && sumProtectedMem >= internalSizekB
+     )
+    reduceProtectedMemory( internalSizekB );
 
   if (   ( EFA_INT_ALLOC != slot->allocator )
       && ( EF_PROTECT_FREE < 0L
@@ -942,25 +966,38 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
          )   )
      )
   {
-    slot->state = EFST_PROTECTED;
+    slot->state = EFST_ALL_PROTECTED;
     Page_DenyAccess(slot->internalAddress, slot->internalSize);
     sumProtectedMem += internalSizekB;
+
+    #ifndef EF_NO_LEAKDETECTION
+      if ( lineno )
+      {
+        slot->fileSource  = EFFS_DEALLOCATION;
+        slot->filename    = (char*)filename;
+        slot->lineno      = lineno;
+      }
+    #endif
   }
   else
   {
-    slot->state = EFST_DEALLOCATED;
+    /* free all the memory */
     Page_Delete(slot->internalAddress, slot->internalSize);
-    sumAllocatedMem -= ( (slot->internalSize+1023) >>10 );
+    sumAllocatedMem -= internalSizekB;
+    /* free slot and userAddr */
+    slot->internalAddress = slot->userAddress = 0;
+    slot->internalSize    = slot->userSize    = 0;
+    slot->state           = EFST_EMPTY;
+    slot->allocator       = EFA_INT_ALLOC;
+    #ifndef EF_NO_LEAKDETECTION
+    slot->fileSource      = EFFS_EMPTY;
+    #ifdef EF_USE_FRAMENO
+      slot->frame         = 0;
+    #endif
+      slot->filename      = 0;
+      slot->lineno        = 0;
+    #endif
   }
-
-  #ifndef EF_NO_LEAKDETECTION
-    if ( lineno )
-    {
-      slot->fileSource  = EFFS_DEALLOCATION;
-      slot->filename    = (char*)filename;
-      slot->lineno      = lineno;
-    }
-  #endif
 
   if ( protectAllocList )
   {
@@ -1040,8 +1077,128 @@ void * _eff_valloc(size_t size  EF_PARAMLIST_FL)
 }
 
 
-/*********************************************************/
+char * _eff_strdup(const char * str  EF_PARAMLIST_FL)
+{
+  size_t size;
+  char * dup;
+  unsigned i;
 
+  if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
+
+  size = 0;
+  while (str[size]) ++size;
+
+  dup = _eff_allocate(EF_PAGE_SIZE, size +1, EF_PROTECT_BELOW, -1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP  EF_PARAMS_FL);
+
+  if (dup)                    /* if successful */
+    for (i=0; i<=size; ++i)   /* copy string */
+      dup[i] = str[i];
+
+  return dup;
+}
+
+
+void * _eff_memcpy(void *dest, const void *src, size_t size  EF_PARAMLIST_FL)
+{
+  char       * d = (char *)dest;
+  const char * s = (const char *)src;
+  unsigned i;
+
+  if ( (s < d  &&  d < s + size) || (d < s  &&  s < d + size) )
+    EF_Abort("\nElectric Fence: memcpy(%a, %a, %d): memory regions overlap.", dest, src, size);
+
+  for (i=0; i<size; ++i)
+    d[i] = s[i];
+
+  return dest;
+}
+
+
+char * _eff_strcpy(char *dest, const char *src  EF_PARAMLIST_FL)
+{
+  unsigned i;
+  size_t size = strlen(src) +1;
+
+  if ( src < dest  &&  dest < src + size )
+    EF_Abort("\nElectric Fence: strcpy(%a, %a): memory regions overlap.", dest, src);
+
+  for (i=0; i<size; ++i)
+    dest[i] = src[i];
+
+  return dest;
+}
+
+
+char * _eff_strncpy(char *dest, const char *src, size_t size  EF_PARAMLIST_FL)
+{
+  size_t srcsize;
+  unsigned i;
+
+  if ( size > 0  &&  src < dest  &&  dest < src + size )
+    EF_Abort("\nElectric Fence: strncpy(%a, %a, %d): memory regions overlap.", dest, src, size);
+
+  /* calculate number of characters to copy from src to dest */
+  srcsize = strlen(src) +1;
+  if ( srcsize > size )
+    srcsize = size;
+
+  /* copy src to dest */
+  for (i=0; i<srcsize; ++i)
+    dest[i] = src[i];
+
+  /* fill rest with '\0' character */
+  for (   ; i<size;   ++i)
+    dest[i] = 0;
+
+  return dest;
+}
+
+
+char * _eff_strcat(char *dest, const char *src  EF_PARAMLIST_FL)
+{
+  unsigned i;
+  size_t destlen = strlen(dest);
+  size_t srcsize = strlen(src)  +1;
+
+  if ( src < dest +destlen  &&  dest + destlen < src + srcsize )
+    EF_Abort("\nElectric Fence: strcat(%a, %a): memory regions overlap.", dest, src);
+
+  for (i=0; i<srcsize; ++i)
+    dest[destlen+i] = src[i];
+
+  return dest;
+}
+
+
+char * _eff_strncat(char *dest, const char *src, size_t size  EF_PARAMLIST_FL)
+{
+  unsigned i;
+  size_t destlen, srclen;
+
+  /* do nothing, when size not > 0 */
+  if ( size <= 0 )
+    return dest;
+
+  /* calculate number of characters to copy from src to dest */
+  destlen = strlen(dest);
+  srclen  = strlen(src);
+  if ( srclen > size )
+    srclen = size;
+
+  if ( src < dest +destlen  &&  dest + destlen < src + srclen +1 )
+    EF_Abort("\nElectric Fence: strncat(%a, %a, %d): memory regions overlap.", dest, src, size);
+
+  /* copy up to size characters from src to dest */
+  for (i=0; i<srclen; ++i)
+    dest[destlen+i] = src[i];
+  /* append single '\0' character */
+  dest[destlen+srclen] = 0;
+
+  return dest;
+}
+
+
+/*********************************************************/
 
 
 #ifndef EF_NO_GLOBAL_MALLOC_FREE
@@ -1086,17 +1243,41 @@ void * valloc(size_t size)
 }
 
 
-#ifdef __hpux
-/*
- * HP-UX 8/9.01 strcat reads a word past source when doing unaligned copies!
- * Work around it here. The bug report has been filed with HP.
- */
-char * strcat(char *d, const char *s)
+char * strdup(const char * str)
 {
-  strcpy(d+strlen(d), s);
-  return d;
+  return _eff_strdup(str  EF_PARAMS_UK);
 }
-#endif /* __hpux */
+
+
+void * memcpy(void *dest, const void *src, size_t size)
+{
+  return _eff_memcpy(dest, src, size  EF_PARAMS_UK);
+}
+
+
+char * strcpy(char *dest, const char *src)
+{
+  return _eff_strcpy(dest, src  EF_PARAMS_UK);
+}
+
+
+char * strncpy(char *dest, const char *src, size_t size)
+{
+  return _eff_strncpy(dest, src, size  EF_PARAMS_UK);
+}
+
+
+char * strcat(char *dest, const char *src)
+{
+  return _eff_strcat(dest, src  EF_PARAMS_UK);
+}
+
+
+char * strncat(char *dest, const char *src, size_t size)
+{
+  return _eff_strncat(dest, src, size  EF_PARAMS_UK);
+}
+
 
 #endif /* EF_NO_GLOBAL_MALLOC_FREE */
 
