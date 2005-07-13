@@ -120,6 +120,8 @@ void   EF_CDECL operator delete[]( void *, const std::nothrow_t &, const char *,
 
 /* define macros as wrapper for our special operators */
 
+#include "sem_inc.h"
+
 #ifdef EF_OLD_NEW_MACRO
   #define NEW_ELEM(TYPE)          new(__FILE__,__LINE__) TYPE
   #define NEW_ARRAY(TYPE, COUNT)  new(__FILE__,__LINE__) TYPE[COUNT]
@@ -137,6 +139,7 @@ void   EF_CDECL operator delete[]( void *, const std::nothrow_t &, const char *,
   static int          EF_DeleteLine[EF_MAX_DEL_DEPTH];
 
   #ifndef EF_NO_THREAD_SAFETY
+
     /* define a thread safe delete */
     #define delete        for( EF_GET_SEMAPHORE(),                      \
                                EF_Magic = 1,                            \
@@ -144,7 +147,7 @@ void   EF_CDECL operator delete[]( void *, const std::nothrow_t &, const char *,
                                EF_DeleteLine[EF_DeletePtr] = __LINE__,  \
                                ++EF_DeletePtr;                          \
                                EF_Magic;                                \
-                               --EF_DeletePtr;                          \
+                               --EF_DeletePtr,                          \
                                EF_Magic = 0,                            \
                                EF_RELEASE_SEMAPHORE()                   \
                              ) delete
@@ -156,7 +159,7 @@ void   EF_CDECL operator delete[]( void *, const std::nothrow_t &, const char *,
                                EF_DeleteLine[EF_DeletePtr] = __LINE__,  \
                                ++EF_DeletePtr;                          \
                                EF_Magic;                                \
-                               --EF_DeletePtr;                          \
+                               --EF_DeletePtr,                          \
                                EF_Magic = 0                             \
                              ) delete
 
