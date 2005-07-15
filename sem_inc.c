@@ -24,6 +24,7 @@
  */
 
 #include "sem_inc.h"
+#include "print.h"
 
 #ifndef EF_NO_THREAD_SAFETY
 
