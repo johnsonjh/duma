@@ -46,8 +46,8 @@ MAN_INSTALL_DIR= $(prefix)/man/man3
 
 
 PACKAGE_SOURCE= README CHANGES efence.3 Makefile \
-	efence.h efenceint.h efencpp.h paging.h print.h ef_hlp.h \
-	efence.c efencepp.cpp \
+	efence.h efenceint.h efencpp.h sem_inc.h paging.h print.h ef_hlp.h noefence.h \
+	efence.c efencepp.cpp sem_inc.c print.c \
 	eftest.c tstheap.c eftestpp.cpp \
 	createconf.c
 
