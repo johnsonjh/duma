@@ -299,6 +299,14 @@ static int    EF_FREE_ACCESS = 0;
 static int    EF_FREE_WIPES = 0;
 
 /*
+ * EF_SHOW_ALLOC is set if Electric Fence is to print all allocations
+ * and deallocations to the console. Although this generates a lot
+ * of messages, the option can be useful to detect inefficient code
+ * containing many allocations / deallocations
+ */
+static int    EF_SHOW_ALLOC = 0;
+
+/*
  * _ef_allocList points to the array of slot structures used to manage the
  * malloc arena.
  */
@@ -338,6 +346,15 @@ static long   sumAllocatedMem = 0;
  */
 static long   sumProtectedMem = 0;
 
+/*
+ * internal variable: number of deallocations processed so far
+ */
+static long numDeallocs = 0;
+
+/*
+ * internal variable: number of allocations processed so far
+ */
+static long numAllocs = 0;
 
 /*
  * include helper functions
@@ -368,6 +385,7 @@ void _eff_init(void)
   size_t            size = MEMORY_CREATION_SIZE;
   char            * string;
   struct _EF_Slot * slot;
+  void            * testAlloc;
 
   if ( (string = getenv("EF_DISABLE_BANNER")) != 0 )
     EF_DISABLE_BANNER = (atoi(string) != 0);
@@ -466,6 +484,12 @@ void _eff_init(void)
     EF_SLACKFILL = atoi(string);
 
   /*
+   * See if the user wants to see allocations / frees
+   */
+  if ( (string = getenv("EF_SHOW_ALLOC")) != 0 )
+    EF_SHOW_ALLOC = (atoi(string) != 0);
+
+  /*
    * Figure out how many Slot structures to allocate at one time.
    */
   slotCount = slotsPerPage = EF_PAGE_SIZE / sizeof(struct _EF_Slot);
@@ -530,10 +554,27 @@ void _eff_init(void)
    * Register atexit()
    */
 #ifndef EF_NO_LEAKDETECTION
-  atexit( EF_delFrame );
+  EF_Print("\nElectricFence: Registering with atexit().\n"
+             "ElectricFence: If this hangs, change the library load order with LD_PRELOAD.\n");
+  if ( atexit( EF_delFrame ) )
+    EF_Abort("Cannot register exit function.\n");
+  EF_Print("ElectricFence: Registration was successful.\n");
 #endif
 
   EF_RELEASE_SEMAPHORE();
+
+#ifndef EF_NO_GLOBAL_MALLOC_FREE
+  /*
+   * Check whether malloc and free is available
+   */
+  testAlloc = malloc(123);
+  if (numAllocs == 0)
+    EF_Abort("malloc() is not bound to efence.\nElectricFence Aborting: Preload lib with 'LD_PRELOAD=libefence.so <prog>'.\n");
+
+  free(testAlloc);
+  if (numDeallocs == 0)
+    EF_Abort("free() is not bound to efence.\nElectricFence Aborting: Preload lib with 'LD_PRELOAD=libefence.so <prog>'.\n");
+#endif
 }
 
 
@@ -639,6 +680,11 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
       EF_Abort("\nElectric Fence: alignment (=%d) is not a power of 2", alignment);
     #endif
   }
+
+  /* count and show allocation, if requested */
+  numAllocs++;
+  if (EF_SHOW_ALLOC)
+    EF_Print("\nElectric Fence: Allocating %d bytes at %s(%d).", userSize, filename, lineno);
 
   /*
    * If protectBelow is set, all addresses returned by malloc()
@@ -928,6 +974,11 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
     EF_Abort("\nFree mismatch: allocator '%s' used  but  deallocator '%s' called!",
              _eff_allocDesc[slot->allocator].name, _eff_allocDesc[allocator].name );
   }
+
+  /* count and show deallocation, if requested */
+  numDeallocs++;
+  if (EF_SHOW_ALLOC)
+    EF_Print("\nElectric Fence: Freeing %d bytes at %s(%d) (Allocated from %s(%d)).", slot->userSize, filename, lineno, slot->filename, slot->lineno);
 
   /* CHECK INTEGRITY OF NO MANS LAND */
   _eff_check_slack( slot );
@@ -1344,6 +1395,8 @@ void  EF_delFrame(void)
     --frameno;
   }
   #endif
+  if (EF_SHOW_ALLOC)
+    EF_Print("\nElectric Fence: EF_delFrame(): Processed %d allocations and %d deallocations in total.\n", numAllocs, numDeallocs);
 }
 
 #endif /* end ifndef EF_NO_LEAKDETECTION */

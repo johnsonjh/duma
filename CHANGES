@@ -24,7 +24,12 @@ new macros: MALLOC_PROTECT_BELOW(), MALLOC_PROTECT_ABOVE()
 
 CHANGES:
 
-2.4.14 integrated a patch from Zbynek Vyskovsky <kvr@centrum.cz>
+2.4.14 integrated code from Tim Braun <braun@informatik.uni-kl.de>
+         new EF_SHOW_ALLOC environment variable, which prints allocations
+           and deallocation when variable set
+         check if malloc() and free() are bound to efence
+       (2005-07-15, HA)
+       integrated a patch from Zbynek Vyskovsky <kvr@centrum.cz>
          in his words: "I modified Electric Efence a little, to be able
            to catch free-ing memory via watch point in debugger. The patch
            (attached) solves the problem when you are watching expression for
