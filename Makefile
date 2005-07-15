@@ -9,7 +9,7 @@ PIC= -fPIC
 #                          unfortunately you have to use DEL_ELEM/DEL_ARRAY further
 #                          to utilize filename and linenumber of deallocation calls
 
-EF_OPTIONS = -DEF_OLD_NEW_MACRO
+EF_OPTIONS =
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
