@@ -225,10 +225,10 @@ void _eff_check_slack( struct _EF_Slot * slot )
     if ( (char)EF_SLACKFILL != *tmpBegAddr++ )
     {
       #ifndef EF_NO_LEAKDETECTION
-        EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
+        EF_Abort("ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
           slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
       #else
-        EF_Abort("\nElectric Fence: ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
+        EF_Abort("ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
       #endif
     }
   }
@@ -240,10 +240,10 @@ void _eff_check_slack( struct _EF_Slot * slot )
     if ( (char)EF_SLACKFILL != *tmpBegAddr++ )
     {
       #ifndef EF_NO_LEAKDETECTION
-        EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
+        EF_Abort("free() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
           slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
       #else
-        EF_Abort("\nfree() detected overwrite of no mans land: ptr=%a", slot->userAddress);
+        EF_Abort("free() detected overwrite of no mans land: ptr=%a", slot->userAddress);
       #endif
     }
   }

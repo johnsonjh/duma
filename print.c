@@ -90,7 +90,7 @@ sprintNumber(char* obuffer, ef_number number, ef_number base)
   do
   {
     if ( --s == buffer )
-      EF_Abort("\nElectric Fence: Internal error printing number.");
+      EF_Abort("Internal error printing number.");
 
     digit = number % base;
     *s = (char)( (digit < 10) ? ('0' + digit) : ('a' + digit -10) );
