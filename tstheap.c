@@ -24,10 +24,16 @@ double drand48(void); /* For pre-ANSI C systems */
 #endif
 
 #define	POOL_SIZE	1024
-#define	LARGEST_BUFFER	30000
-#define	TEST_DURATION	1000000
+#define	LARGEST_BUFFER 30000
+#define	TEST_DURATION  1000000
 
-void *	pool[POOL_SIZE];
+struct POOL_ELEM
+{
+  void *	addr;
+  size_t  size;
+}
+  pool[POOL_SIZE];
+
 
 #ifdef	FAKE_DRAND48
 /*
@@ -60,13 +66,16 @@ main(int argc, char * * argv)
     duration = atoi(argv[1]);
 
   for ( count = 0; count < POOL_SIZE; count++ )
-    pool[count] = 0;
+  {
+    pool[count].addr = (void*)0;
+    pool[count].size = (size_t)0;
+  }
 
   for ( count = 0; count < duration; count++ )
   {
-    int       pool_idx;
-    void  * * element;
-    size_t    size;
+    int                 pool_idx;
+    struct POOL_ELEM  * element;
+    size_t              size;
 
     pool_idx =(int)(drand48() * POOL_SIZE);
     if (pool_idx >=0 && pool_idx<POOL_SIZE)
@@ -74,17 +83,20 @@ main(int argc, char * * argv)
       element  = &pool[pool_idx];
       size     = (size_t)(drand48() * (LARGEST_BUFFER + 1));
 
-      if ( *element )
+      if ( element->addr )
       {
-        free( *element );
-        *element = 0;
+        /* check if memory is accessible */
+        memset( element->addr, 0, element->size );
+        free( element->addr );
+        element->addr = (void*)0;
       }
-      
+
       if ( size > 0 )
       {
-        *element = malloc(size);
+        element->addr = malloc(size);
+        element->size = size;
         /* really use it, so that the system has to use real memory */
-        memset( *element, -1, size );
+        memset( element->addr, -1, size );
       }
     }
   }
@@ -96,8 +108,12 @@ main(int argc, char * * argv)
   */
   for ( count = 0; count < POOL_SIZE; count++ )
   {
-    if ( pool[count] )
-      free( pool[count] );
+    if ( pool[count].addr )
+    {
+      /* check if memory is accessible */
+      memset( pool[count].addr, 0, pool[count].size );
+      free( pool[count].addr );
+    }
   }
 #endif
 
