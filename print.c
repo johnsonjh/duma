@@ -113,7 +113,7 @@ static int
 EF_sprintf(char* buffer, const char *pattern, va_list args)
 {
   char    c;
-  static const char  bad_pattern[] = "\nElectric Fence: Bad pattern specifier %%%c in EF_Print().\n";
+  static const char  bad_pattern[] = "\nElectricFence: Bad pattern specifier %%%c in EF_Print().\n";
   const char *  s = pattern;
   int len = 0;
   ef_number n;

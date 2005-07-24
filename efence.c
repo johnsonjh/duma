@@ -371,7 +371,7 @@ static long numAllocs = 0;
 void _eff_assert(const char * exprstr, const char * filename, int lineno)
 {
   int *pcAddr = 0;
-  EF_Print("\nElectric Fence: EF_ASSERT(%s) failed at\n%s(%d)\n", exprstr, filename, lineno );
+  EF_Print("\nElectricFence: EF_ASSERT(%s) failed at\n%s(%d)\n", exprstr, filename, lineno );
   /* this is "really" bad, but it works. assert() from assert.h system header
    * stops only the current thread but the program goes on running under MS Visual C++.
    * This way the program definitely halts.
@@ -689,7 +689,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   /* count and show allocation, if requested */
   numAllocs++;
   if (EF_SHOW_ALLOC)
-    EF_Print("\nElectric Fence: Allocating %d bytes at %s(%d).", userSize, filename, lineno);
+    EF_Print("\nElectricFence: Allocating %d bytes at %s(%d).", userSize, filename, lineno);
 
   /*
    * If protectBelow is set, all addresses returned by malloc()
@@ -959,18 +959,18 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
     {
     #ifndef EF_NO_LEAKDETECTION
       if ( EFFS_ALLOCATION == slot->fileSource )
-        EF_Abort("free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a allocated from %s(%d)",
+        EF_Abort("free(%a): address not from EFence or already freed. Address may be corrupted from %a allocated from %s(%d)",
                  address, slot->userAddress, slot->filename, slot->lineno);
       else if ( EFFS_DEALLOCATION == slot->fileSource )
-        EF_Abort("free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a deallocated at %s(%d)",
+        EF_Abort("free(%a): address not from EFence or already freed. Address may be corrupted from %a deallocated at %s(%d)",
                  address, slot->userAddress, slot->filename, slot->lineno);
       else
     #endif
-        EF_Abort("free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a.",
+        EF_Abort("free(%a): address not from EFence or already freed. Address may be corrupted from %a.",
                  address, slot->userAddress);
     }
     else
-      EF_Abort("free(%a): address not from Electric Fence or already freed.", address);
+      EF_Abort("free(%a): address not from EFence or already freed.", address);
   }
 
   if ( EFST_ALL_PROTECTED == slot->state || EFST_BEGIN_PROTECTED == slot->state )
@@ -1006,7 +1006,7 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   /* count and show deallocation, if requested */
   numDeallocs++;
   if (EF_SHOW_ALLOC)
-    EF_Print("\nElectric Fence: Freeing %d bytes at %s(%d) (Allocated from %s(%d)).", slot->userSize, filename, lineno, slot->filename, slot->lineno);
+    EF_Print("\nElectricFence: Freeing %d bytes at %s(%d) (Allocated from %s(%d)).", slot->userSize, filename, lineno, slot->filename, slot->lineno);
 
   /* CHECK INTEGRITY OF NO MANS LAND */
   _eff_check_slack( slot );
@@ -1408,7 +1408,7 @@ void  EF_delFrame(void)
            && EFA_INT_ALLOC != slot->allocator
          )
       {
-        EF_Print("\nElectric Fence: ptr=0x%a size=%d alloced from %s(%d) not freed",
+        EF_Print("\nElectricFence: ptr=0x%a size=%d alloced from %s(%d) not freed",
           slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
         ++nonFreed;
       }
@@ -1424,7 +1424,7 @@ void  EF_delFrame(void)
   }
   #endif
   if (EF_SHOW_ALLOC)
-    EF_Print("\nElectric Fence: EF_delFrame(): Processed %d allocations and %d deallocations in total.\n", numAllocs, numDeallocs);
+    EF_Print("\nElectricFence: EF_delFrame(): Processed %d allocations and %d deallocations in total.\n", numAllocs, numDeallocs);
 }
 
 #endif /* end ifndef EF_NO_LEAKDETECTION */
