@@ -107,6 +107,10 @@ SOURCE=..\..\sem_inc.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=..\..\ef_hlp.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\efence.h
 # End Source File
 # Begin Source File
