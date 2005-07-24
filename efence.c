@@ -85,7 +85,7 @@
 #include "paging.h"
 
 static const char  version[] = "\n"
-"Electric Fence 2.4.14\n"
+"Electric Fence 2.4.15\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n";
 
@@ -342,6 +342,11 @@ static size_t slotsPerPage = 0;
 static long   sumAllocatedMem = 0;
 
 /*
+ * internal variable: sum of allocated memory in kB
+ */
+static long   sumTotalAllocatedMem = 0;
+
+/*
  * internal variable: sum of protected memory in kB
  */
 static long   sumProtectedMem = 0;
@@ -505,7 +510,7 @@ void _eff_init(void)
    * first buffer will be used for Slot structures, the second will
    * be marked free.
    */
-  slot = _ef_allocList = (struct _EF_Slot *)Page_Create(size);
+  slot = _ef_allocList = (struct _EF_Slot *)Page_Create(size, 1/*=exitonfail*/);
   memset((char *)_ef_allocList, 0, _ef_allocListSize);
 
   /* enter _ef_allocList as slot to allow call to free() when doing allocateMoreSlots() */
@@ -590,9 +595,9 @@ allocateMoreSlots(void)
   void *  oldAllocation = _ef_allocList;
 
 #ifndef EF_NO_LEAKDETECTION
-  newAllocation = _eff_allocate( 1 /*=alignment*/, newSize, 0 /*=protectBelow*/, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_INT_ALLOC, __FILE__, __LINE__ );
+  newAllocation = _eff_allocate( 1 /*=alignment*/, newSize, 0 /*=protectBelow*/, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_INT_ALLOC, EF_FAIL_NULL, __FILE__, __LINE__ );
 #else
-  newAllocation = _eff_allocate( 1 /*=alignment*/, newSize, 0 /*=protectBelow*/, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_INT_ALLOC);
+  newAllocation = _eff_allocate( 1 /*=alignment*/, newSize, 0 /*=protectBelow*/, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_INT_ALLOC, EF_FAIL_NULL);
 #endif
 
   memcpy(newAllocation, _ef_allocList, _ef_allocListSize);
@@ -634,7 +639,7 @@ allocateMoreSlots(void)
  * working set is too big for a system's RAM is even slower. 
  */
 
-void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _EF_Allocator allocator  EF_PARAMLIST_FL)
+void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _EF_Allocator allocator, enum _EF_FailReturn fail  EF_PARAMLIST_FL)
 {
   size_t            count;
   struct _EF_Slot * slot;
@@ -649,10 +654,10 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   if ( 0 == userSize && !EF_ALLOW_MALLOC_0 )
   {
     #ifndef EF_NO_LEAKDETECTION
-      EF_Abort("\nElectric Fence: Allocating 0 bytes, probably a bug: %s(%d)",
+      EF_Abort("Allocating 0 bytes, probably a bug: %s(%d)",
                filename, lineno);
     #else
-      EF_Abort("\nElectric Fence: Allocating 0 bytes, probably a bug.");
+      EF_Abort("Allocating 0 bytes, probably a bug.");
     #endif
   }
 
@@ -664,20 +669,20 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   if ( alignment > EF_PAGE_SIZE )
   {
     #ifndef EF_NO_LEAKDETECTION
-      EF_Abort("\nElectric Fence: too big alignment (=%d) requested from %s(%d)",
+      EF_Abort("Too big alignment (=%d) requested from %s(%d)",
                alignment, filename, lineno);
     #else
-      EF_Abort("\nElectric Fence: too big alignment (=%d) requested", alignment);
+      EF_Abort("Too big alignment (=%d) requested", alignment);
     #endif
     alignment = EF_PAGE_SIZE;
   }
   else if ( (int)alignment != ((int)alignment & -(int)alignment) )
   {
     #ifndef EF_NO_LEAKDETECTION
-      EF_Abort("\nElectric Fence: alignment (=%d) is not a power of 2 requested from %s(%d)",
+      EF_Abort("Alignment (=%d) is not a power of 2 requested from %s(%d)",
                alignment, filename, lineno);
     #else
-      EF_Abort("\nElectric Fence: alignment (=%d) is not a power of 2", alignment);
+      EF_Abort("Alignment (=%d) is not a power of 2", alignment);
     #endif
   }
 
@@ -740,6 +745,12 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
    */
   for ( slot = _ef_allocList, count = slotCount ; count > 0; --count, ++slot )
   {
+    /*
+     * Windows needs special treatment, cause Page_Delete() needs exactly
+     * the same memory region as Page_Create()!
+     * Thus as a quick hack no memory management is done by EFence.
+     */
+#if !defined(WIN32)
     if ( EFST_FREE == slot->state  &&  slot->internalSize >= internalSize )
     {
       if ( !fullSlot || slot->internalSize < fullSlot->internalSize )
@@ -749,10 +760,15 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
           break;  /* All done; no empty slot needed in this case */
       }
     }
-    else if ( EFST_EMPTY == slot->state )
+    else
+#endif
+    if ( EFST_EMPTY == slot->state )
     {
       if      ( !emptySlots[0] )    emptySlots[0] = slot;
       else if ( !emptySlots[1] )    emptySlots[1] = slot;
+#if defined(WIN32)
+      break;
+#endif
     }
   }
 
@@ -764,21 +780,29 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
      * memory. I'll mark it all as free, and then split it into
      * free and allocated portions later.
      */
-    size_t  chunkSize = MEMORY_CREATION_SIZE;
+    size_t  chunkSize;
     long    chunkSizekB;
+
+#if defined(WIN32)
+    chunkSize = internalSize;
+#else
+    chunkSize = MEMORY_CREATION_SIZE;
 
     if ( chunkSize < internalSize )
       chunkSize = internalSize;
 
     chunkSize = ( chunkSize + EF_PAGE_SIZE -1 ) & ~( EF_PAGE_SIZE -1 );
+#endif
     chunkSizekB = (chunkSize+1023) >>10;
 
 
     /* Use up one of the empty slots to make the full slot. */
     if ( !emptySlots[0] )
-      EF_Abort("\nElectric Fence: Internal error in allocator: No empty slot 0.\n");
+      EF_Abort("Internal error in allocator: No empty slot 0.\n");
+#if !defined(WIN32)
     if ( !emptySlots[1] )
-      EF_Abort("\nElectric Fence: Internal error in allocator: No empty slot 1.\n");
+      EF_Abort("Internal error in allocator: No empty slot 1.\n");
+#endif
 
     fullSlot      = emptySlots[0];
     emptySlots[0] = emptySlots[1];
@@ -787,17 +811,18 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
     if ( EF_MAX_ALLOC > 0  &&  sumAllocatedMem + chunkSizekB > EF_MAX_ALLOC )
       reduceProtectedMemory( chunkSizekB );
 
-    fullSlot->internalAddress = Page_Create( chunkSize );
+    fullSlot->internalAddress = Page_Create( chunkSize, 0/*= exitonfail*/ );
     if ( 0 == fullSlot->internalAddress  &&  0L != EF_PROTECT_FREE )
     {
       /* reduce as much protected memory as we need - or at least try so */
       reduceProtectedMemory( (chunkSize+1023) >>10 );
       /* simply try again */
-      fullSlot->internalAddress = Page_Create( chunkSize );
+      fullSlot->internalAddress = Page_Create( chunkSize, EF_MALLOC_FAILEXIT );
     }
     if ( fullSlot->internalAddress )
     {
       sumAllocatedMem          += ( (chunkSize +1023) >>10 );
+      sumTotalAllocatedMem     += ( (chunkSize +1023) >>10 );
       fullSlot->internalSize    = chunkSize;
       fullSlot->state           = EFST_FREE;
       --unUsedSlots;
@@ -808,6 +833,8 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
 
   if ( fullSlot->internalSize )
   {
+
+#if !defined(WIN32)
     /*
      * If the buffer I've found is larger than I need, split it into
      * an allocated buffer with the exact amount of memory I need, and
@@ -828,6 +855,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
 
       --unUsedSlots;
     }
+#endif
 
     if ( !protectBelow )
     {
@@ -914,7 +942,7 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   long                internalSizekB;
 
   if ( 0 == _ef_allocList )
-    EF_Abort("\nElectric Fence: free() called before first malloc().");
+    EF_Abort("free() called before first malloc().");
 
   if ( 0 == address )
     return;
@@ -931,47 +959,47 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
     {
     #ifndef EF_NO_LEAKDETECTION
       if ( EFFS_ALLOCATION == slot->fileSource )
-        EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a allocated from %s(%d)",
+        EF_Abort("free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a allocated from %s(%d)",
                  address, slot->userAddress, slot->filename, slot->lineno);
       else if ( EFFS_DEALLOCATION == slot->fileSource )
-        EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a deallocated at %s(%d)",
+        EF_Abort("free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a deallocated at %s(%d)",
                  address, slot->userAddress, slot->filename, slot->lineno);
       else
     #endif
-        EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a.",
+        EF_Abort("free(%a): address not from Electric Fence or already freed. Address may be corrupted from %a.",
                  address, slot->userAddress);
     }
     else
-      EF_Abort("\nElectric Fence: free(%a): address not from Electric Fence or already freed.", address);
+      EF_Abort("free(%a): address not from Electric Fence or already freed.", address);
   }
 
   if ( EFST_ALL_PROTECTED == slot->state || EFST_BEGIN_PROTECTED == slot->state )
   {
   #ifndef EF_NO_LEAKDETECTION
     if ( EFFS_ALLOCATION == slot->fileSource )
-      EF_Abort("\nElectric Fence: free(%a): memory already freed. allocated from %s(%d)",
+      EF_Abort("free(%a): memory already freed. allocated from %s(%d)",
                address, slot->filename, slot->lineno);
     else if ( EFFS_DEALLOCATION == slot->fileSource )
-      EF_Abort("\nElectric Fence: free(%a): memory already freed at %s(%d)",
+      EF_Abort("free(%a): memory already freed at %s(%d)",
                address, slot->filename, slot->lineno);
     else
   #endif
-      EF_Abort("\nElectric Fence: free(%a): memory already freed.", address);
+      EF_Abort("free(%a): memory already freed.", address);
   }
   else if ( _eff_allocDesc[slot->allocator].type != _eff_allocDesc[allocator].type )
   {
   #ifndef EF_NO_LEAKDETECTION
     if ( EFFS_ALLOCATION == slot->fileSource )
-      EF_Abort("\nFree mismatch: allocator '%s' used  at %s(%d)\n  but  deallocator '%s' called at %s(%d)!",
+      EF_Abort("Free mismatch: allocator '%s' used  at %s(%d)\n  but  deallocator '%s' called at %s(%d)!",
                _eff_allocDesc[slot->allocator].name, slot->filename, slot->lineno,
                _eff_allocDesc[allocator].name, filename, lineno );
     else if ( EFFS_DEALLOCATION == slot->fileSource )
-      EF_Abort("\nFree mismatch: allocator '%s' used \nbut deallocator '%s' called at %s(%d)!",
+      EF_Abort("Free mismatch: allocator '%s' used \nbut deallocator '%s' called at %s(%d)!",
                _eff_allocDesc[slot->allocator].name,
                _eff_allocDesc[allocator].name, filename, lineno );
     else
   #endif
-    EF_Abort("\nFree mismatch: allocator '%s' used  but  deallocator '%s' called!",
+    EF_Abort("Free mismatch: allocator '%s' used  but  deallocator '%s' called!",
              _eff_allocDesc[slot->allocator].name, _eff_allocDesc[allocator].name );
   }
 
@@ -1063,14 +1091,14 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
 void * _eff_malloc(size_t size  EF_PARAMLIST_FL)
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  return _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_MALLOC  EF_PARAMS_FL);
+  return _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_MALLOC, EF_FAIL_ENV  EF_PARAMS_FL);
 }
 
 
 void * _eff_calloc(size_t nelem, size_t elsize  EF_PARAMLIST_FL)
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  return _eff_allocate(EF_ALIGNMENT, nelem * elsize, EF_PROTECT_BELOW, 0 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_CALLOC  EF_PARAMS_FL);
+  return _eff_allocate(EF_ALIGNMENT, nelem * elsize, EF_PROTECT_BELOW, 0 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_CALLOC, EF_FAIL_ENV  EF_PARAMS_FL);
 }
 
 
@@ -1084,7 +1112,7 @@ void   _eff_free(void * baseAdr  EF_PARAMLIST_FL)
 void * _eff_memalign(size_t alignment, size_t size  EF_PARAMLIST_FL)
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  return _eff_allocate(alignment, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_MEMALIGN  EF_PARAMS_FL);
+  return _eff_allocate(alignment, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_MEMALIGN, EF_FAIL_ENV  EF_PARAMS_FL);
 }
 
 
@@ -1095,14 +1123,14 @@ void * _eff_realloc(void * oldBuffer, size_t newSize  EF_PARAMLIST_FL)
   EF_GET_SEMAPHORE();
   Page_AllowAccess(_ef_allocList, _ef_allocListSize);
 
-  ptr = _eff_allocate(EF_ALIGNMENT, newSize, EF_PROTECT_BELOW, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC  EF_PARAMS_FL);
+  ptr = _eff_allocate(EF_ALIGNMENT, newSize, EF_PROTECT_BELOW, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC, EF_FAIL_ENV  EF_PARAMS_FL);
 
   if ( ptr && oldBuffer )
   {
     struct _EF_Slot * slot = slotForUserAddress(oldBuffer);
 
     if ( slot == 0 )
-      EF_Abort("\nElectric Fence: realloc(%a, %d): address not from malloc().", oldBuffer, newSize);
+      EF_Abort("realloc(%a, %d): address not from malloc().", oldBuffer, newSize);
 
     if ( newSize > slot->userSize )
     {
@@ -1124,7 +1152,7 @@ void * _eff_realloc(void * oldBuffer, size_t newSize  EF_PARAMLIST_FL)
 void * _eff_valloc(size_t size  EF_PARAMLIST_FL)
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  return _eff_allocate(EF_PAGE_SIZE, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_VALLOC  EF_PARAMS_FL);
+  return _eff_allocate(EF_PAGE_SIZE, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_VALLOC, EF_FAIL_ENV  EF_PARAMS_FL);
 }
 
 
@@ -1139,7 +1167,7 @@ char * _eff_strdup(const char * str  EF_PARAMLIST_FL)
   size = 0;
   while (str[size]) ++size;
 
-  dup = _eff_allocate(EF_PAGE_SIZE, size +1, EF_PROTECT_BELOW, -1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP  EF_PARAMS_FL);
+  dup = _eff_allocate(EF_PAGE_SIZE, size +1, EF_PROTECT_BELOW, -1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP, EF_FAIL_ENV  EF_PARAMS_FL);
 
   if (dup)                    /* if successful */
     for (i=0; i<=size; ++i)   /* copy string */
@@ -1156,7 +1184,7 @@ void * _eff_memcpy(void *dest, const void *src, size_t size  EF_PARAMLIST_FL)
   unsigned i;
 
   if ( (s < d  &&  d < s + size) || (d < s  &&  s < d + size) )
-    EF_Abort("\nElectric Fence: memcpy(%a, %a, %d): memory regions overlap.", dest, src, size);
+    EF_Abort("memcpy(%a, %a, %d): memory regions overlap.", dest, src, size);
 
   for (i=0; i<size; ++i)
     d[i] = s[i];
@@ -1171,7 +1199,7 @@ char * _eff_strcpy(char *dest, const char *src  EF_PARAMLIST_FL)
   size_t size = strlen(src) +1;
 
   if ( src < dest  &&  dest < src + size )
-    EF_Abort("\nElectric Fence: strcpy(%a, %a): memory regions overlap.", dest, src);
+    EF_Abort("strcpy(%a, %a): memory regions overlap.", dest, src);
 
   for (i=0; i<size; ++i)
     dest[i] = src[i];
@@ -1186,7 +1214,7 @@ char * _eff_strncpy(char *dest, const char *src, size_t size  EF_PARAMLIST_FL)
   unsigned i;
 
   if ( size > 0  &&  src < dest  &&  dest < src + size )
-    EF_Abort("\nElectric Fence: strncpy(%a, %a, %d): memory regions overlap.", dest, src, size);
+    EF_Abort("strncpy(%a, %a, %d): memory regions overlap.", dest, src, size);
 
   /* calculate number of characters to copy from src to dest */
   srcsize = strlen(src) +1;
@@ -1212,7 +1240,7 @@ char * _eff_strcat(char *dest, const char *src  EF_PARAMLIST_FL)
   size_t srcsize = strlen(src)  +1;
 
   if ( src < dest +destlen  &&  dest + destlen < src + srcsize )
-    EF_Abort("\nElectric Fence: strcat(%a, %a): memory regions overlap.", dest, src);
+    EF_Abort("strcat(%a, %a): memory regions overlap.", dest, src);
 
   for (i=0; i<srcsize; ++i)
     dest[destlen+i] = src[i];
@@ -1237,7 +1265,7 @@ char * _eff_strncat(char *dest, const char *src, size_t size  EF_PARAMLIST_FL)
     srclen = size;
 
   if ( src < dest +destlen  &&  dest + destlen < src + srclen +1 )
-    EF_Abort("\nElectric Fence: strncat(%a, %a, %d): memory regions overlap.", dest, src, size);
+    EF_Abort("strncat(%a, %a, %d): memory regions overlap.", dest, src, size);
 
   /* copy up to size characters from src to dest */
   for (i=0; i<srclen; ++i)
@@ -1386,7 +1414,7 @@ void  EF_delFrame(void)
       }
     }
     if (nonFreed)
-      EF_Abort("\nElectric Fence: EF_delFrame(): Found non free'd pointers.\n");
+      EF_Abort("EF_delFrame(): Found non free'd pointers.\n");
 
     Page_DenyAccess(_ef_allocList, _ef_allocListSize);
     EF_RELEASE_SEMAPHORE();
