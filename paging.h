@@ -28,7 +28,6 @@
 
 
 #ifndef EF_PAGING_H
-
 #define EF_PAGING_H
 
 
@@ -97,9 +96,9 @@ static void
 mprotectFailed(void)
 {
 #if defined(WIN32)
-  EF_Exit("\nElectric Fence: VirtualProtect() failed: %s", stringErrorReport());
+  EF_Exit("VirtualProtect() failed: %s", stringErrorReport());
 #else
-  EF_Exit("\nElectric Fence: mprotect() failed: %s", stringErrorReport());
+  EF_Exit("mprotect() failed: %s", stringErrorReport());
 #endif
 }
 
@@ -109,25 +108,26 @@ mprotectFailed(void)
  * void *Page_Create(size_t size)
  */
 static void *
-Page_Create(size_t size)
+Page_Create(size_t size, int exitonfail)
 {
   caddr_t    allocation;
 
 #if defined(WIN32)
 
   allocation = VirtualAlloc(
-                              NULL /* startAddr */   /* address of region to reserve or commit */
+                              NULL                    /* address of region to reserve or commit */
                             , (DWORD) size            /* size of region */
                             , (DWORD) MEM_COMMIT      /* type of allocation */
                             , (DWORD) PAGE_READWRITE  /* type of access protection */
                             );
 
-  startAddr = (char*)allocation + size;
-
   if ( (caddr_t)0 == allocation )
-
-    allocation = (caddr_t)0;
-    /* EF_Exit("\nElectric Fence: VirtualAlloc() failed: %s", stringErrorReport()); */
+  {
+    if ( exitonfail )
+      EF_Exit("VirtualAlloc(%d) failed: %s", (int)size, stringErrorReport());
+    else
+      EF_Print("\nElectricFence warning: VirtualAlloc(%d) failed: %s", (int)size, stringErrorReport());
+  }
 
 
 #elif defined(MAP_ANONYMOUS)
@@ -166,15 +166,19 @@ Page_Create(size_t size)
   #endif
 
   if ( allocation == (caddr_t)-1 )
-
+  {
     allocation = (caddr_t)0;
-
-    /* EF_Exit("mmap() failed: %s", stringErrorReport()); */
+    if ( exitonfail )
+      EF_Exit("mmap(%d) failed: %s", (int)size, stringErrorReport());
+    else
+      EF_Print("\nElectricFence warning: mmap(%d) failed: %s", (int)size, stringErrorReport());
+  }
 
 #else
   static int  devZeroFd = -1;
 
-  if ( devZeroFd == -1 ) {
+  if ( devZeroFd == -1 )
+  {
     devZeroFd = open("/dev/zero", O_RDWR);
     if ( devZeroFd < 0 )
       EF_Exit( "open() on /dev/zero failed: %s", stringErrorReport() );
@@ -202,9 +206,13 @@ Page_Create(size_t size)
   startAddr = allocation + size;
 
   if ( allocation == (caddr_t)-1 )
+  {
     allocation = (caddr_t)0;
-
-    /* EF_Exit("mmap() failed: %s", stringErrorReport()); */
+    if ( exitonfail )
+      EF_Exit("mmap(%d) failed: %s", (int)size, stringErrorReport());
+    else
+      EF_Print("\nElectricFence warning: mmap(%d) failed: %s", (int)size, stringErrorReport());
+  }
 
 #endif
 
@@ -233,7 +241,7 @@ Page_AllowAccess(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("\nElectric Fence: VirtualQuery() failed\n");
+      EF_Exit("VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualProtect(
                           (LPVOID) address        /* address of region of committed pages */
@@ -274,7 +282,7 @@ Page_DenyAccess(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("\nElectric Fence: VirtualQuery() failed\n");
+      EF_Exit("VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualProtect(
                           (LPVOID) address        /* address of region of committed pages */
@@ -306,28 +314,42 @@ static void
 Page_Delete(void * address, size_t size)
 {
 #if defined(WIN32)
+  void * alloc_address  = address;
+  size_t alloc_size     = size;
   DWORD retQuery;
   MEMORY_BASIC_INFORMATION MemInfo;
-  size_t tail_size;
   BOOL ret;
 
+  /* release physical memory commited to virtual address space */
   while (size >0)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("\nElectric Fence: VirtualQuery() failed\n");
-    tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
-    ret = VirtualFree(
-                       (LPVOID) address        /* address of region of committed pages */
-                     , (DWORD) tail_size       /* size of the region */
-                     , (DWORD) MEM_DECOMMIT    /* type of free operation */
-                     );
-    if (0 == ret)
-      Page_DenyAccess(address, tail_size);
+      EF_Exit("VirtualQuery() failed\n");
 
-    address = ((char *)address) + tail_size;
-    size -= tail_size;
+    if ( MemInfo.State == MEM_COMMIT )
+    {
+      ret = VirtualFree(
+                         (LPVOID) MemInfo.BaseAddress /* base of committed pages */
+                       , (DWORD) MemInfo.RegionSize   /* size of the region */
+                       , (DWORD) MEM_DECOMMIT         /* type of free operation */
+                       );
+      if (0 == ret)
+        EF_Exit("VirtualFree(,,MEM_DECOMMIT) failed: %s", stringErrorReport());
+    }
+
+    address = ((char *)address) + MemInfo.RegionSize;
+    size -= MemInfo.RegionSize;
   }
+
+  /* release virtual address space */
+  ret = VirtualFree(
+                     (LPVOID) alloc_address
+                   , (DWORD) 0
+                   , (DWORD) MEM_RELEASE
+                   );
+  if (0 == ret)
+    EF_Exit("VirtualFree(,,MEM_RELEASE) failed: %s", stringErrorReport());
 
 #else
   if ( munmap((caddr_t)address, size) < 0 )
