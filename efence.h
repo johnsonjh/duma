@@ -85,6 +85,12 @@ enum _EF_Allocator
   , EFA_DEL_ARRAY
 };
 
+enum _EF_FailReturn
+{
+    EF_FAIL_NULL
+  , EF_FAIL_ENV
+};
+
 #endif /* _EFENCE_ENUMS */
 
 
@@ -93,7 +99,7 @@ void   _eff_init(void);
 
 #ifndef EF_NO_LEAKDETECTION
 
-void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _EF_Allocator allocator, const char * filename, int lineno);
+void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _EF_Allocator allocator, enum _EF_FailReturn fail, const char * filename, int lineno);
 void   _eff_deallocate(void * baseAdr, int protectAllocList, enum _EF_Allocator allocator, const char * filename, int lineno);
 
 void * _eff_malloc(size_t size, const char * filename, int lineno);
@@ -128,7 +134,7 @@ void  EF_delFrame(void);
 
 #else /* EF_NO_LEAKDETECTION */
 
-void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _EF_Allocator allocator);
+void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _EF_Allocator allocator, enum _EF_FailReturn fail);
 void   _eff_deallocate(void * baseAdr, int protectAllocList, enum _EF_Allocator allocator);
 
 void * _eff_malloc(size_t size);

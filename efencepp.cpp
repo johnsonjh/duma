@@ -69,7 +69,7 @@ void * EF_CDECL operator new( EF_SIZE_T size )
 throw(std::bad_alloc)
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM  EF_PARAMS_UK);
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, EF_FAIL_NULL  EF_PARAMS_UK);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -80,7 +80,7 @@ void * EF_CDECL operator new( EF_SIZE_T size, const std::nothrow_t & )
 throw()
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM  EF_PARAMS_UK);
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, EF_FAIL_NULL  EF_PARAMS_UK);
   return ptr;
 }
 
@@ -113,7 +113,7 @@ void * EF_CDECL operator new[]( EF_SIZE_T size )
 throw(std::bad_alloc)
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY  EF_PARAMS_UK);
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, EF_FAIL_NULL  EF_PARAMS_UK);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -124,7 +124,7 @@ void * EF_CDECL operator new[]( EF_SIZE_T size, const std::nothrow_t & )
 throw()
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY  EF_PARAMS_UK);
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, EF_FAIL_NULL  EF_PARAMS_UK);
   return ptr;
 }
 
@@ -159,7 +159,7 @@ void * EF_CDECL operator new( EF_SIZE_T size, const char *filename, int lineno )
 throw( std::bad_alloc )
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, filename, lineno);
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, EF_FAIL_NULL, filename, lineno);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -169,7 +169,7 @@ void * EF_CDECL operator new( EF_SIZE_T size, const std::nothrow_t &, const char
 throw()
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, filename, lineno);
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, EF_FAIL_NULL, filename, lineno);
   return ptr;
 }
 
@@ -201,7 +201,7 @@ void * EF_CDECL operator new[]( EF_SIZE_T size, const char *filename, int lineno
 throw( std::bad_alloc )
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, filename, lineno);
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, EF_FAIL_NULL, filename, lineno);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -212,7 +212,7 @@ void * EF_CDECL operator new[]( EF_SIZE_T size, const std::nothrow_t &, const ch
 throw()
 {
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, filename, lineno);
+  void *ptr = _eff_allocate(EF_ALIGNMENT, size, EF_PROTECT_BELOW, EF_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, EF_FAIL_NULL, filename, lineno);
   return ptr;
 }
 
