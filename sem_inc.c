@@ -82,6 +82,9 @@ static int        semDepth  = 0;
 
 static void EF_init_sem(void)
 {
+  if (semInited)
+    return;
+
 #ifndef WIN32
   if (sem_init(&EF_sem, 0, 1) >= 0)
     semInited = 1;
