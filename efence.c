@@ -546,7 +546,7 @@ void _eff_init(void)
   struct _EF_Slot * slot;
 
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
   if (ef_init_done)
 #endif
   EF_GET_SEMAPHORE();
@@ -614,7 +614,7 @@ void _eff_init(void)
   unUsedSlots = slotCount - 2;
 
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
   if (ef_init_done)
 #endif
     EF_RELEASE_SEMAPHORE();
@@ -767,7 +767,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   if ( protectAllocList )
   {
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
     if (ef_init_done)
 #endif
       EF_GET_SEMAPHORE();
@@ -973,7 +973,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   {
     Page_DenyAccess(_ef_allocList, _ef_allocListSize);
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
     if (ef_init_done)
 #endif
       EF_RELEASE_SEMAPHORE();
@@ -1003,7 +1003,7 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   if ( protectAllocList )
   {
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
     if (ef_init_done)
 #endif
       EF_GET_SEMAPHORE();
@@ -1140,7 +1140,7 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   {
     Page_DenyAccess(_ef_allocList, _ef_allocListSize);
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
     if (ef_init_done)
 #endif
       EF_RELEASE_SEMAPHORE();
@@ -1184,7 +1184,7 @@ void * _eff_realloc(void * oldBuffer, size_t newSize  EF_PARAMLIST_FL)
   void * ptr;
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
   if (ef_init_done)
 #endif
     EF_GET_SEMAPHORE();
@@ -1213,7 +1213,7 @@ void * _eff_realloc(void * oldBuffer, size_t newSize  EF_PARAMLIST_FL)
 
   Page_DenyAccess(_ef_allocList, _ef_allocListSize);
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
   if (ef_init_done)
 #endif
     EF_RELEASE_SEMAPHORE();
@@ -1470,7 +1470,7 @@ void  EF_delFrame(void)
     int               nonFreed  = 0;
 
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
     if (ef_init_done)
 #endif
       EF_GET_SEMAPHORE();
@@ -1496,7 +1496,7 @@ void  EF_delFrame(void)
 
     Page_DenyAccess(_ef_allocList, _ef_allocListSize);
 #ifndef EF_NO_THREAD_SAFETY
-#ifdef(EF_EXPLICIT_INIT)
+#ifdef EF_EXPLICIT_INIT
     if (ef_init_done)
 #endif
       EF_RELEASE_SEMAPHORE();
