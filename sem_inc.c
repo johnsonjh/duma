@@ -80,7 +80,7 @@ static int        semInited = 0;
 static int        semDepth  = 0;
 
 
-static void EF_init_sem(void)
+void EF_init_sem(void)
 {
   if (semInited)
     return;

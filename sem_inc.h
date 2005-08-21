@@ -32,6 +32,7 @@
 extern "C" {
 #endif
 
+void EF_init_sem(void);
 void EF_get_sem(void);
 void EF_rel_sem(void);
 
@@ -40,11 +41,13 @@ void EF_rel_sem(void);
 #endif
 
 
+#define EF_INIT_SEMAPHORE()     EF_init_sem()
 #define EF_GET_SEMAPHORE()      EF_get_sem()
 #define EF_RELEASE_SEMAPHORE()  EF_rel_sem()
 
 #else  /* EF_NO_THREAD_SAFETY */
 
+#define EF_INIT_SEMAPHORE()     do { } while (0)
 #define EF_GET_SEMAPHORE()      do { } while (0)
 #define EF_RELEASE_SEMAPHORE()  do { } while (0)
 
