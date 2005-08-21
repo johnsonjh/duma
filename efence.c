@@ -366,6 +366,12 @@ static long numDeallocs = 0;
 static long numAllocs = 0;
 
 /*
+ * internal variable: is ef_init() already done
+ */
+static int ef_init_done = 0;
+
+
+/*
  * include helper functions
  */
 #include "ef_hlp.h"
@@ -510,6 +516,9 @@ void ef_init(void)
   EF_Print("ElectricFence: Registration was successful.\n");
 #endif
 
+  /* initialize semaphoring */
+  EF_INIT_SEMAPHORE();
+
 #ifndef EF_NO_GLOBAL_MALLOC_FREE
   /*
    * Check whether malloc and free is available
@@ -522,6 +531,8 @@ void ef_init(void)
   if (numDeallocs == 0)
     EF_Abort("free() is not bound to efence.\nElectricFence Aborting: Preload lib with 'LD_PRELOAD=libefence.so <prog>'.\n");
 #endif
+
+  ef_init_done = 1;
 }
 
 
@@ -534,7 +545,12 @@ void _eff_init(void)
   size_t            size = MEMORY_CREATION_SIZE;
   struct _EF_Slot * slot;
 
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+  if (ef_init_done)
+#endif
   EF_GET_SEMAPHORE();
+#endif
 
   /*
    * Figure out how many Slot structures to allocate at one time.
@@ -597,8 +613,12 @@ void _eff_init(void)
    */
   unUsedSlots = slotCount - 2;
 
-  EF_RELEASE_SEMAPHORE();
-
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+  if (ef_init_done)
+#endif
+    EF_RELEASE_SEMAPHORE();
+#endif
 
 #ifndef EF_EXPLICIT_INIT
   ef_init();
@@ -743,10 +763,15 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
    * inaccessable, so that errant programs won't scrawl on the
    * allocator's arena. I'll un-protect it here so that I can make
    * a new allocation. I'll re-protect it before I return.
-    */
+   */
   if ( protectAllocList )
   {
-    EF_GET_SEMAPHORE();
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+    if (ef_init_done)
+#endif
+      EF_GET_SEMAPHORE();
+#endif
     Page_AllowAccess(_ef_allocList, _ef_allocListSize);
   }
 
@@ -947,7 +972,12 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   if ( protectAllocList )
   {
     Page_DenyAccess(_ef_allocList, _ef_allocListSize);
-    EF_RELEASE_SEMAPHORE();
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+    if (ef_init_done)
+#endif
+      EF_RELEASE_SEMAPHORE();
+#endif
   }
 
   /* Fill the memory if it was specified to do so. */
@@ -972,7 +1002,12 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
 
   if ( protectAllocList )
   {
-    EF_GET_SEMAPHORE();
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+    if (ef_init_done)
+#endif
+      EF_GET_SEMAPHORE();
+#endif
     Page_AllowAccess(_ef_allocList, _ef_allocListSize);
   }
 
@@ -1104,7 +1139,12 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   if ( protectAllocList )
   {
     Page_DenyAccess(_ef_allocList, _ef_allocListSize);
-    EF_RELEASE_SEMAPHORE();
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+    if (ef_init_done)
+#endif
+      EF_RELEASE_SEMAPHORE();
+#endif
   }
 }
 
@@ -1143,7 +1183,12 @@ void * _eff_realloc(void * oldBuffer, size_t newSize  EF_PARAMLIST_FL)
 {
   void * ptr;
   if ( _ef_allocList == 0 )  _eff_init();  /* This sets EF_ALIGNMENT, EF_PROTECT_BELOW, EF_FILL, ... */
-  EF_GET_SEMAPHORE();
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+  if (ef_init_done)
+#endif
+    EF_GET_SEMAPHORE();
+#endif
   Page_AllowAccess(_ef_allocList, _ef_allocListSize);
 
   ptr = _eff_allocate(EF_ALIGNMENT, newSize, EF_PROTECT_BELOW, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC, EF_FAIL_ENV  EF_PARAMS_FL);
@@ -1167,7 +1212,12 @@ void * _eff_realloc(void * oldBuffer, size_t newSize  EF_PARAMLIST_FL)
   }
 
   Page_DenyAccess(_ef_allocList, _ef_allocListSize);
-  EF_RELEASE_SEMAPHORE();
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+  if (ef_init_done)
+#endif
+    EF_RELEASE_SEMAPHORE();
+#endif
   return ptr;
 }
 
@@ -1419,7 +1469,12 @@ void  EF_delFrame(void)
     size_t            count     = slotCount;
     int               nonFreed  = 0;
 
-    EF_GET_SEMAPHORE();
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+    if (ef_init_done)
+#endif
+      EF_GET_SEMAPHORE();
+#endif
     Page_AllowAccess(_ef_allocList, _ef_allocListSize);
 
     for ( ; count > 0; --count, ++slot )
@@ -1440,7 +1495,12 @@ void  EF_delFrame(void)
       EF_Abort("EF_delFrame(): Found non free'd pointers.\n");
 
     Page_DenyAccess(_ef_allocList, _ef_allocListSize);
-    EF_RELEASE_SEMAPHORE();
+#ifndef EF_NO_THREAD_SAFETY
+#ifdef(EF_EXPLICIT_INIT)
+    if (ef_init_done)
+#endif
+      EF_RELEASE_SEMAPHORE();
+#endif
 
   #ifdef EF_USE_FRAMENO
     --frameno;
