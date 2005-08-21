@@ -1,5 +1,8 @@
 PIC= -fPIC
 # add "-DEF_NO_GLOBAL_MALLOC_FREE" (without quotes) to for not defining malloc/free in global namespace
+# add "-DEF_EXPLICIT_INIT" (without quotes) to do all the "risky" stuff (getenv(), write(), ..)
+#                            explicitly from main(). you have to call ef_init() explicitly from main()
+# add "-DEF_NO_THREAD_SAFETY" (without quotes) for not supporting multi-threading
 # add "-DEF_NO_CPP_SUPPORT" (without quotes) to for not directing new/delete to malloc/free
 # add "-DEF_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
 # add "-DEF_USE_FRAMENO" (without quotes) if you want to use EF_newFrame() and EF_delFrame()
@@ -9,7 +12,7 @@ PIC= -fPIC
 #                          unfortunately you have to use DEL_ELEM/DEL_ARRAY further
 #                          to utilize filename and linenumber of deallocation calls
 
-EF_OPTIONS =
+EF_OPTIONS = -DEF_EXPLICIT_INIT
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
@@ -91,9 +94,13 @@ libefence.a: efence_config.h $(OBJECTS)
 
 
 ifneq ($(OS), Windows_NT)
+
+
 libefence.so.0.0: efence_config.h $(OBJECTS)
 	$(CXX) -g -shared -Wl,-soname,libefence.so.0 -o libefence.so.0.0 \
 	$(OBJECTS) -lpthread -lc
+
+
 endif
 
 efence_config.h: createconf
