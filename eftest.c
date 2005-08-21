@@ -262,6 +262,10 @@ main(int argc, char * * argv)
   static const struct diagnostic *  diag = diagnostics;
   int testno;
 
+#ifdef EF_EXPLICIT_INIT
+  ef_init();
+#endif
+
   EF_PROTECT_BELOW = 0;
   EF_ALIGNMENT = 0;
 

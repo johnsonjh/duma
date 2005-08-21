@@ -166,6 +166,11 @@ void _eff_init_slack( struct _EF_Slot * slot )
 {
   char * accBegAddr, * accEndAddr;
   char * tmpBegAddr, * tmpEndAddr;
+  char   slackfill = (char)EF_SLACKFILL;
+
+#ifdef EF_EXPLICIT_INIT
+  slot->slackfill = EF_SLACKFILL;
+#endif
 
   /* calculate accessible non-protectable address area */
   /* check the no man's land; use internal knowledge to detect the EF_PROTECT_BELOW on allocation */
@@ -202,6 +207,12 @@ void _eff_check_slack( struct _EF_Slot * slot )
 {
   char    * accBegAddr, * accEndAddr;
   char    * tmpBegAddr, * tmpEndAddr;
+  char      slackfill;
+#ifdef EF_EXPLICIT_INIT
+  slackfill = (char)slot->slackfill;
+#else
+  slackfill = (char)EF_SLACKFILL;
+#endif
 
   /* calculate accessible non-protectable address area */
   /* check the no man's land; use internal knowledge to detect the EF_PROTECT_BELOW on allocation */
@@ -222,7 +233,7 @@ void _eff_check_slack( struct _EF_Slot * slot )
   tmpEndAddr = (char*)slot->userAddress;
   while (tmpBegAddr < tmpEndAddr)
   {
-    if ( (char)EF_SLACKFILL != *tmpBegAddr++ )
+    if ( (char)slackfill != *tmpBegAddr++ )
     {
       #ifndef EF_NO_LEAKDETECTION
         EF_Abort("ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
@@ -237,7 +248,7 @@ void _eff_check_slack( struct _EF_Slot * slot )
   tmpEndAddr = accEndAddr;
   while (tmpBegAddr < tmpEndAddr)
   {
-    if ( (char)EF_SLACKFILL != *tmpBegAddr++ )
+    if ( (char)slackfill != *tmpBegAddr++ )
     {
       #ifndef EF_NO_LEAKDETECTION
         EF_Abort("free() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",

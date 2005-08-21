@@ -94,6 +94,10 @@ enum _EF_FailReturn
 #endif /* _EFENCE_ENUMS */
 
 
+#ifdef EF_EXPLICIT_INIT
+void   ef_init(void);
+#endif
+
 void   _eff_init(void);
 
 

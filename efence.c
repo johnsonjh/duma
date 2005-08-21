@@ -166,6 +166,10 @@ struct _EF_Slot
   char            * filename;   /* filename of allocation */
   int               lineno;     /* linenumber of allocation */
 #endif
+
+#ifdef EF_EXPLICIT_INIT
+  int               slackfill;
+#endif
 };
 
 enum _EF_AllocType
@@ -381,23 +385,18 @@ void _eff_assert(const char * exprstr, const char * filename, int lineno)
 }
 
 
-/*
- * _eff_init sets up the memory allocation arena and the run-time
- * configuration information.
- */
-void _eff_init(void)
+#ifndef EF_EXPLICIT_INIT
+static
+#endif
+void ef_init(void)
 {
-  size_t            size = MEMORY_CREATION_SIZE;
   char            * string;
-  struct _EF_Slot * slot;
   void            * testAlloc;
 
   if ( (string = getenv("EF_DISABLE_BANNER")) != 0 )
     EF_DISABLE_BANNER = (atoi(string) != 0);
   if ( !EF_DISABLE_BANNER )
     EF_Print(version);
-
-  EF_GET_SEMAPHORE();
 
   /*
    * Import the user's environment specification of the default
@@ -487,12 +486,55 @@ void _eff_init(void)
    */
   if ( (string = getenv("EF_SLACKFILL")) != 0)
     EF_SLACKFILL = atoi(string);
+  EF_SLACKFILL &= 255;
 
   /*
    * See if the user wants to see allocations / frees
    */
   if ( (string = getenv("EF_SHOW_ALLOC")) != 0 )
     EF_SHOW_ALLOC = (atoi(string) != 0);
+
+
+  /*
+   * Register atexit()
+   */
+#ifndef EF_NO_LEAKDETECTION
+  EF_Print("\nElectricFence: Registering with atexit().\n"
+#ifdef WIN32
+             "ElectricFence: If this hangs, change the library load order with EF_EXPLICIT_INIT.\n");
+#else
+             "ElectricFence: If this hangs, change the library load order with EF_EXPLICIT_INIT or LD_PRELOAD.\n");
+#endif
+  if ( atexit( EF_delFrame ) )
+    EF_Abort("Cannot register exit function.\n");
+  EF_Print("ElectricFence: Registration was successful.\n");
+#endif
+
+#ifndef EF_NO_GLOBAL_MALLOC_FREE
+  /*
+   * Check whether malloc and free is available
+   */
+  testAlloc = malloc(123);
+  if (numAllocs == 0)
+    EF_Abort("malloc() is not bound to efence.\nElectricFence Aborting: Preload lib with 'LD_PRELOAD=libefence.so <prog>'.\n");
+
+  free(testAlloc);
+  if (numDeallocs == 0)
+    EF_Abort("free() is not bound to efence.\nElectricFence Aborting: Preload lib with 'LD_PRELOAD=libefence.so <prog>'.\n");
+#endif
+}
+
+
+/*
+ * _eff_init sets up the memory allocation arena and the run-time
+ * configuration information.
+ */
+void _eff_init(void)
+{
+  size_t            size = MEMORY_CREATION_SIZE;
+  struct _EF_Slot * slot;
+
+  EF_GET_SEMAPHORE();
 
   /*
    * Figure out how many Slot structures to allocate at one time.
@@ -555,30 +597,11 @@ void _eff_init(void)
    */
   unUsedSlots = slotCount - 2;
 
-  /*
-   * Register atexit()
-   */
-#ifndef EF_NO_LEAKDETECTION
-  EF_Print("\nElectricFence: Registering with atexit().\n"
-             "ElectricFence: If this hangs, change the library load order with LD_PRELOAD.\n");
-  if ( atexit( EF_delFrame ) )
-    EF_Abort("Cannot register exit function.\n");
-  EF_Print("ElectricFence: Registration was successful.\n");
-#endif
-
   EF_RELEASE_SEMAPHORE();
 
-#ifndef EF_NO_GLOBAL_MALLOC_FREE
-  /*
-   * Check whether malloc and free is available
-   */
-  testAlloc = malloc(123);
-  if (numAllocs == 0)
-    EF_Abort("malloc() is not bound to efence.\nElectricFence Aborting: Preload lib with 'LD_PRELOAD=libefence.so <prog>'.\n");
 
-  free(testAlloc);
-  if (numDeallocs == 0)
-    EF_Abort("free() is not bound to efence.\nElectricFence Aborting: Preload lib with 'LD_PRELOAD=libefence.so <prog>'.\n");
+#ifndef EF_EXPLICIT_INIT
+  ef_init();
 #endif
 }
 

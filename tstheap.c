@@ -62,6 +62,10 @@ main(int argc, char * * argv)
   int  count;
   int  duration = TEST_DURATION;
 
+#ifdef EF_EXPLICIT_INIT
+  ef_init();
+#endif
+
   if ( argc >= 2 )
     duration = atoi(argv[1]);
 
