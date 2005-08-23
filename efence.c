@@ -85,7 +85,7 @@
 #include "paging.h"
 
 static const char  version[] = "\n"
-"Electric Fence 2.4.15\n"
+"Electric Fence 2.4.16\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n";
 
@@ -138,6 +138,7 @@ struct _EF_Slot
 {
   void            * internalAddress;
   void            * userAddress;
+  void            * protAddress;
   size_t            internalSize;
   size_t            userSize;
 
@@ -688,7 +689,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   struct _EF_Slot * slot;
   struct _EF_Slot * fullSlot;
   struct _EF_Slot * emptySlots[2];
-  char            * address;
+  ef_number         intAddr, userAddr, protAddr, endAddr;
   size_t            internalSize;
 
   EF_ASSERT( 0 != _ef_allocList );
@@ -709,17 +710,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   {
     alignment = 1;
   }
-  if ( alignment > EF_PAGE_SIZE )
-  {
-    #ifndef EF_NO_LEAKDETECTION
-      EF_Abort("Too big alignment (=%d) requested from %s(%d)",
-               alignment, filename, lineno);
-    #else
-      EF_Abort("Too big alignment (=%d) requested", alignment);
-    #endif
-    alignment = EF_PAGE_SIZE;
-  }
-  else if ( (int)alignment != ((int)alignment & -(int)alignment) )
+  if ( (int)alignment != ((int)alignment & -(int)alignment) )
   {
     #ifndef EF_NO_LEAKDETECTION
       EF_Abort("Alignment (=%d) is not a power of 2 requested from %s(%d)",
@@ -738,17 +729,13 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
    * If protectBelow is set, all addresses returned by malloc()
    * and company will be page-aligned.
    *
-   * The internal size of the buffer is rounded up to the next page-size
-   * boundary, and then we add another page's worth of memory for the
-   * dead page.
+   * The internal size of the buffer is rounded up to the next alignment and page-size
+   * boundary, and then we add another page's worth of memory for the dead page.
    */
-  if ( !protectBelow && alignment > 1 )
-    /* a bit tricky but no modulo and no if () */
-    internalSize = (   ( ((userSize + alignment -1) & ~(alignment - 1)) + EF_PAGE_SIZE -1)
-                     & ~(EF_PAGE_SIZE -1)
-                   ) + EF_PAGE_SIZE;
-  else
-    internalSize = EF_PAGE_SIZE + ( (userSize + EF_PAGE_SIZE -1) & ~(EF_PAGE_SIZE -1) );
+  /* a bit tricky but no modulo and no if () */
+  internalSize = (   ( ((userSize + alignment -1) & ~(alignment - 1)) + EF_PAGE_SIZE -1)
+                   & ~(EF_PAGE_SIZE -1)
+                 ) + EF_PAGE_SIZE;
 
   /*
    * These will hold the addresses of two empty Slot structures, that
@@ -875,8 +862,6 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
       fullSlot->state           = EFST_FREE;
       --unUsedSlots;
     }
-    else
-      address = (char *)0;
   }
 
   if ( fullSlot->internalSize )
@@ -911,20 +896,22 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
        * Arrange the buffer so that it is followed by an inaccessable
        * memory page. A buffer overrun that touches that page will
        * cause a segmentation fault.
+       * internalAddr <= userAddr < protectedAddr
        */
 
-      /* Set up the "live" page(s). */
-      if ( internalSize - EF_PAGE_SIZE > 0 )
-        Page_AllowAccess(fullSlot->internalAddress, internalSize - EF_PAGE_SIZE);
-
-      address = (char *)fullSlot->internalAddress + internalSize -EF_PAGE_SIZE;
-
-      /* Set up the "dead" page. */
-      Page_DenyAccess(address, EF_PAGE_SIZE);
-
       /* Figure out what address to give the user. */
-      address = (char *)fullSlot->internalAddress
-              + ( (internalSize -EF_PAGE_SIZE -userSize) & ~(alignment -1) );
+      intAddr  = (ef_number)fullSlot->internalAddress;
+      endAddr  = intAddr + internalSize;
+      userAddr = ( intAddr  + internalSize - EF_PAGE_SIZE - userSize )
+                & ~(alignment -1); 
+      protAddr = ( userAddr + userSize     + EF_PAGE_SIZE -1)
+                & ~(EF_PAGE_SIZE -1);
+
+
+      /* Set up the "live" page(s). */
+      Page_AllowAccess( (char*)intAddr, protAddr - intAddr );
+      /* Set up the "dead" page(s). */
+      Page_DenyAccess( (char*)protAddr, endAddr - protAddr );
     }
     else /* if (protectBelow) */
     {
@@ -933,20 +920,22 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
        * memory page. A buffer underrun that touches that page will
        * cause a segmentation fault.
        */
-      address = (char *)fullSlot->internalAddress;
+      /* Figure out what address to give the user. */
+      intAddr  = (ef_number)fullSlot->internalAddress;
+      endAddr  = intAddr + internalSize;
+      userAddr = ( intAddr + EF_PAGE_SIZE + alignment -1)
+                & ~(alignment -1);
+      protAddr = ( userAddr & ~(EF_PAGE_SIZE -1) ) - EF_PAGE_SIZE;
 
-      /* Set up the "dead" page. */
-      Page_DenyAccess(address, EF_PAGE_SIZE);
-
-      address += EF_PAGE_SIZE;
-
-      /* Set up the "live" page. */
-      if ( internalSize - EF_PAGE_SIZE > 0 )
-        Page_AllowAccess(address, internalSize - EF_PAGE_SIZE);
+      /* Set up the "live" page(s). userAddr == protAddr + EF_PAGE_SIZE ! */
+      Page_AllowAccess( (char*)userAddr, internalSize - (userAddr - protAddr) );
+      /* Set up the "dead" page(s). */
+      Page_DenyAccess( (char*)intAddr, userAddr - intAddr );
     }
 
     /* => userAddress = internalAddress + EF_PAGE_SIZE */
-    fullSlot->userAddress = address;
+    fullSlot->userAddress = (char*)userAddr;
+    fullSlot->protAddress = (char*)protAddr;
     fullSlot->userSize    = userSize;
     fullSlot->state       = EFST_IN_USE;
     fullSlot->allocator   = allocator;
@@ -981,10 +970,10 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   }
 
   /* Fill the memory if it was specified to do so. */
-  if ( address && fillByte != -1 )
-    memset( address, fillByte, userSize);
+  if ( ((char*)userAddr) && fillByte != -1 )
+    memset( (char*)userAddr, fillByte, userSize);
 
-  return address;
+  return (char*)userAddr;
 }
 
 

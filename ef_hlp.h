@@ -173,18 +173,17 @@ void _eff_init_slack( struct _EF_Slot * slot )
 #endif
 
   /* calculate accessible non-protectable address area */
-  /* check the no man's land; use internal knowledge to detect the EF_PROTECT_BELOW on allocation */
-  if ( (char*)slot->internalAddress + EF_PAGE_SIZE == (char*)slot->userAddress )
+  if ( (char*)slot->protAddress < (char*)slot->userAddress )
   {
     /* EF_PROTECT_BELOW was 1 when allocating this piece of memory */
-    accBegAddr = (char*)slot->internalAddress + EF_PAGE_SIZE;
+    accBegAddr = (char*)slot->userAddress;
     accEndAddr = (char*)slot->internalAddress + slot->internalSize;
   }
   else
   {
     /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
     accBegAddr = (char*)slot->internalAddress;
-    accEndAddr = (char*)slot->internalAddress + slot->internalSize - EF_PAGE_SIZE;
+    accEndAddr = (char*)slot->protAddress;
   }
 
   tmpBegAddr = accBegAddr;
@@ -215,18 +214,17 @@ void _eff_check_slack( struct _EF_Slot * slot )
 #endif
 
   /* calculate accessible non-protectable address area */
-  /* check the no man's land; use internal knowledge to detect the EF_PROTECT_BELOW on allocation */
-  if ( (char*)slot->internalAddress + EF_PAGE_SIZE == (char*)slot->userAddress )
+  if ( (char*)slot->protAddress < (char*)slot->userAddress )
   {
     /* EF_PROTECT_BELOW was 1 when allocating this piece of memory */
-    accBegAddr = (char*)slot->internalAddress + EF_PAGE_SIZE;
+    accBegAddr = (char*)slot->userAddress;
     accEndAddr = (char*)slot->internalAddress + slot->internalSize;
   }
   else
   {
     /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
     accBegAddr = (char*)slot->internalAddress;
-    accEndAddr = (char*)slot->internalAddress + slot->internalSize - EF_PAGE_SIZE;
+    accEndAddr = (char*)slot->protAddress;
   }
 
   tmpBegAddr = accBegAddr;
