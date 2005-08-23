@@ -11,6 +11,10 @@ PIC= -fPIC
 #                          this option, a standard conform new syntax can get used.
 #                          unfortunately you have to use DEL_ELEM/DEL_ARRAY further
 #                          to utilize filename and linenumber of deallocation calls
+#
+# for usage with LD_PRELOAD you should not use the options
+#   EF_NO_GLOBAL_MALLOC_FREE, EF_EXPLICIT_INIT and DEF_NO_THREAD_SAFETY
+#
 
 EF_OPTIONS = -DEF_EXPLICIT_INIT
 
