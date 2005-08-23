@@ -70,6 +70,17 @@ TODO:
 
 CHANGES:
 
+2.4.16 enhancement: allow alignments bigger than page size
+       (2005-08-23, HA)
+       documented EF_NO_THREAD_SAFETY preprocessor flag in Makefile
+       added EF_EXPLICIT_INIT preprocessor flag to workaround buggy environments:
+         initialisation is done in 2 steps:
+         1- must do things when allocation is called
+         2- non must-do like retrieving environment variables, registering atexit()
+           calls to functions getenv(), atexit() and write() are avoided in 1.step
+         3- avoid semaphore locking before 2.step is done
+       (2005-08-21, HA)
+
 2.4.15 bugfixed page management under Windows: virtual address space never got
          released. unfortunately this "quick" fix avoids memory pooling (under
          Windows).
