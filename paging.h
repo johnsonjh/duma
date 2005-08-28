@@ -53,12 +53,6 @@
 
 static caddr_t  startAddr = (caddr_t) 0;
 
-#if ( !defined(sgi) && !defined(_AIX) && !defined(_MSC_VER) && !defined(__linux__) )
-extern int  sys_nerr;
-extern char *  sys_errlist[];
-/* extern const char *  const sys_errlist[]; */
-#endif
-
 
 static const char *
 stringErrorReport(void)
@@ -78,16 +72,8 @@ stringErrorReport(void)
                 , NULL
                );
   return (char*)lpMsgBuf; /* "Unknown error.\n"; */
-#elif ( defined(sgi) )
-  return strerror(oserror());
-#elif ( defined(_AIX) || defined(__linux__) )
-
-  return strerror(errno);
 #else
-  if ( errno > 0 && errno < sys_nerr )
-    return sys_errlist[errno];
-  else
-    return "Unknown error.\n";
+  return strerror(errno);
 #endif
 }
 
