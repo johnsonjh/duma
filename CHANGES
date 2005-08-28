@@ -70,7 +70,9 @@ TODO:
 
 CHANGES:
 
-2.4.16 enhancement: allow alignments bigger than page size
+2.4.16 added examples for article
+       (2005-08-28, HA)
+       enhancement: allow alignments bigger than page size
        (2005-08-23, HA)
        documented EF_NO_THREAD_SAFETY preprocessor flag in Makefile
        added EF_EXPLICIT_INIT preprocessor flag to workaround buggy environments:
