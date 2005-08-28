@@ -18,6 +18,13 @@ PIC= -fPIC
 
 EF_OPTIONS = -DEF_EXPLICIT_INIT
 
+# for FreeBSD 5.4
+# EF_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
+#
+# for FreeBSD 5.4 if EF_EXPLICIT_INIT is not set
+# EF_OPTIONS += -DEF_NO_LEAKDETECTION
+
+
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
     CURPATH=./
