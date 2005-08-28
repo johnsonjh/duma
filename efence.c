@@ -1368,6 +1368,12 @@ char * _eff_strncat(char *dest, const char *src, size_t size  EF_PARAMLIST_FL)
  * define global functions for malloc(), free(), ..
  */
 
+#ifdef _MSC_VER
+/* define these functions as non-intrinsic */
+#pragma function( memcpy, strcpy, strcat )
+#endif
+
+
 void * malloc(size_t size)
 {
   return _eff_malloc(size  EF_PARAMS_UK);

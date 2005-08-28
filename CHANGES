@@ -79,6 +79,8 @@ CHANGES:
          to allow special treatment in leak_checking
        changed default in eftest to use two signals: SIGSEGV and SIGBUS
          instead of single PAGE_PROTECTION_VIOLATED_SIGNAL
+       define functions (memcpy, strcpy, strcat) as non-intrinsic
+         for Visual C++ compiler in Release mode
        (2005-08-28, HA)
        enhancement: allow alignments bigger than page size
        (2005-08-23, HA)
