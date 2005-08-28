@@ -733,9 +733,10 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
    * boundary, and then we add another page's worth of memory for the dead page.
    */
   /* a bit tricky but no modulo and no if () */
-  internalSize = (   ( ((userSize + alignment -1) & ~(alignment - 1)) + EF_PAGE_SIZE -1)
-                   & ~(EF_PAGE_SIZE -1)
-                 ) + EF_PAGE_SIZE;
+  internalSize = ( (userSize + EF_PAGE_SIZE -1) & ~(EF_PAGE_SIZE -1) )
+                 + EF_PAGE_SIZE;
+  if ( alignment > EF_PAGE_SIZE )
+    internalSize += alignment - EF_PAGE_SIZE;
 
   /*
    * These will hold the addresses of two empty Slot structures, that
@@ -907,6 +908,7 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
       protAddr = ( userAddr + userSize     + EF_PAGE_SIZE -1)
                 & ~(EF_PAGE_SIZE -1);
 
+      /* EF_ASSERT(intAddr <= userAddr && intAddr < protAddr ); */
 
       /* Set up the "live" page(s). */
       Page_AllowAccess( (char*)intAddr, protAddr - intAddr );
@@ -926,6 +928,8 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
       userAddr = ( intAddr + EF_PAGE_SIZE + alignment -1)
                 & ~(alignment -1);
       protAddr = ( userAddr & ~(EF_PAGE_SIZE -1) ) - EF_PAGE_SIZE;
+
+      /* EF_ASSERT(intAddr < userAddr && intAddr <= protAddr ); */
 
       /* Set up the "live" page(s). userAddr == protAddr + EF_PAGE_SIZE ! */
       Page_AllowAccess( (char*)userAddr, internalSize - (userAddr - protAddr) );
