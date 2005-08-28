@@ -2,6 +2,8 @@ PIC= -fPIC
 # add "-DEF_NO_GLOBAL_MALLOC_FREE" (without quotes) to for not defining malloc/free in global namespace
 # add "-DEF_EXPLICIT_INIT" (without quotes) to do all the "risky" stuff (getenv(), write(), ..)
 #                            explicitly from main(). you have to call ef_init() explicitly from main()
+#                            this option also avoids leak error messages for allocations
+#                            before ef_init() got called. this helps for leaky standard environments.
 # add "-DEF_NO_THREAD_SAFETY" (without quotes) for not supporting multi-threading
 # add "-DEF_NO_CPP_SUPPORT" (without quotes) to for not directing new/delete to malloc/free
 # add "-DEF_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
