@@ -23,6 +23,8 @@ double drand48(void); /* For pre-ANSI C systems */
 #define FAKE_DRAND48
 #endif
 
+#define ALIGNMENT   8192
+#undef ALIGNMENT
 #define	POOL_SIZE	1024
 #define	LARGEST_BUFFER 30000
 #define	TEST_DURATION  1000000
@@ -97,7 +99,11 @@ main(int argc, char * * argv)
 
       if ( size > 0 )
       {
+#ifdef ALIGNMENT
+        element->addr = memalign(ALIGNMENT,size);
+#else
         element->addr = malloc(size);
+#endif
         element->size = size;
         /* really use it, so that the system has to use real memory */
         memset( element->addr, -1, size );
