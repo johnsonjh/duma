@@ -82,16 +82,19 @@ static int        semDepth  = 0;
 
 void EF_init_sem(void)
 {
+#ifndef WIN32
   if (semInited)
     return;
 
-#ifndef WIN32
   if (sem_init(&EF_sem, 0, 1) >= 0)
     semInited = 1;
 #else
   SEM_NAME_TYPE   semLocalName[32];
   SEM_NAME_TYPE   acPID[16];
   DWORD pid;
+
+  if (semInited)
+    return;
 
   pid = GetCurrentProcessId();
   SEM_STRCPY(semLocalName, semObjectName);
