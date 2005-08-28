@@ -42,7 +42,8 @@
 
 
 #ifndef  PAGE_PROTECTION_VIOLATED_SIGNAL
-#define  PAGE_PROTECTION_VIOLATED_SIGNAL  SIGSEGV
+/* changed default in code below to use two signals: SIGSEGV and SIGBUS */
+/* #define  PAGE_PROTECTION_VIOLATED_SIGNAL  SIGSEGV */
 #endif
 
 struct diagnostic
@@ -84,10 +85,15 @@ gotSegmentationFault(int (*test)(void))
   sigset_t newmask, oldmask;
   int savemask;
 #endif
-  void (*oldhandler)(int);
+#ifdef PAGE_PROTECTION_VIOLATED_SIGNAL
+  void (*oldhandler)(int)         = SIG_ERR;
+#else
+  void (*oldSIGSEGVhandler)(int)  = SIG_ERR;
+#ifndef WIN32
+  void (*oldSIGBUShandler)(int)   = SIG_ERR;
+#endif
+#endif
   int status;
-
-  oldhandler = SIG_ERR;
 
 #ifdef WIN32
   if ( 0 == setjmp(env) )
@@ -98,10 +104,23 @@ gotSegmentationFault(int (*test)(void))
 #ifndef WIN32
     /* unblock signal and save previous signal mask */
     sigemptyset(&newmask);
+  #ifdef PAGE_PROTECTION_VIOLATED_SIGNAL
     sigaddset(&newmask, PAGE_PROTECTION_VIOLATED_SIGNAL);
+  #else
+    sigaddset(&newmask, SIGSEGV);
+    sigaddset(&newmask, SIGBUS);
+  #endif
     sigprocmask(SIG_UNBLOCK, &newmask, &oldmask);
 #endif
+
+#ifdef PAGE_PROTECTION_VIOLATED_SIGNAL
     oldhandler = signal(PAGE_PROTECTION_VIOLATED_SIGNAL, segmentationFaultHandler);
+#else
+    oldSIGSEGVhandler = signal(SIGSEGV, segmentationFaultHandler);
+  #ifndef WIN32
+    oldSIGBUShandler  = signal(SIGBUS, segmentationFaultHandler);
+  #endif
+#endif
 
     status = (*test)();
   }
@@ -109,8 +128,19 @@ gotSegmentationFault(int (*test)(void))
     status = 1;
 
   /* install previous signal handler */
+
+#ifdef PAGE_PROTECTION_VIOLATED_SIGNAL
   if (SIG_ERR != oldhandler)
     signal(PAGE_PROTECTION_VIOLATED_SIGNAL, oldhandler);
+#else
+  if (SIG_ERR != oldSIGSEGVhandler)
+    signal(SIGSEGV, oldSIGSEGVhandler);
+#ifndef WIN32
+  if (SIG_ERR != oldSIGBUShandler)
+    signal(SIGBUS, oldSIGBUShandler);
+#endif
+#endif
+
 #ifndef WIN32
   /* restore signal mask */
   sigprocmask(SIG_SETMASK, &oldmask, NULL);
