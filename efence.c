@@ -953,7 +953,15 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
     fullSlot->frame       = frameno;
   #endif
     fullSlot->filename    = (char*)filename;
+  #ifdef EF_EXPLICIT_INIT
+    /* mark allocations from standard libraries
+     * before ef_init() is called with lineno = -1
+     * to allow special treatment in leak_checking
+     */
+    fullSlot->lineno      = (ef_init_done) ? lineno : -1;
+  #else
     fullSlot->lineno      = lineno;
+  #endif
   #endif
 
     /* initialise no mans land of slot */
@@ -1485,6 +1493,9 @@ void  EF_delFrame(void)
            && frameno == slot->frame
         #endif
            && EFA_INT_ALLOC != slot->allocator
+        #ifdef EF_EXPLICIT_INIT
+           && -1 != slot->lineno
+        #endif
          )
       {
         EF_Print("\nElectricFence: ptr=0x%a size=%d alloced from %s(%d) not freed",

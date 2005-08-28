@@ -74,6 +74,9 @@ CHANGES:
        portability: use standardized strerror() instead sys_nerr and sys_errlist[]
        bugfix: error when defined EF_NO_LEAKDETECTION in _eff_allocate()
        bugfix: error when defined EF_NO_LEAKDETECTION in _eff_deallocate()
+       enhancement: mark allocations from standard libraries
+         before ef_init() is called with lineno = -1
+         to allow special treatment in leak_checking
        (2005-08-28, HA)
        enhancement: allow alignments bigger than page size
        (2005-08-23, HA)
