@@ -723,7 +723,11 @@ void * _eff_allocate(size_t alignment, size_t userSize, int protectBelow, int fi
   /* count and show allocation, if requested */
   numAllocs++;
   if (EF_SHOW_ALLOC)
+#ifndef EF_NO_LEAKDETECTION
     EF_Print("\nElectricFence: Allocating %d bytes at %s(%d).", userSize, filename, lineno);
+#else
+    EF_Print("\nElectricFence: Allocating %d bytes.", userSize);
+#endif
 
   /*
    * If protectBelow is set, all addresses returned by malloc()
