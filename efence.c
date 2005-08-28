@@ -1061,7 +1061,11 @@ void   _eff_deallocate(void * address, int protectAllocList, enum _EF_Allocator 
   /* count and show deallocation, if requested */
   numDeallocs++;
   if (EF_SHOW_ALLOC)
+#ifndef EF_NO_LEAKDETECTION
     EF_Print("\nElectricFence: Freeing %d bytes at %s(%d) (Allocated from %s(%d)).", slot->userSize, filename, lineno, slot->filename, slot->lineno);
+#else
+    EF_Print("\nElectricFence: Freeing %d bytes.", slot->userSize);
+#endif
 
   /* CHECK INTEGRITY OF NO MANS LAND */
   _eff_check_slack( slot );
