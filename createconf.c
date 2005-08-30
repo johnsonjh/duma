@@ -1,6 +1,6 @@
 
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -22,7 +22,7 @@
  *
  * FILE CONTENTS:
  * --------------
- * This is a small tool to generate the "efence_config.h" configuration file.
+ * This is a small tool to generate the "duma_config.h" configuration file.
  * Its purpose is to allow fixed size memory allocation on stack, which can
  * get protected calling page protection functions.
  * Also its nice for the user to be able to see the page size.
@@ -95,14 +95,14 @@ int main(int argc, char *argv[])
 
   printf(" */\n");
   printf("\n");
-  printf("#ifndef _EFENCE_CONFIG_H_\n");
-  printf("#define _EFENCE_CONFIG_H_\n");
+  printf("#ifndef _DUMA_CONFIG_H_\n");
+  printf("#define _DUMA_CONFIG_H_\n");
   printf("\n");
   printf("/*\n");
   printf(" * Number of bytes per virtual-memory page, as returned by Page_Size().\n");
   printf(" */\n");
-  printf("#define EF_PAGE_SIZE %lu\n", pagesize);
+  printf("#define DUMA_PAGE_SIZE %lu\n", pagesize);
   printf("\n");
-  printf("#endif /* _EFENCE_CONFIG_H_ */\n");
+  printf("#endif /* _DUMA_CONFIG_H_ */\n");
   return 0;
 }
