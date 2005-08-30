@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="efencelib" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="dumalib" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
-CFG=efencelib - Win32 Debug
+CFG=dumalib - Win32 Debug
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
-!MESSAGE NMAKE /f "efencelib.mak".
+!MESSAGE NMAKE /f "dumalib.mak".
 !MESSAGE 
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "efencelib.mak" CFG="efencelib - Win32 Debug"
+!MESSAGE NMAKE /f "dumalib.mak" CFG="dumalib - Win32 Debug"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "efencelib - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "efencelib - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "dumalib - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "dumalib - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=efencelib - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "efencelib - Win32 Release"
+!IF  "$(CFG)" == "dumalib - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -52,7 +52,7 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
 
-!ELSEIF  "$(CFG)" == "efencelib - Win32 Debug"
+!ELSEIF  "$(CFG)" == "dumalib - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -80,18 +80,18 @@ LIB32=link.exe -lib
 
 # Begin Target
 
-# Name "efencelib - Win32 Release"
-# Name "efencelib - Win32 Debug"
+# Name "dumalib - Win32 Release"
+# Name "dumalib - Win32 Debug"
 # Begin Group "Quellcodedateien"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\efence.c
+SOURCE=..\..\duma.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\efencepp.cpp
+SOURCE=..\..\dumapp.cpp
 # End Source File
 # Begin Source File
 
@@ -111,15 +111,15 @@ SOURCE=..\..\ef_hlp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\efence.h
+SOURCE=..\..\duma.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\efenceint.h
+SOURCE=..\..\dumaint.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\efencepp.h
+SOURCE=..\..\dumapp.h
 # End Source File
 # Begin Source File
 
@@ -148,7 +148,7 @@ SOURCE="..\..\COPYING-LGPL"
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\efence.3
+SOURCE=..\..\duma.3
 # End Source File
 # Begin Source File
 

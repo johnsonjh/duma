@@ -84,7 +84,7 @@
 #include "paging.h"
 
 static const char  version[] = "\n"
-"DUMA 2.4.16\n"
+"DUMA 2.4.17\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n";
 

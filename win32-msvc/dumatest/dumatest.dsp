@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="eftestpp" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="dumatest" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=eftestpp - Win32 Debug
+CFG=dumatest - Win32 Debug
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
-!MESSAGE NMAKE /f "eftestpp.mak".
+!MESSAGE NMAKE /f "dumatest.mak".
 !MESSAGE 
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "eftestpp.mak" CFG="eftestpp - Win32 Debug"
+!MESSAGE NMAKE /f "dumatest.mak" CFG="dumatest - Win32 Debug"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "eftestpp - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "eftestpp - Win32 Debug" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "dumatest - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "dumatest - Win32 Debug" (basierend auf  "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -28,7 +28,7 @@ CFG=eftestpp - Win32 Debug
 CPP=cl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "eftestpp - Win32 Release"
+!IF  "$(CFG)" == "dumatest - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -52,7 +52,7 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 
-!ELSEIF  "$(CFG)" == "eftestpp - Win32 Debug"
+!ELSEIF  "$(CFG)" == "dumatest - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -66,7 +66,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /I "../.." /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FD /GZ /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
@@ -82,14 +82,14 @@ LINK32=link.exe
 
 # Begin Target
 
-# Name "eftestpp - Win32 Release"
-# Name "eftestpp - Win32 Debug"
+# Name "dumatest - Win32 Release"
+# Name "dumatest - Win32 Debug"
 # Begin Group "Quellcodedateien"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\eftestpp.cpp
+SOURCE=..\..\dumatest.c
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"
