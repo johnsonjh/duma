@@ -374,7 +374,7 @@ static int duma_init_done = 0;
 /*
  * include helper functions
  */
-#include "DUMA_hlp.h"
+#include "duma_hlp.h"
 
 
 
