@@ -70,6 +70,18 @@ TODO:
 
 CHANGES:
 
+2.4.17 forked Electric Fence cause Bruce Perens wrote:
+         > Hayati Ayguen must choose another name for his program.
+         > "Electric Fence" is a trademark he is not permitted to use.
+       opened a "new" project DUMA - Detect Unintended Memory Access
+         rename efence to duma
+         rename Electric Fence to DUMA
+         rename EF_ to DUMA_
+         rename ef_ to duma_
+         rename eff_ to duma_
+         and so on ...
+       (2005-09-10, HA)
+
 2.4.16 added examples for article
        portability: use standardized strerror() instead sys_nerr and sys_errlist[]
        bugfix: error when defined EF_NO_LEAKDETECTION in _eff_allocate()
