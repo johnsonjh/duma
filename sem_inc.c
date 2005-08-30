@@ -1,6 +1,6 @@
 
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU LGPL (GNU Lesser General Public License, see COPYING-GPL)
  *
@@ -26,7 +26,7 @@
 #include "sem_inc.h"
 #include "print.h"
 
-#ifndef EF_NO_THREAD_SAFETY
+#ifndef DUMA_NO_THREAD_SAFETY
 
 #ifndef WIN32
   #include <pthread.h>
@@ -39,7 +39,7 @@
 
 
 /*
- * EF_sem is a semaphore used to allow one thread at a time into
+ * DUMA_sem is a semaphore used to allow one thread at a time into
  * these routines.
  * Also, we use semInited as a boolean to see if we should be
  * using the semaphore.
@@ -54,7 +54,7 @@
 
 
 #ifndef WIN32
-static sem_t      EF_sem = { 0 };
+static sem_t      DUMA_sem = { 0 };
 static pthread_t  semThread = (pthread_t) 0;
 
 #else /* WIN32 */
@@ -80,13 +80,13 @@ static int        semInited = 0;
 static int        semDepth  = 0;
 
 
-void EF_init_sem(void)
+void DUMA_init_sem(void)
 {
 #ifndef WIN32
   if (semInited)
     return;
 
-  if (sem_init(&EF_sem, 0, 1) >= 0)
+  if (sem_init(&DUMA_sem, 0, 1) >= 0)
     semInited = 1;
 #else
   SEM_NAME_TYPE   semLocalName[32];
@@ -124,15 +124,15 @@ void EF_init_sem(void)
 }
 
 
-void EF_get_sem(void)
+void DUMA_get_sem(void)
 {
-  if (!semInited)     EF_init_sem();    /* initialize if necessary */
-  if (!semInited)     EF_Abort("\nCouldn't initialise semaphore");
+  if (!semInited)     DUMA_init_sem();    /* initialize if necessary */
+  if (!semInited)     DUMA_Abort("\nCouldn't initialise semaphore");
 
 #ifndef WIN32
   if ( pthread_self() != semThread )
   {
-    while (sem_wait(&EF_sem) < 0) ;   /* wait for the semaphore. */
+    while (sem_wait(&DUMA_sem) < 0) ;   /* wait for the semaphore. */
     semThread = pthread_self();       /* let everyone know who has the semaphore. */
   }
 #else
@@ -146,22 +146,22 @@ void EF_get_sem(void)
 }
 
 
-void EF_rel_sem(void)
+void DUMA_rel_sem(void)
 {
-  if (!semInited)     EF_Abort("\nSemaphore isn't initialised");
-  if (!semThread)     EF_Abort("\nSemaphore isn't owned by this thread");
-  if (semDepth <= 0)  EF_Abort("\nSemaphore isn't locked");
+  if (!semInited)     DUMA_Abort("\nSemaphore isn't initialised");
+  if (!semThread)     DUMA_Abort("\nSemaphore isn't owned by this thread");
+  if (semDepth <= 0)  DUMA_Abort("\nSemaphore isn't locked");
 
   if (!(--semDepth))              /* decrement semDepth - popping one stack level */
   {
 #ifndef WIN32
     semThread = (pthread_t) 0;        /* zero this before actually free'ing the semaphore. */
-    if (sem_post(&EF_sem) < 0)
+    if (sem_post(&DUMA_sem) < 0)
 #else
     semThread = 0;                    /* zero this before actually free'ing the semaphore. */
     if (0 == ReleaseSemaphore(semHandle, 1 /* amount to add to current count */, NULL) )
 #endif
-      EF_Abort("Failed to post the semaphore.");
+      DUMA_Abort("Failed to post the semaphore.");
   }
 }
 
@@ -170,5 +170,5 @@ void EF_rel_sem(void)
 /* for not having an empty file */
 static int dummy = 0;
 
-#endif /* EF_NO_THREAD_SAFETY */
+#endif /* DUMA_NO_THREAD_SAFETY */
 

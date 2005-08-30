@@ -1,6 +1,6 @@
 
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -21,8 +21,8 @@
  *
  *
  * FILE CONTENTS:
- * Electric Fence confidence tests.
- * Make sure all of the various functions of Electric Fence work correctly.
+ * DUMA confidence tests.
+ * Make sure all of the various functions of DUMA work correctly.
  */
 
 #include <stdlib.h>
@@ -37,8 +37,8 @@
 #include <setjmp.h>
 #include <signal.h>
 
-#include "efenceint.h"
-#include "efence.h"
+#include "dumaint.h"
+#include "duma.h"
 
 
 #ifndef  PAGE_PROTECTION_VIOLATED_SIGNAL
@@ -53,8 +53,8 @@ struct diagnostic
   const char  * explanation;        /* explanation of that test */
 };
 
-extern int  EF_PROTECT_BELOW;
-extern int  EF_ALIGNMENT;
+extern int  DUMA_PROTECT_BELOW;
+extern int  DUMA_ALIGNMENT;
 
 static jmp_buf  env;
 
@@ -157,11 +157,11 @@ static int
 testSizes(void)
 {
   /*
-   * If ef_number can't hold all of the bits of a void *, have the user
-   * add -DUSE_ LONG_LONG to the compiler flags so that ef_number will be
+   * If duma_number can't hold all of the bits of a void *, have the user
+   * add -DUSE_ LONG_LONG to the compiler flags so that duma_number will be
    * declared as "unsigned long long" instead of "unsigned long".
    */
-  return ( sizeof(ef_number) < sizeof(void *) );
+  return ( sizeof(duma_number) < sizeof(void *) );
 }
 
 static int
@@ -186,14 +186,14 @@ freeMemory(void)
 static int
 protectBelow(void)
 {
-  EF_PROTECT_BELOW = 1;
+  DUMA_PROTECT_BELOW = 1;
   return 0;
 }
 
 static int
 protectAbove(void)
 {
-  EF_PROTECT_BELOW = 0;
+  DUMA_PROTECT_BELOW = 0;
   return 0;
 }
 
@@ -233,7 +233,7 @@ static struct diagnostic diagnostics[] =
   },
 #if 1
   {
-    protectAbove, 0,   "Protect above: This sets Electric Fence to protect\n"
+    protectAbove, 0,   "Protect above: This sets DUMA to protect\n"
                        "the upper boundary of a malloc buffer, rather than the lower boundary."
   },
   {
@@ -257,7 +257,7 @@ static struct diagnostic diagnostics[] =
 #endif
 #if 1
   {
-    protectBelow, 0,   "Protect below: This sets Electric Fence to protect\n"
+    protectBelow, 0,   "Protect below: This sets DUMA to protect\n"
                        "the lower boundary of a malloc buffer, rather than the upper boundary."
   },
   {
@@ -282,7 +282,7 @@ static struct diagnostic diagnostics[] =
 };
 
 
-static const char  failedTest[] = "Electric Fence confidence test failed.\n";
+static const char  failedTest[] = "DUMA confidence test failed.\n";
 static const char  newline = '\n';
 
 
@@ -292,12 +292,12 @@ main(int argc, char * * argv)
   static const struct diagnostic *  diag = diagnostics;
   int testno;
 
-#ifdef EF_EXPLICIT_INIT
-  ef_init();
+#ifdef DUMA_EXPLICIT_INIT
+  duma_init();
 #endif
 
-  EF_PROTECT_BELOW = 0;
-  EF_ALIGNMENT = 0;
+  DUMA_PROTECT_BELOW = 0;
+  DUMA_ALIGNMENT = 0;
 
   allocation = 0;
 

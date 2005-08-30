@@ -1,6 +1,6 @@
 
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU LGPL (GNU Lesser General Public License, see COPYING-GPL)
  *
@@ -20,7 +20,7 @@
  *
  * FILE CONTENTS:
  * internal implementation file
- * contains helper functions for electric fence
+ * contains helper functions for DUMA
  */
 
 
@@ -31,7 +31,7 @@
 static void
 reduceProtectedMemory( long reductionSizekB )
 {
-  struct _EF_Slot * slot            = _ef_allocList;
+  struct _DUMA_Slot * slot            = _duma_allocList;
   size_t            count           = slotCount;
   long              alreadyReducekB = 0;
   size_t            delSize, newSize;
@@ -42,7 +42,7 @@ reduceProtectedMemory( long reductionSizekB )
     {
       /* free memory above userAddr; keep userAddr protected */
       newSize = (char*)slot->userAddress - (char*)slot->internalAddress;
-      newSize = (newSize + EF_PAGE_SIZE) & ~(EF_PAGE_SIZE -1);
+      newSize = (newSize + DUMA_PAGE_SIZE) & ~(DUMA_PAGE_SIZE -1);
       delSize = slot->internalSize - newSize;
       Page_Delete( (char*)slot->internalAddress + newSize, delSize );
       alreadyReducekB += (delSize+1023) >>10;
@@ -58,7 +58,7 @@ reduceProtectedMemory( long reductionSizekB )
       }
     }
   /* 2- deallocate all page(s) with userAddress, empty whole slot */
-  slot  = _ef_allocList;
+  slot  = _duma_allocList;
   count = slotCount;
   for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
     if ( EFST_BEGIN_PROTECTED == slot->state )
@@ -71,9 +71,9 @@ reduceProtectedMemory( long reductionSizekB )
       slot->internalSize    = slot->userSize    = 0;
       slot->state           = EFST_EMPTY;
       slot->allocator       = EFA_INT_ALLOC;
-      #ifndef EF_NO_LEAKDETECTION
+      #ifndef DUMA_NO_LEAKDETECTION
       slot->fileSource      = EFFS_EMPTY;
-      #ifdef EF_USE_FRAMENO
+      #ifdef DUMA_USE_FRAMENO
         slot->frame         = 0;
       #endif
         slot->filename      = 0;
@@ -93,10 +93,10 @@ reduceProtectedMemory( long reductionSizekB )
 /*
  * Find the slot structure for a user address.
  */
-static struct _EF_Slot *
+static struct _DUMA_Slot *
 slotForUserAddress(void * address)
 {
-  struct _EF_Slot * slot  = _ef_allocList;
+  struct _DUMA_Slot * slot  = _duma_allocList;
   size_t            count = slotCount;
 
   for ( ; count > 0; --count, ++slot )
@@ -109,10 +109,10 @@ slotForUserAddress(void * address)
 /*
  * Find the nearest slot structure for a user address.
  */
-static struct _EF_Slot *
+static struct _DUMA_Slot *
 nearestSlotForUserAddress(void * userAddress)
 {
-  struct _EF_Slot * slot  = _ef_allocList;
+  struct _DUMA_Slot * slot  = _duma_allocList;
   size_t            count = slotCount;
 
   for ( ; count > 0; --count, ++slot )
@@ -127,10 +127,10 @@ nearestSlotForUserAddress(void * userAddress)
 /*
  * Find the slot structure for an internal address.
  */
-static struct _EF_Slot *
+static struct _DUMA_Slot *
 slotForInternalAddrNextTo(void * address)
 {
-  struct _EF_Slot * slot  = _ef_allocList;
+  struct _DUMA_Slot * slot  = _duma_allocList;
   size_t            count = slotCount;
 
   for ( ; count > 0; --count, ++slot )
@@ -145,10 +145,10 @@ slotForInternalAddrNextTo(void * address)
  * before that buffer in the address space. This is used by free() to
  * coalesce two free buffers into one.
  */
-static struct _EF_Slot *
+static struct _DUMA_Slot *
 slotForInternalAddrPrevTo(void * address)
 {
-  struct _EF_Slot * slot  = _ef_allocList;
+  struct _DUMA_Slot * slot  = _duma_allocList;
   size_t            count = slotCount;
 
   for ( ; count > 0; --count, ++slot )
@@ -162,26 +162,26 @@ slotForInternalAddrPrevTo(void * address)
  * Initialise the no mans land, for a given slot
  */
 static
-void _eff_init_slack( struct _EF_Slot * slot )
+void _duma_init_slack( struct _DUMA_Slot * slot )
 {
   char * accBegAddr, * accEndAddr;
   char * tmpBegAddr, * tmpEndAddr;
-  char   slackfill = (char)EF_SLACKFILL;
+  char   slackfill = (char)DUMA_SLACKFILL;
 
-#ifdef EF_EXPLICIT_INIT
-  slot->slackfill = EF_SLACKFILL;
+#ifdef DUMA_EXPLICIT_INIT
+  slot->slackfill = DUMA_SLACKFILL;
 #endif
 
   /* calculate accessible non-protectable address area */
   if ( (char*)slot->protAddress < (char*)slot->userAddress )
   {
-    /* EF_PROTECT_BELOW was 1 when allocating this piece of memory */
+    /* DUMA_PROTECT_BELOW was 1 when allocating this piece of memory */
     accBegAddr = (char*)slot->userAddress;
     accEndAddr = (char*)slot->internalAddress + slot->internalSize;
   }
   else
   {
-    /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
+    /* DUMA_PROTECT_BELOW was 0 when allocating this piece of memory */
     accBegAddr = (char*)slot->internalAddress;
     accEndAddr = (char*)slot->protAddress;
   }
@@ -189,12 +189,12 @@ void _eff_init_slack( struct _EF_Slot * slot )
   tmpBegAddr = accBegAddr;
   tmpEndAddr = (char*)slot->userAddress;
   while (tmpBegAddr < tmpEndAddr)
-    *tmpBegAddr++ = (char)EF_SLACKFILL;
+    *tmpBegAddr++ = (char)DUMA_SLACKFILL;
 
   tmpBegAddr = (char*)slot->userAddress + slot->userSize;
   tmpEndAddr = accEndAddr;
   while (tmpBegAddr < tmpEndAddr)
-    *tmpBegAddr++ = (char)EF_SLACKFILL;
+    *tmpBegAddr++ = (char)DUMA_SLACKFILL;
 }
 
 
@@ -202,27 +202,27 @@ void _eff_init_slack( struct _EF_Slot * slot )
  * Checks the integrity of no mans land, for a given slot
  */
 static
-void _eff_check_slack( struct _EF_Slot * slot )
+void _duma_check_slack( struct _DUMA_Slot * slot )
 {
   char    * accBegAddr, * accEndAddr;
   char    * tmpBegAddr, * tmpEndAddr;
   char      slackfill;
-#ifdef EF_EXPLICIT_INIT
+#ifdef DUMA_EXPLICIT_INIT
   slackfill = (char)slot->slackfill;
 #else
-  slackfill = (char)EF_SLACKFILL;
+  slackfill = (char)DUMA_SLACKFILL;
 #endif
 
   /* calculate accessible non-protectable address area */
   if ( (char*)slot->protAddress < (char*)slot->userAddress )
   {
-    /* EF_PROTECT_BELOW was 1 when allocating this piece of memory */
+    /* DUMA_PROTECT_BELOW was 1 when allocating this piece of memory */
     accBegAddr = (char*)slot->userAddress;
     accEndAddr = (char*)slot->internalAddress + slot->internalSize;
   }
   else
   {
-    /* EF_PROTECT_BELOW was 0 when allocating this piece of memory */
+    /* DUMA_PROTECT_BELOW was 0 when allocating this piece of memory */
     accBegAddr = (char*)slot->internalAddress;
     accEndAddr = (char*)slot->protAddress;
   }
@@ -233,11 +233,11 @@ void _eff_check_slack( struct _EF_Slot * slot )
   {
     if ( (char)slackfill != *tmpBegAddr++ )
     {
-      #ifndef EF_NO_LEAKDETECTION
-        EF_Abort("ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
+      #ifndef DUMA_NO_LEAKDETECTION
+        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
           slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
       #else
-        EF_Abort("ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
+        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
       #endif
     }
   }
@@ -248,11 +248,11 @@ void _eff_check_slack( struct _EF_Slot * slot )
   {
     if ( (char)slackfill != *tmpBegAddr++ )
     {
-      #ifndef EF_NO_LEAKDETECTION
-        EF_Abort("free() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
+      #ifndef DUMA_NO_LEAKDETECTION
+        DUMA_Abort("free() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
           slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
       #else
-        EF_Abort("free() detected overwrite of no mans land: ptr=%a", slot->userAddress);
+        DUMA_Abort("free() detected overwrite of no mans land: ptr=%a", slot->userAddress);
       #endif
     }
   }

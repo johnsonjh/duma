@@ -1,6 +1,6 @@
 
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -25,8 +25,8 @@
  * contains aborting, printing functions with minor system/platform dependencies
  */
 
-#ifndef EF_PRINT_H
-#define EF_PRINT_H
+#ifndef DUMA_PRINT_H
+#define DUMA_PRINT_H
 
 /*
  * These routines do their printing without using stdio. Stdio can't
@@ -38,13 +38,13 @@
 extern "C" {
 #endif
 
-void EF_Abort(const char * pattern, ...);
-void EF_Print(const char * pattern, ...);
-void EF_Exit(const char * pattern, ...);
+void DUMA_Abort(const char * pattern, ...);
+void DUMA_Print(const char * pattern, ...);
+void DUMA_Exit(const char * pattern, ...);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
   
-#endif /* EF_PRINT_H */
+#endif /* DUMA_PRINT_H */

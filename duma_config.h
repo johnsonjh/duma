@@ -4,12 +4,12 @@
  * under Linux the Feb 11 2005
  */
 
-#ifndef _EFENCE_CONFIG_H_
-#define _EFENCE_CONFIG_H_
+#ifndef _DUMA_CONFIG_H_
+#define _DUMA_CONFIG_H_
 
 /*
  * Number of bytes per virtual-memory page, as returned by Page_Size().
  */
-#define EF_PAGE_SIZE 4096
+#define DUMA_PAGE_SIZE 4096
 
-#endif /* _EFENCE_CONFIG_H_ */
+#endif /* _DUMA_CONFIG_H_ */

@@ -1,7 +1,7 @@
 #include <malloc.h>
 #include <new>
-#include <efence.h>
-#include <efencepp.h>
+#include <duma.h>
+#include <dumapp.h>
 
 void main()
 {

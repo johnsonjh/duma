@@ -1,7 +1,6 @@
 
-
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -27,8 +26,8 @@
  */
 
 
-#ifndef EF_PAGING_H
-#define EF_PAGING_H
+#ifndef DUMA_PAGING_H
+#define DUMA_PAGING_H
 
 
 /*
@@ -82,9 +81,9 @@ static void
 mprotectFailed(void)
 {
 #if defined(WIN32)
-  EF_Exit("VirtualProtect() failed: %s", stringErrorReport());
+  DUMA_Exit("VirtualProtect() failed: %s", stringErrorReport());
 #else
-  EF_Exit("mprotect() failed: %s", stringErrorReport());
+  DUMA_Exit("mprotect() failed: %s", stringErrorReport());
 #endif
 }
 
@@ -110,9 +109,9 @@ Page_Create(size_t size, int exitonfail)
   if ( (caddr_t)0 == allocation )
   {
     if ( exitonfail )
-      EF_Exit("VirtualAlloc(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Exit("VirtualAlloc(%d) failed: %s", (int)size, stringErrorReport());
     else
-      EF_Print("\nElectricFence warning: VirtualAlloc(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Print("\nDUMA warning: VirtualAlloc(%d) failed: %s", (int)size, stringErrorReport());
   }
 
 
@@ -155,9 +154,9 @@ Page_Create(size_t size, int exitonfail)
   {
     allocation = (caddr_t)0;
     if ( exitonfail )
-      EF_Exit("mmap(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Exit("mmap(%d) failed: %s", (int)size, stringErrorReport());
     else
-      EF_Print("\nElectricFence warning: mmap(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Print("\nDUMA warning: mmap(%d) failed: %s", (int)size, stringErrorReport());
   }
 
 #else
@@ -167,7 +166,7 @@ Page_Create(size_t size, int exitonfail)
   {
     devZeroFd = open("/dev/zero", O_RDWR);
     if ( devZeroFd < 0 )
-      EF_Exit( "open() on /dev/zero failed: %s", stringErrorReport() );
+      DUMA_Exit( "open() on /dev/zero failed: %s", stringErrorReport() );
   }
 
   /*
@@ -195,9 +194,9 @@ Page_Create(size_t size, int exitonfail)
   {
     allocation = (caddr_t)0;
     if ( exitonfail )
-      EF_Exit("mmap(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Exit("mmap(%d) failed: %s", (int)size, stringErrorReport());
     else
-      EF_Print("\nElectricFence warning: mmap(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Print("\nDUMA warning: mmap(%d) failed: %s", (int)size, stringErrorReport());
   }
 
 #endif
@@ -227,7 +226,7 @@ Page_AllowAccess(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("VirtualQuery() failed\n");
+      DUMA_Exit("VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualProtect(
                           (LPVOID) address        /* address of region of committed pages */
@@ -268,7 +267,7 @@ Page_DenyAccess(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("VirtualQuery() failed\n");
+      DUMA_Exit("VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualProtect(
                           (LPVOID) address        /* address of region of committed pages */
@@ -311,7 +310,7 @@ Page_Delete(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      EF_Exit("VirtualQuery() failed\n");
+      DUMA_Exit("VirtualQuery() failed\n");
 
     if ( MemInfo.State == MEM_COMMIT )
     {
@@ -321,7 +320,7 @@ Page_Delete(void * address, size_t size)
                        , (DWORD) MEM_DECOMMIT         /* type of free operation */
                        );
       if (0 == ret)
-        EF_Exit("VirtualFree(,,MEM_DECOMMIT) failed: %s", stringErrorReport());
+        DUMA_Exit("VirtualFree(,,MEM_DECOMMIT) failed: %s", stringErrorReport());
     }
 
     address = ((char *)address) + MemInfo.RegionSize;
@@ -335,7 +334,7 @@ Page_Delete(void * address, size_t size)
                    , (DWORD) MEM_RELEASE
                    );
   if (0 == ret)
-    EF_Exit("VirtualFree(,,MEM_RELEASE) failed: %s", stringErrorReport());
+    DUMA_Exit("VirtualFree(,,MEM_RELEASE) failed: %s", stringErrorReport());
 
 #else
   if ( munmap((caddr_t)address, size) < 0 )
@@ -347,8 +346,8 @@ Page_Delete(void * address, size_t size)
 /*
  * function Page_Size() moved to createconf.c
  * instead include file efence_config.h and
- * the EF_PAGE_SIZE define
+ * the DUMA_PAGE_SIZE define
  */
 
 
-#endif /* EF_PAGING_H */
+#endif /* DUMA_PAGING_H */

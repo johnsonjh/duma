@@ -1,6 +1,6 @@
 
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -24,13 +24,13 @@
  * internal header file
  */
 
-#ifndef _EFENCE_INTERNAL_
-#define _EFENCE_INTERNAL_
+#ifndef _DUMA_INTERNAL_
+#define _DUMA_INTERNAL_
 
-#include "efence.h"
+#include "duma.h"
 
 
-/* for enabling inclusion of efence.h after inclusion of efencint.h */
+/* for enabling inclusion of duma.h after inclusion of dumaint.h */
 
 /* remove previous definitions */
 
@@ -48,8 +48,8 @@
 #undef strcat
 #undef strncat
 
-#undef EF_newFrame
-#undef EF_delFrame
+#undef DUMA_newFrame
+#undef DUMA_delFrame
 
 
 #ifdef __cplusplus
@@ -59,13 +59,13 @@
 
 
 /*
- * ef_number is the largest unsigned integer we'll need. On systems that
+ * duma_number is the largest unsigned integer we'll need. On systems that
  * support 64-bit pointers, this may be "unsigned long long".
  */
 #if defined(USE_LONG_LONG)
-typedef unsigned long long	ef_number;
+typedef unsigned long long	duma_number;
 #else
-typedef unsigned long		ef_number;
+typedef unsigned long		duma_number;
 #endif
 
 /*
@@ -80,4 +80,4 @@ typedef unsigned long		ef_number;
   } /* extern "C" */
 #endif
 
-#endif /* _EFENCE_INTERNAL_ */
+#endif /* _DUMA_INTERNAL_ */

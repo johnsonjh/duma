@@ -1,5 +1,5 @@
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -26,14 +26,14 @@
  */
 
 
-/* remove previous EFence definitions */
+/* remove previous DUMA definitions */
 
-#ifdef EF_newFrame
-#undef EF_newFrame
+#ifdef DUMA_newFrame
+#undef DUMA_newFrame
 #endif
 
-#ifdef EF_delFrame
-#undef EF_delFrame
+#ifdef DUMA_delFrame
+#undef DUMA_delFrame
 #endif
 
 
@@ -75,7 +75,7 @@
 #endif
 
 
-/* remove previous EFence C++ definitions */
+/* remove previous DUMA C++ definitions */
 
 #ifdef NEW_ELEM
 #undef NEW_ELEM
@@ -99,27 +99,27 @@
 
 
 /* remove special assert definition */
-#ifdef EF_ASSERT
-#undef EF_ASSERT
+#ifdef DUMA_ASSERT
+#undef DUMA_ASSERT
 #endif
 
 
 /* remove definitions for protection of functions return address */
 
-#ifdef EF_FN_PROT_START
-#undef EF_FN_PROT_START
+#ifdef DUMA_FN_PROT_START
+#undef DUMA_FN_PROT_START
 #endif
 
-#ifdef EF_FN_PROT_END
-#undef EF_FN_PROT_END
+#ifdef DUMA_FN_PROT_END
+#undef DUMA_FN_PROT_END
 #endif
 
-#ifdef EF_FN_PROT_RET
-#undef EF_FN_PROT_RET
+#ifdef DUMA_FN_PROT_RET
+#undef DUMA_FN_PROT_RET
 #endif
 
-#ifdef EF_FN_PROT_RET_VOID
-#undef EF_FN_PROT_RET_VOID
+#ifdef DUMA_FN_PROT_RET_VOID
+#undef DUMA_FN_PROT_RET_VOID
 #endif
 
 /* remove (C)hecked (A)rray definitions */

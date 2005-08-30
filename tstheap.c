@@ -3,7 +3,7 @@
 #include <math.h>
 #include <limits.h>
 #include <memory.h>
-#include "efence.h"
+#include "duma.h"
 
 /*
  * This is a simple program to exercise the allocator. It allocates and frees

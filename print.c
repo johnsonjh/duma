@@ -1,6 +1,6 @@
 
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -62,35 +62,35 @@
 
 /* define prototypes / forward declarations */
 
-static int  sprintNumber(char* obuffer, ef_number number, ef_number base);
-static int  EF_sprintf(char* buffer, const char *pattern, va_list args);
+static int  sprintNumber(char* obuffer, duma_number number, duma_number base);
+static int  DUMA_sprintf(char* buffer, const char *pattern, va_list args);
 
 
 /*
  * NUMBER_BUFFER_SIZE is the longest character string that could be needed
  * to represent an unsigned integer, assuming we might print in base 2.
  */
-#define  NUMBER_BUFFER_SIZE  (sizeof(ef_number) * NBBY)
+#define  NUMBER_BUFFER_SIZE  (sizeof(duma_number) * NBBY)
 
 #define STRING_BUFFER_SIZE  1024
 
 
 /*
  * internal function to print a number into a buffer
- * int sprintNumber(char* obuffer, ef_number number, ef_number base)
+ * int sprintNumber(char* obuffer, duma_number number, duma_number base)
  */
 static int
-sprintNumber(char* obuffer, ef_number number, ef_number base)
+sprintNumber(char* obuffer, duma_number number, duma_number base)
 {
   char   buffer[NUMBER_BUFFER_SIZE+1];
   char * s = &buffer[NUMBER_BUFFER_SIZE];
   int    size;
-  ef_number  digit;
+  duma_number  digit;
 
   do
   {
     if ( --s == buffer )
-      EF_Abort("Internal error printing number.");
+      DUMA_Abort("Internal error printing number.");
 
     digit = number % base;
     *s = (char)( (digit < 10) ? ('0' + digit) : ('a' + digit -10) );
@@ -110,13 +110,13 @@ sprintNumber(char* obuffer, ef_number number, ef_number base)
  * int sprintf(char* buffer, const char *pattern, va_list args)
  */
 static int
-EF_sprintf(char* buffer, const char *pattern, va_list args)
+DUMA_sprintf(char* buffer, const char *pattern, va_list args)
 {
   char    c;
-  static const char  bad_pattern[] = "\nElectricFence: Bad pattern specifier %%%c in EF_Print().\n";
+  static const char  bad_pattern[] = "\nDUMA: Bad pattern specifier %%%c in DUMA_Print().\n";
   const char *  s = pattern;
   int len = 0;
-  ef_number n;
+  duma_number n;
 
   c = *s++;
   while ( c )
@@ -131,11 +131,11 @@ EF_sprintf(char* buffer, const char *pattern, va_list args)
       case 'a':
         /*
          * Print an address passed as a void pointer.
-         * The type of ef_number must be set so that
+         * The type of duma_number must be set so that
          * it is large enough to contain all of the
          * bits of a void pointer.
          */
-        n = (ef_number) va_arg(args, void *);
+        n = (duma_number) va_arg(args, void *);
         len += sprintNumber(&buffer[len], n, 0x10);
         break;
       case 's':
@@ -169,7 +169,7 @@ EF_sprintf(char* buffer, const char *pattern, va_list args)
         }
         break;
       case 'x':
-        n = (ef_number) va_arg(args, u_int);
+        n = (duma_number) va_arg(args, u_int);
         len += sprintNumber(&buffer[len], n, 0x10);
         break;
       case 'c':
@@ -177,7 +177,7 @@ EF_sprintf(char* buffer, const char *pattern, va_list args)
         buffer[len++] = (char)va_arg(args, int);
         break;
       default:
-        EF_Print(bad_pattern, c);
+        DUMA_Print(bad_pattern, c);
       }
     }
     else
@@ -195,19 +195,19 @@ EF_sprintf(char* buffer, const char *pattern, va_list args)
 /*
  * external abort function
  * on Visual C++ it additionally prints to Debug Output of the IDE
- * void EF_Abort(const char * pattern, ...)
+ * void DUMA_Abort(const char * pattern, ...)
  */
 void
-EF_Abort(const char * pattern, ...)
+DUMA_Abort(const char * pattern, ...)
 {
   char buffer[STRING_BUFFER_SIZE];
   int lena, lenb;
   va_list  args;
   va_start(args, pattern);
 
-  strcpy(buffer, "\nElectricFence Aborting: ");
+  strcpy(buffer, "\nDUMA Aborting: ");
   lena = strlen(buffer);
-  lenb = EF_sprintf(&buffer[lena], pattern, args);
+  lenb = DUMA_sprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
@@ -235,17 +235,17 @@ EF_Abort(const char * pattern, ...)
 /*
  * external print function
  * on Visual C++ it additionally prints to Debug Output of the IDE
- * void EF_Print(const char * pattern, ...)
+ * void DUMA_Print(const char * pattern, ...)
  */
 void
-EF_Print(const char * pattern, ...)
+DUMA_Print(const char * pattern, ...)
 {
   char buffer[STRING_BUFFER_SIZE];
   int len;
   va_list  args;
   va_start(args, pattern);
 
-  len = EF_sprintf(buffer, pattern, args);
+  len = DUMA_sprintf(buffer, pattern, args);
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
 #endif
@@ -258,19 +258,19 @@ EF_Print(const char * pattern, ...)
 /*
  * external exit function
  * on Visual C++ it additionally prints to Debug Output of the IDE
- * void EF_Exit(const char * pattern, ...)
+ * void DUMA_Exit(const char * pattern, ...)
  */
 void
-EF_Exit(const char * pattern, ...)
+DUMA_Exit(const char * pattern, ...)
 {
   char buffer[STRING_BUFFER_SIZE];
   int lena, lenb;
   va_list  args;
   va_start(args, pattern);
 
-  strcpy(buffer, "\nElectricFence Exiting: ");
+  strcpy(buffer, "\nDUMA Exiting: ");
   lena = strlen(buffer);
-  lenb = EF_sprintf(&buffer[lena], pattern, args);
+  lenb = DUMA_sprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);

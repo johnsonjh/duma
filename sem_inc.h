@@ -1,6 +1,6 @@
 
 /*
- * Electric Fence - Red-Zone memory allocator.
+ * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU LGPL (GNU Lesser General Public License, see COPYING-GPL)
  *
@@ -23,34 +23,34 @@
  */
 
 
-#ifndef EF_SEM_INC_H
-#define EF_SEM_INC_H
+#ifndef DUMA_SEM_INC_H
+#define DUMA_SEM_INC_H
 
-#ifndef EF_NO_THREAD_SAFETY
+#ifndef DUMA_NO_THREAD_SAFETY
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void EF_init_sem(void);
-void EF_get_sem(void);
-void EF_rel_sem(void);
+void DUMA_init_sem(void);
+void DUMA_get_sem(void);
+void DUMA_rel_sem(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
 
-#define EF_INIT_SEMAPHORE()     EF_init_sem()
-#define EF_GET_SEMAPHORE()      EF_get_sem()
-#define EF_RELEASE_SEMAPHORE()  EF_rel_sem()
+#define DUMA_INIT_SEMAPHORE()     DUMA_init_sem()
+#define DUMA_GET_SEMAPHORE()      DUMA_get_sem()
+#define DUMA_RELEASE_SEMAPHORE()  DUMA_rel_sem()
 
-#else  /* EF_NO_THREAD_SAFETY */
+#else  /* DUMA_NO_THREAD_SAFETY */
 
-#define EF_INIT_SEMAPHORE()     do { } while (0)
-#define EF_GET_SEMAPHORE()      do { } while (0)
-#define EF_RELEASE_SEMAPHORE()  do { } while (0)
+#define DUMA_INIT_SEMAPHORE()     do { } while (0)
+#define DUMA_GET_SEMAPHORE()      do { } while (0)
+#define DUMA_RELEASE_SEMAPHORE()  do { } while (0)
 
-#endif /* EF_NO_THREAD_SAFETY */
+#endif /* DUMA_NO_THREAD_SAFETY */
 
-#endif /* EF_SEM_INC_H */
+#endif /* DUMA_SEM_INC_H */
