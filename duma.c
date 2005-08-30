@@ -113,20 +113,20 @@ static const char unknown_file[] =
 
 enum _DUMA_SlotState
 {
-    EFST_EMPTY            /* slot not in use */
-  , EFST_FREE             /* internal memory reserved, unused by user */
-  , EFST_IN_USE           /* memory in use by allocator; see following enum AllocType */
-  , EFST_ALL_PROTECTED    /* memory no more used by allocator; memory is not deallocated but protected */
-  , EFST_BEGIN_PROTECTED  /* most memory deallocated, but not page covering userAddress:
+    DUMAST_EMPTY            /* slot not in use */
+  , DUMAST_FREE             /* internal memory reserved, unused by user */
+  , DUMAST_IN_USE           /* memory in use by allocator; see following enum AllocType */
+  , DUMAST_ALL_PROTECTED    /* memory no more used by allocator; memory is not deallocated but protected */
+  , DUMAST_BEGIN_PROTECTED  /* most memory deallocated, but not page covering userAddress:
                            * slot holds userAddress, userSize and allocator.
                            */
 };
 
 enum _DUMA_Slot_FileSource
 {
-    EFFS_EMPTY            /* no filename, lineno */
-  , EFFS_ALLOCATION       /* filename, lineno from allocation */
-  , EFFS_DEALLOCATION     /* filename, lineno from deallocation */
+    DUMAFS_EMPTY            /* no filename, lineno */
+  , DUMAFS_ALLOCATION       /* filename, lineno from allocation */
+  , DUMAFS_DEALLOCATION     /* filename, lineno from deallocation */
 };
 
 /*
@@ -174,10 +174,10 @@ struct _DUMA_Slot
 
 enum _DUMA_AllocType
 {
-    EFAT_INTERNAL
-  , EFAT_MALLOC
-  , EFAT_NEW_ELEM
-  , EFAT_NEW_ARRAY
+    DUMAAT_INTERNAL
+  , DUMAAT_MALLOC
+  , DUMAAT_NEW_ELEM
+  , DUMAAT_NEW_ARRAY
 };
 
 static struct _DUMA_AllocDesc
@@ -187,19 +187,19 @@ static struct _DUMA_AllocDesc
 }
 _duma_allocDesc[] =
 {
-    { "duma allocate()"   , EFAT_INTERNAL  }
-  , { "duma deallocate()" , EFAT_INTERNAL  }
-  , { "malloc()"            , EFAT_MALLOC    }
-  , { "calloc()"            , EFAT_MALLOC    }
-  , { "free()"              , EFAT_MALLOC    }
-  , { "memalign()"          , EFAT_MALLOC    }
-  , { "realloc()"           , EFAT_MALLOC    }
-  , { "valloc()"            , EFAT_MALLOC    }
-  , { "strdup()"            , EFAT_MALLOC    }
-  , { "new (element)"       , EFAT_NEW_ELEM  }
-  , { "delete (element)"    , EFAT_NEW_ELEM  }
-  , { "new[] (array)"       , EFAT_NEW_ARRAY }
-  , { "[]delete (array)"    , EFAT_NEW_ARRAY }
+    { "duma allocate()"   , DUMAAT_INTERNAL  }
+  , { "duma deallocate()" , DUMAAT_INTERNAL  }
+  , { "malloc()"            , DUMAAT_MALLOC    }
+  , { "calloc()"            , DUMAAT_MALLOC    }
+  , { "free()"              , DUMAAT_MALLOC    }
+  , { "memalign()"          , DUMAAT_MALLOC    }
+  , { "realloc()"           , DUMAAT_MALLOC    }
+  , { "valloc()"            , DUMAAT_MALLOC    }
+  , { "strdup()"            , DUMAAT_MALLOC    }
+  , { "new (element)"       , DUMAAT_NEW_ELEM  }
+  , { "delete (element)"    , DUMAAT_NEW_ELEM  }
+  , { "new[] (array)"       , DUMAAT_NEW_ARRAY }
+  , { "[]delete (array)"    , DUMAAT_NEW_ARRAY }
 };
 
 #ifndef DUMA_NO_LEAKDETECTION
@@ -314,13 +314,13 @@ static int    DUMA_SHOW_ALLOC = 0;
  * _DUMA_allocList points to the array of slot structures used to manage the
  * malloc arena.
  */
-struct _DUMA_Slot * _DUMA_allocList = 0;
+struct _DUMA_Slot * _duma_allocList = 0;
 
 /*
- * _DUMA_allocListSize is the size of the allocation list. This will always
+ * _duma_allocListSize is the size of the allocation list. This will always
  * be a multiple of the page size.
  */
-static size_t _DUMA_allocListSize = 0;
+static size_t _duma_allocListSize = 0;
 
 /*
  * slotCount is the number of Slot structures in allocationList.
@@ -368,7 +368,7 @@ static long numAllocs = 0;
 /*
  * internal variable: is DUMA_init() already done
  */
-static int DUMA_init_done = 0;
+static int duma_init_done = 0;
 
 
 /*
@@ -574,10 +574,10 @@ void _duma_init(void)
   /* enter _duma_allocList as slot to allow call to free() when doing allocateMoreSlots() */
   slot[0].internalAddress   = slot[0].userAddress = _duma_allocList;
   slot[0].internalSize      = slot[0].userSize    = _duma_allocListSize;
-  slot[0].state             = EFST_IN_USE;
+  slot[0].state             = DUMAST_IN_USE;
   slot[0].allocator         = EFA_INT_ALLOC;
 #ifndef DUMA_NO_LEAKDETECTION
-  slot[0].fileSource        = EFFS_ALLOCATION;
+  slot[0].fileSource        = DUMAFS_ALLOCATION;
 #ifdef DUMA_USE_FRAMENO
   slot[0].frame             = 0;
 #endif
@@ -590,10 +590,10 @@ void _duma_init(void)
                             = ((char *)slot[0].internalAddress) + slot[0].internalSize;
     slot[1].internalSize    = slot[1].userSize
                             =   size - slot[0].internalSize;
-    slot[1].state           = EFST_FREE;
+    slot[1].state           = DUMAST_FREE;
     slot[1].allocator       = EFA_INT_ALLOC;
 #ifndef DUMA_NO_LEAKDETECTION
-    slot[1].fileSource      = EFFS_ALLOCATION;
+    slot[1].fileSource      = DUMAFS_ALLOCATION;
 #ifdef DUMA_USE_FRAMENO
     slot[1].frame           = 0;
 #endif
@@ -770,7 +770,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
    * If I'm running out of empty slots, create some more before
    * I don't have enough slots left to make an allocation.
    */
-  if ( EFAT_INTERNAL != _duma_allocDesc[allocator].type  &&  unUsedSlots < 7 )
+  if ( DUMAAT_INTERNAL != _duma_allocDesc[allocator].type  &&  unUsedSlots < 7 )
     allocateMoreSlots();
 
   /*
@@ -790,7 +790,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
      * Thus as a quick hack no memory management is done by DUMA.
      */
 #if !defined(WIN32)
-    if ( EFST_FREE == slot->state  &&  slot->internalSize >= internalSize )
+    if ( DUMAST_FREE == slot->state  &&  slot->internalSize >= internalSize )
     {
       if ( !fullSlot || slot->internalSize < fullSlot->internalSize )
       {
@@ -801,7 +801,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     }
     else
 #endif
-    if ( EFST_EMPTY == slot->state )
+    if ( DUMAST_EMPTY == slot->state )
     {
       if      ( !emptySlots[0] )    emptySlots[0] = slot;
       else if ( !emptySlots[1] )    emptySlots[1] = slot;
@@ -863,7 +863,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       sumAllocatedMem          += ( (chunkSize +1023) >>10 );
       sumTotalAllocatedMem     += ( (chunkSize +1023) >>10 );
       fullSlot->internalSize    = chunkSize;
-      fullSlot->state           = EFST_FREE;
+      fullSlot->state           = DUMAST_FREE;
       --unUsedSlots;
     }
   }
@@ -944,10 +944,10 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     fullSlot->userAddress = (char*)userAddr;
     fullSlot->protAddress = (char*)protAddr;
     fullSlot->userSize    = userSize;
-    fullSlot->state       = EFST_IN_USE;
+    fullSlot->state       = DUMAST_IN_USE;
     fullSlot->allocator   = allocator;
   #ifndef DUMA_NO_LEAKDETECTION
-    fullSlot->fileSource  = EFFS_ALLOCATION;
+    fullSlot->fileSource  = DUMAFS_ALLOCATION;
   #ifdef DUMA_USE_FRAMENO
     fullSlot->frame       = frameno;
   #endif
@@ -1020,10 +1020,10 @@ void   _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocat
     if ( (slot = nearestSlotForUserAddress(address)) )
     {
     #ifndef DUMA_NO_LEAKDETECTION
-      if ( EFFS_ALLOCATION == slot->fileSource )
+      if ( DUMAFS_ALLOCATION == slot->fileSource )
         DUMA_Abort("free(%a): address not from DUMA or already freed. Address may be corrupted from %a allocated from %s(%d)",
                  address, slot->userAddress, slot->filename, slot->lineno);
-      else if ( EFFS_DEALLOCATION == slot->fileSource )
+      else if ( DUMAFS_DEALLOCATION == slot->fileSource )
         DUMA_Abort("free(%a): address not from DUMA or already freed. Address may be corrupted from %a deallocated at %s(%d)",
                  address, slot->userAddress, slot->filename, slot->lineno);
       else
@@ -1035,13 +1035,13 @@ void   _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocat
       DUMA_Abort("free(%a): address not from DUMA or already freed.", address);
   }
 
-  if ( EFST_ALL_PROTECTED == slot->state || EFST_BEGIN_PROTECTED == slot->state )
+  if ( DUMAST_ALL_PROTECTED == slot->state || DUMAST_BEGIN_PROTECTED == slot->state )
   {
   #ifndef DUMA_NO_LEAKDETECTION
-    if ( EFFS_ALLOCATION == slot->fileSource )
+    if ( DUMAFS_ALLOCATION == slot->fileSource )
       DUMA_Abort("free(%a): memory already freed. allocated from %s(%d)",
                address, slot->filename, slot->lineno);
-    else if ( EFFS_DEALLOCATION == slot->fileSource )
+    else if ( DUMAFS_DEALLOCATION == slot->fileSource )
       DUMA_Abort("free(%a): memory already freed at %s(%d)",
                address, slot->filename, slot->lineno);
     else
@@ -1051,11 +1051,11 @@ void   _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocat
   else if ( _duma_allocDesc[slot->allocator].type != _duma_allocDesc[allocator].type )
   {
   #ifndef DUMA_NO_LEAKDETECTION
-    if ( EFFS_ALLOCATION == slot->fileSource )
+    if ( DUMAFS_ALLOCATION == slot->fileSource )
       DUMA_Abort("Free mismatch: allocator '%s' used  at %s(%d)\n  but  deallocator '%s' called at %s(%d)!",
                _duma_allocDesc[slot->allocator].name, slot->filename, slot->lineno,
                _duma_allocDesc[allocator].name, filename, lineno );
-    else if ( EFFS_DEALLOCATION == slot->fileSource )
+    else if ( DUMAFS_DEALLOCATION == slot->fileSource )
       DUMA_Abort("Free mismatch: allocator '%s' used \nbut deallocator '%s' called at %s(%d)!",
                _duma_allocDesc[slot->allocator].name,
                _duma_allocDesc[allocator].name, filename, lineno );
@@ -1111,14 +1111,14 @@ void   _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocat
          )   )
      )
   {
-    slot->state = EFST_ALL_PROTECTED;
+    slot->state = DUMAST_ALL_PROTECTED;
     Page_DenyAccess(slot->internalAddress, slot->internalSize);
     sumProtectedMem += internalSizekB;
 
     #ifndef DUMA_NO_LEAKDETECTION
       if ( lineno )
       {
-        slot->fileSource  = EFFS_DEALLOCATION;
+        slot->fileSource  = DUMAFS_DEALLOCATION;
         slot->filename    = (char*)filename;
         slot->lineno      = lineno;
       }
@@ -1132,10 +1132,10 @@ void   _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocat
     /* free slot and userAddr */
     slot->internalAddress = slot->userAddress = 0;
     slot->internalSize    = slot->userSize    = 0;
-    slot->state           = EFST_EMPTY;
+    slot->state           = DUMAST_EMPTY;
     slot->allocator       = EFA_INT_ALLOC;
     #ifndef DUMA_NO_LEAKDETECTION
-    slot->fileSource      = EFFS_EMPTY;
+    slot->fileSource      = DUMAFS_EMPTY;
     #ifdef DUMA_USE_FRAMENO
       slot->frame         = 0;
     #endif
@@ -1493,7 +1493,7 @@ void  DUMA_delFrame(void)
 
     for ( ; count > 0; --count, ++slot )
     {
-      if (    EFST_IN_USE == slot->state
+      if (    DUMAST_IN_USE == slot->state
         #ifdef DUMA_USE_FRAMENO
            && frameno == slot->frame
         #endif

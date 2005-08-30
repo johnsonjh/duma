@@ -50,7 +50,7 @@
 #endif
 
 
-#include "efenceint.h"
+#include "dumaint.h"
 #include "print.h"
 
 /*

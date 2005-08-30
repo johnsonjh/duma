@@ -63,6 +63,30 @@
 #undef valloc
 #endif
 
+#ifdef strdup
+#undef strdup
+#endif
+
+#ifdef memcpy
+#undef memcpy
+#endif
+
+#ifdef strcpy
+#undef strcpy
+#endif
+
+#ifdef strncpy
+#undef strncpy
+#endif
+
+#ifdef strcat
+#undef strcat
+#endif
+
+#ifdef strncat
+#undef strncat
+#endif
+
 
 /* remove previous wrappers to standard C++ functions / operators */
 

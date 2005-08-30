@@ -38,7 +38,7 @@ reduceProtectedMemory( long reductionSizekB )
 
   /* 1- try reducing memory to just keep page(s) with userAddress */
   for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
-    if ( EFST_ALL_PROTECTED == slot->state )
+    if ( DUMAST_ALL_PROTECTED == slot->state )
     {
       /* free memory above userAddr; keep userAddr protected */
       newSize = (char*)slot->userAddress - (char*)slot->internalAddress;
@@ -46,7 +46,7 @@ reduceProtectedMemory( long reductionSizekB )
       delSize = slot->internalSize - newSize;
       Page_Delete( (char*)slot->internalAddress + newSize, delSize );
       alreadyReducekB += (delSize+1023) >>10;
-      slot->state           = EFST_BEGIN_PROTECTED;
+      slot->state           = DUMAST_BEGIN_PROTECTED;
       /* but keep the slot and userAddr */
       slot->internalSize    = newSize;
 
@@ -61,7 +61,7 @@ reduceProtectedMemory( long reductionSizekB )
   slot  = _duma_allocList;
   count = slotCount;
   for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
-    if ( EFST_BEGIN_PROTECTED == slot->state )
+    if ( DUMAST_BEGIN_PROTECTED == slot->state )
     {
       /* free all the memory */
       Page_Delete(slot->internalAddress, slot->internalSize);
@@ -69,10 +69,10 @@ reduceProtectedMemory( long reductionSizekB )
       /* free slot and userAddr */
       slot->internalAddress = slot->userAddress = 0;
       slot->internalSize    = slot->userSize    = 0;
-      slot->state           = EFST_EMPTY;
+      slot->state           = DUMAST_EMPTY;
       slot->allocator       = EFA_INT_ALLOC;
       #ifndef DUMA_NO_LEAKDETECTION
-      slot->fileSource      = EFFS_EMPTY;
+      slot->fileSource      = DUMAFS_EMPTY;
       #ifdef DUMA_USE_FRAMENO
         slot->frame         = 0;
       #endif
