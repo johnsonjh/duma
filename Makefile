@@ -90,8 +90,8 @@ install: libduma.a duma.3 libduma.so.0.0
 	$(INSTALL) -m 644 duma.3 $(MAN_INSTALL_DIR)/duma.3
 
 clean:
-	- rm -f $(OBJECTS) tstheap.o dumatest.o dumatestpp.o createconf.o tstheap \
-		dumatest dumatestpp createconf \
+	- rm -f $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o dumatestpp.o createconf.o \
+		tstheap dumatest dumatestpp createconf \
 	 libduma.a libduma.so.0.0 libduma.cat DUMA.shar \
 	 duma_config.h
 
