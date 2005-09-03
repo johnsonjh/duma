@@ -1,5 +1,5 @@
 
-DUMA - Red-Zone memory allocator.
+D.U.M.A. - Detect Unintended Memory Access - A Red-Zone memory allocator.
 Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
 Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
 License: GNU GPL (GNU General Public License, see COPYING-GPL) for all files except dumapp.h
@@ -120,15 +120,16 @@ options in german language:
 
 now everything you have to do is to set a dependency to "duma" from your application.
 
+
 Leak Detection:
 ---------------
-all memory allocation is protocoled from DUMA together with the filename/linenumber
+All memory allocation is protocoled from DUMA together with the filename/linenumber
 of the caller. atexit() it is checked if each allocated memory block was freed; if not an error
 occurs.
-with EF_newFrame() and EF_delFrame you can create a new memory frame. embracing a smaller (than
+With EF_newFrame() and EF_delFrame you can create a new memory frame. Embracing a smaller (than
 the whole program) unit with these functions, you can check if the leak is in that smaller unit.
-to disable leak detection add following preprocessor definition
-EF_NO_LEAKDETECTION
+to disable leak detection add following preprocessor definition EF_NO_LEAKDETECTION
+
 
 C++ memory operators and leak detection:
 ----------------------------------------
@@ -138,6 +139,27 @@ new all the overloaded new/delete functions do not behave fully C++ conform. Lea
 and memory protection is done automatically as for malloc()/free().
 to disable c++ new/delete/new[]/delete[] operator overload add following preprocessor definition
 EF_NO_CPP_SUPPORT to the Makefile.
+
+
+Catching the erroneous line:
+----------------------------
+To get the line in your sources, where an error occurs, go as following:
+
+1- Compile your program with debugging information
+   and statically linked to DUMA.
+2- Start your program from debugger f.e. with 'gdb <program>'
+3- run and wait for the segmentation fault
+
+alternatively
+
+1- Compile your program (with debugging information) without DUMA.
+2- Set 'ulimit -c unlimited' to get core files
+3- Start your program, choose one of following options
+   a) start your program (linked statically with DUMA)
+   b) start your program with duma.sh <your_program>
+4- Wait for a segmentation fault. this should have created a core[.<pid>] file.
+   You can get into a debugger f.e. with 'gdb <program> -c <core file>'
+
 
 
 	Hayati Ayguen

@@ -9,6 +9,9 @@ I. Linux/Unix environments (including Cygwin and MinGW):
 
   Call GNU make often called 'gmake' for building the library.
 
+  Get system user with 'su', if you are going to install into
+    system directories
+
   Call 'gmake install' for installation in system directories.
 
   Note: You need not install DUMA. Setting system PATH for duma.sh
