@@ -1,0 +1,65 @@
+
+TODO:
+
+-modification of manual page duma.3
+-check documents for line lengths of 80 coloumns
+-check and replace tabs in documents
+-use configure to detect if f.e. pthread.h is installed and in search path
+-check if pthread available before using it in Makefile
+-use libtool to build shared libraries in Makefile
+-implement a list structure over pages rather than an array for all slots.
+  this would save copying all slot entries.
+-implement DUMA_MALLOC_FAILEXIT which exits when allocation fails
+-make new variants behave fully C++ conform
+-store __func__ additionally to __FILE__ and __LINE__
+
+-use "-include" option of preprocessor, when having gcc
+ see http://gcc.gnu.org/onlinedocs/gcc-4.0.1/gcc/Preprocessor-Options.html#index-include-592
+-use "/FI" option of preprocessor, when having ms visual c++
+ see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vccore/html/_core_.2f.fi.asp
+
+-config for
+ long int sysconf (int parameter)  	Function
+  This function is used to inquire about runtime system parameters. The 
+  parameter argument should be one of the _SC_ symbols listed below.
+  The normal return value from sysconf is the value you requested. A value
+  of -1 is returned both if the implementation does not impose a limit, and
+  in case of an error.
+  The following errno error conditions are defined for this function:
+  EINVAL           The value of the parameter is invalid.
+  enums:
+    _SC_PAGESIZE     Inquire about the virtual memory page size of the machine. 
+              getpagesize returns the same value (see Query Memory Parameters).
+    _SC_PHYS_PAGES   Inquire about the number of physical pages in the system.
+    _SC_AVPHYS_PAGES Inquire about the number of available physical pages in
+              the system.
+
+-config for The ulimit Function:
+  The ulimit function can be used to get and set certain process limits.
+    #include <ulimit.h>
+    long ulimit (int cmd, /* long newlimit */...);
+    Returns: the value of the requested limit if OK, -1 on error
+  The ulimit function allows a process to get or set some of its limits. The 
+  operation performed is determined by the value of the cmd argument, which 
+  must be one of the following four values:
+    UL_GMEMLIM This returns the maximum amount of memory the process may use.
+  On successful completion, the requested limit is returned. Otherwise, -1 is 
+  returned and the limit is not changed.
+
+-new macro: DUMA_CHECK_NON_VM_PROTECTABLE()
+-new macros: NEW_PROTECT_BELOW, NEW_PROTECT_ABOVE
+-new macros: MALLOC_PROTECT_BELOW(), MALLOC_PROTECT_ABOVE()
+-test OpenWatcom C/C++ compiler from http://www.openwatcom.org/
+-test Digital MARS C/C++ compiler from http://www.digitalmars.com/
+-test Intel C++ compiler from
+ http://www.intel.com/cd/software/products/asmo-na/eng/compilers/clin/219856.htm
+-test Borland C++ Builder from 
+ http://www.borland.com/products/downloads/download_cbuilder.html
+-test Macintosh Programmer's Workshop from
+ http://developer.apple.com/tools/mpw-tools/
+-test TenDRA C/C++ compiler from
+ http://www.tendra.org/  or
+ http://www.cse.unsw.edu.au/~patrykz/TenDRA/
+
+-test cmake, dmake, pmake, smake
+

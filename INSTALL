@@ -1,0 +1,27 @@
+
+This documents describes if and how the library is installed on your system.
+
+I. Linux/Unix environments (including Cygwin and MinGW):
+
+  Configure the options by editing the Makefile.
+    Read carefully the description of options at top of the Makefile.
+    Especially if you are going to use the LD_PRELOAD mechanism.
+
+  Call GNU make often called 'gmake' for building the library.
+
+  Call 'gmake install' for installation in system directories.
+
+  Note: You need not install DUMA. Setting system PATH for duma.sh
+    or INCLUDE/LIBS variables after compilation may suffice, too.
+    The (outdated) manual page needs installation.
+
+
+II. Windows 2000/XP, Visual Studio Environments:
+
+  Installation is not necessary. Just set INCLUDE and LIBS directories
+  in your environment or project.
+
+
+Hayati Ayguen
+
+15 September 2005

@@ -90,7 +90,7 @@ tstheap.c           belongs to tstheap
                     should report many memory leaks after execution.
 Makefile            Makefile for UNIX/Linux/..
 duma.3              source for UNIX man page
-ef.sh               don't know; some script for UNIX/Linux
+duma.sh             script for UNIX/Linux to start other programs using the LD_PRELOAD mechanism
 
 
 

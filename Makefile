@@ -19,6 +19,7 @@ PIC= -fPIC
 #
 
 DUMA_OPTIONS = -DDUMA_EXPLICIT_INIT
+DUMA_SO_OPTIONS = -DDUMA_NO_CPP_SUPPORT
 
 # for FreeBSD 5.4
 # DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
@@ -69,6 +70,8 @@ PACKAGE_SOURCE= README CHANGES duma.3 Makefile \
 
 OBJECTS = dumapp.o duma.o sem_inc.o print.o
 
+SO_OBJECTS = dumapp_so.o duma_so.o sem_inc_so.o print_so.o
+
 all:	libduma.a $(DUMASO) tstheap dumatest dumatestpp
 	@ echo "Testing DUMA."
 	@ echo "After the last test, it should print that the test has PASSED."
@@ -106,17 +109,6 @@ libduma.a: duma_config.h $(OBJECTS)
 	$(AR) crv libduma.a $(OBJECTS)
 
 
-ifneq ($(OS), Windows_NT)
-
-
-libduma.so.0.0: duma_config.h $(OBJECTS)
-	$(CXX) -g -shared -Wl,-soname,libduma.so.0 -o libduma.so.0.0 \
-	$(OBJECTS) -lpthread -lc
-
-
-endif
-
-
 duma_config.h: createconf
 	- $(CURPATH)createconf >duma_config.h
 
@@ -137,6 +129,31 @@ dumatestpp: libduma.a dumatestpp.o dumapp.h
 	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
 
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
+
+
+# define special objects for build of shared library
+
+dumapp_so.o:	dumapp.cpp duma.h dumapp.h
+	$(CXX) -g $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
+
+duma_so.o:	duma.c duma.h duma_config.h
+	$(CC) -g $(DUMA_SO_OPTIONS) -c duma.c -o $@
+
+sem_inc_so.o:	sem_inc.c sem_inc.h
+	$(CC) -g $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
+
+print_so.o:	print.c print.h
+	$(CC) -g $(DUMA_SO_OPTIONS) -c print.c -o $@
+
+ifneq ($(OS), Windows_NT)
+
+libduma.so.0.0: duma_config.h $(OBJECTS)
+	$(CXX) -g -shared -Wl,-soname,libduma.so.0 -o libduma.so.0.0 \
+	$(SO_OBJECTS) -lpthread -lc
+
+endif
+
+
 
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
