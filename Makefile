@@ -147,7 +147,7 @@ print_so.o:	print.c print.h
 
 ifneq ($(OS), Windows_NT)
 
-libduma.so.0.0: duma_config.h $(OBJECTS)
+libduma.so.0.0: duma_config.h $(SO_OBJECTS)
 	$(CXX) -g -shared -Wl,-soname,libduma.so.0 -o libduma.so.0.0 \
 	$(SO_OBJECTS) -lpthread -lc
 
