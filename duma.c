@@ -209,11 +209,11 @@ static int    frameno = 0;
 #endif
 
 /*
- * DUMA_DISABLE_BANNER is a global variable used to control whether
- * DUMA prints its usual startup message. If the value is
- * -1, it will be set from the environment default to 0 at run time.
+ * DUMA_DISABLE_BANNER is a global variable used to control whether DUMA prints
+ * its usual startup message. Default is 0, meaning that the startup message
+ * gets printed.
  */
-static int    DUMA_DISABLE_BANNER = -1;
+static int    DUMA_DISABLE_BANNER = 0;
 
 /*
  * DUMA_ALIGNMENT is a global variable used to control the default alignment
@@ -294,13 +294,6 @@ static int    DUMA_MALLOC_FAILEXIT = 1;
  * process is interrupted even if the memory is going to be freed.
  */
 static int    DUMA_FREE_ACCESS = 0;
-
-/*
- * DUMA_FREE_WIPES is set if DUMA is to wipe the memory content
- * of freed blocks. This makes it easier to check if memory is freed or
- * not
- */
-static int    DUMA_FREE_WIPES = 0;
 
 /*
  * DUMA_SHOW_ALLOC is set if DUMA is to print all allocations
@@ -472,12 +465,6 @@ void duma_init(void)
     DUMA_FREE_ACCESS = (atoi(string) != 0);
 
   /*
-   * See if the user wants us to wipe out freed memory
-   */
-  if ( (string = getenv("DUMA_FREE_WIPES")) != 0 )
-    DUMA_FREE_WIPES = (atoi(string) != 0);
-
-  /*
    * Check if we should be filling new memory with a value.
    */
   if ( (string = getenv("DUMA_FILL")) != 0)
@@ -505,15 +492,22 @@ void duma_init(void)
    * Register atexit()
    */
 #ifndef DUMA_NO_LEAKDETECTION
+#ifndef DUMA_NO_HANG_MSG
   DUMA_Print("\nDUMA: Registering with atexit().\n"
 #ifdef WIN32
-             "DUMA: If this hangs, change the library load order with DUMA_EXPLICIT_INIT.\n");
+             "DUMA: If this hangs, change the library initialization order with DUMA_EXPLICIT_INIT.\n");
 #else
-             "DUMA: If this hangs, change the library load order with DUMA_EXPLICIT_INIT or LD_PRELOAD.\n");
+             "DUMA: If this hangs, change the library load/init order with DUMA_EXPLICIT_INIT or LD_PRELOAD.\n");
 #endif
+#endif /* DUMA_NO_HANG_MSG */
+
   if ( atexit( DUMA_delFrame ) )
     DUMA_Abort("Cannot register exit function.\n");
+
+#ifndef DUMA_NO_HANG_MSG
   DUMA_Print("DUMA: Registration was successful.\n");
+#endif /* DUMA_NO_HANG_MSG */
+
 #endif
 
   /* initialize semaphoring */
@@ -1088,9 +1082,6 @@ void   _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocat
       *cur = c;
     }
   }
-
-  if ( DUMA_FREE_WIPES )
-    memset(slot->userAddress, DUMA_FILL, slot->userSize);
 
   internalSizekB = (slot->internalSize+1023) >>10;
 
