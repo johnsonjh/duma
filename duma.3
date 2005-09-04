@@ -122,7 +122,7 @@ statement
 .B export LD_PRELOAD=libduma.so.0.0
 will cause DUMA to be loaded to run all dynamic executables.
 The command
-.B ef
+.B duma
 .I command
 runs a single command under DUMA.
 .LP
@@ -357,7 +357,7 @@ rather than
 .B SIGSEGV,
 I suspect this is an undocumented feature of a particular Sun hardware
 version, not just the operating system.
-On these systems, eftest will fail with a bus error until you modify the
+On these systems, dumatest will fail with a bus error until you modify the
 Makefile to define
 .B PAGE_PROTECTION_VIOLATED_SIGNAL
 as

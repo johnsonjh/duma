@@ -7,6 +7,8 @@ CHANGELOG:
        created INSTALL document
        modified Makefile: added special rules for building shared library
        (2005-09-10, HA)
+       modified README
+       (2005-09-16, HA)
 
 2.4.17 forked Electric Fence cause Bruce Perens wrote:
          > Hayati Ayguen must choose another name for his program.

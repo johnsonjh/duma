@@ -1,7 +1,422 @@
 
 D.U.M.A. - Detect Unintended Memory Access - A Red-Zone memory allocator.
-Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
+
+
+DESCRIPTION
+===========
+
+DUMA helps you detect two common programming bugs:
+software that overruns the boundaries of a malloc() memory allocation, and
+software that touches a memory allocation that has been released by free().
+Unlike other malloc() debuggers, DUMA will detect read accesses as well as
+writes, and it will pinpoint the exact instruction that causes an error.
+It has been in use at Pixar since 1987, and at many other sites for years.
+
+DUMA uses the virtual memory hardware of your computer to place an inaccessible
+memory page immediately after (or before, at the user's option) each memory
+allocation. When software reads or writes this inaccessible page, the hardware
+issues a segmentation fault, stopping the program at the offending instruction.
+It is then trivial to find the erroneous statement using your favorite
+debugger. In a similar manner, memory that has been released by free() is made
+inaccessible, and any code that touches it will get a segmentation fault.
+
+Simply linking your application with libduma.a will allow you to detect most,
+but not all, malloc buffer overruns and accesses of free memory. If you want
+to be reasonably sure that you've found all bugs of this type, you'll have to
+read and understand the rest of this man page.
+
+
+USAGE
+=====
+
+Link your program with the library libduma.a. Make sure you are not linking
+with '-lmalloc', '-lmallocdebug', or with other malloc-debugger or
+malloc-enhancer libraries. You can only use one at a time.
+
+If your system administrator has installed DUMA for public use, you'll be able
+to use the '-lduma' argument to the linker, otherwise you'll have to put the
+path-name for libduma.a in the linker's command line.
+You can also use dynamic linking. If you're using a Bourne shell, the statement
+'export LD_PRELOAD=libduma.so.0.0' will cause DUMA to be loaded to run all
+dynamic executables.
+
+The command 'duma <command>' runs a single command under DUMA.
+
+Some systems will require special arguments to the linker to assure that you
+are using the DUMA malloc() and not the one from your C library.
+
+Run your program using a debugger. It's easier to work this way than to create
+a core file and post-mortem debug it. DUMA can create huge core files, and some
+operating systems will thus take minutes simply to dump core! Some operating
+systems will not create usable core files from programs that are linked with
+DUMA.
+
+If your program has one of the errors detected by DUMA, it will get a
+segmentation fault (SIGSEGV) at the offending instruction. Use the debugger to
+locate the erroneous statement, and repair it.
+
+
+GLOBAL AND ENVIRONMENT VARIABLES
+================================
+
+DUMA has four configuration switches that can be enabled via
+the shell environment, or by setting the value of global integer variables
+using a debugger. These switches change what bugs DUMA will detect, so it's
+important that you know how to use them.
+
+DUMA_ALIGNMENT
+--------------
+This is an integer that specifies the alignment for any memory allocations that
+will be returned by malloc(), calloc(), and realloc().
+The value is specified in bytes, thus a value of 4 will cause memory to be
+aligned to 32-bit boundaries unless your system doesn't have a 8-bit
+characters. DUMA_ALIGNMENT is set to sizeof(int) by default, since that is
+generally the word-size of your CPU.
+If your program requires that allocations be aligned to 64-bit boundaries and
+you have a 32-bit int you'll have to set this value to 8. This is the case when
+compiling with the '-mips2' flag on MIPS-based systems such as those from SGI.
+The memory allocation that is returned by DUMA malloc() is aligned using the
+value in DUMA_ALIGNMENT, and its size the multiple of that value that is
+greater than or equal to the requested size.
+For this reason, you will sometimes want to set DUMA_ALIGNMENT to 0 (no
+alignment), so that you can detect overruns of less than your CPU's word size.
+Be sure to read the section 'WORD-ALIGNMENT AND OVERRUN DETECTION' in this
+manual page before you try this.
+To change this value, set DUMA_ALIGNMENT in the shell environment to an integer
+value, or assign to the global integer variable DUMA_ALIGNMENT using a
+debugger.
+
+DUMA_PROTECT_BELOW
+------------------
+DUMA usually places an inaccessible page immediately after each memory
+allocation, so that software that runs past the end of the allocation will be
+detected. Setting DUMA_PROTECT_BELOW to 1 causes DUMA to place the inaccessible
+page before the allocation in the address space, so that under-runs will be
+detected instead of over-runs.
+When DUMA_PROTECT_BELOW is set, the DUMA_ALIGNMENT parameter is ignored. All
+allocations will be aligned to virtual-memory-page boundaries, and their size
+will be the exact size that was requested.
+To change this value, set DUMA_PROTECT_BELOW in the shell environment to an
+integer value, or assign to the global integer variable DUMA_PROTECT_BELOW
+using a debugger.
+
+DUMA_PROTECT_FREE
+-----------------
+DUMA usually returns free memory to a pool from which it may be re-allocated.
+If you suspect that a program may be touching free memory, set
+DUMA_PROTECT_FREE to 1. This will cause DUMA to never re-allocate memory once
+it has been freed, so that any access to free memory will be detected. Some
+programs will use tremendous amounts of memory when this parameter is set.
+To change this value, set DUMA_PROTECT_FREE in the shell environment to an
+integer value, or assign to the global integer variable DUMA_PROTECT_FREE using
+a debugger.
+
+DUMA_ALLOW_MALLOC_0
+-------------------
+By default, DUMA traps calls to malloc() with a size of zero, because they are
+often the result of a software bug. If DUMA_ALLOW_MALLOC_0 is non-zero, the
+software will not trap calls to malloc() with a size of zero.
+To change this value, set DUMA_ALLOC_MALLOC_0 in the shell environment to an
+integer value, or assign to the global integer variable DUMA_ALLOC_MALLOC_0
+using a debugger.
+
+DUMA_FILL
+---------
+When set to a value between 0 and 255, every byte of allocated memory is
+initialized to that value. This can help detect reads of uninitialized memory.
+When set to -1, some memory is filled with zeroes (the operating system default
+on most systems) and some memory will retain the values written to it during
+its last use.
+
+
+WORD-ALIGNMENT AND OVERRUN DETECTION
+====================================
+
+There is a conflict between the alignment restrictions that malloc() operates
+under and the debugging strategy used by DUMA. When detecting overruns, DUMA
+malloc() allocates two or more virtual memory pages for each allocation. The
+last page is made inaccessible in such a way that any read, write, or execute
+access will cause a segmentation fault. Then, DUMA malloc() will return an
+address such that the first byte after the end of the allocation is on the
+inaccessible page. Thus, any overrun of the allocation will cause a
+segmentation fault.
+
+It follows that the address returned by malloc() is the address of the
+inaccessible page minus the size of the memory allocation. Unfortunately,
+malloc() is required to return word-aligned allocations, since many CPUs can
+only access a word when its address is aligned. The conflict happens when
+software makes a memory allocation using a size that is not a multiple of the
+word size, and expects to do word accesses to that allocation. The location of
+the inaccessible page is fixed by hardware at a word-aligned address. If DUMA
+malloc() is to return an aligned address, it must increase the size of the
+allocation to a multiple of the word size.
+
+In addition, the functions memalign() and valloc() must honor explicit
+specifications on the alignment of the memory allocation, and this, as well can
+only be implemented by increasing the size of the allocation. Thus, there will
+be situations in which the end of a memory allocation contains some padding
+space, and accesses of that padding space will not be detected, even if they
+are overruns.
+
+DUMA provides the variable DUMA_ALIGNMENT so that the user can control the
+default alignment used by malloc(), calloc(), and realloc(). To debug overruns
+as small as a single byte, you can set DUMA_ALIGNMENT to zero. This will result
+in DUMA malloc() returning unaligned addresses for allocations with sizes that
+are not a multiple of the word size. This is not a problem in most cases,
+because compilers must pad the size of objects so that alignment restrictions
+are honored when storing those objects in arrays. The problem surfaces when
+software allocates odd-sized buffers for objects that must be word-aligned. One
+case of this is software that allocates a buffer to contain a structure and a
+string, and the string has an odd size (this example was in a popular TIFF
+library). If word references are made to un-aligned buffers, you will see a bus
+error (SIGBUS) instead of a segmentation fault. The only way to fix this is to
+re-write the offending code to make byte references or not make odd-sized
+allocations, or to set DUMA_ALIGNMENT to the word size.
+
+Another example of software incompatible with DUMA_ALIGNMENT < word-size
+is the strcmp() function and other string functions on SunOS (and probably
+Solaris), which make word-sized accesses to character strings, and may attempt
+to access up to three bytes beyond the end of a string. These result in a
+segmentation fault (SIGSEGV). The only way around this is to use versions of
+the string functions that perform byte references instead of word references.
+
+
+CATCHING THE ERRONEOUS LINE
+===========================
+
+To get the line in your sources, where an error occurs, go as following:
+1. Compile your program with debugging information
+   and statically linked to DUMA.
+2. Start your program from debugger f.e. with 'gdb <program>'
+3. Run and wait for the segmentation fault
+
+alternatively
+
+1. Compile your program (with debugging information) without DUMA.
+2. Set 'ulimit -c unlimited' to get core files
+3. Start your program, choose one of following options
+   a) Start your program (linked statically with DUMA)
+   b) Start your program with duma.sh <your_program>
+4. Wait for a segmentation fault. this should have created a core[.<pid>]
+   file. You can get into a debugger f.e. with 'gdb <program> -c <core file>'
+
+
+INSTRUCTIONS FOR DEBUGGING YOUR PROGRAM
+=======================================
+
+1. Link with libduma.a as explained above.
+2. Run your program in a debugger and fix any overruns or accesses
+   to free memory.
+3. Quit the debugger.
+4. Set DUMA_PROTECT_BELOW = 1 in the shell environment.
+5. Repeat step 2, this time repairing underruns if they occur.
+6. Quit the debugger.
+7. Read the restrictions in the section on
+
+
+WORD-ALIGNMENT AND OVERRUN DETECTION
+====================================
+
+See if you can set DUMA_ALIGNMENT to 0 and repeat step 2. Sometimes this will
+be too much work, or there will be problems with library routines for which you
+don't have the source, that will prevent you from doing this.
+
+
+MEMORY USAGE AND EXECUTION SPEED
+================================
+
+Since DUMA uses at least two virtual memory pages for each of its allocations,
+it's a terrible memory hog. I've sometimes found it necessary to add a swap
+file using swapon(8) so that the system would have enough virtual memory to
+debug my program. Also, the way we manipulate memory results in various cache
+and translation buffer entries being flushed with each call to malloc or free.
+The end result is that your program will be much slower and use more resources
+while you are debugging it with DUMA.
+
+Don't leave libduma.a linked into production software! Use it only for
+debugging.
+
+
+MEMORY LEAK DETECTION
+=====================
+
+All memory allocation is protocoled from DUMA together with the filename and
+linenumber of the calling function. The atexit() function checks if each
+allocated memory block was freed. With EF_newFrame() and EF_delFrame you can
+create a new memory frame. Embracing a smaller (than the whole program) unit
+with these functions, you can check if the leak is in that smaller unit. To
+disable leak detection add the preprocessor definition 'DUMA_NO_LEAKDETECTION'
+to DUMA_OPTIONS in Makefile.
+
+
+C++ MEMORY OPERATORS AND LEAK DETECTION
+=======================================
+
+Macros for "new" and "delete" are defined in dumapp.h. These macros give
+filename and linenumber of the calling functions to DUMA, thus allowing the
+same leak detection reports as for malloc and free. 'dumapp.h' needs to be
+included from your source file(s).
+Be warned that for now, the new/delete operators from DUMA do not behave fully
+C++ conform: new_handler is not called. For disabling the C++ new/delete/new[]
+and delete[] operators, add the preprocessor definition 'DUMA_NO_CPP_SUPPORT'
+to DUMA_OPTIONS in Makefile.
+
+
+COMPILATION NOTES FOR VISUAL C++
+================================
+
+Here some Compilation Notes for your Application in Debug Mode
+for the Microsoft Visual C++ (v6) Compiler:
+
+1) Don't use Program Database for "Edit and Continue":
+   Project-Options -> C++ -> General -> Debug-Info
+2) Don't use the "multithreaded-dll" runtime library:
+   Project-Options -> C++ -> Code Generation -> Runtime library
+3) Switch off incremental linking
+   Project-Options -> Linker -> General
+4) Switch off precompiled headers:
+   Project-Options -> C++ -> Precompiled Headers
+5) Add following Linker option "/FORCE:MULTIPLE"
+   Project-Options -> Linker -> General
+
+The labels may differ a bit cause i'm using the german version:
+
+Options in german language:
+1) Projekteinstellungen -> C++ -> Kategorie =Allgemein
+   -> Debug-Info =Programmdatenbank
+2) Projekteinstellungen -> C++ -> Kategorie =Codegeneration
+   -> Laufzeitbibliothek anpassen (Release/Debug),
+   nicht die DLL-Variante verwenden
+3) Projekteinstellungen -> Linker -> Kategorie =Allgemein
+   - Inkrementelles Binden =Aus
+4) Projekteinstellungen -> Linker -> Projekt Optionen
+   "/FORCE:MULTIPLE" unten eingeben
+
+Now everything you have to do is to set a dependency to "duma" from your application.
+
+
+WARNINGS
+========
+
+I have tried to do as good a job as I can on this software, but I doubt that it
+is even theoretically possible to make it bug-free. This software has no
+warranty. It will not detect some bugs that you might expect it to detect, and
+will indicate that some non-bugs are bugs.
+
+
+FILES
+=====
+
+/dev/zero: Source of memory pages (via mmap(2)).
+
+
+SEE ALSO
+========
+
+malloc(3), mmap(2), mprotect(2), swapon(8)
+
+
+DIAGNOSTICS
+===========
+
+Segmentation Fault: Examine the offending statement for violation of the
+boundaries of a memory allocation.
+
+Bus Error: See the section on WORD-ALIGNMENT AND OVERRUN DETECTION in this
+manual page.
+
+
+BUGS
+====
+
+My explanation of the alignment issue could be improved.
+Some Sun systems running SunOS 4.1 were reported to signal an access to a
+protected page with 'SIGBUS' rather than 'SIGSEGV', I suspect this is an
+undocumented feature of a particular Sun hardware version, not just the
+operating system. On these systems, dumatest will fail with a bus error until
+you modify the Makefile to define PAGE_PROTECTION_VIOLATED_SIGNAL as SIGBUS.
+
+There are, without doubt, other bugs and porting issues. Please contact me via
+e-mail if you have any bug reports, ideas, etc.
+
+
+WHAT'S BETTER
+=============
+
+Purify
+does a much more thorough job than DUMA, and does not have the huge memory
+overhead.
+
+Checkergcc
+a modified version of the GNU C Compiler that instruments all memory
+references, is available on Linux systems and where GCC is used. It performs
+some of the same tasks as Purify, but only on code that it has compiled.
+
+
+CONTACTING THE AUTHOR
+=====================
+
+Hayati Ayguen <h_ayguen@web.de>
+http://www.pf-lug.de/projekte/haya/duma.php
+
+
+FILES IN PACKAGE
+================
+
+SubDirectories:
+---------------
+win32-vide/*    project files for VIDE 1.24 (see http://www.objectcentral.com)
+                using the Borland C++ Builder 5.5 compiler
+                (FreeCommandLineTools, see http://www.borland.com)
+win32-devcpp/*  project files for Dev-C++ 4.9.6 (see http://www.bloodshed.net)
+                using the gcc compiler (see http://gcc.gnu.org)
+win32-msvc/*    projects files for Microsoft Visual C++ 6.0 IDE/compiler
+                (see http://www.microsoft.com)
+debian/*        don't know; maybe some files for the Debian Linux distribution?
+
+Projects:
+---------
+dumalib         DUMA library. this library should be linked with YOUR program
+dumatest        first small test program
+tstheap         second small test program
+File:
+------
+COPYING-*       License files; reade carefully!
+README          this text file
+CHANGES         text file listing done CHANGES
+
+duma.h		      belongs to dumalib
+                this header file should be included from within YOUR C source
+dumapp.h        belongs to dumalib
+                this header file should be included from within YOUR C++ source
+dumaint.h       belongs to dumalib
+                library internal header file
+duma.c          belongs to dumalib
+                contains malloc/free/.. functions
+dumapp.cpp      belongs to dumalib
+                contains C++ new/delete/.. functions redirecting them
+                  to ANSI C malloc/free
+page.c          belongs to dumalib
+                library internal source file: contains paging functions
+print.c         belongs to dumalib; library internal source file: contains
+                  printing/aborting functions
+dumatest.c      belongs to dumatest
+                small test program; checks wether dumalib's paging does its job
+                should work without any errors
+tstheap.c       belongs to tstheap
+                small test program; checks wether dumalib's heap does its job
+                should report many memory leaks after execution.
+Makefile        Makefile for UNIX/Linux/..
+duma.3          source for UNIX man page
+duma.sh         script for UNIX/Linux to start other programs using the
+                  LD_PRELOAD mechanism
+
+
+LICENSE
+=======
+
 Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
 License: GNU GPL (GNU General Public License, see COPYING-GPL) for all files except dumapp.h
 License: GNU LGPL (GNU Lesser General Public License, see COPYING-GPL) for dumapp.h
 
@@ -36,160 +451,4 @@ Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
----
-
-
-This is DUMA 2.4
-
-Added Port to Windows from Electric Fence 2.2.2.
-
-
-SubDirectories:
----------------
-win32-vide/*        project files for VIDE 1.24 (see http://www.objectcentral.com)
-                    using the Borland C++ Builder 5.5 compiler (FreeCommandLineTools,
-                    see http://www.borland.com)
-win32-devcpp/*      project files for Dev-C++ 4.9.6 (see http://www.bloodshed.net)
-                    using the gcc compiler (see http://gcc.gnu.org)
-win32-msvc/*        projects files for Microsoft Visual C++ 6.0 IDE/compiler
-                    (see http://www.microsoft.com)
-debian/*            don't know; maybe some files for the Debian Linux distribution?!
-
-Projects:
----------
-dumalib             DUMA library. this library should be linked with YOUR program
-dumatest            first small test program
-tstheap             second small test program
-File:
-------
-COPYING-*           License files; reade carefully!
-README              this text file
-CHANGES             text file listing done CHANGES
-
-duma.h		          belongs to dumalib
-                    this header file should be included from within YOUR C source
-dumapp.h            belongs to dumalib
-                    this header file should be included from within YOUR C++ source
-dumaint.h           belongs to dumalib
-                    library internal header file
-duma.c              belongs to dumalib
-                    contains malloc/free/.. functions
-dumapp.cpp          belongs to dumalib
-                    contains C++ new/delete/.. functions redirecting them
-                      to ANSI C malloc/free
-page.c              belongs to dumalib
-                    library internal source file: contains paging functions
-print.c             belongs to dumalib
-                    library internal source file: contains printing/aborting functions
-eftest.c            belongs to eftest
-                    small test program; checks wether dumalib's paging does its job
-                    should work without any errors
-tstheap.c           belongs to tstheap
-                    small test program; checks wether dumalib's heap does its job
-                    should report many memory leaks after execution.
-Makefile            Makefile for UNIX/Linux/..
-duma.3              source for UNIX man page
-duma.sh             script for UNIX/Linux to start other programs using the LD_PRELOAD mechanism
-
-
-
-Here some Compilation Notes for your Application in Debug Mode
-for the Microsoft Visual C++ (v6) Compiler:
-
-1) don't use Program Database for "Edit and Continue":
-   Project-Options -> C++ -> General -> Debug-Info
-2) don't use the "multithreaded-dll" runtime library:
-   Project-Options -> C++ -> Code Generation -> Runtime library
-3) switch off incremental linking
-   Project-Options -> Linker -> General
-4) switch off precompiled headers:
-   Project-Options -> C++ -> Precompiled Headers
-5) add following Linker option "/FORCE:MULTIPLE"
-   Project-Options -> Linker -> General
-
-the labels may differ a bit cause i'm using the german version:
-
-options in german language:
-1) Projekteinstellungen -> C++ -> Kategorie =Allgemein -> Debug-Info =Programmdatenbank
-2) Projekteinstellungen -> C++ -> Kategorie =Codegeneration -> Laufzeitbibliothek anpassen (Release/Debug),
-				  nicht die DLL-Variante verwenden
-3) Projekteinstellungen -> Linker -> Kategorie =Allgemein - Inkrementelles Binden =Aus
-4) Projekteinstellungen -> Linker -> Projekt Optionen
-                  "/FORCE:MULTIPLE" unten eingeben
-
-now everything you have to do is to set a dependency to "duma" from your application.
-
-
-Leak Detection:
----------------
-All memory allocation is protocoled from DUMA together with the filename/linenumber
-of the caller. atexit() it is checked if each allocated memory block was freed; if not an error
-occurs.
-With EF_newFrame() and EF_delFrame you can create a new memory frame. Embracing a smaller (than
-the whole program) unit with these functions, you can check if the leak is in that smaller unit.
-to disable leak detection add following preprocessor definition EF_NO_LEAKDETECTION
-
-
-C++ memory operators and leak detection:
-----------------------------------------
-Just include <dumapp.h> and recompile. There is a "new" macro which gives the filename and
-line number of the source code to DUMA. The rest should behave as usual - but for
-new all the overloaded new/delete functions do not behave fully C++ conform. Leak detection
-and memory protection is done automatically as for malloc()/free().
-to disable c++ new/delete/new[]/delete[] operator overload add following preprocessor definition
-EF_NO_CPP_SUPPORT to the Makefile.
-
-
-Catching the erroneous line:
-----------------------------
-To get the line in your sources, where an error occurs, go as following:
-
-1- Compile your program with debugging information
-   and statically linked to DUMA.
-2- Start your program from debugger f.e. with 'gdb <program>'
-3- run and wait for the segmentation fault
-
-alternatively
-
-1- Compile your program (with debugging information) without DUMA.
-2- Set 'ulimit -c unlimited' to get core files
-3- Start your program, choose one of following options
-   a) start your program (linked statically with DUMA)
-   b) start your program with duma.sh <your_program>
-4- Wait for a segmentation fault. this should have created a core[.<pid>] file.
-   You can get into a debugger f.e. with 'gdb <program> -c <core file>'
-
-
-
-	Hayati Ayguen
-	h_ayguen@web.de
-
-
-
----
-
-This is Electric Fence 2.2
-
-Electric Fence is a different kind of malloc() debugger. It uses the virtual
-memory hardware of your system to detect when software overruns the boundaries
-of a malloc() buffer. It will also detect any accesses of memory that has
-been released by free(). Because it uses the VM hardware for detection,
-Electric Fence stops your program on the first instruction that causes
-a bounds violation. It's then trivial to use a debugger to display the
-offending statement.
-
-This version should run on all systems that support POSIX mmap() and
-mprotect(). This includes Linux, Unix, and I think even BeOS.
-
-Complete information on the use of Electric Fence is in the manual page
-efence.3 .
-
-There is a mailing list to support Electric Fence. You can subscribe to it
-using the web form at http://lists.perens.com/mailman/listinfo/electric-fence.
-
-	Thanks
-
-	Bruce Perens
-	bruce@perens.com
 

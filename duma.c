@@ -1,8 +1,8 @@
 
 /*
  * DUMA - Red-Zone memory allocator.
- * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -84,9 +84,9 @@
 #include "paging.h"
 
 static const char  version[] = "\n"
-"DUMA 2.4.17\n"
-"Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
+"DUMA 2.4.18\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n";
+"Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
 
 
 static const char unknown_file[] =

@@ -1,24 +1,37 @@
-PIC= -fPIC
-# add "-DDUMA_NO_GLOBAL_MALLOC_FREE" (without quotes) to for not defining malloc/free in global namespace
-# add "-DDUMA_EXPLICIT_INIT" (without quotes) to do all the "risky" stuff (getenv(), write(), ..)
-#                            explicitly from main(). you have to call duma_init() explicitly from main()
-#                            this option also avoids leak error messages for allocations
-#                            before duma_init() got called. this helps for leaky standard environments.
-# add "-DDUMA_NO_THREAD_SAFETY" (without quotes) for not supporting multi-threading
-# add "-DDUMA_NO_CPP_SUPPORT" (without quotes) to for not directing new/delete to malloc/free
-# add "-DDUMA_NO_LEAKDETECTION" (without quotes) if you don't want support for leak detection
-# add "-DDUMA_USE_FRAMENO" (without quotes) if you want to use DUMA_newFrame() and DUMA_delFrame()
-# add "-DDUMA_OLD_NEW_MACRO" (without quotes) if you want to use DUMA's old
-#                          style NEW_ELEM() / NEW_ARRAY() macros. when not defining
-#                          this option, a standard conform new syntax can get used.
-#                          unfortunately you have to use DEL_ELEM/DEL_ARRAY further
-#                          to utilize filename and linenumber of deallocation calls
 #
-# for usage with LD_PRELOAD you should not use the options
-#   DUMA_NO_GLOBAL_MALLOC_FREE, DUMA_EXPLICIT_INIT and DUMA_NO_THREAD_SAFETY
+# add "-DDUMA_NO_GLOBAL_MALLOC_FREE" (without quotes)
+#   for not defining malloc/free in global namespace
+#
+# add "-DDUMA_EXPLICIT_INIT" (without quotes)
+#    to do all the "risky" stuff getenv(), write(), .. explicitly from main().
+#    you have to call duma_init() explicitly from main() this option also
+#    avoids leak error messages for allocations before duma_init() got called.
+#    this helps for leaky standard environments.
+#
+# add "-DDUMA_NO_THREAD_SAFETY" (without quotes)
+#    for not supporting multi-threading
+#
+# add "-DDUMA_NO_CPP_SUPPORT" (without quotes)
+#    for not directing new/delete to malloc/free
+#
+# add "-DDUMA_NO_LEAKDETECTION" (without quotes)
+#    if you don't want support for leak detection
+#
+# add "-DDUMA_USE_FRAMENO" (without quotes)
+#    if you want to use DUMA_newFrame() and DUMA_delFrame()
+#
+# add "-DDUMA_OLD_NEW_MACRO" (without quotes)
+#    if you want to use DUMA's old style NEW_ELEM() / NEW_ARRAY() macros.
+#    when not defining this option, a standard conform new syntax can get used.
+#    unfortunately you have to use DEL_ELEM/DEL_ARRAY further to utilize
+#    filename and linenumber of deallocation calls
 #
 
 DUMA_OPTIONS = -DDUMA_EXPLICIT_INIT
+
+# for usage with LD_PRELOAD you should not use the options
+#   DUMA_NO_GLOBAL_MALLOC_FREE, DUMA_EXPLICIT_INIT and DUMA_NO_THREAD_SAFETY
+#
 DUMA_SO_OPTIONS = -DDUMA_NO_CPP_SUPPORT
 
 # for FreeBSD 5.4
@@ -27,6 +40,7 @@ DUMA_SO_OPTIONS = -DDUMA_NO_CPP_SUPPORT
 # for FreeBSD 5.4 if DUMA_EXPLICIT_INIT is not set
 # DUMA_OPTIONS += -DDUMA_NO_LEAKDETECTION
 
+PIC= -fPIC
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
