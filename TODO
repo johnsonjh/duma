@@ -9,7 +9,6 @@ TODO:
 -use libtool to build shared libraries in Makefile
 -implement a list structure over pages rather than an array for all slots.
   this would save copying all slot entries.
--implement DUMA_MALLOC_FAILEXIT which exits when allocation fails
 -make new variants behave fully C++ conform
 -store __func__ additionally to __FILE__ and __LINE__
 
