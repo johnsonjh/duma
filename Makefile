@@ -26,6 +26,9 @@
 #    unfortunately you have to use DEL_ELEM/DEL_ARRAY further to utilize
 #    filename and linenumber of deallocation calls
 #
+# add "-DDUMA_NO_HANG_MSG" (without quotes)
+#    set this if you want to suppress the extra messages around atexit().
+#
 
 DUMA_OPTIONS = -DDUMA_EXPLICIT_INIT
 
