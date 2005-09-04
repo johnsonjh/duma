@@ -9,6 +9,12 @@ CHANGELOG:
        (2005-09-10, HA)
        modified README
        (2005-09-16, HA)
+       removed option DUMA_FREE_WIPES
+       documented the options DUMA_SLACKFILL, DUMA_MALLOC_FAILEXIT,
+         DUMA_MAX_ALLOC, DUMA_FREE_ACCESS, DUMA_SHOW_ALLOC and
+         DUMA_DISABLE_BANNER in README.
+       new preprocessor flag 'DUMA_NO_HANG_MSG' in Makefile
+       (2005-09-16, HA)
 
 2.4.17 forked Electric Fence cause Bruce Perens wrote:
          > Hayati Ayguen must choose another name for his program.
