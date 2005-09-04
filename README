@@ -67,14 +67,14 @@ important that you know how to use them.
 DUMA_ALIGNMENT
 --------------
 This is an integer that specifies the alignment for any memory allocations that
-will be returned by malloc(), calloc(), and realloc().
-The value is specified in bytes, thus a value of 4 will cause memory to be
-aligned to 32-bit boundaries unless your system doesn't have a 8-bit
-characters. DUMA_ALIGNMENT is set to sizeof(int) by default, since that is
-generally the word-size of your CPU.
-If your program requires that allocations be aligned to 64-bit boundaries and
-you have a 32-bit int you'll have to set this value to 8. This is the case when
-compiling with the '-mips2' flag on MIPS-based systems such as those from SGI.
+will be returned by malloc(), calloc(), and realloc(). The value is specified
+in bytes, thus a value of 4 will cause memory to be aligned to 32-bit
+boundaries unless your system doesn't have a 8-bit characters.
+DUMA_ALIGNMENT is set to sizeof(int) by default, since that is generally the
+word-size of your CPU. If your program requires that allocations be aligned to
+64-bit boundaries and you have a 32-bit int you'll have to set this value to 8.
+This is the case when compiling with the '-mips2' flag on MIPS-based systems
+such as those from SGI.
 The memory allocation that is returned by DUMA malloc() is aligned using the
 value in DUMA_ALIGNMENT, and its size the multiple of that value that is
 greater than or equal to the requested size.
@@ -85,6 +85,9 @@ manual page before you try this.
 To change this value, set DUMA_ALIGNMENT in the shell environment to an integer
 value, or assign to the global integer variable DUMA_ALIGNMENT using a
 debugger.
+You don't need to change this variable, if you just need bigger alignment for
+some special buffers. In this case you may use the function
+memalign(alignment, userSize).
 
 DUMA_PROTECT_BELOW
 ------------------
@@ -93,40 +96,87 @@ allocation, so that software that runs past the end of the allocation will be
 detected. Setting DUMA_PROTECT_BELOW to 1 causes DUMA to place the inaccessible
 page before the allocation in the address space, so that under-runs will be
 detected instead of over-runs.
-When DUMA_PROTECT_BELOW is set, the DUMA_ALIGNMENT parameter is ignored. All
-allocations will be aligned to virtual-memory-page boundaries, and their size
-will be the exact size that was requested.
 To change this value, set DUMA_PROTECT_BELOW in the shell environment to an
 integer value, or assign to the global integer variable DUMA_PROTECT_BELOW
-using a debugger.
-
-DUMA_PROTECT_FREE
------------------
-DUMA usually returns free memory to a pool from which it may be re-allocated.
-If you suspect that a program may be touching free memory, set
-DUMA_PROTECT_FREE to 1. This will cause DUMA to never re-allocate memory once
-it has been freed, so that any access to free memory will be detected. Some
-programs will use tremendous amounts of memory when this parameter is set.
-To change this value, set DUMA_PROTECT_FREE in the shell environment to an
-integer value, or assign to the global integer variable DUMA_PROTECT_FREE using
-a debugger.
-
-DUMA_ALLOW_MALLOC_0
--------------------
-By default, DUMA traps calls to malloc() with a size of zero, because they are
-often the result of a software bug. If DUMA_ALLOW_MALLOC_0 is non-zero, the
-software will not trap calls to malloc() with a size of zero.
-To change this value, set DUMA_ALLOC_MALLOC_0 in the shell environment to an
-integer value, or assign to the global integer variable DUMA_ALLOC_MALLOC_0
 using a debugger.
 
 DUMA_FILL
 ---------
 When set to a value between 0 and 255, every byte of allocated memory is
 initialized to that value. This can help detect reads of uninitialized memory.
-When set to -1, some memory is filled with zeroes (the operating system default
-on most systems) and some memory will retain the values written to it during
-its last use.
+When set to -1, DUMA does not initialise memory on allocation. But some memory
+is filled with zeroes (the operating system default on most systems) and some
+memory will retain the values written to it during its last use.
+Per default DUMA will initialise all allocated bytes to 255 (=0xFF).
+
+DUMA_SLACKFILL
+--------------
+As DUMA internally allocates memory in whole pages, there retains an unused and
+unprotectable piece of memory: the slack or no mans land. Witch this
+environment variable you can define the initialisation value for all bytes in
+the slack. At deallocation of a memory block DUMA checks if any bytes of the
+slack got modified. The default value is 170, which is 0xAA in hexadecimal and
+10101010 in binary representation.
+
+DUMA_ALLOW_MALLOC_0
+-------------------
+Memory allocation of size zero is ANSI conform.  But often this is the result
+of a software bug. For this reason DUMA may trap such calls to malloc() with
+size zero. I leave this option disabled by default, but you are free to trap
+these calls setting the DUMA_ALLOC_MALLOC_0 in the shell environment to an
+integer value.
+
+DUMA_MALLOC_FAILEXIT
+--------------------
+Many programs do not check for allocation failure. This often leads to delayed
+errors, no more understandable. Setting this environment variable to a positive
+integer, DUMA exits the program immediately when memory allocation fails. This
+option is set by default.
+
+DUMA_PROTECT_FREE
+-----------------
+DUMA usually returns free memory to a pool from which it may be re-allocated.
+If you suspect that a program may be touching free memory, set
+DUMA_PROTECT_FREE to -1. This is the default and will cause DUMA not to
+re-allocate any memory.
+For programs with many allocations and deallocations this may lead to the
+consumption of the full address space and thus to the failure of malloc().
+To avoid such failures you may limit the amount of protected deallocated
+memory by setting DUMA_PROTECT_FREE to a positive value. This value in kB
+will be the limit for such protected free memory.
+A value of 0 will disable protection of freed memory.
+
+DUMA_MAX_ALLOC
+--------------
+This environment variable limits the total memory print of a program. This is
+another way to indirectly limit the sum of freed protected memory (see
+DUMA_PROTECT_FREE). Per default there is no limit (=-1). A positive value is
+interpreted in kB, which stands for the sum of allocated and freed protected
+memory.
+
+DUMA_FREE_ACCESS
+----------------
+This is a debugging enhancer to catch deallocation of a memory blocks using
+watch expressions. DUMA does a write access to the first byte, which may lead
+a debugger to stop on a watch expression. You have to enable this explicitly
+by setting the environment variable to non zero. Default is disabled.
+
+DUMA_SHOW_ALLOC
+---------------
+Set this environment variable to non-zero to let DUMA print all allocations and
+deallocations to the console. Although this generates a lot of messages, this
+option can be useful to detect inefficient code containing many allocations /
+deallocations. This feature is switched off per default.
+
+DUMA_FREE_WIPES
+---------------
+This option is replaced. As freed memory is protected by DUMA until it gets
+reused, it is unnecessary to wipe its contents.
+
+DUMA_DISABLE_BANNER
+-------------------
+When set to 1 display of usual startup message on console is suppressed.
+Default is 0.
 
 
 WORD-ALIGNMENT AND OVERRUN DETECTION
