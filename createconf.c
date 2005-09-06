@@ -68,6 +68,17 @@ Page_Size(void)
 #endif
 }
 
+int initattr_ok = 0;
+
+void
+#ifdef __GNUC__
+__attribute ((constructor))
+#endif
+init_function(void)
+{
+  initattr_ok = 1;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -102,6 +113,7 @@ int main(int argc, char *argv[])
   printf(" * Number of bytes per virtual-memory page, as returned by Page_Size().\n");
   printf(" */\n");
   printf("#define DUMA_PAGE_SIZE %lu\n", pagesize);
+  printf("#define DUMA_GNU_INIT_ATTR %d\n", initattr_ok);
   printf("\n");
   printf("#endif /* _DUMA_CONFIG_H_ */\n");
   return 0;
