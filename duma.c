@@ -84,7 +84,7 @@
 #include "paging.h"
 
 static const char  version[] = "\n"
-"DUMA 2.4.18\n"
+"DUMA 2.4.19\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n";
 
@@ -189,17 +189,17 @@ _duma_allocDesc[] =
 {
     { "duma allocate()"   , DUMAAT_INTERNAL  }
   , { "duma deallocate()" , DUMAAT_INTERNAL  }
-  , { "malloc()"            , DUMAAT_MALLOC    }
-  , { "calloc()"            , DUMAAT_MALLOC    }
-  , { "free()"              , DUMAAT_MALLOC    }
-  , { "memalign()"          , DUMAAT_MALLOC    }
-  , { "realloc()"           , DUMAAT_MALLOC    }
-  , { "valloc()"            , DUMAAT_MALLOC    }
-  , { "strdup()"            , DUMAAT_MALLOC    }
-  , { "new (element)"       , DUMAAT_NEW_ELEM  }
-  , { "delete (element)"    , DUMAAT_NEW_ELEM  }
-  , { "new[] (array)"       , DUMAAT_NEW_ARRAY }
-  , { "[]delete (array)"    , DUMAAT_NEW_ARRAY }
+  , { "malloc()"          , DUMAAT_MALLOC    }
+  , { "calloc()"          , DUMAAT_MALLOC    }
+  , { "free()"            , DUMAAT_MALLOC    }
+  , { "memalign()"        , DUMAAT_MALLOC    }
+  , { "realloc()"         , DUMAAT_MALLOC    }
+  , { "valloc()"          , DUMAAT_MALLOC    }
+  , { "strdup()"          , DUMAAT_MALLOC    }
+  , { "new (element)"     , DUMAAT_NEW_ELEM  }
+  , { "delete (element)"  , DUMAAT_NEW_ELEM  }
+  , { "new[] (array)"     , DUMAAT_NEW_ARRAY }
+  , { "[]delete (array)"  , DUMAAT_NEW_ARRAY }
 };
 
 #ifndef DUMA_NO_LEAKDETECTION
@@ -538,6 +538,10 @@ void _duma_init(void)
 {
   size_t            size = MEMORY_CREATION_SIZE;
   struct _DUMA_Slot * slot;
+
+  if ( DUMA_PAGE_SIZE != Page_Size() )
+    DUMA_Abort("DUMA_PAGE_SIZE is not correct. Run createconf and save results as duma_config.h");
+
 
 #ifndef DUMA_NO_THREAD_SAFETY
 #ifdef DUMA_EXPLICIT_INIT

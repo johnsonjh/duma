@@ -1,6 +1,14 @@
 
 CHANGELOG:
 
+2.4.19 fixed compile error in duma.c introduced in 2.4.18
+       fixed/enhanced Makefile
+       (2005-09-19, HA)
+       added runtime check for DUMA_PAGE_SIZE from duma_config.h
+       (2005-09-17, HA)
+       added check for initialization function "__attribute ((constructor))"
+       (2005-09-18, HA)
+
 2.4.18 checked Source code: DUMA_get_sem() is nor more called,
          when DUMA_NO_THREAD_SAFETY is set
        splitted this document into two files: TODO and CHANGELOG

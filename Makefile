@@ -151,16 +151,16 @@ $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
 # define special objects for build of shared library
 
 dumapp_so.o:	dumapp.cpp duma.h dumapp.h
-	$(CXX) -g $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
+	$(CXX) -g $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
 
 duma_so.o:	duma.c duma.h duma_config.h
-	$(CC) -g $(DUMA_SO_OPTIONS) -c duma.c -o $@
+	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
 
 sem_inc_so.o:	sem_inc.c sem_inc.h
-	$(CC) -g $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
+	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
 
 print_so.o:	print.c print.h
-	$(CC) -g $(DUMA_SO_OPTIONS) -c print.c -o $@
+	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
 
 ifneq ($(OS), Windows_NT)
 
