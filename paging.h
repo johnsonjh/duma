@@ -344,10 +344,25 @@ Page_Delete(void * address, size_t size)
 
 
 /*
- * function Page_Size() moved to createconf.c
- * instead include file efence_config.h and
- * the DUMA_PAGE_SIZE define
+ * retrieve page size
+ * size_t  Page_Size(void)
  */
+static size_t
+Page_Size(void)
+{
+#if defined(WIN32)
+  SYSTEM_INFO SystemInfo;
+  GetSystemInfo( &SystemInfo );
+  return (size_t)SystemInfo.dwPageSize;
+#elif defined(_SC_PAGESIZE)
+	return (size_t)sysconf(_SC_PAGESIZE);
+#elif defined(_SC_PAGE_SIZE)
+	return (size_t)sysconf(_SC_PAGE_SIZE);
+#else
+/* extern int	getpagesize(); */
+	return getpagesize();
+#endif
+}
 
 
 #endif /* DUMA_PAGING_H */
