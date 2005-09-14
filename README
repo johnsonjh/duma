@@ -70,15 +70,20 @@ This is an integer that specifies the alignment for any memory allocations that
 will be returned by malloc(), calloc(), and realloc(). The value is specified
 in bytes, thus a value of 4 will cause memory to be aligned to 32-bit
 boundaries unless your system doesn't have a 8-bit characters.
-DUMA_ALIGNMENT is set to sizeof(int) by default, since that is generally the
-word-size of your CPU. If your program requires that allocations be aligned to
-64-bit boundaries and you have a 32-bit int you'll have to set this value to 8.
-This is the case when compiling with the '-mips2' flag on MIPS-based systems
-such as those from SGI.
-The memory allocation that is returned by DUMA malloc() is aligned using the
-value in DUMA_ALIGNMENT, and its size the multiple of that value that is
-greater than or equal to the requested size.
-For this reason, you will sometimes want to set DUMA_ALIGNMENT to 0 (no
+DUMA_ALIGNMENT is set to the minimum required alignment specific to your
+environment by default. The minimum required alignment is detected by
+createconf and stored in the file duma_config.h.
+If your program requires that allocations be aligned to 64-bit boundaries
+you'll have to set this value to 8. This is the case when compiling with the
+'-mips2' flag on MIPS-based systems such as those from SGI. For some
+architectures the default is defined to even more - x86_64 uses alignment to
+16 bytes by default.
+DUMA internally uses a smaller value if the requested memory size is smaller
+than the alignment value: the next smaller power of 2 is used.
+Thus allocating blocks smaller than DUMA_ALIGNMENT may result into smaller
+alignments - for example when allocating 3 bytes, they would be aligned to 2
+byte boundary. This allows better detection of overrun.
+For this reason, you will sometimes want to set DUMA_ALIGNMENT to 1 (no
 alignment), so that you can detect overruns of less than your CPU's word size.
 Be sure to read the section 'WORD-ALIGNMENT AND OVERRUN DETECTION' in this
 manual page before you try this.
@@ -210,7 +215,7 @@ are overruns.
 
 DUMA provides the variable DUMA_ALIGNMENT so that the user can control the
 default alignment used by malloc(), calloc(), and realloc(). To debug overruns
-as small as a single byte, you can set DUMA_ALIGNMENT to zero. This will result
+as small as a single byte, you can set DUMA_ALIGNMENT to one. This will result
 in DUMA malloc() returning unaligned addresses for allocations with sizes that
 are not a multiple of the word size. This is not a problem in most cases,
 because compilers must pad the size of objects so that alignment restrictions
@@ -267,7 +272,7 @@ INSTRUCTIONS FOR DEBUGGING YOUR PROGRAM
 WORD-ALIGNMENT AND OVERRUN DETECTION
 ====================================
 
-See if you can set DUMA_ALIGNMENT to 0 and repeat step 2. Sometimes this will
+See if you can set DUMA_ALIGNMENT to 1 and repeat step 2. Sometimes this will
 be too much work, or there will be problems with library routines for which you
 don't have the source, that will prevent you from doing this.
 
