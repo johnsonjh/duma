@@ -23,6 +23,7 @@
  * contains thread safety functions (semaphore lock/release)
  */
 
+#include "duma_config.h"
 #include "sem_inc.h"
 #include "print.h"
 
@@ -80,7 +81,11 @@ static int        semInited = 0;
 static int        semDepth  = 0;
 
 
-void DUMA_init_sem(void)
+void
+#ifdef DUMA_GNU_INIT_ATTR
+__attribute ((constructor))
+#endif
+DUMA_init_sem(void)
 {
 #ifndef WIN32
   if (semInited)
@@ -121,34 +126,41 @@ void DUMA_init_sem(void)
                              );
   semInited = 1;
 #endif
+  if (!semInited)     DUMA_Abort("\nCouldn't initialise semaphore");
 }
+
+#ifndef WIN32
+# define DUMA_thread_self() pthread_self()
+#else
+# define DUMA_thread_self() GetCurrentThreadId()
+#endif
 
 
 void DUMA_get_sem(void)
 {
+#ifndef DUMA_GNU_INIT_ATTR
   if (!semInited)     DUMA_init_sem();    /* initialize if necessary */
-  if (!semInited)     DUMA_Abort("\nCouldn't initialise semaphore");
-
-#ifndef WIN32
-  if ( pthread_self() != semThread )
-  {
-    while (sem_wait(&DUMA_sem) < 0) ;   /* wait for the semaphore. */
-    semThread = pthread_self();       /* let everyone know who has the semaphore. */
-  }
-#else
-  if ( GetCurrentThreadId() != semThread )
-  {
-    while (WaitForSingleObject(semHandle, 1000) != WAIT_OBJECT_0) ; /* wait for the semaphore. */
-    semThread = GetCurrentThreadId(); /* let everyone know who has the semaphore. */
-  }
 #endif
+
+  if (semThread != DUMA_thread_self())
+  {
+#ifndef WIN32
+    while (sem_wait(&DUMA_sem) < 0);   /* wait for the semaphore. */
+#else
+    while (WaitForSingleObject(semHandle, 1000) != WAIT_OBJECT_0) ; /* wait for the semaphore. */
+#endif
+    semThread = DUMA_thread_self();     /* let everyone know who has the semaphore. */
+  }
   ++semDepth;                         /* increment semDepth - push one stack level */
 }
 
 
 void DUMA_rel_sem(void)
 {
+#ifndef DUMA_GNU_INIT_ATTR
   if (!semInited)     DUMA_Abort("\nSemaphore isn't initialised");
+#endif
+
   if (!semThread)     DUMA_Abort("\nSemaphore isn't owned by this thread");
   if (semDepth <= 0)  DUMA_Abort("\nSemaphore isn't locked");
 
