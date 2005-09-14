@@ -69,7 +69,7 @@ void * DUMA_CDECL operator new( DUMA_SIZE_T size )
 throw(std::bad_alloc)
 {
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-  void *ptr = _duma_allocate(DUMA_ALIGNMENT, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, DUMA_FAIL_NULL  DUMA_PARAMS_UK);
+  void *ptr = _duma_allocate(0, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, DUMA_FAIL_NULL  DUMA_PARAMS_UK);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -80,7 +80,7 @@ void * DUMA_CDECL operator new( DUMA_SIZE_T size, const std::nothrow_t & )
 throw()
 {
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-  void *ptr = _duma_allocate(DUMA_ALIGNMENT, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, DUMA_FAIL_NULL  DUMA_PARAMS_UK);
+  void *ptr = _duma_allocate(0, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, DUMA_FAIL_NULL  DUMA_PARAMS_UK);
   return ptr;
 }
 
@@ -113,7 +113,7 @@ void * DUMA_CDECL operator new[]( DUMA_SIZE_T size )
 throw(std::bad_alloc)
 {
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-  void *ptr = _duma_allocate(DUMA_ALIGNMENT, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, DUMA_FAIL_NULL  DUMA_PARAMS_UK);
+  void *ptr = _duma_allocate(0, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, DUMA_FAIL_NULL  DUMA_PARAMS_UK);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -124,7 +124,7 @@ void * DUMA_CDECL operator new[]( DUMA_SIZE_T size, const std::nothrow_t & )
 throw()
 {
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-  void *ptr = _duma_allocate(DUMA_ALIGNMENT, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, DUMA_FAIL_NULL  DUMA_PARAMS_UK);
+  void *ptr = _duma_allocate(0, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, DUMA_FAIL_NULL  DUMA_PARAMS_UK);
   return ptr;
 }
 
@@ -159,7 +159,7 @@ void * DUMA_CDECL operator new( DUMA_SIZE_T size, const char *filename, int line
 throw( std::bad_alloc )
 {
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-  void *ptr = _duma_allocate(DUMA_ALIGNMENT, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, DUMA_FAIL_NULL, filename, lineno);
+  void *ptr = _duma_allocate(0, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, DUMA_FAIL_NULL, filename, lineno);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -169,7 +169,7 @@ void * DUMA_CDECL operator new( DUMA_SIZE_T size, const std::nothrow_t &, const 
 throw()
 {
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-  void *ptr = _duma_allocate(DUMA_ALIGNMENT, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, DUMA_FAIL_NULL, filename, lineno);
+  void *ptr = _duma_allocate(0, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ELEM, DUMA_FAIL_NULL, filename, lineno);
   return ptr;
 }
 
@@ -201,7 +201,7 @@ void * DUMA_CDECL operator new[]( DUMA_SIZE_T size, const char *filename, int li
 throw( std::bad_alloc )
 {
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-  void *ptr = _duma_allocate(DUMA_ALIGNMENT, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, DUMA_FAIL_NULL, filename, lineno);
+  void *ptr = _duma_allocate(0, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, DUMA_FAIL_NULL, filename, lineno);
   if (!ptr) throw std::bad_alloc();
   return ptr;
 }
@@ -212,7 +212,7 @@ void * DUMA_CDECL operator new[]( DUMA_SIZE_T size, const std::nothrow_t &, cons
 throw()
 {
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-  void *ptr = _duma_allocate(DUMA_ALIGNMENT, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, DUMA_FAIL_NULL, filename, lineno);
+  void *ptr = _duma_allocate(0, size, DUMA_PROTECT_BELOW, DUMA_FILL, 1 /*=protectAllocList*/, EFA_NEW_ARRAY, DUMA_FAIL_NULL, filename, lineno);
   return ptr;
 }
 
