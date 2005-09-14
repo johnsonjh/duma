@@ -43,19 +43,29 @@ DUMA_SO_OPTIONS = -DDUMA_NO_CPP_SUPPORT
 # for FreeBSD 5.4 if DUMA_EXPLICIT_INIT is not set
 # DUMA_OPTIONS += -DDUMA_NO_LEAKDETECTION
 
+
 PIC= -fPIC
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
     CURPATH=./
     DUMASO=
+    CFLAGS= -g -O0
+    CPPFLAGS= -g -O0
+    LIBS=
   else
     CURPATH=
     DUMASO=
+    CFLAGS= -g -O0
+    CPPFLAGS= -g -O0
+    LIBS=
   endif
 else
   CURPATH=./
   DUMASO=libduma.so.0.0
+  CFLAGS= -g -O0
+  CPPFLAGS= -g -O0
+  LIBS=-lpthread
 endif
 
 
@@ -64,10 +74,13 @@ CXX=g++
 AR=ar
 INSTALL=install
 
+############################################################
+
 prefix=/usr
 BIN_INSTALL_DIR= $(prefix)/bin
 LIB_INSTALL_DIR= $(prefix)/lib
 MAN_INSTALL_DIR= $(prefix)/man/man3
+
 
 
 PACKAGE_SOURCE= README CHANGES duma.3 Makefile \
@@ -102,55 +115,6 @@ clean:
 		tstheap dumatest dumatestpp createconf \
 	 libduma.a libduma.so.0.0 libduma.cat DUMA.shar \
 	 duma_config.h
-
-# define special objects for build of shared library
-
-ifeq ($(OS), Windows_NT)
-  ifeq ($(OSTYPE), msys)
-    CFLAGS= -g -O0 $(DUMA_SO_OPTIONS)
-    CPPFLAGS= -g -O0 $(DUMA_SO_OPTIONS)
-    LIBS=
-  else
-    CFLAGS= -g -O0 $(DUMA_SO_OPTIONS)
-    CPPFLAGS= -g -O0 $(DUMA_SO_OPTIONS)
-    LIBS=
-  endif
-else
-  CFLAGS= -g -O0 $(PIC) $(DUMA_SO_OPTIONS)
-  CPPFLAGS= -g -O0 $(PIC) $(DUMA_SO_OPTIONS)
-  LIBS=-lpthread
-endif
-
-
-dumapp_so.o:	dumapp.cpp duma.h dumapp.h
-	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
-
-duma_so.o:	duma.c duma.h duma_config.h
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
-
-sem_inc_so.o:	sem_inc.c sem_inc.h
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
-
-print_so.o:	print.c print.h
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
-
-
-ifeq ($(OS), Windows_NT)
-  ifeq ($(OSTYPE), msys)
-    CFLAGS= -g -O0 $(DUMA_OPTIONS)
-    CPPFLAGS= -g -O0 $(DUMA_OPTIONS)
-    LIBS=
-  else
-    CFLAGS= -g -O0  $(DUMA_OPTIONS)
-    CPPFLAGS= -g -O0 $(DUMA_OPTIONS)
-    LIBS=
-  endif
-else
-  CFLAGS= -g -O0 $(PIC) $(DUMA_OPTIONS)
-  CPPFLAGS= -g -O0 $(PIC) $(DUMA_OPTIONS)
-  LIBS=-lpthread
-endif
-
 
 roff:
 	nroff -man < duma.3 > duma.cat
@@ -196,9 +160,46 @@ libduma.so.0.0: duma_config.h $(SO_OBJECTS)
 endif
 
 
+#
+# define rules how to build objects for shared library
+#
 
-.c.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+dumapp_so.o:	dumapp.cpp duma.h dumapp.h
+	$(CXX) $(CPPFLAGS) $(PIC) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
 
-.cpp.o:
-	$(CXX) $(CPPFLAGS) -c $< -o $@
+duma_so.o:	duma.c duma.h duma_config.h
+	$(CC) $(CFLAGS) $(PIC) $(DUMA_SO_OPTIONS) -c duma.c -o $@
+
+sem_inc_so.o:	sem_inc.c sem_inc.h
+	$(CC) $(CFLAGS) $(PIC) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
+
+print_so.o:	print.c print.h
+	$(CC) $(CFLAGS) $(PIC) $(DUMA_SO_OPTIONS) -c print.c -o $@
+
+
+#
+# define rules how to build objects for static library
+#
+
+dumapp.o:	dumapp.cpp duma.h dumapp.h
+	$(CXX) $(CPPFLAGS) $(DUMA_OPTIONS) -c dumapp.cpp -o $@
+
+duma.o:	duma.c duma.h duma_config.h
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c duma.c -o $@
+
+sem_inc.o:	sem_inc.c sem_inc.h
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c sem_inc.c -o $@
+
+print.o:	print.c print.h
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c print.c -o $@
+
+
+#
+# default rules
+#
+#.c.o:
+#	$(CC) $(CFLAGS) -c $< -o $@
+#
+#.cpp.o:
+#	$(CXX) $(CPPFLAGS) -c $< -o $@
+#
