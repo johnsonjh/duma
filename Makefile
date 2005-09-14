@@ -45,29 +45,6 @@ DUMA_SO_OPTIONS = -DDUMA_NO_CPP_SUPPORT
 
 PIC= -fPIC
 
-ifeq ($(OS), Windows_NT)
-  ifeq ($(OSTYPE), msys)
-    CURPATH=./
-    CFLAGS= -g $(DUMA_OPTIONS)
-    CPPFLAGS= -g $(DUMA_OPTIONS)
-    LIBS=
-    DUMASO=
-  else
-    CURPATH=
-    CFLAGS= -g  $(DUMA_OPTIONS)
-    CPPFLAGS= -g $(DUMA_OPTIONS)
-    LIBS=
-    DUMASO=
-  endif
-else
-  CURPATH=./
-  CFLAGS= -g $(PIC) $(DUMA_OPTIONS)
-  CPPFLAGS= -g $(PIC) $(DUMA_OPTIONS)
-  LIBS=-lpthread
-  DUMASO=libduma.so.0.0
-endif
-
-
 CC=gcc
 CXX=g++
 AR=ar
@@ -112,6 +89,42 @@ clean:
 	 libduma.a libduma.so.0.0 libduma.cat DUMA.shar \
 	 duma_config.h
 
+# define special objects for build of shared library
+
+dumapp_so.o:	dumapp.cpp duma.h dumapp.h
+	$(CXX) -g $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
+
+duma_so.o:	duma.c duma.h duma_config.h
+	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
+
+sem_inc_so.o:	sem_inc.c sem_inc.h
+	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
+
+print_so.o:	print.c print.h
+	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
+
+ifeq ($(OS), Windows_NT)
+  ifeq ($(OSTYPE), msys)
+    CURPATH=./
+    CFLAGS= -g $(DUMA_OPTIONS)
+    CPPFLAGS= -g $(DUMA_OPTIONS)
+    LIBS=
+    DUMASO=
+  else
+    CURPATH=
+    CFLAGS= -g  $(DUMA_OPTIONS)
+    CPPFLAGS= -g $(DUMA_OPTIONS)
+    LIBS=
+    DUMASO=
+  endif
+else
+  CURPATH=./
+  CFLAGS= -g $(PIC) $(DUMA_OPTIONS)
+  CPPFLAGS= -g $(PIC) $(DUMA_OPTIONS)
+  LIBS=-lpthread
+  DUMASO=libduma.so.0.0
+endif
+
 roff:
 	nroff -man < duma.3 > duma.cat
 
@@ -146,21 +159,6 @@ dumatestpp: libduma.a dumatestpp.o dumapp.h
 	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
 
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
-
-
-# define special objects for build of shared library
-
-dumapp_so.o:	dumapp.cpp duma.h dumapp.h
-	$(CXX) -g $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
-
-duma_so.o:	duma.c duma.h duma_config.h
-	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
-
-sem_inc_so.o:	sem_inc.c sem_inc.h
-	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
-
-print_so.o:	print.c print.h
-	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
 
 ifneq ($(OS), Windows_NT)
 
