@@ -157,11 +157,10 @@ static int
 testSizes(void)
 {
   /*
-   * If duma_number can't hold all of the bits of a void *, have the user
-   * add -DUSE_ LONG_LONG to the compiler flags so that duma_number will be
-   * declared as "unsigned long long" instead of "unsigned long".
+   * If DUMA_ADDR can't hold all of the bits of a void *,
+   * have the user call createconf.
    */
-  return ( sizeof(duma_number) < sizeof(void *) );
+  return ( sizeof(DUMA_ADDR) < sizeof(void *) );
 }
 
 static int
@@ -297,7 +296,7 @@ main(int argc, char * * argv)
 #endif
 
   DUMA_PROTECT_BELOW = 0;
-  DUMA_ALIGNMENT = 0;
+  DUMA_ALIGNMENT = DUMA_MIN_ALIGNMENT;
 
   allocation = 0;
 
