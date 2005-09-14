@@ -1,6 +1,20 @@
 
 CHANGELOG:
 
+2.4.20 integrated patches from Zbynek Vyskovsky <kvr@centrum.cz> :
+         use tighter alignment when size is smaller than default alignment
+         replaced calls to EF_Exit() by EF_Abort()
+         modified README
+       (2005-09-19 - 2005-09-23, ZV)
+       reworked Zbynek's patch to use long in internal adress calculations
+         autodetect compatible integer types DUMA_ADDR and DUMA_SIZE in createconf
+         write them to duma_config.h
+       autodetect DUMA_MIN_ALIGNMENT in createconf, write value to duma_config.h
+       use autodetected values in code
+       reworked DUMA_sprintf() and its format specifier
+       bugfixed Makefile: DUMA_SO_OPTIONS also used DUMA_OPTIONS
+       (2005-09-24, HA)
+
 2.4.19 fixed compile error in duma.c introduced in 2.4.18
        fixed/enhanced Makefile
        (2005-09-19, HA)
