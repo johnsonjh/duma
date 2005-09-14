@@ -81,9 +81,9 @@ static void
 mprotectFailed(void)
 {
 #if defined(WIN32)
-  DUMA_Exit("VirtualProtect() failed: %s", stringErrorReport());
+  DUMA_Abort("VirtualProtect() failed: %s", stringErrorReport());
 #else
-  DUMA_Exit("mprotect() failed: %s", stringErrorReport());
+  DUMA_Abort("mprotect() failed: %s", stringErrorReport());
 #endif
 }
 
@@ -93,7 +93,7 @@ mprotectFailed(void)
  * void *Page_Create(size_t size)
  */
 static void *
-Page_Create(size_t size, int exitonfail)
+Page_Create(size_t size, int exitonfail, int printerror)
 {
   caddr_t    allocation;
 
@@ -109,9 +109,9 @@ Page_Create(size_t size, int exitonfail)
   if ( (caddr_t)0 == allocation )
   {
     if ( exitonfail )
-      DUMA_Exit("VirtualAlloc(%d) failed: %s", (int)size, stringErrorReport());
-    else
-      DUMA_Print("\nDUMA warning: VirtualAlloc(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Abort("VirtualAlloc(%d) failed: %s", (DUMA_SIZE)size, stringErrorReport());
+    else if ( printerror )
+      DUMA_Print("\nDUMA warning: VirtualAlloc(%d) failed: %s", (DUMA_SIZE)size, stringErrorReport());
   }
 
 
@@ -154,9 +154,9 @@ Page_Create(size_t size, int exitonfail)
   {
     allocation = (caddr_t)0;
     if ( exitonfail )
-      DUMA_Exit("mmap(%d) failed: %s", (int)size, stringErrorReport());
-    else
-      DUMA_Print("\nDUMA warning: mmap(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Abort("mmap(%d) failed: %s", (DUMA_SIZE)size, stringErrorReport());
+    else if ( printerror )
+      DUMA_Print("\nDUMA warning: mmap(%d) failed: %s", (DUMA_SIZE)size, stringErrorReport());
   }
 
 #else
@@ -166,7 +166,7 @@ Page_Create(size_t size, int exitonfail)
   {
     devZeroFd = open("/dev/zero", O_RDWR);
     if ( devZeroFd < 0 )
-      DUMA_Exit( "open() on /dev/zero failed: %s", stringErrorReport() );
+      DUMA_Abort( "open() on /dev/zero failed: %s", stringErrorReport() );
   }
 
   /*
@@ -194,9 +194,9 @@ Page_Create(size_t size, int exitonfail)
   {
     allocation = (caddr_t)0;
     if ( exitonfail )
-      DUMA_Exit("mmap(%d) failed: %s", (int)size, stringErrorReport());
-    else
-      DUMA_Print("\nDUMA warning: mmap(%d) failed: %s", (int)size, stringErrorReport());
+      DUMA_Abort("mmap(%d) failed: %s", (DUMA_SIZE)size, stringErrorReport());
+    else if ( printerror )
+      DUMA_Print("\nDUMA warning: mmap(%d) failed: %s", (DUMA_SIZE)size, stringErrorReport());
   }
 
 #endif
@@ -226,7 +226,7 @@ Page_AllowAccess(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      DUMA_Exit("VirtualQuery() failed\n");
+      DUMA_Abort("VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualProtect(
                           (LPVOID) address        /* address of region of committed pages */
@@ -267,7 +267,7 @@ Page_DenyAccess(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      DUMA_Exit("VirtualQuery() failed\n");
+      DUMA_Abort("VirtualQuery() failed\n");
     tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
     ret = VirtualProtect(
                           (LPVOID) address        /* address of region of committed pages */
@@ -310,7 +310,7 @@ Page_Delete(void * address, size_t size)
   {
     retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
     if (retQuery < sizeof(MemInfo))
-      DUMA_Exit("VirtualQuery() failed\n");
+      DUMA_Abort("VirtualQuery() failed\n");
 
     if ( MemInfo.State == MEM_COMMIT )
     {
@@ -320,7 +320,7 @@ Page_Delete(void * address, size_t size)
                        , (DWORD) MEM_DECOMMIT         /* type of free operation */
                        );
       if (0 == ret)
-        DUMA_Exit("VirtualFree(,,MEM_DECOMMIT) failed: %s", stringErrorReport());
+        DUMA_Abort("VirtualFree(,,MEM_DECOMMIT) failed: %s", stringErrorReport());
     }
 
     address = ((char *)address) + MemInfo.RegionSize;
@@ -334,7 +334,7 @@ Page_Delete(void * address, size_t size)
                    , (DWORD) MEM_RELEASE
                    );
   if (0 == ret)
-    DUMA_Exit("VirtualFree(,,MEM_RELEASE) failed: %s", stringErrorReport());
+    DUMA_Abort("VirtualFree(,,MEM_RELEASE) failed: %s", stringErrorReport());
 
 #else
   if ( munmap((caddr_t)address, size) < 0 )
