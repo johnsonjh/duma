@@ -27,13 +27,18 @@
 /*
  * delete reductionSizekB amount of memory, which has already
  * been freed but got protected
+ * return != 0 when more memory reducable
  */
-static void
+static int
 reduceProtectedMemory( long reductionSizekB )
 {
   struct _DUMA_Slot * slot            = _duma_allocList;
   size_t            count           = slotCount;
   long              alreadyReducekB = 0;
+
+#ifndef WIN32
+  /* Windows VirtualFree(,,MEM_RELEASE) can only free whole allocations. not parts */
+
   size_t            delSize, newSize;
 
   /* 1- try reducing memory to just keep page(s) with userAddress */
@@ -54,14 +59,19 @@ reduceProtectedMemory( long reductionSizekB )
       {
         sumProtectedMem -= alreadyReducekB;
         sumAllocatedMem -= alreadyReducekB;
-        return;
+        return 1;
       }
     }
+#endif
   /* 2- deallocate all page(s) with userAddress, empty whole slot */
   slot  = _duma_allocList;
   count = slotCount;
   for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
-    if ( DUMAST_BEGIN_PROTECTED == slot->state )
+    if ( DUMAST_BEGIN_PROTECTED == slot->state
+#if defined(WIN32)
+      || DUMAST_ALL_PROTECTED == slot->state
+#endif
+      )
     {
       /* free all the memory */
       Page_Delete(slot->internalAddress, slot->internalSize);
@@ -84,9 +94,11 @@ reduceProtectedMemory( long reductionSizekB )
       {
         sumProtectedMem -= alreadyReducekB;
         sumAllocatedMem -= alreadyReducekB;
-        return;
+        return 1;
       }
     }
+
+  return 0;
 }
 
 
@@ -234,10 +246,10 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
     if ( (char)slackfill != *tmpBegAddr++ )
     {
       #ifndef DUMA_NO_LEAKDETECTION
-        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%d)",
-          slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
+        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%i)",
+          (DUMA_ADDR)slot->userAddress, (DUMA_SIZE)slot->userSize, slot->filename, slot->lineno);
       #else
-        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land", slot->userAddress);
+        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land", (DUMA_ADDR)slot->userAddress);
       #endif
     }
   }
@@ -249,10 +261,10 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
     if ( (char)slackfill != *tmpBegAddr++ )
     {
       #ifndef DUMA_NO_LEAKDETECTION
-        DUMA_Abort("free() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%d)",
-          slot->userAddress, (int)slot->userSize, slot->filename, slot->lineno);
+        DUMA_Abort("free() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%i)",
+          (DUMA_ADDR)slot->userAddress, (DUMA_SIZE)slot->userSize, slot->filename, slot->lineno);
       #else
-        DUMA_Abort("free() detected overwrite of no mans land: ptr=%a", slot->userAddress);
+        DUMA_Abort("free() detected overwrite of no mans land: ptr=%a", (DUMA_ADDR)slot->userAddress);
       #endif
     }
   }
