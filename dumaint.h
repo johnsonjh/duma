@@ -28,7 +28,7 @@
 #define _DUMA_INTERNAL_
 
 #include "duma.h"
-
+#include "duma_config.h"
 
 /* for enabling inclusion of duma.h after inclusion of dumaint.h */
 
@@ -56,16 +56,6 @@
   extern "C" {
 #endif
 
-
-/*
- * duma_number is the largest unsigned integer we'll need. On systems that
- * support 64-bit pointers, this may be "unsigned long long".
- */
-#if defined(USE_LONG_LONG)
-typedef unsigned long long	duma_number;
-#else
-typedef unsigned long		duma_number;
-#endif
 
 /*
  * NBBY is the number of bits per byte. Some systems define it in
