@@ -105,32 +105,49 @@ clean:
 
 # define special objects for build of shared library
 
+ifeq ($(OS), Windows_NT)
+  ifeq ($(OSTYPE), msys)
+    CFLAGS= -g -O0 $(DUMA_SO_OPTIONS)
+    CPPFLAGS= -g -O0 $(DUMA_SO_OPTIONS)
+    LIBS=
+  else
+    CFLAGS= -g -O0 $(DUMA_SO_OPTIONS)
+    CPPFLAGS= -g -O0 $(DUMA_SO_OPTIONS)
+    LIBS=
+  endif
+else
+  CFLAGS= -g -O0 $(PIC) $(DUMA_SO_OPTIONS)
+  CPPFLAGS= -g -O0 $(PIC) $(DUMA_SO_OPTIONS)
+  LIBS=-lpthread
+endif
+
+
 dumapp_so.o:	dumapp.cpp duma.h dumapp.h
-	$(CXX) -g $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
+	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
 
 duma_so.o:	duma.c duma.h duma_config.h
-	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
 
 sem_inc_so.o:	sem_inc.c sem_inc.h
-	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
 
 print_so.o:	print.c print.h
-	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
 
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
-    CFLAGS= -g $(DUMA_OPTIONS)
-    CPPFLAGS= -g $(DUMA_OPTIONS)
+    CFLAGS= -g -O0 $(DUMA_OPTIONS)
+    CPPFLAGS= -g -O0 $(DUMA_OPTIONS)
     LIBS=
   else
-    CFLAGS= -g  $(DUMA_OPTIONS)
-    CPPFLAGS= -g $(DUMA_OPTIONS)
+    CFLAGS= -g -O0  $(DUMA_OPTIONS)
+    CPPFLAGS= -g -O0 $(DUMA_OPTIONS)
     LIBS=
   endif
 else
-  CFLAGS= -g $(PIC) $(DUMA_OPTIONS)
-  CPPFLAGS= -g $(PIC) $(DUMA_OPTIONS)
+  CFLAGS= -g -O0 $(PIC) $(DUMA_OPTIONS)
+  CPPFLAGS= -g -O0 $(PIC) $(DUMA_OPTIONS)
   LIBS=-lpthread
 endif
 
