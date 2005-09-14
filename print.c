@@ -42,7 +42,6 @@
   #include <io.h>
 
   typedef LPVOID caddr_t;
-  typedef unsigned u_int;
 #endif
 
 #ifdef _MSC_VER
@@ -62,7 +61,8 @@
 
 /* define prototypes / forward declarations */
 
-static int  sprintNumber(char* obuffer, duma_number number, duma_number base);
+static int  sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base);
+static int  sprintLong(char* obuffer, long number, long base);
 static int  DUMA_sprintf(char* buffer, const char *pattern, va_list args);
 
 
@@ -70,22 +70,22 @@ static int  DUMA_sprintf(char* buffer, const char *pattern, va_list args);
  * NUMBER_BUFFER_SIZE is the longest character string that could be needed
  * to represent an unsigned integer, assuming we might print in base 2.
  */
-#define  NUMBER_BUFFER_SIZE  (sizeof(duma_number) * NBBY)
+#define  NUMBER_BUFFER_SIZE  (sizeof(DUMA_ADDR) * NBBY)
 
 #define STRING_BUFFER_SIZE  1024
 
 
 /*
- * internal function to print a number into a buffer
- * int sprintNumber(char* obuffer, duma_number number, duma_number base)
+ * internal function to print a DUMA_ADDR into a buffer
+ * int sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base)
  */
 static int
-sprintNumber(char* obuffer, duma_number number, duma_number base)
+sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base)
 {
   char   buffer[NUMBER_BUFFER_SIZE+1];
   char * s = &buffer[NUMBER_BUFFER_SIZE];
   int    size;
-  duma_number  digit;
+  DUMA_ADDR  digit;
 
   do
   {
@@ -104,10 +104,46 @@ sprintNumber(char* obuffer, duma_number number, duma_number base)
 }
 
 
+/*
+ * internal function to print a int into a buffer
+ */
+static int
+sprintLong(char* obuffer, long number, long base)
+{
+  char   buffer[NUMBER_BUFFER_SIZE+1];
+  char * s = &buffer[NUMBER_BUFFER_SIZE];
+  long   size;
+  long   digit;
+
+  do
+  {
+    if ( --s == buffer )
+      DUMA_Abort("Internal error printing number.");
+
+    digit = number % base;
+    *s = (char)( (digit < 10) ? ('0' + digit) : ('a' + digit -10) );
+
+  } while ( (number /= base) > 0 );
+
+  size = &buffer[NUMBER_BUFFER_SIZE] - s;
+  buffer[NUMBER_BUFFER_SIZE] = '\0';
+  strcpy(obuffer, s);
+  return size;
+}
+
 
 /*
  * internal function to print a formatted string into a buffer
  * int sprintf(char* buffer, const char *pattern, va_list args)
+ * allowed format specifier are:
+ *
+ *   %a = adress of type DUMA_ADDR
+ *   %x = adress of type DUMA_ADDR
+ *   %d = unsigned of type DUMA_SIZE
+ *   %i = int
+ *   %l = long
+ *   %s = string teminated with '\0'
+ *   %c = char
  */
 static int
 DUMA_sprintf(char* buffer, const char *pattern, va_list args)
@@ -116,7 +152,7 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
   static const char  bad_pattern[] = "\nDUMA: Bad pattern specifier %%%c in DUMA_Print().\n";
   const char *  s = pattern;
   int len = 0;
-  duma_number n;
+  DUMA_ADDR n;
 
   c = *s++;
   while ( c )
@@ -124,21 +160,49 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
     if ( c == '%' )
     {
       c = *s++;
-      switch ( c ) {
+      switch ( c )
+      {
       case '%':
         buffer[len++] = c;
         break;
-      case 'a':
+      case 'a':   /* DUMA_ADDR */
+      case 'x':   /* DUMA_ADDR */
         /*
          * Print an address passed as a void pointer.
-         * The type of duma_number must be set so that
+         * The type of DUMA_ADDR must be set so that
          * it is large enough to contain all of the
          * bits of a void pointer.
          */
-        n = (duma_number) va_arg(args, void *);
+        n = va_arg(args, DUMA_ADDR);
         len += sprintNumber(&buffer[len], n, 0x10);
         break;
-      case 's':
+      case 'd':   /* DUMA_SIZE */
+        n = va_arg(args, DUMA_SIZE);
+        len += sprintNumber(&buffer[len], n, 10);
+        break;
+      case 'i':   /* int */
+        {
+          long n = (long)va_arg(args, int);
+          if ( n < 0 )
+          {
+            buffer[len++] = '-';
+            n = -n;
+          }
+          len += sprintLong(&buffer[len], n, 10);
+        }
+        break;
+      case 'l':   /* long */
+        {
+          long n = va_arg(args, long);
+          if ( n < 0 )
+          {
+            buffer[len++] = '-';
+            n = -n;
+          }
+          len += sprintLong(&buffer[len], n, 10);
+        }
+        break;
+      case 's':   /* string */
         {
           const char *  string;
           size_t    length;
@@ -157,22 +221,7 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
           len += length;
         }
         break;
-      case 'd':
-        {
-          int  n = va_arg(args, int);
-          if ( n < 0 )
-          {
-            buffer[len++] = '-';
-            n = -n;
-          }
-          len += sprintNumber(&buffer[len], n, 10);
-        }
-        break;
-      case 'x':
-        n = (duma_number) va_arg(args, u_int);
-        len += sprintNumber(&buffer[len], n, 0x10);
-        break;
-      case 'c':
+      case 'c':   /* char */
         /* characters are passed as int ! */
         buffer[len++] = (char)va_arg(args, int);
         break;
