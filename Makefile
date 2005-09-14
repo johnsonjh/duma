@@ -45,6 +45,20 @@ DUMA_SO_OPTIONS = -DDUMA_NO_CPP_SUPPORT
 
 PIC= -fPIC
 
+ifeq ($(OS), Windows_NT)
+  ifeq ($(OSTYPE), msys)
+    CURPATH=./
+    DUMASO=
+  else
+    CURPATH=
+    DUMASO=
+  endif
+else
+  CURPATH=./
+  DUMASO=libduma.so.0.0
+endif
+
+
 CC=gcc
 CXX=g++
 AR=ar
@@ -103,27 +117,23 @@ sem_inc_so.o:	sem_inc.c sem_inc.h
 print_so.o:	print.c print.h
 	$(CC) -g $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
 
+
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
-    CURPATH=./
     CFLAGS= -g $(DUMA_OPTIONS)
     CPPFLAGS= -g $(DUMA_OPTIONS)
     LIBS=
-    DUMASO=
   else
-    CURPATH=
     CFLAGS= -g  $(DUMA_OPTIONS)
     CPPFLAGS= -g $(DUMA_OPTIONS)
     LIBS=
-    DUMASO=
   endif
 else
-  CURPATH=./
   CFLAGS= -g $(PIC) $(DUMA_OPTIONS)
   CPPFLAGS= -g $(PIC) $(DUMA_OPTIONS)
   LIBS=-lpthread
-  DUMASO=libduma.so.0.0
 endif
+
 
 roff:
 	nroff -man < duma.3 > duma.cat
