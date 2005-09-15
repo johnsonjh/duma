@@ -197,10 +197,10 @@ _duma_allocDesc[] =
   , { "realloc()"         , DUMAAT_MALLOC    }
   , { "valloc()"          , DUMAAT_MALLOC    }
   , { "strdup()"          , DUMAAT_MALLOC    }
-  , { "new (element)"     , DUMAAT_NEW_ELEM  }
-  , { "delete (element)"  , DUMAAT_NEW_ELEM  }
-  , { "new[] (array)"     , DUMAAT_NEW_ARRAY }
-  , { "[]delete (array)"  , DUMAAT_NEW_ARRAY }
+  , { "scalar new"        , DUMAAT_NEW_ELEM  }
+  , { "scalar delete"     , DUMAAT_NEW_ELEM  }
+  , { "vector new[]"      , DUMAAT_NEW_ARRAY }
+  , { "vector delete[]"   , DUMAAT_NEW_ARRAY }
 };
 
 #ifndef DUMA_NO_LEAKDETECTION
@@ -586,10 +586,6 @@ void _duma_init(void)
     if ( 0 == _duma_allocList )
       slot = _duma_allocList = (struct _DUMA_Slot *)Page_Create( size, 1/*=exitonfail*/, 1/*= printerror*/ );
   }
-  if ( 0 == _duma_allocList )
-  {
-    _duma_allocList = _duma_allocList;
-  }
 
   memset((char *)_duma_allocList, 0, _duma_allocListSize);
 
@@ -906,10 +902,6 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       fullSlot->internalSize    = chunkSize;
       fullSlot->state           = DUMAST_FREE;
       --unUsedSlots;
-    }
-    else
-    {
-      fullSlot->internalAddress = fullSlot->internalAddress;
     }
   }
 
