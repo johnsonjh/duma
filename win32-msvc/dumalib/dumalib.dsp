@@ -107,11 +107,11 @@ SOURCE=..\..\sem_inc.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\duma_hlp.h
+SOURCE=..\..\duma.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\duma.h
+SOURCE=..\..\duma_hlp.h
 # End Source File
 # Begin Source File
 
@@ -136,7 +136,7 @@ SOURCE=..\..\sem_inc.h
 # End Group
 # Begin Source File
 
-SOURCE=..\..\CHANGES
+SOURCE=..\..\CHANGELOG
 # End Source File
 # Begin Source File
 
@@ -152,11 +152,19 @@ SOURCE=..\..\duma.3
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\INSTALL
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Makefile
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\README
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\TODO
 # End Source File
 # End Target
 # End Project
