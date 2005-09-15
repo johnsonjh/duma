@@ -13,6 +13,8 @@ CHANGELOG:
        use autodetected values in code
        reworked DUMA_sprintf() and its format specifier
        bugfixed Makefile: DUMA_SO_OPTIONS also used DUMA_OPTIONS
+       removed '-DDUMA_NO_CPP_SUPPORT', as LD_PRELOAD works for C++
+         new, new[], delete and delete[] operators
        (2005-09-24, HA)
 
 2.4.19 fixed compile error in duma.c introduced in 2.4.18
