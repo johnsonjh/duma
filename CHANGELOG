@@ -16,6 +16,17 @@ CHANGELOG:
        removed '-DDUMA_NO_CPP_SUPPORT', as LD_PRELOAD works for C++
          new, new[], delete and delete[] operators
        (2005-09-24, HA)
+       bugfixed reduceProtectedMemory():  Windows VirtualFree(,,MEM_RELEASE) can
+         only free whole allocations. not parts.
+       bugfix in memory allocation: try allocation in loop until
+         reduceProtectedMemory() fails deallocating more memory.
+         long running programs with much memory handling should benefit.
+       (2005-09-26, HA)
+       added project files for Visual C++ .NET 2003
+       applied one more patch from Zbynek Vyskovsky concerning alignment
+         his calculation of next lower power of 2 is much smaller
+       bugfix: return '(void*)0' in _duma_allocate(), when userSize==0
+       (2005-09-27, HA)
 
 2.4.19 fixed compile error in duma.c introduced in 2.4.18
        fixed/enhanced Makefile
