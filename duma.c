@@ -712,14 +712,19 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   DUMA_ASSERT( 0 != _duma_allocList );
 
   /* check userSize */
-  if ( 0 == userSize && !DUMA_ALLOW_MALLOC_0 )
+  if ( 0 == userSize )
   {
-    #ifndef DUMA_NO_LEAKDETECTION
-      DUMA_Abort("Allocating 0 bytes, probably a bug: %s(%i)",
-               filename, lineno);
-    #else
-      DUMA_Abort("Allocating 0 bytes, probably a bug.");
-    #endif
+    if ( !DUMA_ALLOW_MALLOC_0 )
+    {
+      #ifndef DUMA_NO_LEAKDETECTION
+        DUMA_Abort("Allocating 0 bytes, probably a bug: %s(%i)",
+                 filename, lineno);
+      #else
+        DUMA_Abort("Allocating 0 bytes, probably a bug.");
+      #endif
+    }
+    else
+      return (void*)0;
   }
 
   /* check alignment */
@@ -730,13 +735,8 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 
     if ( s < a )
     {
-      a = s & (a -1);
-      if ( (a & (a-1)) )
-      {
-        a = (a + 1) >> 1;     /* next lower power */
-        while ( a & (a-1) )   /* while not power of 2 */
-          ++a;                /*   increment */
-      }
+      /* to next lower power of 2 */
+      for (a = s; a & (a-1); a &= a-1)  ;
     }
     alignment = (size_t)a; /* this is new alignment */
   }
