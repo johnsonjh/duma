@@ -661,6 +661,9 @@ allocateMoreSlots(void)
   newAllocation = _duma_allocate( 1 /*=alignment*/, newSize, 0 /*=protectBelow*/, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_INT_ALLOC, DUMA_FAIL_NULL);
 #endif
 
+  if ( ! newAllocation )
+    return;
+
   memcpy(newAllocation, _duma_allocList, _duma_allocListSize);
   memset(&(((char *)newAllocation)[_duma_allocListSize]), 0, DUMA_PAGE_SIZE);
 
@@ -695,9 +698,7 @@ allocateMoreSlots(void)
  * For this reason, I take the alignment requests to memalign() and valloc()
  * seriously, and 
  * 
- * DUMA wastes lots of memory. I do a best-fit allocator here
- * so that it won't waste even more. It's slow, but thrashing because your
- * working set is too big for a system's RAM is even slower. 
+ * DUMA wastes lots of memory.
  */
 
 void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _DUMA_Allocator allocator, enum _DUMA_FailReturn fail  DUMA_PARAMLIST_FL)
@@ -711,20 +712,22 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 
   DUMA_ASSERT( 0 != _duma_allocList );
 
+  /* initialize return value */
+  userAddr = 0;
+
   /* check userSize */
   if ( 0 == userSize )
   {
     if ( !DUMA_ALLOW_MALLOC_0 )
     {
       #ifndef DUMA_NO_LEAKDETECTION
-        DUMA_Abort("Allocating 0 bytes, probably a bug: %s(%i)",
-                 filename, lineno);
+        DUMA_Abort("Allocating 0 bytes, probably a bug: %s(%i)", filename, lineno);
       #else
         DUMA_Abort("Allocating 0 bytes, probably a bug.");
       #endif
     }
     else
-      return (void*)0;
+      return (void*)userAddr;
   }
 
   /* check alignment */
@@ -743,8 +746,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   if ( (int)alignment != ((int)alignment & -(int)alignment) )
   {
     #ifndef DUMA_NO_LEAKDETECTION
-      DUMA_Abort("Alignment (=%d) is not a power of 2 requested from %s(%i)",
-               (DUMA_SIZE)alignment, filename, lineno);
+      DUMA_Abort("Alignment (=%d) is not a power of 2 requested from %s(%i)", (DUMA_SIZE)alignment, filename, lineno);
     #else
       DUMA_Abort("Alignment (=%d) is not a power of 2", (DUMA_SIZE)alignment);
     #endif
@@ -753,11 +755,13 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   /* count and show allocation, if requested */
   numAllocs++;
   if (DUMA_SHOW_ALLOC)
-#ifndef DUMA_NO_LEAKDETECTION
-    DUMA_Print("\nDUMA: Allocating %d bytes at %s(%i).", (DUMA_SIZE)userSize, filename, lineno);
-#else
-    DUMA_Print("\nDUMA: Allocating %d bytes.", (DUMA_SIZE)userSize);
-#endif
+  {
+    #ifndef DUMA_NO_LEAKDETECTION
+      DUMA_Print("\nDUMA: Allocating %d bytes at %s(%i).", (DUMA_SIZE)userSize, filename, lineno);
+    #else
+      DUMA_Print("\nDUMA: Allocating %d bytes.", (DUMA_SIZE)userSize);
+    #endif
+  }
 
   /*
    * If protectBelow is set, all addresses returned by malloc()
@@ -892,7 +896,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
         /* simply try again */
         fullSlot->internalAddress = Page_Create( chunkSize, 0/*= exitonfail*/, 0/*= printerror*/ );
       } while ( reduce_more && 0 == fullSlot->internalAddress );
-      if ( 0 == fullSlot->internalAddress )
+      if ( 0 == fullSlot->internalAddress  &&  DUMA_FAIL_ENV == fail )
         fullSlot->internalAddress = Page_Create( chunkSize, DUMA_MALLOC_FAILEXIT, 1/*= printerror*/ );
     }
     if ( fullSlot->internalAddress )
@@ -903,7 +907,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       fullSlot->state           = DUMAST_FREE;
       --unUsedSlots;
     }
-  }
+  } /* end if ( !fullSlot ) */
 
   if ( fullSlot->internalSize )
   {
