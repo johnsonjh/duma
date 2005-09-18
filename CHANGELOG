@@ -1,6 +1,12 @@
 
 CHANGELOG:
 
+2.4.21 bugfix: follow enum _DUMA_FailReturn in _duma_allocate() function
+       bugfix: initialize userAddr in _duma_allocate() function
+         may lead to bug when allocation failed
+       new operators now (nearly) full C++ conform
+       (2005-09-29, HA)
+
 2.4.20 integrated patches from Zbynek Vyskovsky <kvr@centrum.cz> :
          use tighter alignment when size is smaller than default alignment
          replaced calls to EF_Exit() by EF_Abort()
