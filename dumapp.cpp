@@ -76,6 +76,18 @@ void duma_new_handler() { }
 #endif
 
 
+// declare function ; needed for attribute
+static inline
+void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, bool dothrow
+#ifndef DUMA_NO_LEAKDETECTION
+                         , const char * filename, int lineno
+#endif
+                        )
+#ifdef __GNUC__
+ __attribute__ ((always_inline))
+#endif
+;
+
 /* C++ allocation function,
  * which is nearly C++ conform. missing features are:
  * 1- check for userSize == 0, return non-NULL in this case
@@ -90,14 +102,11 @@ void duma_new_handler() { }
  *
  */
 static inline
-void * duma_new_operator(size_t userSize, enum _DUMA_Allocator allocator, bool dothrow
+void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, bool dothrow
 #ifndef DUMA_NO_LEAKDETECTION
                          , const char * filename, int lineno
 #endif
                         )
-#ifdef __GNUC__
- __attribute__ ((always_inline))
-#endif
 {
   void * ret = 0;
 #ifdef _MSC_VER
