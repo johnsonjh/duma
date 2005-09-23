@@ -1,21 +1,78 @@
 
-TODO:
+TODO (listed from highest to lowest priority):
+==============================================
 
--modification of manual page duma.3
--check documents for line lengths of 80 coloumns
--check and replace tabs in documents
--use configure to detect if f.e. pthread.h is installed and in search path
--check if pthread available before using it in Makefile
+-write test program with own member new/delete operator with filename and
+  line number forwarding to duma
+
+-enhance detection of DUMA_MIN_ALIGNMENT in createconf
+  use defines specifying the target architecture
+  use compiler attributes which specify the necessary alignment
+
+-document 'J. "MUFTI" Scheurich' way of compiling/using DUMA's memory
+ replacement functions only from own source files. Thus usage of DUMA
+ for several system libraries is avoided.
+
+-get duma running/compiling on all platforms which are supported on
+ sourceforge.net's compile farms. see
+ http://sourceforge.net/docman/display_doc.php?docid=762&group_id=1
+
+-add autoconf/automake build process
+
 -use libtool to build shared libraries in Makefile
--implement a list structure over pages rather than an array for all slots.
-  this would save copying all slot entries.
+ depends on autoconf/automake
+
+-use configure to detect if f.e. pthread.h is installed and in search path
+ check if pthread available before using it in Makefile
+ depends on autoconf/automake
+
+-define new thread-safe macros,
+ which don't have to use the global variable DUMA_PROTECT_BELOW:
+ 1- NEW_PROTECT_BELOW: a 'new' replacement which protects the lower bound
+ 2- NEW_PROTECT_ABOVE: a 'new' replacement which protects the upper bound
+ 3- MALLOC_PROTECT_BELOW: a 'malloc' replacement which protects the lower bound
+ 4- MALLOC_PROTECT_ABOVE: a 'malloc' replacement which protects the upper bound
+
+-test duma on several freely available/downloadable compilers:
+  1- OpenWatcom C/C++ compiler from http://www.openwatcom.org/
+  2- Digital MARS C/C++ compiler from http://www.digitalmars.com/
+  3- Intel C++ compiler from http://www.intel.com/cd/software/products
+                                /asmo-na/eng/compilers/clin/219856.htm
+  4- Borland C++ Builder from
+     http://www.borland.com/products/downloads/download_cbuilder.html
+  5- Macintosh Programmer's Workshop from
+     http://developer.apple.com/tools/mpw-tools/
+  6- TenDRA C/C++ compiler from http://www.tendra.org/
+     or http://www.cse.unsw.edu.au/~patrykz/TenDRA/
+
+-test cmake, dmake, pmake, smake
+ maybe no more necessary when build is done via autoconf/automake
+
+-find solution for errors, when duma used in combination with STL (and MFC)
+ under MS Visual C++ on Windows
+
 -make new variants behave fully C++ conform
+ at least new_handler() gets called now
+
+-implement a list structure over pages rather than an array for all slots.
+  this would save copying all slot entries, when list grows
+
 -store __func__ additionally to __FILE__ and __LINE__
+ depends on storing full filename (not just ptr) in slot
 
 -use "-include" option of preprocessor, when having gcc
- see http://gcc.gnu.org/onlinedocs/gcc-4.0.1/gcc/Preprocessor-Options.html#index-include-592
+ see http://gcc.gnu.org/onlinedocs/gcc-2.95.3/gcc_2.html#SEC11
+ see http://gcc.gnu.org/onlinedocs/gcc-3.0.4/gcc_3.html#SEC14
+ see http://gcc.gnu.org/onlinedocs/gcc-4.0.1/gcc/Preprocessor-Options.html
+
 -use "/FI" option of preprocessor, when having ms visual c++
  see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vccore/html/_core_.2f.fi.asp
+
+-modification of manual page duma.3
+
+-check documents for line lengths of 80 coloumns
+
+-check and replace tabs in documents
 
 -config for
  long int sysconf (int parameter)  	Function
@@ -44,21 +101,4 @@ TODO:
     UL_GMEMLIM This returns the maximum amount of memory the process may use.
   On successful completion, the requested limit is returned. Otherwise, -1 is 
   returned and the limit is not changed.
-
--new macro: DUMA_CHECK_NON_VM_PROTECTABLE()
--new macros: NEW_PROTECT_BELOW, NEW_PROTECT_ABOVE
--new macros: MALLOC_PROTECT_BELOW(), MALLOC_PROTECT_ABOVE()
--test OpenWatcom C/C++ compiler from http://www.openwatcom.org/
--test Digital MARS C/C++ compiler from http://www.digitalmars.com/
--test Intel C++ compiler from
- http://www.intel.com/cd/software/products/asmo-na/eng/compilers/clin/219856.htm
--test Borland C++ Builder from 
- http://www.borland.com/products/downloads/download_cbuilder.html
--test Macintosh Programmer's Workshop from
- http://developer.apple.com/tools/mpw-tools/
--test TenDRA C/C++ compiler from
- http://www.tendra.org/  or
- http://www.cse.unsw.edu.au/~patrykz/TenDRA/
-
--test cmake, dmake, pmake, smake
 
