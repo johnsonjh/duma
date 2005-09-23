@@ -1,10 +1,16 @@
 
 CHANGELOG:
+==========
 
-2.4.21 bugfix: follow enum _DUMA_FailReturn in _duma_allocate() function
+2.4.21 modified Makefile: name for shared library and symbolic links now
+         configurable at start
+       update of README
+       updated TODO; sorted by priority
+       (2005-10-04, HA)
+       bugfix: follow enum _DUMA_FailReturn in _duma_allocate() function
        bugfix: initialize userAddr in _duma_allocate() function
          may lead to bug when allocation failed
-       new operators now (nearly) full C++ conform
+       new operators now (nearly) C++ conform
        (2005-09-29, HA)
 
 2.4.20 integrated patches from Zbynek Vyskovsky <kvr@centrum.cz> :
@@ -12,18 +18,19 @@ CHANGELOG:
          replaced calls to EF_Exit() by EF_Abort()
          modified README
        (2005-09-19 - 2005-09-23, ZV)
-       reworked Zbynek's patch to use long in internal adress calculations
-         autodetect compatible integer types DUMA_ADDR and DUMA_SIZE in createconf
-         write them to duma_config.h
-       autodetect DUMA_MIN_ALIGNMENT in createconf, write value to duma_config.h
+       reworked Zbynek's patch to use long in internal adress calculations:
+         autodetect compatible integer types DUMA_ADDR and DUMA_SIZE in
+         createconf. write them to duma_config.h
+       autodetect DUMA_MIN_ALIGNMENT in createconf, write value to
+         duma_config.h
        use autodetected values in code
        reworked DUMA_sprintf() and its format specifier
        bugfixed Makefile: DUMA_SO_OPTIONS also used DUMA_OPTIONS
        removed '-DDUMA_NO_CPP_SUPPORT', as LD_PRELOAD works for C++
          new, new[], delete and delete[] operators
        (2005-09-24, HA)
-       bugfixed reduceProtectedMemory():  Windows VirtualFree(,,MEM_RELEASE) can
-         only free whole allocations. not parts.
+       bugfixed reduceProtectedMemory():  Windows VirtualFree(,,MEM_RELEASE)
+         can only free whole allocations. not parts.
        bugfix in memory allocation: try allocation in loop until
          reduceProtectedMemory() fails deallocating more memory.
          long running programs with much memory handling should benefit.
@@ -70,7 +77,8 @@ CHANGELOG:
        (2005-09-10, HA)
 
 2.4.16 added examples for article
-       portability: use standardized strerror() instead sys_nerr and sys_errlist[]
+       portability: use standardized strerror() instead sys_nerr
+         and sys_errlist[].
        bugfix: error when defined EF_NO_LEAKDETECTION in _eff_allocate()
        bugfix: error when defined EF_NO_LEAKDETECTION in _eff_deallocate()
        enhancement: mark allocations from standard libraries
@@ -84,18 +92,20 @@ CHANGELOG:
        enhancement: allow alignments bigger than page size
        (2005-08-23, HA)
        documented EF_NO_THREAD_SAFETY preprocessor flag in Makefile
-       added EF_EXPLICIT_INIT preprocessor flag to workaround buggy environments:
-         initialisation is done in 2 steps:
+       added EF_EXPLICIT_INIT preprocessor flag to workaround buggy
+         environments: initialisation is done in 2 steps:
          1- must do things when allocation is called
          2- non must-do like retrieving environment variables, registering atexit()
-           calls to functions getenv(), atexit() and write() are avoided in 1.step
+           calls to functions getenv(), atexit() and write() are avoided in
+           first step.
          3- avoid semaphore locking before 2.step is done
        (2005-08-21, HA)
 
 2.4.15 bugfixed page management under Windows: virtual address space never got
          released. unfortunately this "quick" fix avoids memory pooling (under
          Windows).
-       remove double "Electric Fence:" messages when calling EF_Abort() or EF_Exit()
+       remove double "Electric Fence:" messages when calling EF_Abort()
+         or EF_Exit()
        (2005-07-24, HA)
        added parameter ExitOnFail to Page_Create().
        added warning when allocation failed and ExitOnFail is off.
@@ -114,9 +124,10 @@ CHANGELOG:
            change and suddenly realize the memory containing expression
            disappeared. It has no other effect, just makes debugging easier."
        (2005-07-11, HA)
-       bugfix for internal slot mode EFST_DEALLOCATED reported by Mikolas Patocka.
-         error occured when userSpace memory region of freed memory is reused
-         from system and freed again: efence claimed freeing already freed memory.
+       bugfix for internal slot mode EFST_DEALLOCATED reported by
+         Mikolas Patocka: error occured when userSpace memory region of freed
+         memory is reused from system and freed again: efence claimed freeing
+         already freed memory.
        (2005-03-02, HA)
        now defining macros/functions also for str[n]cpy() and str[n]cat()
          checking for overlapping memory regions.
@@ -153,7 +164,8 @@ CHANGELOG:
        now defining macros/functions also for valloc()
        (2005-02-03, HA)
 
-2.4.12 added EF_NO_GLOBAL_MALLOC_FREE preprocessor flag to workaround buggy environments:
+2.4.12 added EF_NO_GLOBAL_MALLOC_FREE preprocessor flag to workaround buggy
+         environments:
        no malloc(),free(),realloc(),calloc() are put into the global namespace
        of the efence library, thus only files which include efence.h call the
        efence malloc(),.. replacement functions.
@@ -166,38 +178,42 @@ CHANGELOG:
        (2005-01-04, HA)
 
 2.4.11 bugfixed signal handling in confidence test (eftest),
-         which lead to false errors with my newly installed MandrakeLinux 10.1 distribution
+         which lead to false errors with my newly installed MandrakeLinux 10.1
        (2005-01-03, HA)
 
        bugfixed checking at free(), when EF_PROTECT_BELOW flag changed:
          which lead to false positives.
-       bugfixed error message output to stderr: length of messages were calculated too short
-         fixed functions EF_Abort() and EF_Exit()
+       bugfixed error message output to stderr: length of messages were
+         calculated too short. fixed functions EF_Abort() and EF_Exit().
        (2004-08-15, HA)
 
 2.4.10 added preprocessor macros for CA_DECLARE, CA_DEFINE, CA_REF in efence.h
          for declaration, definition and reference to Checked Arrays.
-         these macros allow checks of arrays which are allocated on stack, but they are
-         very slow on references every reference has to be checked.
+         these macros allow checks of arrays which are allocated on stack,
+         but they are very slow on references cause every reference has to
+         be checked.
        added EF_ASSERT() which definitely halts (for debugging)
-       precompiled headers have to be switched off in MS Visual C++ to get all the C++
-	     operators to work. but don't ask me why!
-       added all the various new/delete/new[]/delete[] C++ operator implementations.
+       precompiled headers have to be switched off in MS Visual C++ to get all
+         the C++ operators to work. but don't ask me why!
+       implemented all the various new/delete/new[]/delete[] C++ operators.
          the implementations are not C++ conform concerning their behaviour
-       added type mismatch detection between malloc()/free(), new/delete, new[]/delete[]
-         this is deactivated when EF_NO_LEAKDETECTION set.
+       added type mismatch detection between malloc()/free(), new/delete,
+         new[]/delete[]. This is deactivated when EF_NO_LEAKDETECTION is set.
        added EF_MALLOC_FAILEXIT parameter. (for now not implemented)
        extended semantics of EF_PROTECT_FREE.
        added EF_MAX_ALLOC parameter.
-       bugfix: why should we ever use Page_Delete() when setting up the "dead" page?
-       bugfix: EF_PROTECT_FREE did exactly the opposite of that, what it should do
-        up from Bruce's version 2.2.2 maybe earlier.
+       bugfix: why should we ever use Page_Delete() when setting up
+         the "dead" page?
+       bugfix: EF_PROTECT_FREE did exactly the opposite of that, what it
+        should do up from Bruce's version 2.2.2 maybe earlier.
        (2004-07-16, HA)
 
        confidence test now PASSes again
        removed problems when used EF_NO_LEAKDETECTION preprocessor flag
-       got Makefile to work again, also included automatic generation of efence_config.h
-       added automatic generation and inclusion of efence_config.h instead function Page_Size()
+       got Makefile to work again, also included automatic generation of
+         efence_config.h
+       added automatic generation and inclusion of efence_config.h instead
+         function Page_Size()
        (2004-07-15, HA)
 
        added code for thread safety: only one thread at once is allowed to enter
@@ -211,26 +227,31 @@ CHANGELOG:
 	   so be careful not to include efence in your release builds!
 	   (2004-03-21, HA)
 
-2.4.9  added checks for no mans land (= space which cannot get protected from the MMU):
-       this area get filled with EF_FILL on allocation, and gets checked on deallocation.
+2.4.9  added checks for no mans land (= space which cannot get protected from
+         the MMU): this area gets filled with EF_FILL on allocation, and gets
+         checked on deallocation.
        (2002-12-04, HA)
 
-2.4.8  one big fix and many improvements for C++ code. old macros NEW_ELEM, NEW_ARRAY were not
-       usable when allocating classes, which have constructor/destructor. the usage of these
-       macros has not changed (see 2.4.3).
+2.4.8  one big fix and many improvements for C++ code. old macros NEW_ELEM,
+         NEW_ARRAY were not usable when allocating classes, which have
+         constructor/destructor. the usage of these macros has not changed
+         (see 2.4.3).
        (2002-12-04, HA)
 
-2.4.7  get to work with Borland Free Commandline Tools (Borland C++ Builder 5.5)
-       thrown away unnecessary declarations of malloc(), free(), .. Borland didn't like them,
+2.4.7  get to work with Borland Free Commandline Tools: Borland C++ Builder 5.5
+       thrown away unnecessary declarations of malloc(), free(), ..
+         Borland didn't like them,
          and neither MS-Visual C++ 6.0 nor gcc (Dev-C++) needs them.
-       added project files in subdir "win32-vide" for VIDE 1.24 using Borland C++
+       added project files in subdir "win32-vide" for VIDE 1.24
+         using Borland C++
        Builder 5.5 (see http://www.objectcentral.com)
        (2002-11-22, HA)
 
 2.4.6  remove memory leak in eftest
        allowed re-inclusion of efence.h after inclusion of efenceint.h
-       added some project files in subdir "win32-devcpp" for Dev-C++ 4.9.6 using gcc
-         (see http://www.bloodshed.net) and saved its generated makefiles
+       added some project files in subdir "win32-devcpp" for Dev-C++ 4.9.6
+         using gcc (see http://www.bloodshed.net)
+         and saved its generated makefiles
        left tstheap's memory leaks
        (2002-11-17, HA)
 
@@ -255,17 +276,20 @@ CHANGELOG:
          #define DEL_ELEM(PTR)           delete PTR
          #define DEL_ARRAY(PTR)          delete []PTR
        which are mapped to malloc() and free() in Debug Mode.
-       Use these macros to get filename and linenumber of a C++ style memory leak.
+       Use these macros to get filename and linenumber of a C++ style
+         memory leak.
        (2002-10-07, HA)
 
 2.4.2  added support for implicit and explicit leak checking:
-         void EF_push(void)  creates a new memory frame.
-         void EF_pop(void)   checks for memory leaks allocated after EF_push().
-                            this function is called automatically onexit(), even without EF_push().
+         void EF_push(void) creates a new memory frame.
+         void EF_pop(void)  checks for memory leaks allocated after EF_push().
+                            this function is called automatically onexit(),
+                            even without EF_push().
        (2002-10-07, HA)
 
-2.4.1  Port to Windows (NT/2000/XP) by adding sections to following functions
-       Page_AllowAccess(), Page_Create(), Page_Delete(), Page_DenyAccess(), Page_Size()
+2.4.1  Port to Windows (NT/2000/XP) by adding sections to following functions:
+         Page_AllowAccess(), Page_Create(), Page_Delete(),
+         Page_DenyAccess(), Page_Size()
        (2002-10-06, HA)
 
 2.4.0  added support for C++ operators new, new[], delete and delete[].
