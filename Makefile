@@ -63,6 +63,8 @@ ifeq ($(OS), Windows_NT)
 else
   CURPATH=./
   DUMASO=libduma.so.0.0
+  DUMASO_LINK1=libduma.so.0
+  DUMASO_LINK2=libduma.so
   CFLAGS= -g -O0
   CPPFLAGS= -g -O0
   LIBS=-lpthread
@@ -100,20 +102,20 @@ all:	libduma.a $(DUMASO) tstheap dumatest dumatestpp
 	$(CURPATH)tstheap 3072
 	@ echo "DUMA confidence test PASSED."
 
-install: libduma.a duma.3 libduma.so.0.0
+install: libduma.a duma.3 $(DUMASO)
 	$(INSTALL) -m 755 duma.sh $(BIN_INSTALL_DIR)/duma
 	$(INSTALL) -m 644 libduma.a $(LIB_INSTALL_DIR)
-	$(INSTALL) -m 755 libduma.so.0.0 $(LIB_INSTALL_DIR)
-	- rm -f $(LIB_INSTALL_DIR)/libduma.so.0
-	ln -s libduma.so.0.0 $(LIB_INSTALL_DIR)/libduma.so.0
-	- rm -f $(LIB_INSTALL_DIR)/libduma.so
-	ln -s libduma.so.0.0 $(LIB_INSTALL_DIR)/libduma.so
+	$(INSTALL) -m 755 $(DUMASO) $(LIB_INSTALL_DIR)
+	- rm -f $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
+	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
+	- rm -f $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
+	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
 	$(INSTALL) -m 644 duma.3 $(MAN_INSTALL_DIR)/duma.3
 
 clean:
 	- rm -f $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o dumatestpp.o createconf.o \
 		tstheap dumatest dumatestpp createconf \
-	 libduma.a libduma.so.0.0 libduma.cat DUMA.shar \
+	 libduma.a $(DUMASO) libduma.cat DUMA.shar \
 	 duma_config.h
 
 roff:
@@ -153,9 +155,9 @@ $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
 
 ifneq ($(OS), Windows_NT)
 
-libduma.so.0.0: duma_config.h $(SO_OBJECTS)
-	$(CXX) -g -shared -Wl,-soname,libduma.so.0 -o libduma.so.0.0 \
-	$(SO_OBJECTS) -lpthread -lc
+$(DUMASO): duma_config.h $(SO_OBJECTS)
+	$(CXX) -g -shared -Wl,-soname,$(DUMASO) -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+	$(CXX) -g -shared -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
 
 endif
 
