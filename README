@@ -311,10 +311,37 @@ Macros for "new" and "delete" are defined in dumapp.h. These macros give
 filename and linenumber of the calling functions to DUMA, thus allowing the
 same leak detection reports as for malloc and free. 'dumapp.h' needs to be
 included from your source file(s).
-Be warned that for now, the new/delete operators from DUMA do not behave fully
-C++ conform: new_handler is not called. For disabling the C++ new/delete/new[]
-and delete[] operators, add the preprocessor definition 'DUMA_NO_CPP_SUPPORT'
-to DUMA_OPTIONS in Makefile.
+For disabling the C++ new/delete/new[] and delete[] operators, add the
+preprocessor definition 'DUMA_NO_CPP_SUPPORT' to DUMA_OPTIONS in Makefile.
+
+
+DEFINITION OF OWN MEMBER NEW/DELETE OPERATORS
+=============================================
+
+Definition of own member new/delete operators for a class will fail cause the
+new/delete keywords are defined as macros from DUMA. You will have to undefine
+DUMA's macros with following two lines:
+
+#undef new
+#undef delete
+
+Then you have to call DUMA's operators directly inside your own definition.
+
+For using DUMA's C++ operators without having the preprocessor macros defined,
+following syntax can be used:
+
+// const char * file  or  __FILE__ macro
+// int          line  or  __LINE__ macro
+
+ptr = new(file,line) type;              // scalar new throwing bad_alloc() on error
+ptr = new(std::nothrow,file,line) type; // scalar new returning 0 on error
+operator delete(ptr,file,line);         // scalar delete
+
+ptr = new(file,line) type[n];           // vector new throwing bad_alloc() on error
+ptr = new(std::nothrow,file,line) type[n];  // vector new returning 0 on error
+operator delete[](ptr, file,line);      // vector delete
+
+The default syntax without file/line info can be used, too.
 
 
 COMPILATION NOTES FOR VISUAL C++
