@@ -1,7 +1,7 @@
 [Project]
-FileName=efencelib.dev
-Name=EFence
-UnitCount=11
+FileName=dumalib.dev
+Name=DUMA
+UnitCount=13
 Type=2
 Ver=1
 ObjFiles=
@@ -17,7 +17,7 @@ Icon=
 ExeOutput=
 ObjectOutput=
 OverrideOutput=0
-OverrideOutputName=efencelib.a
+OverrideOutputName=dumalib.a
 Folders=
 CommandLine=
 CppCompiler=
@@ -30,14 +30,8 @@ CompilerSet=0
 CompilerSettings=0000000000000000000000
 
 [Unit1]
-FileName=..\efence.h
-Open=0
+FileName=..\duma.h
 Folder=
-Top=0
-CursorCol=1
-CursorRow=1
-TopLine=1
-LeftChar=1
 CompileCpp=0
 Compile=1
 Link=1
@@ -46,14 +40,8 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=..\efenceint.h
-Open=0
+FileName=..\dumaint.h
 Folder=
-Top=0
-CursorCol=1
-CursorRow=1
-TopLine=1
-LeftChar=1
 CompileCpp=0
 Compile=1
 Link=1
@@ -62,26 +50,18 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit3]
-FileName=..\efencepp.cpp
-Open=0
+FileName=..\dumapp.cpp
 Folder=
-Top=0
-CursorCol=1
-CursorRow=1
-TopLine=1
-LeftChar=1
 CompileCpp=0
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
-BuildCmd=
+BuildCmd=$(CC) -c dumapp.cpp -o dumapp.o $(CFLAGS)
 
 [Unit4]
-FileName=..\efencepp.h
-Open=0
+FileName=..\dumapp.h
 Folder=
-Top=0
 CompileCpp=0
 Compile=1
 Link=1
@@ -90,14 +70,8 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
-FileName=..\efence.c
-Open=0
+FileName=..\duma.c
 Folder=
-Top=0
-CursorCol=1
-CursorRow=1
-TopLine=1
-LeftChar=1
 CompileCpp=0
 Compile=1
 Link=1
@@ -109,7 +83,7 @@ BuildCmd=
 ProjectView=1
 
 [Unit6]
-FileName=..\noefence.h
+FileName=..\noduma.h
 CompileCpp=0
 Folder=EFence
 Compile=1
@@ -149,7 +123,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=..\ef_hlp.h
+FileName=..\duma_hlp.h
 CompileCpp=0
 Folder=EFence
 Compile=1
@@ -159,7 +133,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit11]
-FileName=..\efence_config.h
+FileName=..\duma_config.h
 CompileCpp=0
 Folder=EFence
 Compile=1
@@ -181,8 +155,28 @@ FileDescription=Developed using the Dev-C++ IDE
 InternalName=
 LegalCopyright=
 LegalTrademarks=
-OriginalFilename=efencelib.a
-ProductName=EFence
+OriginalFilename=dumalib.a
+ProductName=DUMA
 ProductVersion=0.1
 AutoIncBuildNr=0
+
+[Unit12]
+FileName=..\print.c
+CompileCpp=0
+Folder=DUMA
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit13]
+FileName=..\sem_inc.c
+CompileCpp=0
+Folder=DUMA
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 
