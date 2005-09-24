@@ -173,6 +173,14 @@ deallocations to the console. Although this generates a lot of messages, this
 option can be useful to detect inefficient code containing many allocations /
 deallocations. This feature is switched off per default.
 
+DUMA_SUPPRESS_ATEXIT
+--------------------
+Set this environment variable to non-zero when DUMA should skip the
+installation of its exit handler. The exit handler is called at the end of the
+main program and checks for memory leaks, so the handler's installation should
+*usually* not be suppressed. One reason for doing so regardless are some buggy
+environments, where calls to the C library's atexit()-function hangs.
+
 DUMA_FREE_WIPES
 ---------------
 This option is replaced. As freed memory is protected by DUMA until it gets
