@@ -63,7 +63,7 @@ extern int  DUMA_PROTECT_BELOW;
 extern int  DUMA_ALIGNMENT;
 extern int  DUMA_FILL;
 extern struct _DUMA_Slot * _duma_allocList;
-
+extern void * _duma_cxx_null_addr;
 
 #ifndef _DUMA_ENUMS
 #define _DUMA_ENUMS
