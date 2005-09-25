@@ -3,7 +3,8 @@
 #   for not defining malloc/free in global namespace
 #
 # add "-DDUMA_EXPLICIT_INIT" (without quotes)
-#    to do all the "risky" stuff getenv(), write(), .. explicitly from main().
+#    to do all the "risky" stuff getenv(), sem_init(), write() .. explicitly
+#      from main().
 #    you have to call duma_init() explicitly from main() this option also
 #    avoids leak error messages for allocations before duma_init() got called.
 #    this helps for leaky standard environments.
@@ -19,6 +20,9 @@
 #
 # add "-DDUMA_USE_FRAMENO" (without quotes)
 #    if you want to use DUMA_newFrame() and DUMA_delFrame()
+#
+# add "-DDUMA_PREFER_ATEXIT" (without quotes)
+#    if you prefer atexit() over GNU Compiler's function attribute "destructor"
 #
 # add "-DDUMA_OLD_NEW_MACRO" (without quotes)
 #    if you want to use DUMA's old style NEW_ELEM() / NEW_ARRAY() macros.
