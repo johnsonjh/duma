@@ -34,7 +34,7 @@
 #    set this if you want to suppress the extra messages around atexit().
 #
 
-DUMA_OPTIONS = -DDUMA_EXPLICIT_INIT
+DUMA_OPTIONS =
 
 # for usage with LD_PRELOAD you should not use the options
 #   DUMA_NO_GLOBAL_MALLOC_FREE, DUMA_EXPLICIT_INIT and DUMA_NO_THREAD_SAFETY
