@@ -85,7 +85,7 @@
 #include "paging.h"
 
 static const char  version[] = "\n"
-"DUMA 2.4.21 alpha\n"
+"DUMA 2.4.22\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n";
 
@@ -204,9 +204,7 @@ _duma_allocDesc[] =
 };
 
 #ifndef DUMA_NO_LEAKDETECTION
-#ifdef DUMA_USE_FRAMENO
 static int    frameno = 0;
-#endif
 #endif
 
 /*
@@ -305,10 +303,32 @@ static int    DUMA_FREE_ACCESS = 0;
 static int    DUMA_SHOW_ALLOC = 0;
 
 /*
+ * DUMA_SUPPRESS_ATEXIT is set if DUMA is to suppress the installation of 
+ * an exit handler, called at the exit of the main program. This handler allows for
+ * the detection of memory areas that have not been freed correctly before
+ * program exit, so the handler's installation should *normally* not be 
+ * suppressed. One reason for doing so regardless are some buggy environments, 
+ * where calls to the atexit()-function hang.
+ */
+static int    DUMA_SUPPRESS_ATEXIT = 0;
+
+
+/*
  * _DUMA_allocList points to the array of slot structures used to manage the
  * malloc arena.
  */
 struct _DUMA_Slot * _duma_allocList = 0;
+
+
+#ifndef DUMA_NO_CPP_SUPPORT
+/*
+ * _duma_cxx_null_addr is the address C++ new operator returns, when size is 0
+ * two pages get reserved and protected
+ */
+static void * _duma_cxx_null_block = (void*)0;
+void * _duma_cxx_null_addr  = (void*)0;
+#endif
+
 
 /*
  * _duma_allocListSize is the size of the allocation list. This will always
@@ -369,6 +389,12 @@ static int duma_init_done = 0;
  * include helper functions
  */
 #include "duma_hlp.h"
+
+
+/*
+ * declare exit function
+ */
+void _duma_exit(void);
 
 
 
@@ -493,28 +519,43 @@ void duma_init(void)
   if ( (string = getenv("DUMA_SHOW_ALLOC")) != 0 )
     DUMA_SHOW_ALLOC = (atoi(string) != 0);
 
+  /*
+   * See if the user wants to call atexit()
+   */
+  if ( (string = getenv("DUMA_SUPPRESS_ATEXIT")) != 0 )
+    DUMA_SUPPRESS_ATEXIT = (atoi(string) != 0);
 
+
+#if ( !defined(DUMA_NO_LEAKDETECTION) && ( defined(DUMA_PREFER_ATEXIT) || !defined(DUMA_GNU_INIT_ATTR) ) )
   /*
    * Register atexit()
+   *  a) when we have Leak Detection and atexit() is preferred over GNU_INIT_ATTR
+   *  b) when we have Leak Detection and GNU_INIT_ATTR is not set
    */
-#ifndef DUMA_NO_LEAKDETECTION
-#ifndef DUMA_NO_HANG_MSG
-  DUMA_Print("\nDUMA: Registering with atexit().\n"
-#ifdef WIN32
-             "DUMA: If this hangs, change the library initialization order with DUMA_EXPLICIT_INIT.\n");
-#else
-             "DUMA: If this hangs, change the library load/init order with DUMA_EXPLICIT_INIT or LD_PRELOAD.\n");
-#endif
-#endif /* DUMA_NO_HANG_MSG */
 
-  if ( atexit( DUMA_delFrame ) )
-    DUMA_Abort("Cannot register exit function.\n");
+  #ifndef DUMA_NO_HANG_MSG
+    if (DUMA_SUPPRESS_ATEXIT==0)
+      DUMA_Print("\nDUMA: Registering with atexit().\n"
+    #ifdef WIN32
+                 "DUMA: If this hangs, change the library initialization order with DUMA_EXPLICIT_INIT.\n");
+    #else
+                 "DUMA: If this hangs, change the library load/init order with DUMA_EXPLICIT_INIT or LD_PRELOAD.\n");
+    #endif
+    else 
+      DUMA_Print("\nDUMA: Skipping registering with atexit(). Set DUMA_SUPPRESS_ATEXIT to 0 to register.\n");
+  #endif /* DUMA_NO_HANG_MSG */
 
-#ifndef DUMA_NO_HANG_MSG
-  DUMA_Print("DUMA: Registration was successful.\n");
-#endif /* DUMA_NO_HANG_MSG */
+  if (!DUMA_SUPPRESS_ATEXIT)
+  {
+    if ( atexit( _duma_exit ) )
+      DUMA_Abort("Cannot register exit function.\n");
 
-#endif
+    #ifndef DUMA_NO_HANG_MSG
+      DUMA_Print("DUMA: Registration was successful.\n");
+    #endif /* DUMA_NO_HANG_MSG */
+  }
+
+#endif /* ( !defined(DUMA_NO_LEAKDETECTION) && ( defined(DUMA_PREFER_ATEXIT) || !defined(DUMA_GNU_INIT_ATTR) ) ) */
 
   /* initialize semaphoring */
   DUMA_INIT_SEMAPHORE();
@@ -540,7 +581,11 @@ void duma_init(void)
  * _duma_init sets up the memory allocation arena and the run-time
  * configuration information.
  */
-void _duma_init(void)
+void
+#ifdef DUMA_GNU_INIT_ATTR
+__attribute ((constructor))
+#endif
+_duma_init(void)
 {
   size_t            size = MEMORY_CREATION_SIZE;
   struct _DUMA_Slot * slot;
@@ -552,8 +597,22 @@ void _duma_init(void)
 #ifndef DUMA_NO_THREAD_SAFETY
 #ifdef DUMA_EXPLICIT_INIT
   if (duma_init_done)
+  {
+    DUMA_INIT_SEMAPHORE();
+    DUMA_GET_SEMAPHORE();
+  }
+#else
+    DUMA_GET_SEMAPHORE();
 #endif
-  DUMA_GET_SEMAPHORE();
+#endif
+
+#ifndef DUMA_NO_CPP_SUPPORT
+  /*
+   * Allocate special memory for C++ new operator, when size is 0
+   */
+  _duma_cxx_null_block = Page_Create(2*DUMA_PAGE_SIZE, 1/*=exitonfail*/, 1/*=printerror*/);
+  Page_DenyAccess(_duma_cxx_null_block, 2*DUMA_PAGE_SIZE);
+  _duma_cxx_null_addr  = (void*)( (DUMA_ADDR)_duma_cxx_null_block + DUMA_PAGE_SIZE );
 #endif
 
   /*
@@ -1517,10 +1576,8 @@ void  DUMA_newFrame(void)
 
 void  DUMA_delFrame(void)
 {
-#ifdef DUMA_USE_FRAMENO
   if (-1 != frameno)
   {
-#endif
     struct _DUMA_Slot * slot      = _duma_allocList;
     size_t            count     = slotCount;
     int               nonFreed  = 0;
@@ -1561,13 +1618,26 @@ void  DUMA_delFrame(void)
       DUMA_RELEASE_SEMAPHORE();
 #endif
 
-  #ifdef DUMA_USE_FRAMENO
     --frameno;
   }
-  #endif
   if (DUMA_SHOW_ALLOC)
     DUMA_Print("\nDUMA: DUMA_delFrame(): Processed %l allocations and %l deallocations in total.\n", numAllocs, numDeallocs);
 }
+
+
+/*
+ * DUMA's exit function, called atexit() or with GNU C Compiler's destructor attribute
+ */
+void
+#if ( defined(DUMA_GNU_INIT_ATTR) && !defined(DUMA_PREFER_ATEXIT) )
+__attribute ((destructor))
+#endif
+_duma_exit(void)
+{
+  while (-1 != frameno)
+    DUMA_delFrame();
+}
+
 
 #endif /* end ifndef DUMA_NO_LEAKDETECTION */
 
