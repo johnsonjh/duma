@@ -15,6 +15,7 @@ CHANGELOG:
          Benjamin Berkels <benjamin.berkels@ins.uni-bonn.de>
        updated TODO
        bugfix: "EF_" was not replaced by "DUMA_" in tstheap.c
+       bugfix: rules how to build test objects; DUMA_OPTIONS were not passed
        (2005-10-06, HA)
 
 2.4.21 modified Makefile: name for shared library and symbolic links now
