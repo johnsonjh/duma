@@ -14,6 +14,7 @@ CHANGELOG:
        got updated project files for Dev-C++ 4.9.9.2 / GCC 3.3.1 from
          Benjamin Berkels <benjamin.berkels@ins.uni-bonn.de>
        updated TODO
+       bugfix: "EF_" was not replaced by "DUMA_" in tstheap.c
        (2005-10-06, HA)
 
 2.4.21 modified Makefile: name for shared library and symbolic links now
