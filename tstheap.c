@@ -64,8 +64,8 @@ main(int argc, char * * argv)
   int  count;
   int  duration = TEST_DURATION;
 
-#ifdef EF_EXPLICIT_INIT
-  ef_init();
+#ifdef DUMA_EXPLICIT_INIT
+  duma_init();
 #endif
 
   if ( argc >= 2 )
