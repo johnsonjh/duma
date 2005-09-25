@@ -2,6 +2,20 @@
 CHANGELOG:
 ==========
 
+2.4.22 C++ 'new' operators now (more) standard conform:
+         allocation of size==0 now returns non 0 pointer
+       new option 'DUMA_SUPPRESS_ATEXIT' as environment variable
+         from Tim Braun <braun@informatik.uni-kl.de>:
+         suppress call to C library's atexit() function for DUMA's leak
+         checking function in buggy environments, where atexit() hangs.
+       implemented alternative for C library's atexit() using GNU C compiler's
+         'destructor' function attribute.
+       new preprocessor flag 'DUMA_PREFER_ATEXIT' in Makefile
+       got updated project files for Dev-C++ 4.9.9.2 / GCC 3.3.1 from
+         Benjamin Berkels <benjamin.berkels@ins.uni-bonn.de>
+       updated TODO
+       (2005-10-06, HA)
+
 2.4.21 modified Makefile: name for shared library and symbolic links now
          configurable at start
        update of README
