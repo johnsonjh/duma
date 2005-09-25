@@ -141,19 +141,19 @@ duma_config.h: createconf
 
 createconf: createconf.o
 	- rm -f createconf
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) createconf.o -o createconf
+	$(CC) $(CFLAGS) createconf.o -o createconf
 
 tstheap: libduma.a tstheap.o
 	- rm -f tstheap
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) tstheap.o libduma.a -o tstheap $(LIBS)
+	$(CC) $(CFLAGS) tstheap.o libduma.a -o tstheap $(LIBS)
 
 dumatest: libduma.a dumatest.o
 	- rm -f dumatest
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) dumatest.o libduma.a -o dumatest $(LIBS)
+	$(CC) $(CFLAGS) dumatest.o libduma.a -o dumatest $(LIBS)
 
 dumatestpp: libduma.a dumatestpp.o dumapp.h
 	- rm -f dumatestpp
-	$(CXX) $(CPPFLAGS) $(DUMA_OPTIONS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
+	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
 
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
 
