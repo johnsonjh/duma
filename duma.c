@@ -390,11 +390,16 @@ static int duma_init_done = 0;
  */
 #include "duma_hlp.h"
 
-
+#ifndef DUMA_NO_LEAKDETECTION
 /*
  * declare exit function
  */
-void _duma_exit(void);
+void
+#if ( defined(DUMA_GNU_INIT_ATTR) && !defined(DUMA_PREFER_ATEXIT) )
+__attribute ((destructor))
+#endif
+_duma_exit(void);
+#endif
 
 
 
@@ -1634,6 +1639,7 @@ __attribute ((destructor))
 #endif
 _duma_exit(void)
 {
+  /* DUMA_ASSERT(0); */
   while (-1 != frameno)
     DUMA_delFrame();
 }
