@@ -141,19 +141,19 @@ duma_config.h: createconf
 
 createconf: createconf.o
 	- rm -f createconf
-	$(CC) $(CFLAGS) createconf.o -o createconf
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) createconf.o -o createconf
 
 tstheap: libduma.a tstheap.o
 	- rm -f tstheap
-	$(CC) $(CFLAGS) tstheap.o libduma.a -o tstheap $(LIBS)
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) tstheap.o libduma.a -o tstheap $(LIBS)
 
 dumatest: libduma.a dumatest.o
 	- rm -f dumatest
-	$(CC) $(CFLAGS) dumatest.o libduma.a -o dumatest $(LIBS)
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) dumatest.o libduma.a -o dumatest $(LIBS)
 
 dumatestpp: libduma.a dumatestpp.o dumapp.h
 	- rm -f dumatestpp
-	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
+	$(CXX) $(CPPFLAGS) $(DUMA_OPTIONS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
 
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
 
@@ -201,6 +201,21 @@ print.o:	print.c print.h
 
 
 #
+# define rules how to build the test objects
+#
+
+dumatest.o:	dumatest.c duma.h duma_config.h
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c dumatest.c -o $@
+
+dumatestpp.o:	dumatestpp.cpp duma.h dumapp.h duma_config.h
+	$(CXX) $(CPPFLAGS) $(DUMA_OPTIONS) -c dumatestpp.cpp -o $@
+
+tstheap.o:	tstheap.c duma.h duma_config.h
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c tstheap.c -o $@
+
+
+
+#
 # default rules
 #
 #.c.o:
@@ -209,3 +224,5 @@ print.o:	print.c print.h
 #.cpp.o:
 #	$(CXX) $(CPPFLAGS) -c $< -o $@
 #
+
+
