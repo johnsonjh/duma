@@ -13,6 +13,10 @@ TODO (listed from highest to lowest priority):
  replacement functions only from own source files. Thus usage of DUMA
  for several system libraries is avoided.
 
+-use configuration file, which is read directly with system calls as
+ replacement for the environment switches which use calls to the C library.
+ this is to avoid hangs in the C library's getenv() function.
+
 -get duma running/compiling on all platforms which are supported on
  sourceforge.net's compile farms. see
  http://sourceforge.net/docman/display_doc.php?docid=762&group_id=1
@@ -66,7 +70,8 @@ TODO (listed from highest to lowest priority):
  see http://gcc.gnu.org/onlinedocs/gcc-4.0.1/gcc/Preprocessor-Options.html
 
 -use "/FI" option of preprocessor, when having ms visual c++
- see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vccore/html/_core_.2f.fi.asp
+ see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vccore
+                                                      /html/_core_.2f.fi.asp
 
 -modification of manual page duma.3
 
