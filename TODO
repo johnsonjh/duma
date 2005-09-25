@@ -2,6 +2,10 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
+-write DUMA's preprocessor flags at compile time of the library
+  to duma_config.h. Thus one no more would have to provide the same flags
+  when compiling his own objects files.
+
 -write test program with own member new/delete operator with filename and
   line number forwarding to duma
 
