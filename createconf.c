@@ -300,6 +300,185 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, "\n");
   fprintf(f, "#ifndef _DUMA_CONFIG_H_\n");
   fprintf(f, "#define _DUMA_CONFIG_H_\n");
+
+  fprintf(f, "\n");
+  fprintf(f, "/*\n");
+  fprintf(f, " * Configuration of DUMA:\n");
+  fprintf(f, " */\n");
+  fprintf(f, "#ifdef DUMA_SO_LIBRARY\n");
+  fprintf(f, "\n");
+
+  fprintf(f, "#ifdef DUMA_NO_GLOBAL_MALLOC_FREE\n");
+  fprintf(f, "#undef DUMA_NO_GLOBAL_MALLOC_FREE\n");
+  fprintf(f, "#endif\n\n");
+
+  fprintf(f, "#ifdef DUMA_EXPLICIT_INIT\n");
+  fprintf(f, "#undef DUMA_EXPLICIT_INIT\n");
+  fprintf(f, "#endif\n\n");
+
+  fprintf(f, "#ifdef DUMA_NO_THREAD_SAFETY\n");
+  fprintf(f, "#undef DUMA_NO_THREAD_SAFETY\n");
+  fprintf(f, "#endif\n\n");
+
+#ifndef DUMA_SO_NO_CPP_SUPPORT
+  fprintf(f, "#ifdef DUMA_NO_CPP_SUPPORT\n");
+  fprintf(f, "#undef DUMA_NO_CPP_SUPPORT\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_NO_CPP_SUPPORT\n");
+  fprintf(f, "#define DUMA_NO_CPP_SUPPORT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_SO_NO_LEAKDETECTION
+  fprintf(f, "#ifdef DUMA_NO_LEAKDETECTION\n");
+  fprintf(f, "#undef DUMA_NO_LEAKDETECTION\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_NO_LEAKDETECTION\n");
+  fprintf(f, "#define DUMA_NO_LEAKDETECTION\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+  fprintf(f, "#ifdef DUMA_USE_FRAMENO\n");
+  fprintf(f, "#undef DUMA_USE_FRAMENO\n");
+  fprintf(f, "#endif\n\n");
+
+#ifndef DUMA_SO_PREFER_ATEXIT
+  fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+  fprintf(f, "#ifdef DUMA_OLD_NEW_MACRO\n");
+  fprintf(f, "#undef DUMA_OLD_NEW_MACRO\n");
+  fprintf(f, "#endif\n\n");
+
+  fprintf(f, "#ifdef DUMA_OLD_DEL_MACRO\n");
+  fprintf(f, "#undef DUMA_OLD_DEL_MACRO\n");
+  fprintf(f, "#endif\n\n");
+
+#ifndef DUMA_SO_NO_HANG_MSG
+  fprintf(f, "#ifdef DUMA_NO_HANG_MSG\n");
+  fprintf(f, "#undef DUMA_NO_HANG_MSG\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_NO_HANG_MSG\n");
+  fprintf(f, "#define DUMA_NO_HANG_MSG\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+  fprintf(f, "#else\n");
+  fprintf(f, "\n");
+
+#ifndef DUMA_NO_GLOBAL_MALLOC_FREE
+  fprintf(f, "#ifdef DUMA_NO_GLOBAL_MALLOC_FREE\n");
+  fprintf(f, "#undef DUMA_NO_GLOBAL_MALLOC_FREE\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_NO_GLOBAL_MALLOC_FREE\n");
+  fprintf(f, "#define DUMA_NO_GLOBAL_MALLOC_FREE\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_EXPLICIT_INIT
+  fprintf(f, "#ifdef DUMA_EXPLICIT_INIT\n");
+  fprintf(f, "#undef DUMA_EXPLICIT_INIT\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_EXPLICIT_INIT\n");
+  fprintf(f, "#define DUMA_EXPLICIT_INIT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_NO_THREAD_SAFETY
+  fprintf(f, "#ifdef DUMA_NO_THREAD_SAFETY\n");
+  fprintf(f, "#undef DUMA_NO_THREAD_SAFETY\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_NO_THREAD_SAFETY\n");
+  fprintf(f, "#define DUMA_NO_THREAD_SAFETY\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_LIB_NO_CPP_SUPPORT
+  fprintf(f, "#ifdef DUMA_NO_CPP_SUPPORT\n");
+  fprintf(f, "#undef DUMA_NO_CPP_SUPPORT\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_NO_CPP_SUPPORT\n");
+  fprintf(f, "#define DUMA_NO_CPP_SUPPORT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_LIB_NO_LEAKDETECTION
+  fprintf(f, "#ifdef DUMA_NO_LEAKDETECTION\n");
+  fprintf(f, "#undef DUMA_NO_LEAKDETECTION\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_NO_LEAKDETECTION\n");
+  fprintf(f, "#define DUMA_NO_LEAKDETECTION\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_USE_FRAMENO
+  fprintf(f, "#ifdef DUMA_USE_FRAMENO\n");
+  fprintf(f, "#undef DUMA_USE_FRAMENO\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_USE_FRAMENO\n");
+  fprintf(f, "#define DUMA_USE_FRAMENO\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_LIB_PREFER_ATEXIT
+  fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_OLD_NEW_MACRO
+  fprintf(f, "#ifdef DUMA_OLD_NEW_MACRO\n");
+  fprintf(f, "#undef DUMA_OLD_NEW_MACRO\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_OLD_NEW_MACRO\n");
+  fprintf(f, "#define DUMA_OLD_NEW_MACRO\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_OLD_DEL_MACRO
+  fprintf(f, "#ifdef DUMA_OLD_DEL_MACRO\n");
+  fprintf(f, "#undef DUMA_OLD_DEL_MACRO\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_OLD_DEL_MACRO\n");
+  fprintf(f, "#define DUMA_OLD_DEL_MACRO\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_LIB_NO_HANG_MSG
+  fprintf(f, "#ifdef DUMA_NO_HANG_MSG\n");
+  fprintf(f, "#undef DUMA_NO_HANG_MSG\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_NO_HANG_MSG\n");
+  fprintf(f, "#define DUMA_NO_HANG_MSG\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+
+  fprintf(f, "#endif\n");
+  fprintf(f, "\n");
+
   fprintf(f, "\n");
   fprintf(f, "/*\n");
   fprintf(f, " * Number of bytes per virtual-memory page, as returned by Page_Size().\n");
