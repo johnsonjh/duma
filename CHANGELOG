@@ -2,6 +2,12 @@
 CHANGELOG:
 ==========
 
+2.4.23 write DUMA's preprocessor flags at compile time of the library
+         to duma_config.h. Thus one no more would have to provide the same
+         flags when compiling his own objects files.
+       changed Makefile, to take care for this
+       (2005-10-07, HA)
+
 2.4.22 C++ 'new' operators now (more) standard conform:
          allocation of size==0 now returns non 0 pointer
        new option 'DUMA_SUPPRESS_ATEXIT' as environment variable
