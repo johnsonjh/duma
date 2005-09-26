@@ -78,14 +78,13 @@
 #endif
 
 #include "duma.h"
-#include "duma_config.h"
 #include "dumaint.h"
 #include "print.h"
 #include "sem_inc.h"
 #include "paging.h"
 
 static const char  version[] = "\n"
-"DUMA 2.4.22\n"
+"DUMA 2.4.23\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n";
 
