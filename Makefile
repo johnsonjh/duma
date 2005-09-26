@@ -33,13 +33,35 @@
 # add "-DDUMA_NO_HANG_MSG" (without quotes)
 #    set this if you want to suppress the extra messages around atexit().
 #
+#
+########################################
+#
+#  preprocessor flags for building the shared library (DUMA_SO_LIBRARY):
+#    - DUMA_SO_NO_CPP_SUPPORT
+#    - DUMA_SO_NO_LEAKDETECTION
+#    - DUMA_SO_PREFER_ATEXIT
+#    - DUMA_SO_NO_HANG_MSG
+#
+#  preprocessor flags for building the static library:
+#    - DUMA_LIB_NO_CPP_SUPPORT
+#    - DUMA_LIB_NO_LEAKDETECTION
+#    - DUMA_LIB_PREFER_ATEXIT
+#    - DUMA_LIB_NO_HANG_MSG
+#    - DUMA_NO_GLOBAL_MALLOC_FREE
+#    - DUMA_EXPLICIT_INIT
+#    - DUMA_NO_THREAD_SAFETY
+#    - DUMA_USE_FRAMENO
+#    - DUMA_OLD_NEW_MACRO
+#    - DUMA_OLD_DEL_MACRO
+#
+########################################
 
+# edit following line
 DUMA_OPTIONS =
 
-# for usage with LD_PRELOAD you should not use the options
-#   DUMA_NO_GLOBAL_MALLOC_FREE, DUMA_EXPLICIT_INIT and DUMA_NO_THREAD_SAFETY
-#
-DUMA_SO_OPTIONS =
+
+PIC= -fPIC
+DUMA_SO_OPTIONS = $(PIC) -DDUMA_SO_LIBRARY
 
 # for FreeBSD 5.4
 # DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
@@ -47,8 +69,6 @@ DUMA_SO_OPTIONS =
 # for FreeBSD 5.4 if DUMA_EXPLICIT_INIT is not set
 # DUMA_OPTIONS += -DDUMA_NO_LEAKDETECTION
 
-
-PIC= -fPIC
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
@@ -141,7 +161,7 @@ duma_config.h: createconf
 
 createconf: createconf.o
 	- rm -f createconf
-	$(CC) $(CFLAGS) createconf.o -o createconf
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) createconf.o -o createconf
 
 tstheap: libduma.a tstheap.o
 	- rm -f tstheap
@@ -171,16 +191,16 @@ endif
 #
 
 dumapp_so.o:	dumapp.cpp duma.h dumapp.h
-	$(CXX) $(CPPFLAGS) $(PIC) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
+	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
 
 duma_so.o:	duma.c duma.h duma_config.h
-	$(CC) $(CFLAGS) $(PIC) $(DUMA_SO_OPTIONS) -c duma.c -o $@
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
 
 sem_inc_so.o:	sem_inc.c sem_inc.h
-	$(CC) $(CFLAGS) $(PIC) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
 
 print_so.o:	print.c print.h
-	$(CC) $(CFLAGS) $(PIC) $(DUMA_SO_OPTIONS) -c print.c -o $@
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
 
 
 #
@@ -188,16 +208,16 @@ print_so.o:	print.c print.h
 #
 
 dumapp.o:	dumapp.cpp duma.h dumapp.h
-	$(CXX) $(CPPFLAGS) $(DUMA_OPTIONS) -c dumapp.cpp -o $@
+	$(CXX) $(CPPFLAGS) -c dumapp.cpp -o $@
 
 duma.o:	duma.c duma.h duma_config.h
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c duma.c -o $@
+	$(CC) $(CFLAGS) -c duma.c -o $@
 
 sem_inc.o:	sem_inc.c sem_inc.h
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c sem_inc.c -o $@
+	$(CC) $(CFLAGS) -c sem_inc.c -o $@
 
 print.o:	print.c print.h
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c print.c -o $@
+	$(CC) $(CFLAGS) -c print.c -o $@
 
 
 #
@@ -205,13 +225,13 @@ print.o:	print.c print.h
 #
 
 dumatest.o:	dumatest.c duma.h duma_config.h
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c dumatest.c -o $@
+	$(CC) $(CFLAGS) -c dumatest.c -o $@
 
 dumatestpp.o:	dumatestpp.cpp duma.h dumapp.h duma_config.h
-	$(CXX) $(CPPFLAGS) $(DUMA_OPTIONS) -c dumatestpp.cpp -o $@
+	$(CXX) $(CPPFLAGS) -c dumatestpp.cpp -o $@
 
 tstheap.o:	tstheap.c duma.h duma_config.h
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c tstheap.c -o $@
+	$(CC) $(CFLAGS) -c tstheap.c -o $@
 
 
 
