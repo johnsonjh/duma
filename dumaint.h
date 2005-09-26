@@ -28,7 +28,6 @@
 #define _DUMA_INTERNAL_
 
 #include "duma.h"
-#include "duma_config.h"
 
 /* for enabling inclusion of duma.h after inclusion of dumaint.h */
 

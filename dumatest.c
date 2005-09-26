@@ -37,7 +37,6 @@
 #include <setjmp.h>
 #include <signal.h>
 
-#include "dumaint.h"
 #include "duma.h"
 
 
