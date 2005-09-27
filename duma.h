@@ -85,6 +85,14 @@ enum _DUMA_Allocator
   , EFA_DEL_ELEM
   , EFA_NEW_ARRAY
   , EFA_DEL_ARRAY
+
+  /* use following enums when calling _duma_allocate()/_duma_deallocate()
+   * from user defined member operators
+   */
+  , EFA_MEMBER_NEW_ELEM
+  , EFA_MEMBER_DEL_ELEM
+  , EFA_MEMBER_NEW_ARRAY
+  , EFA_MEMBER_DEL_ARRAY
 };
 
 enum _DUMA_FailReturn
@@ -161,10 +169,13 @@ char * _duma_strncat(char *dest, const char *src, size_t size);
 
 #endif /* DUMA_NO_LEAKDETECTION */
 
-/* some special assert */
-void _duma_assert(const char * exprstr, const char * filename, int lineno);
 
-#define DUMA_ASSERT(EXPR)    (  (EXPR) || ( _duma_assert(#EXPR, __FILE__, __LINE__), 0 )  )
+#ifndef DUMA_ASSERT
+  /* declare some special assert only once */
+  void _duma_assert(const char * exprstr, const char * filename, int lineno);
+
+  #define DUMA_ASSERT(EXPR)    (  (EXPR) || ( _duma_assert(#EXPR, __FILE__, __LINE__), 0 )  )
+#endif
 
 
 /*
