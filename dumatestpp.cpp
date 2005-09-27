@@ -3,7 +3,10 @@
 
 #include <new>
 #include <fstream>
+
+#ifndef DUMA_SO_LIBRARY
 #include "dumapp.h"
+#endif
 
 
 #if 0
@@ -131,3 +134,4 @@ int main( int argc, char ** argv )
   return 0;
 
 }
+

@@ -240,3 +240,4 @@ int main( int argc, char *argv[] )
   rich_test();
   return 0;
 }
+

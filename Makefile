@@ -58,7 +58,11 @@
 
 # edit following line
 DUMA_OPTIONS =
-
+# some test cases:
+#DUMA_OPTIONS = -DDUMA_LIB_NO_LEAKDETECTION
+#DUMA_OPTIONS = -DDUMA_NO_THREAD_SAFETY
+#DUMA_OPTIONS = -DDUMA_NO_CPP_SUPPORT
+#DUMA_OPTIONS = -DDUMA_USE_FRAMENO
 
 PIC= -fPIC
 DUMA_SO_OPTIONS = $(PIC) -DDUMA_SO_LIBRARY
@@ -112,18 +116,21 @@ MAN_INSTALL_DIR= $(prefix)/man/man3
 PACKAGE_SOURCE= README CHANGES duma.3 Makefile \
 	duma.h dumapp.h sem_inc.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
-	dumatest.c tstheap.c dumatestpp.cpp \
+	dumatest.c tstheap.c dumatestpp.cpp testoperators.cpp \
 	createconf.c
 
 OBJECTS = dumapp.o duma.o sem_inc.o print.o
 
 SO_OBJECTS = dumapp_so.o duma_so.o sem_inc_so.o print_so.o
 
-all:	libduma.a $(DUMASO) tstheap dumatest dumatestpp
+all:	libduma.a $(DUMASO) tstheap dumatest dumatestpp testoperators tstheap_so dumatestpp_so
 	@ echo "Testing DUMA."
 	@ echo "After the last test, it should print that the test has PASSED."
 	$(CURPATH)dumatest
 	$(CURPATH)tstheap 3072
+	$(CURPATH)testoperators
+	(export LD_PRELOAD=./$(DUMASO); exec $(CURPATH)tstheap_so 3072)
+	@ echo
 	@ echo "DUMA confidence test PASSED."
 
 install: libduma.a duma.3 $(DUMASO)
@@ -137,10 +144,11 @@ install: libduma.a duma.3 $(DUMASO)
 	$(INSTALL) -m 644 duma.3 $(MAN_INSTALL_DIR)/duma.3
 
 clean:
-	- rm -f $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o dumatestpp.o createconf.o \
-		tstheap dumatest dumatestpp createconf \
-	 libduma.a $(DUMASO) libduma.cat DUMA.shar \
-	 duma_config.h
+	- rm -f $(OBJECTS) $(SO_OBJECTS) createconf.o tstheap.o dumatest.o dumatestpp.o \
+		tstheap_so.o dumatestpp_so.o testoperators.o \
+		tstheap tstheap_so dumatest dumatestpp dumatestpp_so testoperators createconf \
+		libduma.a $(DUMASO) libduma.cat DUMA.shar \
+		duma_config.h
 
 roff:
 	nroff -man < duma.3 > duma.cat
@@ -179,6 +187,15 @@ testoperators: libduma.a testoperators.o dumapp.h
 	- rm -f testoperators
 	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators $(LIBS)
 
+tstheap_so: tstheap_so.o
+	- rm -f tstheap_so
+	$(CC) $(CFLAGS) tstheap_so.o -o tstheap_so $(LIBS)
+
+dumatestpp_so: dumatestpp_so.o
+	- rm -f dumatestpp_so
+	$(CXX) $(CPPFLAGS) dumatestpp_so.o -o dumatestpp_so $(LIBS)
+
+
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
 
 ifneq ($(OS), Windows_NT)
@@ -206,6 +223,12 @@ sem_inc_so.o:	sem_inc.c sem_inc.h
 print_so.o:	print.c print.h
 	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
 
+# DUMA_SO_OPTIONS needed cause duma.h is included explicitly
+tstheap_so.o:
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c tstheap.c -o $@
+
+dumatestpp_so.o:
+	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumatestpp.cpp -o $@
 
 #
 # define rules how to build objects for static library

@@ -3,7 +3,10 @@
 #include <math.h>
 #include <limits.h>
 #include <memory.h>
+
+#ifndef DUMA_SO_LIBRARY
 #include "duma.h"
+#endif
 
 /*
  * This is a simple program to exercise the allocator. It allocates and frees
