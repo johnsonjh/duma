@@ -78,13 +78,13 @@
 #endif
 
 #include "duma.h"
-#include "dumaint.h"
+#include "noduma.h"
 #include "print.h"
 #include "sem_inc.h"
 #include "paging.h"
 
 static const char  version[] = "\n"
-"DUMA 2.4.23\n"
+"DUMA 2.4.24\n"
 "Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n";
 
@@ -178,6 +178,8 @@ enum _DUMA_AllocType
   , DUMAAT_MALLOC
   , DUMAAT_NEW_ELEM
   , DUMAAT_NEW_ARRAY
+  , DUMAAT_MEMBER_NEW_ELEM
+  , DUMAAT_MEMBER_NEW_ARRAY
 };
 
 static struct _DUMA_AllocDesc
@@ -187,19 +189,23 @@ static struct _DUMA_AllocDesc
 }
 _duma_allocDesc[] =
 {
-    { "duma allocate()"   , DUMAAT_INTERNAL  }
-  , { "duma deallocate()" , DUMAAT_INTERNAL  }
-  , { "malloc()"          , DUMAAT_MALLOC    }
-  , { "calloc()"          , DUMAAT_MALLOC    }
-  , { "free()"            , DUMAAT_MALLOC    }
-  , { "memalign()"        , DUMAAT_MALLOC    }
-  , { "realloc()"         , DUMAAT_MALLOC    }
-  , { "valloc()"          , DUMAAT_MALLOC    }
-  , { "strdup()"          , DUMAAT_MALLOC    }
-  , { "scalar new"        , DUMAAT_NEW_ELEM  }
-  , { "scalar delete"     , DUMAAT_NEW_ELEM  }
-  , { "vector new[]"      , DUMAAT_NEW_ARRAY }
-  , { "vector delete[]"   , DUMAAT_NEW_ARRAY }
+    { "duma allocate()"       , DUMAAT_INTERNAL  }
+  , { "duma deallocate()"     , DUMAAT_INTERNAL  }
+  , { "malloc()"              , DUMAAT_MALLOC    }
+  , { "calloc()"              , DUMAAT_MALLOC    }
+  , { "free()"                , DUMAAT_MALLOC    }
+  , { "memalign()"            , DUMAAT_MALLOC    }
+  , { "realloc()"             , DUMAAT_MALLOC    }
+  , { "valloc()"              , DUMAAT_MALLOC    }
+  , { "strdup()"              , DUMAAT_MALLOC    }
+  , { "scalar new"            , DUMAAT_NEW_ELEM  }
+  , { "scalar delete"         , DUMAAT_NEW_ELEM  }
+  , { "vector new[]"          , DUMAAT_NEW_ARRAY }
+  , { "vector delete[]"       , DUMAAT_NEW_ARRAY }
+  , { "member scalar new"     , DUMAAT_MEMBER_NEW_ELEM  }
+  , { "member scalar delete"  , DUMAAT_MEMBER_NEW_ELEM  }
+  , { "member vector new[]"   , DUMAAT_MEMBER_NEW_ARRAY }
+  , { "member vector delete[]", DUMAAT_MEMBER_NEW_ARRAY }
 };
 
 #ifndef DUMA_NO_LEAKDETECTION
