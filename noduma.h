@@ -98,6 +98,9 @@
 #undef delete
 #endif
 
+#ifdef new_NOTHROW
+#undef new_NOTHROW
+#endif
 
 /* remove previous DUMA C++ definitions */
 
@@ -109,6 +112,15 @@
 #undef NEW_ARRAY
 #endif
 
+#ifdef NEW_ELEM_NOTHROW
+#undef NEW_ELEM_NOTHROW
+#endif
+
+#ifdef NEW_ARRAY_NOTHROW
+#undef NEW_ARRAY_NOTHROW
+#endif
+
+
 #ifdef DEL_ELEM
 #undef DEL_ELEM
 #endif
@@ -117,14 +129,12 @@
 #undef DEL_ARRAY
 #endif
 
-#ifdef new
-#undef new
+#ifdef DEL_ELEM_NOTHROW
+#undef DEL_ELEM_NOTHROW
 #endif
 
-
-/* remove special assert definition */
-#ifdef DUMA_ASSERT
-#undef DUMA_ASSERT
+#ifdef DEL_ARRAY_NOTHROW
+#undef DEL_ARRAY_NOTHROW
 #endif
 
 
@@ -160,6 +170,15 @@
 #undef CA_REF
 #endif
 
+
+/* Following defines are kept:
+ *
+ * DUMA_ASSERT
+ * DUMA_CDECL
+ * DUMA_SIZE_T
+ * DUMA_MAX_DEL_DEPTH
+ *
+ */
 
 /***************/
 /* END OF FILE */
