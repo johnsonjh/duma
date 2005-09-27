@@ -175,9 +175,9 @@ dumatestpp: libduma.a dumatestpp.o dumapp.h
 	- rm -f dumatestpp
 	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
 
-testoperators: libduma.a dumatestpp.o dumapp.h
+testoperators: libduma.a testoperators.o dumapp.h
 	- rm -f testoperators
-	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o dumatestpp $(LIBS)
+	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators $(LIBS)
 
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
 
