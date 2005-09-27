@@ -147,8 +147,8 @@
       #define NEW_ELEM_NOTHROW(TYPE)          new(std::nothrow,__FILE__,__LINE__) TYPE
       #define NEW_ARRAY_NOTHROW(TYPE, COUNT)  new(std::nothrow,__FILE__,__LINE__) TYPE[COUNT]
     #else
+      /* #define new_NOTHROW                      new(std::nothrow,__FILE__,__LINE__) */
       #define new                             new(__FILE__, __LINE__)
-      #define new_NOTHROW                     new(std::nothrow,__FILE__,__LINE__)
     #endif /* DUMA_OLD_NEW_MACRO */
 
     #ifdef DUMA_OLD_DEL_MACRO
