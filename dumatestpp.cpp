@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include <new>
+#include <fstream>
 #include "dumapp.h"
 
 
@@ -52,8 +53,11 @@ public:
 
 int main( int argc, char ** argv )
 {
-
 #if 0
+	std::fstream *f = new std::fstream();
+	delete f;
+
+#elif 0
   /* this test should fail */
   int i;
   CA_DEFINE(int,acTest,20);
