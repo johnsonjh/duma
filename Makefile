@@ -110,7 +110,7 @@ MAN_INSTALL_DIR= $(prefix)/man/man3
 
 
 PACKAGE_SOURCE= README CHANGES duma.3 Makefile \
-	duma.h dumaint.h dumapp.h sem_inc.h paging.h print.h duma_hlp.h noduma.h \
+	duma.h dumapp.h sem_inc.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
 	dumatest.c tstheap.c dumatestpp.cpp \
 	createconf.c
@@ -175,6 +175,10 @@ dumatestpp: libduma.a dumatestpp.o dumapp.h
 	- rm -f dumatestpp
 	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
 
+testoperators: libduma.a dumatestpp.o dumapp.h
+	- rm -f testoperators
+	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o dumatestpp $(LIBS)
+
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
 
 ifneq ($(OS), Windows_NT)
@@ -233,6 +237,8 @@ dumatestpp.o:	dumatestpp.cpp duma.h dumapp.h duma_config.h
 tstheap.o:	tstheap.c duma.h duma_config.h
 	$(CC) $(CFLAGS) -c tstheap.c -o $@
 
+testoperators.o:	testoperators.cpp duma.h dumapp.h duma_config.h
+	$(CXX) $(CPPFLAGS) -c testoperators.cpp -o $@
 
 
 #
