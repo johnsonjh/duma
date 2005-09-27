@@ -115,7 +115,7 @@ SOURCE=..\..\duma_hlp.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dumaint.h
+SOURCE=..\..\noduma.h
 # End Source File
 # Begin Source File
 
