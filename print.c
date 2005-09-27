@@ -35,6 +35,7 @@
   #include <unistd.h>
   #include <fcntl.h>
   #include <sys/mman.h>
+  #include <sys/param.h>
 #else
   #define WIN32_LEAN_AND_MEAN 1
   #include <windows.h>
@@ -49,8 +50,16 @@
 #endif
 
 
-#include "dumaint.h"
+#include "duma.h"
+#include "noduma.h"
 #include "print.h"
+
+/*
+ * NBBY is the number of bits per byte. Some systems define it in <sys/param.h>
+ */
+#ifndef	NBBY
+#define	NBBY	8
+#endif
 
 /*
  * These routines do their printing without using stdio. Stdio can't
