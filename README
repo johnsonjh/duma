@@ -328,10 +328,9 @@ DEFINITION OF OWN MEMBER NEW/DELETE OPERATORS
 
 Definition of own member new/delete operators for a class will fail cause the
 new/delete keywords are defined as macros from DUMA. You will have to undefine
-DUMA's macros with following two lines:
+DUMA's macros with following line:
 
-#undef new
-#undef delete
+#include "noduma.h"
 
 Then you have to call DUMA's operators directly inside your own definition.
 
@@ -479,8 +478,6 @@ duma.h		      belongs to dumalib
                 this header file should be included from within YOUR C source
 dumapp.h        belongs to dumalib
                 this header file should be included from within YOUR C++ source
-dumaint.h       belongs to dumalib
-                library internal header file
 duma.c          belongs to dumalib
                 contains malloc/free/.. functions
 dumapp.cpp      belongs to dumalib
