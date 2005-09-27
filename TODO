@@ -2,8 +2,8 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
--write test program with own member new/delete operator with filename and
-  line number forwarding to duma
+-implement/use TLS - Thread Local Storage for some variables
+ f.e. file/line information per delete operator
 
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
   use defines specifying the target architecture
@@ -29,6 +29,10 @@ TODO (listed from highest to lowest priority):
 -use configure to detect if f.e. pthread.h is installed and in search path
  check if pthread available before using it in Makefile
  depends on autoconf/automake
+
+-write program loader for Windows, catching memory allocation/deallocation
+ calls in that program to msvcrt.dll and its newer versions, redirecting them
+ to DUMA
 
 -define new thread-safe macros,
  which don't have to use the global variable DUMA_PROTECT_BELOW:
@@ -62,7 +66,7 @@ TODO (listed from highest to lowest priority):
   this would save copying all slot entries, when list grows
 
 -store __func__ additionally to __FILE__ and __LINE__
- depends on storing full filename (not just ptr) in slot
+ depends on storing full filename (not just pointer) in slot
 
 -use "-include" option of preprocessor, when having gcc
  see http://gcc.gnu.org/onlinedocs/gcc-2.95.3/gcc_2.html#SEC11
