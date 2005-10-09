@@ -13,6 +13,9 @@ TODO (listed from highest to lowest priority):
  replacement functions only from own source files. Thus usage of DUMA
  for several system libraries is avoided.
 
+-provide a function/macro, which tests the non-protectable side of an
+ allocated memory block for illegal writes.
+
 -use configuration file, which is read directly with system calls as
  replacement for the environment switches which use calls to the C library.
  this is to avoid hangs in the C library's getenv() function.
@@ -29,6 +32,10 @@ TODO (listed from highest to lowest priority):
 -use configure to detect if f.e. pthread.h is installed and in search path
  check if pthread available before using it in Makefile
  depends on autoconf/automake
+
+-add feature to enable floating point exceptions
+ by default C programs work with quiet NANs or similar values after an error
+ this feature shall allow detecting of floating point division by zero, overflow, ..
 
 -write program loader for Windows, catching memory allocation/deallocation
  calls in that program to msvcrt.dll and its newer versions, redirecting them
