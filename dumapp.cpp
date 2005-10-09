@@ -46,6 +46,7 @@ static const char unknown_cxx_file[] =
 
 #ifndef DUMA_NO_LEAKDETECTION
   int          DUMA_DeletePtr = 0;
+  int          DUMA_Magic[DUMA_MAX_DEL_DEPTH];
   const char * DUMA_DeleteFile[DUMA_MAX_DEL_DEPTH] = { unknown_cxx_file };
   int          DUMA_DeleteLine[DUMA_MAX_DEL_DEPTH];
 #endif
