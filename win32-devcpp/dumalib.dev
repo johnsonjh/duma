@@ -40,16 +40,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=..\dumaint.h
-Folder=
-CompileCpp=0
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit3]
 FileName=..\dumapp.cpp
 Folder=
 CompileCpp=0
@@ -59,7 +49,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=$(CC) -c dumapp.cpp -o dumapp.o $(CFLAGS)
 
-[Unit4]
+[Unit3]
 FileName=..\dumapp.h
 Folder=
 CompileCpp=0
@@ -69,9 +59,19 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit5]
+[Unit4]
 FileName=..\duma.c
 Folder=
+CompileCpp=0
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
+FileName=..\noduma.h
+Folder=EFence
 CompileCpp=0
 Compile=1
 Link=1
@@ -83,16 +83,6 @@ BuildCmd=
 ProjectView=1
 
 [Unit6]
-FileName=..\noduma.h
-CompileCpp=0
-Folder=EFence
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit7]
 FileName=..\paging.h
 CompileCpp=0
 Folder=EFence
@@ -102,7 +92,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit8]
+[Unit7]
 FileName=..\print.h
 CompileCpp=0
 Folder=EFence
@@ -112,7 +102,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit9]
+[Unit8]
 FileName=..\sem_inc.h
 CompileCpp=0
 Folder=EFence
@@ -122,7 +112,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit10]
+[Unit9]
 FileName=..\duma_hlp.h
 CompileCpp=0
 Folder=EFence
@@ -132,10 +122,20 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
+[Unit10]
 FileName=..\duma_config.h
 CompileCpp=0
 Folder=EFence
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=..\print.c
+CompileCpp=0
+Folder=DUMA
 Compile=1
 Link=1
 Priority=1000
@@ -161,7 +161,7 @@ ProductVersion=0.1
 AutoIncBuildNr=0
 
 [Unit12]
-FileName=..\print.c
+FileName=..\sem_inc.c
 CompileCpp=0
 Folder=DUMA
 Compile=1
@@ -171,7 +171,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit13]
-FileName=..\sem_inc.c
+FileName=..\createconf.c
 CompileCpp=0
 Folder=DUMA
 Compile=1
