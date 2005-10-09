@@ -2,6 +2,17 @@
 CHANGELOG:
 ==========
 
+2.4.25 bugfix: semaphores were not initialized correctly; this lead to a hang.
+         thanks for reporting and providing a test environment
+         to Tim Braun <braun@informatik.uni-kl.de>
+       updated project files for Dev-C++ 4.9.9.2 / GCC 3.3.1
+         and bugfixed compiler error for Dev-C++/gcc both reported from
+         Benjamin Berkels <benjamin.berkels@ins.uni-bonn.de>
+       modified delete macros
+       DUMA_Magic now array (call_depth)
+       (2005-10-21, HA)
+       
+
 2.4.24 new program testoperators: writes its own member new/delete operator
          with filename and line number forwarding to DUMA
        reworked Makefile: added tstheap_so which runs with shared library

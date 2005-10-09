@@ -84,7 +84,7 @@
 #include "paging.h"
 
 static const char  version[] =
-"DUMA 2.4.24 "
+"DUMA 2.4.25 "
 #ifdef DUMA_SO_LIBRARY
 "(shared library)\n"
 #else
@@ -434,6 +434,10 @@ void duma_init(void)
   char            * string;
   void            * testAlloc;
 
+  /* avoid double call */
+  if (duma_init_done)
+    return;
+
   if ( (string = getenv("DUMA_DISABLE_BANNER")) != 0 )
     DUMA_DISABLE_BANNER = (atoi(string) != 0);
   if ( !DUMA_DISABLE_BANNER )
@@ -612,10 +616,7 @@ _duma_init(void)
 #ifndef DUMA_NO_THREAD_SAFETY
 #ifdef DUMA_EXPLICIT_INIT
   if (duma_init_done)
-  {
-    DUMA_INIT_SEMAPHORE();
     DUMA_GET_SEMAPHORE();
-  }
 #else
     DUMA_GET_SEMAPHORE();
 #endif
