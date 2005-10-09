@@ -138,9 +138,7 @@ DUMA_init_sem(void)
 
 void DUMA_get_sem(void)
 {
-#ifndef DUMA_GNU_INIT_ATTR
   if (!semInited)     DUMA_init_sem();    /* initialize if necessary */
-#endif
 
   if (semThread != DUMA_thread_self())
   {
