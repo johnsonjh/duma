@@ -45,7 +45,7 @@
 
 
 #ifndef DUMA_CDECL
-  #if WIN32
+  #ifdef _MSC_VER
     #define DUMA_CDECL  __cdecl
   #else
     #define DUMA_CDECL
@@ -77,9 +77,9 @@
     /* (12) = (b) ; ASN */
     /* (13) = (c) ; FSW */
     /* (14) = (d) ; FSN */
-    void * DUMA_CDECL operator new(DUMA_SIZE_T)                         throw(std::bad_alloc);
+    void * DUMA_CDECL operator new(DUMA_SIZE_T) throw(std::bad_alloc);
     void * DUMA_CDECL operator new(DUMA_SIZE_T, const std::nothrow_t &) throw();
-    void   DUMA_CDECL operator delete(void *)                           throw();
+    void   DUMA_CDECL operator delete(void *) throw();
     void   DUMA_CDECL operator delete(void *, const std::nothrow_t &)   throw();
 
     /* 2x : ARRAY OBJECT FORM - NO DEBUG INFORMATION */
@@ -87,9 +87,9 @@
     /* (22) = (b) ; AAN */
     /* (23) = (c) ; FAW */
     /* (24) = (d) ; FAN */
-    void * DUMA_CDECL operator new[](DUMA_SIZE_T)                         throw(std::bad_alloc);
+    void * DUMA_CDECL operator new[](DUMA_SIZE_T) throw(std::bad_alloc);
     void * DUMA_CDECL operator new[](DUMA_SIZE_T, const std::nothrow_t &) throw();
-    void   DUMA_CDECL operator delete[](void *)                           throw();
+    void   DUMA_CDECL operator delete[](void *) throw();
     void   DUMA_CDECL operator delete[](void *, const std::nothrow_t &)   throw();
 
     #ifndef DUMA_NO_LEAKDETECTION /* && !defined(DUMA_CPP_OPERATORS_DECLARED) */
@@ -99,20 +99,20 @@
       /* (32) = (b) ; ASN */
       /* (33) = (c) ; FSW */
       /* (34) = (d) ; FSN */
-      void * DUMA_CDECL operator new(DUMA_SIZE_T, const char *, int)                         throw(std::bad_alloc);
+      void * DUMA_CDECL operator new(DUMA_SIZE_T, const char *, int) throw(std::bad_alloc);
       void * DUMA_CDECL operator new(DUMA_SIZE_T, const std::nothrow_t &, const char *, int) throw();
-      void   DUMA_CDECL operator delete(void *, const char *, int)                           throw();
-      void   DUMA_CDECL operator delete(void *, const std::nothrow_t &, const char *, int)   throw();
+      void   DUMA_CDECL operator delete(void *, const char *, int) throw();
+      void   DUMA_CDECL operator delete(void *, const std::nothrow_t &, const char *, int) throw();
 
       /* 4x : ARRAY OBJECT FORM - WITH DEBUG INFORMATION */
       /* (41) = (a) ; AAW */
       /* (42) = (b) ; AAN */
       /* (43) = (c) ; FAW */
       /* (44) = (d) ; FAN */
-      void * DUMA_CDECL operator new[](DUMA_SIZE_T, const char *, int)                         throw(std::bad_alloc);
+      void * DUMA_CDECL operator new[](DUMA_SIZE_T, const char *, int) throw(std::bad_alloc);
       void * DUMA_CDECL operator new[](DUMA_SIZE_T, const std::nothrow_t &, const char *, int) throw();
-      void   DUMA_CDECL operator delete[](void *, const char *, int)                           throw();
-      void   DUMA_CDECL operator delete[](void *, const std::nothrow_t &, const char *, int)   throw();
+      void   DUMA_CDECL operator delete[](void *, const char *, int) throw();
+      void   DUMA_CDECL operator delete[](void *, const std::nothrow_t &, const char *, int) throw();
 
     #endif /* DUMA_NO_LEAKDETECTION */
   #endif /* DUMA_CPP_OPERATORS_DECLARED */
@@ -131,8 +131,8 @@
       #endif
 
       /* TODO following variables should exist per thread ("thread-local") */
-      static int          DUMA_Magic;
       extern int          DUMA_DeletePtr;
+      extern int          DUMA_Magic[DUMA_MAX_DEL_DEPTH];
       extern const char * DUMA_DeleteFile[DUMA_MAX_DEL_DEPTH];
       extern int          DUMA_DeleteLine[DUMA_MAX_DEL_DEPTH];
     #endif
@@ -157,44 +157,40 @@
        * non-DUMA deallocations are called from destructors
        */
       /* non-throwing */
-      #define DEL_ELEM(PTR)                   for( DUMA_Magic = 1, ++DUMA_DeletePtr;  \
-                                                   DUMA_Magic;                        \
-                                                   --DUMA_DeletePtr, DUMA_Magic = 0   \
+      #define DEL_ELEM(PTR)                   for( DUMA_Magic[++DUMA_DeletePtr] = 1;  \
+                                                   DUMA_Magic[DUMA_DeletePtr];        \
+                                                   DUMA_Magic[DUMA_DeletePtr--] = 0   \
                                                  ) operator delete  (PTR, __FILE__, __LINE__)
-      #define DEL_ARRAY(PTR)                  for( DUMA_Magic = 1, ++DUMA_DeletePtr;  \
-                                                   DUMA_Magic;                        \
-                                                   --DUMA_DeletePtr, DUMA_Magic = 0   \
+      #define DEL_ARRAY(PTR)                  for( DUMA_Magic[++DUMA_DeletePtr] = 1;  \
+                                                   DUMA_Magic[DUMA_DeletePtr];        \
+                                                   DUMA_Magic[DUMA_DeletePtr--] = 0   \
                                                  ) operator delete[](PTR, __FILE__, __LINE__)
       /* explicitly non-throwing */
-      #define DEL_ELEM_NOTHROW(PTR)           for( DUMA_Magic = 1, ++DUMA_DeletePtr;  \
-                                                   DUMA_Magic;                        \
-                                                   --DUMA_DeletePtr, DUMA_Magic = 0   \
+      #define DEL_ELEM_NOTHROW(PTR)           for( DUMA_Magic[++DUMA_DeletePtr] = 1;  \
+                                                   DUMA_Magic[DUMA_DeletePtr];        \
+                                                   DUMA_Magic[DUMA_DeletePtr--] = 0   \
                                                  ) operator delete  (PTR, std::nothrow,__FILE__, __LINE__)
-      #define DEL_ARRAY_NOTHROW(PTR)          for( DUMA_Magic = 1, ++DUMA_DeletePtr;  \
-                                                   DUMA_Magic;                        \
-                                                   --DUMA_DeletePtr, DUMA_Magic = 0   \
+      #define DEL_ARRAY_NOTHROW(PTR)          for( DUMA_Magic[++DUMA_DeletePtr] = 1;  \
+                                                   DUMA_Magic[DUMA_DeletePtr];        \
+                                                   DUMA_Magic[DUMA_DeletePtr--] = 0   \
                                                  ) operator delete[](PTR, std::nothrow,__FILE__, __LINE__)
     #else
       #ifndef DUMA_NO_THREAD_SAFETY
         /* define a thread safe delete */
-        #define delete        for( DUMA_GET_SEMAPHORE(),                      \
-                                   DUMA_Magic = 1,                            \
+        #define delete        for( DUMA_GET_SEMAPHORE(),                        \
+                                   DUMA_Magic[++DUMA_DeletePtr] = 1,            \
                                    DUMA_DeleteFile[DUMA_DeletePtr] = __FILE__,  \
-                                   DUMA_DeleteLine[DUMA_DeletePtr] = __LINE__,  \
-                                   ++DUMA_DeletePtr;                          \
-                                   DUMA_Magic;                                \
-                                   --DUMA_DeletePtr,                          \
-                                   DUMA_Magic = 0,                            \
-                                   DUMA_RELEASE_SEMAPHORE()                   \
-                                 ) delete
+                                   DUMA_DeleteLine[DUMA_DeletePtr] = __LINE__;  \
+                                   DUMA_Magic[DUMA_DeletePtr];                  \
+                                   DUMA_Magic[DUMA_DeletePtr--] = 0,            \
+                                   DUMA_RELEASE_SEMAPHORE()                     \
+                                                 ) delete
       #else
-        #define delete        for( DUMA_Magic = 1,                            \
+        #define delete        for( DUMA_Magic[++DUMA_DeletePtr] = 1,            \
                                    DUMA_DeleteFile[DUMA_DeletePtr] = __FILE__,  \
-                                   DUMA_DeleteLine[DUMA_DeletePtr] = __LINE__,  \
-                                   ++DUMA_DeletePtr;                          \
-                                   DUMA_Magic;                                \
-                                   --DUMA_DeletePtr,                          \
-                                   DUMA_Magic = 0                             \
+                                   DUMA_DeleteLine[DUMA_DeletePtr] = __LINE__;  \
+                                   DUMA_Magic[DUMA_DeletePtr];                  \
+                                   DUMA_Magic[DUMA_DeletePtr--] = 0             \
                                  ) delete
       #endif /* DUMA_NO_THREAD_SAFETY */
     #endif /* DUMA_OLD_DEL_MACRO */
