@@ -65,12 +65,12 @@ static SECURITY_ATTRIBUTES  semSecAttr;
 #define SEM_NAME_TYPE char
 #define SEM_STRCPY    strcpy
 #define SEM_STRCAT    strcat
-static char       semObjectName[] = "EFence_";
+static char       semObjectName[] = "DUMA_";
 #else
 #define SEM_NAME_TYPE wchar_t
 #define SEM_STRCPY    wcscpy
 #define SEM_STRCAT    wcscat
-static wchar_t    semObjectName[] = L"EFence_";
+static wchar_t    semObjectName[] = L"DUMA_";
 #endif
 
 static DWORD      semThread = 0;
@@ -79,6 +79,7 @@ static HANDLE     semHandle = 0;
 
 static int        semInited = 0;
 static int        semDepth  = 0;
+static int        semInInit = 0;
 
 
 void
@@ -87,20 +88,23 @@ __attribute ((constructor))
 #endif
 DUMA_init_sem(void)
 {
-#ifndef WIN32
-  if (semInited)
-    return;
-
-  if (sem_init(&DUMA_sem, 0, 1) >= 0)
-    semInited = 1;
-#else
+#ifdef WIN32
   SEM_NAME_TYPE   semLocalName[32];
   SEM_NAME_TYPE   acPID[16];
   DWORD pid;
+#endif
 
-  if (semInited)
+  /* avoid recursive call to sem_init(),
+   * when sem_init() calls malloc() or other allocation function
+   */
+  if (semInited || semInInit)
     return;
+  semInInit = 1;
 
+#ifndef WIN32
+  if (sem_init(&DUMA_sem, 0, 1) >= 0)
+    semInited = 1;
+#else
   pid = GetCurrentProcessId();
   SEM_STRCPY(semLocalName, semObjectName);
   /* append ProcessId() to get inter-process unique semaphore name */
@@ -126,6 +130,9 @@ DUMA_init_sem(void)
                              );
   semInited = 1;
 #endif
+
+  semInInit = 0;
+
   if (!semInited)     DUMA_Abort("\nCouldn't initialise semaphore");
 }
 
@@ -138,6 +145,7 @@ DUMA_init_sem(void)
 
 void DUMA_get_sem(void)
 {
+  if (semInInit)      return;             /* avoid recursion */
   if (!semInited)     DUMA_init_sem();    /* initialize if necessary */
 
   if (semThread != DUMA_thread_self())
@@ -155,9 +163,8 @@ void DUMA_get_sem(void)
 
 void DUMA_rel_sem(void)
 {
-#ifndef DUMA_GNU_INIT_ATTR
+  if (semInInit)      return;             /* avoid recursion */
   if (!semInited)     DUMA_Abort("\nSemaphore isn't initialised");
-#endif
 
   if (!semThread)     DUMA_Abort("\nSemaphore isn't owned by this thread");
   if (semDepth <= 0)  DUMA_Abort("\nSemaphore isn't locked");
