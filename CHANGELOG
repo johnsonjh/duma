@@ -2,6 +2,12 @@
 CHANGELOG:
 ==========
 
+2.4.26 new project file for Dev-C++ 4.9.9.2 for createconf from
+         Benjamin Berkels <benjamin.berkels@ins.uni-bonn.de>
+       bugfix/enhancement: avoid recursion from sem_init() in Linux/U*ix
+         where sem_init() may call malloc() which again calls semaphore locking
+       (2005-10-25, HA)
+
 2.4.25 bugfix: semaphores were not initialized correctly; this lead to a hang.
          thanks for reporting and providing a test environment
          to Tim Braun <braun@informatik.uni-kl.de>
@@ -11,7 +17,6 @@ CHANGELOG:
        modified delete macros
        DUMA_Magic now array (call_depth)
        (2005-10-21, HA)
-       
 
 2.4.24 new program testoperators: writes its own member new/delete operator
          with filename and line number forwarding to DUMA
