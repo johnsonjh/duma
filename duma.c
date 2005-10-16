@@ -84,7 +84,7 @@
 #include "paging.h"
 
 static const char  version[] =
-"DUMA 2.4.25 "
+"DUMA 2.4.26 "
 #ifdef DUMA_SO_LIBRARY
 "(shared library)\n"
 #else
@@ -394,6 +394,13 @@ static long numAllocs = 0;
  */
 static int duma_init_done = 0;
 
+#ifdef DUMA_EXPLICIT_INIT
+#define IF__DUMA_INIT_DONE  if (duma_init_done)
+#else
+#define IF__DUMA_INIT_DONE
+#endif
+
+
 
 /*
  * include helper functions
@@ -613,14 +620,8 @@ _duma_init(void)
     DUMA_Abort("DUMA_PAGE_SIZE is not correct. Run createconf and save results as duma_config.h");
 
 
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-  if (duma_init_done)
+  IF__DUMA_INIT_DONE
     DUMA_GET_SEMAPHORE();
-#else
-    DUMA_GET_SEMAPHORE();
-#endif
-#endif
 
 #ifndef DUMA_NO_CPP_SUPPORT
   /*
@@ -706,12 +707,8 @@ _duma_init(void)
    */
   unUsedSlots = slotCount - 2;
 
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-  if (duma_init_done)
-#endif
+  IF__DUMA_INIT_DONE
     DUMA_RELEASE_SEMAPHORE();
-#endif
 
 #ifndef DUMA_EXPLICIT_INIT
   duma_init();
@@ -867,12 +864,9 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
    */
   if ( protectAllocList )
   {
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-    if (duma_init_done)
-#endif
+    IF__DUMA_INIT_DONE
       DUMA_GET_SEMAPHORE();
-#endif
+
     Page_AllowAccess(_duma_allocList, _duma_allocListSize);
   }
 
@@ -1092,12 +1086,9 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   if ( protectAllocList )
   {
     Page_DenyAccess(_duma_allocList, _duma_allocListSize);
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-    if (duma_init_done)
-#endif
+
+    IF__DUMA_INIT_DONE
       DUMA_RELEASE_SEMAPHORE();
-#endif
   }
 
   /* Fill the memory if it was specified to do so. */
@@ -1122,12 +1113,9 @@ void   _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocat
 
   if ( protectAllocList )
   {
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-    if (duma_init_done)
-#endif
+    IF__DUMA_INIT_DONE
       DUMA_GET_SEMAPHORE();
-#endif
+
     Page_AllowAccess(_duma_allocList, _duma_allocListSize);
   }
 
@@ -1261,12 +1249,8 @@ void   _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocat
   if ( protectAllocList )
   {
     Page_DenyAccess(_duma_allocList, _duma_allocListSize);
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-    if (duma_init_done)
-#endif
+    IF__DUMA_INIT_DONE
       DUMA_RELEASE_SEMAPHORE();
-#endif
   }
 }
 
@@ -1305,12 +1289,10 @@ void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
 {
   void * ptr;
   if ( _duma_allocList == 0 )  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-  if (duma_init_done)
-#endif
+
+  IF__DUMA_INIT_DONE
     DUMA_GET_SEMAPHORE();
-#endif
+
   Page_AllowAccess(_duma_allocList, _duma_allocListSize);
 
   ptr = _duma_allocate(0, newSize, DUMA_PROTECT_BELOW, -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC, DUMA_FAIL_ENV  DUMA_PARAMS_FL);
@@ -1334,12 +1316,10 @@ void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
   }
 
   Page_DenyAccess(_duma_allocList, _duma_allocListSize);
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-  if (duma_init_done)
-#endif
+
+  IF__DUMA_INIT_DONE
     DUMA_RELEASE_SEMAPHORE();
-#endif
+
   return ptr;
 }
 
@@ -1598,12 +1578,9 @@ void  DUMA_delFrame(void)
     size_t            count     = slotCount;
     int               nonFreed  = 0;
 
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-    if (duma_init_done)
-#endif
+    IF__DUMA_INIT_DONE
       DUMA_GET_SEMAPHORE();
-#endif
+
     Page_AllowAccess(_duma_allocList, _duma_allocListSize);
 
     for ( ; count > 0; --count, ++slot )
@@ -1627,12 +1604,9 @@ void  DUMA_delFrame(void)
       DUMA_Abort("DUMA_delFrame(): Found non free'd pointers.\n");
 
     Page_DenyAccess(_duma_allocList, _duma_allocListSize);
-#ifndef DUMA_NO_THREAD_SAFETY
-#ifdef DUMA_EXPLICIT_INIT
-    if (duma_init_done)
-#endif
+
+    IF__DUMA_INIT_DONE
       DUMA_RELEASE_SEMAPHORE();
-#endif
 
     --frameno;
   }
