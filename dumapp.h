@@ -131,10 +131,15 @@
       #endif
 
       /* TODO following variables should exist per thread ("thread-local") */
-      extern int          DUMA_DeletePtr;
-      extern int          DUMA_Magic[DUMA_MAX_DEL_DEPTH];
-      extern const char * DUMA_DeleteFile[DUMA_MAX_DEL_DEPTH];
-      extern int          DUMA_DeleteLine[DUMA_MAX_DEL_DEPTH];
+      typedef struct
+      {
+        int          Magic;
+        int          DelPtr;
+        const char * DelFile[DUMA_MAX_DEL_DEPTH];
+        int          DelLine[DUMA_MAX_DEL_DEPTH];
+      } DUMA_TLSVARS_T;
+
+      extern DUMA_TLSVARS_T DUMA_TLS;
     #endif
 
     /* define macros as wrapper for our special operators */
@@ -152,46 +157,60 @@
     #endif /* DUMA_OLD_NEW_MACRO */
 
     #ifdef DUMA_OLD_DEL_MACRO
-      /* always use DUMA_DeletePtr/DUMA_DeleteFile/DUMA_DeleteLine
+      /* always use DUMA_TLS.DelPtr/DUMA_DeleteFile/DUMA_DeleteLine
        * to allow best possible filename/line reports when
        * non-DUMA deallocations are called from destructors
        */
       /* non-throwing */
-      #define DEL_ELEM(PTR)                   for( DUMA_Magic[++DUMA_DeletePtr] = 1;  \
-                                                   DUMA_Magic[DUMA_DeletePtr];        \
-                                                   DUMA_Magic[DUMA_DeletePtr--] = 0   \
-                                                 ) operator delete  (PTR, __FILE__, __LINE__)
-      #define DEL_ARRAY(PTR)                  for( DUMA_Magic[++DUMA_DeletePtr] = 1;  \
-                                                   DUMA_Magic[DUMA_DeletePtr];        \
-                                                   DUMA_Magic[DUMA_DeletePtr--] = 0   \
-                                                 ) operator delete[](PTR, __FILE__, __LINE__)
+      #define DEL_ELEM(PTR)           for( ++DUMA_TLS.DelPtr,                  \
+                                           DUMA_TLS.Magic = 1;                 \
+                                           DUMA_TLS.Magic;                     \
+                                           DUMA_TLS.Magic = 0,                 \
+                                           --DUMA_TLS.DelPtr                   \
+                                         ) operator delete  (PTR, __FILE__, __LINE__)
+
+      #define DEL_ARRAY(PTR)          for( ++DUMA_TLS.DelPtr,                  \
+                                           DUMA_TLS.Magic = 1;                 \
+                                           DUMA_TLS.Magic;                     \
+                                           DUMA_TLS.Magic = 0,                 \
+                                           --DUMA_TLS.DelPtr                   \
+                                         ) operator delete[](PTR, __FILE__, __LINE__)
       /* explicitly non-throwing */
-      #define DEL_ELEM_NOTHROW(PTR)           for( DUMA_Magic[++DUMA_DeletePtr] = 1;  \
-                                                   DUMA_Magic[DUMA_DeletePtr];        \
-                                                   DUMA_Magic[DUMA_DeletePtr--] = 0   \
-                                                 ) operator delete  (PTR, std::nothrow,__FILE__, __LINE__)
-      #define DEL_ARRAY_NOTHROW(PTR)          for( DUMA_Magic[++DUMA_DeletePtr] = 1;  \
-                                                   DUMA_Magic[DUMA_DeletePtr];        \
-                                                   DUMA_Magic[DUMA_DeletePtr--] = 0   \
-                                                 ) operator delete[](PTR, std::nothrow,__FILE__, __LINE__)
+      #define DEL_ELEM_NOTHROW(PTR)   for( ++DUMA_TLS.DelPtr,                  \
+                                           DUMA_TLS.Magic = 1;                 \
+                                           DUMA_TLS.Magic;                     \
+                                           DUMA_TLS.Magic = 0,                 \
+                                           --DUMA_TLS.DelPtr                   \
+                                         ) operator delete  (PTR, std::nothrow,__FILE__, __LINE__)
+      #define DEL_ARRAY_NOTHROW(PTR)  for( ++DUMA_TLS.DelPtr,                  \
+                                           DUMA_TLS.Magic = 1;                 \
+                                           DUMA_TLS.Magic;                     \
+                                           DUMA_TLS.Magic = 0,                 \
+                                           --DUMA_TLS.DelPtr                   \
+                                         ) operator delete[](PTR, std::nothrow,__FILE__, __LINE__)
     #else
       #ifndef DUMA_NO_THREAD_SAFETY
         /* define a thread safe delete */
-        #define delete        for( DUMA_GET_SEMAPHORE(),                        \
-                                   DUMA_Magic[++DUMA_DeletePtr] = 1,            \
-                                   DUMA_DeleteFile[DUMA_DeletePtr] = __FILE__,  \
-                                   DUMA_DeleteLine[DUMA_DeletePtr] = __LINE__;  \
-                                   DUMA_Magic[DUMA_DeletePtr];                  \
-                                   DUMA_Magic[DUMA_DeletePtr--] = 0,            \
-                                   DUMA_RELEASE_SEMAPHORE()                     \
-                                                 ) delete
+        #define delete                for( DUMA_GET_SEMAPHORE(),                         \
+                                           ++DUMA_TLS.DelPtr,                            \
+                                           DUMA_TLS.Magic = 1,                           \
+                                           DUMA_TLS.DelFile[DUMA_TLS.DelPtr] = __FILE__, \
+                                           DUMA_TLS.DelLine[DUMA_TLS.DelPtr] = __LINE__; \
+                                           DUMA_TLS.Magic;                               \
+                                           DUMA_TLS.Magic = 0,                           \
+                                           --DUMA_TLS.DelPtr,                            \
+                                           DUMA_RELEASE_SEMAPHORE()                      \
+                                         ) delete
       #else
-        #define delete        for( DUMA_Magic[++DUMA_DeletePtr] = 1,            \
-                                   DUMA_DeleteFile[DUMA_DeletePtr] = __FILE__,  \
-                                   DUMA_DeleteLine[DUMA_DeletePtr] = __LINE__;  \
-                                   DUMA_Magic[DUMA_DeletePtr];                  \
-                                   DUMA_Magic[DUMA_DeletePtr--] = 0             \
-                                 ) delete
+        /* also thread safe by using TLS variables */
+        #define delete                for( ++DUMA_TLS.DelPtr,                            \
+                                           DUMA_TLS.Magic = 1,                           \
+                                           DUMA_TLS.DelFile[DUMA_TLS.DelPtr] = __FILE__, \
+                                           DUMA_TLS.DelLine[DUMA_TLS.DelPtr] = __LINE__; \
+                                           DUMA_TLS.Magic;                               \
+                                           DUMA_TLS.Magic = 0,                           \
+                                           --DUMA_TLS.DelPtr                             \
+                                         ) delete
       #endif /* DUMA_NO_THREAD_SAFETY */
     #endif /* DUMA_OLD_DEL_MACRO */
 

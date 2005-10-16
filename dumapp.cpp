@@ -45,10 +45,7 @@ static const char unknown_cxx_file[] =
  "UNKNOWN (use #include \"dumapp.h\")";
 
 #ifndef DUMA_NO_LEAKDETECTION
-  int          DUMA_DeletePtr = 0;
-  int          DUMA_Magic[DUMA_MAX_DEL_DEPTH];
-  const char * DUMA_DeleteFile[DUMA_MAX_DEL_DEPTH] = { unknown_cxx_file };
-  int          DUMA_DeleteLine[DUMA_MAX_DEL_DEPTH];
+  DUMA_TLSVARS_T DUMA_TLS = { 0, -1, { unknown_cxx_file } };
 #endif
 
 #ifndef DUMA_NO_LEAKDETECTION
@@ -209,7 +206,7 @@ throw()
 {
   if (ptr != _duma_cxx_null_addr)
 #ifndef DUMA_NO_LEAKDETECTION
-    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, DUMA_DeleteFile[DUMA_DeletePtr], DUMA_DeleteLine[DUMA_DeletePtr]);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, DUMA_TLS.DelFile[DUMA_TLS.DelPtr], DUMA_TLS.DelLine[DUMA_TLS.DelPtr]);
 #else
     _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM  DUMA_PARAMS_UK);
 #endif
@@ -222,7 +219,7 @@ throw()
 {
   if (ptr != _duma_cxx_null_addr)
 #ifndef DUMA_NO_LEAKDETECTION
-    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, DUMA_DeleteFile[DUMA_DeletePtr], DUMA_DeleteLine[DUMA_DeletePtr]);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, DUMA_TLS.DelFile[DUMA_TLS.DelPtr], DUMA_TLS.DelLine[DUMA_TLS.DelPtr]);
 #else
     _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM  DUMA_PARAMS_UK);
 #endif
@@ -264,7 +261,7 @@ throw()
 {
   if (ptr != _duma_cxx_null_addr)
 #ifndef DUMA_NO_LEAKDETECTION
-    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, DUMA_DeleteFile[DUMA_DeletePtr], DUMA_DeleteLine[DUMA_DeletePtr]);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, DUMA_TLS.DelFile[DUMA_TLS.DelPtr], DUMA_TLS.DelLine[DUMA_TLS.DelPtr]);
 #else
     _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY  DUMA_PARAMS_UK);
 #endif
@@ -277,7 +274,7 @@ throw()
 {
   if (ptr != _duma_cxx_null_addr)
 #ifndef DUMA_NO_LEAKDETECTION
-    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, DUMA_DeleteFile[DUMA_DeletePtr], DUMA_DeleteLine[DUMA_DeletePtr]);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, DUMA_TLS.DelFile[DUMA_TLS.DelPtr], DUMA_TLS.DelLine[DUMA_TLS.DelPtr]);
 #else
     _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY  DUMA_PARAMS_UK);
 #endif
