@@ -7,6 +7,10 @@ CHANGELOG:
        bugfix/enhancement: avoid recursion from sem_init() in Linux/U*ix
          where sem_init() may call malloc() which again calls semaphore locking
        (2005-10-25, HA)
+       bugfix in delete macro: Magic must be a single variable!
+         reported from Benjamin Berkels <benjamin.berkels@ins.uni-bonn.de>
+       some more TLS preparation
+       (2005-10-28, HA)
 
 2.4.25 bugfix: semaphores were not initialized correctly; this lead to a hang.
          thanks for reporting and providing a test environment
