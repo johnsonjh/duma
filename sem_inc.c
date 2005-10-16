@@ -53,39 +53,42 @@
  */
 
 
-
 #ifndef WIN32
-static sem_t      DUMA_sem = { 0 };
-static pthread_t  semThread = (pthread_t) 0;
+
+  #define DUMA_thread_self()  pthread_self()
+
+  static sem_t      DUMA_sem = { 0 };
+  static pthread_t  semThread = (pthread_t) 0;
 
 #else /* WIN32 */
-static SECURITY_ATTRIBUTES  semSecAttr;
 
-#ifndef UNICODE
-#define SEM_NAME_TYPE char
-#define SEM_STRCPY    strcpy
-#define SEM_STRCAT    strcat
-static char       semObjectName[] = "DUMA_";
-#else
-#define SEM_NAME_TYPE wchar_t
-#define SEM_STRCPY    wcscpy
-#define SEM_STRCAT    wcscat
-static wchar_t    semObjectName[] = L"DUMA_";
+  #define DUMA_thread_self()  GetCurrentThreadId()
+
+  #ifndef UNICODE
+    #define SEM_NAME_TYPE char
+    #define SEM_STRCPY    strcpy
+    #define SEM_STRCAT    strcat
+    static char    semObjectName[] = "DUMA_";
+  #else
+    #define SEM_NAME_TYPE wchar_t
+    #define SEM_STRCPY    wcscpy
+    #define SEM_STRCAT    wcscat
+    static wchar_t semObjectName[] = L"DUMA_";
+  #endif
+
+  static SECURITY_ATTRIBUTES  semSecAttr;
+  static DWORD      semThread = 0;
+  static HANDLE     semHandle = 0;
+
 #endif
 
-static DWORD      semThread = 0;
-static HANDLE     semHandle = 0;
-#endif
 
-static int        semInited = 0;
-static int        semDepth  = 0;
-static int        semInInit = 0;
+static int semInInit = 0;
+static int semInited = 0;
+static int semDepth  = 0;
 
 
 void
-#ifdef DUMA_GNU_INIT_ATTR
-__attribute ((constructor))
-#endif
 DUMA_init_sem(void)
 {
 #ifdef WIN32
@@ -135,12 +138,6 @@ DUMA_init_sem(void)
 
   if (!semInited)     DUMA_Abort("\nCouldn't initialise semaphore");
 }
-
-#ifndef WIN32
-# define DUMA_thread_self() pthread_self()
-#else
-# define DUMA_thread_self() GetCurrentThreadId()
-#endif
 
 
 void DUMA_get_sem(void)
