@@ -2,6 +2,13 @@
 CHANGELOG:
 ==========
 
+2.4.27 published a german article on DUMA on http://duma.sourceforge.net/
+       bugfix: removed buffer overflow in DUMA_sprintf() for long filenames:
+         added parameter maxsize for output buffers in some functions.
+         incremented STRING_BUFFER_SIZE to reduce this risk.
+         this bug was reported by <loigu@volny.cz>
+       (2006-01-09, HA)
+
 2.4.26 new project file for Dev-C++ 4.9.9.2 for createconf from
          Benjamin Berkels <benjamin.berkels@ins.uni-bonn.de>
        bugfix/enhancement: avoid recursion from sem_init() in Linux/U*ix
