@@ -84,13 +84,13 @@
 #include "paging.h"
 
 static const char  version[] =
-"DUMA 2.4.26 "
+"DUMA 2.4.27 "
 #ifdef DUMA_SO_LIBRARY
 "(shared library)\n"
 #else
 "(static library)\n"
 #endif
-"Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
+"Copyright (C) 2002-2006 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n\n";
 
 
