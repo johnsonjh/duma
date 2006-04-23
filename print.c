@@ -70,9 +70,9 @@
 
 /* define prototypes / forward declarations */
 
-static int  sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base);
-static int  sprintLong(char* obuffer, long number, long base);
-static int  DUMA_sprintf(char* buffer, const char *pattern, va_list args);
+static int  snprintNumber(char* obuffer, int maxsize, DUMA_ADDR number, DUMA_ADDR base);
+static int  snprintLong(char* obuffer, int maxsize, long number, long base);
+static int  DUMA_snprintf(char* buffer, int maxsize, const char *pattern, va_list args);
 
 
 /*
@@ -81,15 +81,15 @@ static int  DUMA_sprintf(char* buffer, const char *pattern, va_list args);
  */
 #define  NUMBER_BUFFER_SIZE  (sizeof(DUMA_ADDR) * NBBY)
 
-#define STRING_BUFFER_SIZE  1024
+#define STRING_BUFFER_SIZE  4096
 
 
 /*
  * internal function to print a DUMA_ADDR into a buffer
- * int sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base)
+ * int snprintNumber(char* obuffer, int maxsize, DUMA_ADDR number, DUMA_ADDR base)
  */
 static int
-sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base)
+snprintNumber(char* obuffer, int maxsize, DUMA_ADDR number, DUMA_ADDR base)
 {
   char   buffer[NUMBER_BUFFER_SIZE+1];
   char * s = &buffer[NUMBER_BUFFER_SIZE];
@@ -108,6 +108,13 @@ sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base)
 
   size = &buffer[NUMBER_BUFFER_SIZE] - s;
   buffer[NUMBER_BUFFER_SIZE] = '\0';
+
+  if ( maxsize <= size )
+  {
+    s[maxsize] = '\0';
+    size = maxsize;
+  }
+
   strcpy(obuffer, s);
   return size;
 }
@@ -117,7 +124,7 @@ sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base)
  * internal function to print a int into a buffer
  */
 static int
-sprintLong(char* obuffer, long number, long base)
+snprintLong(char* obuffer, int maxsize, long number, long base)
 {
   char   buffer[NUMBER_BUFFER_SIZE+1];
   char * s = &buffer[NUMBER_BUFFER_SIZE];
@@ -136,6 +143,13 @@ sprintLong(char* obuffer, long number, long base)
 
   size = &buffer[NUMBER_BUFFER_SIZE] - s;
   buffer[NUMBER_BUFFER_SIZE] = '\0';
+
+  if ( maxsize <= size )
+  {
+    s[maxsize] = '\0';
+    size = maxsize;
+  }
+
   strcpy(obuffer, s);
   return size;
 }
@@ -143,7 +157,7 @@ sprintLong(char* obuffer, long number, long base)
 
 /*
  * internal function to print a formatted string into a buffer
- * int sprintf(char* buffer, const char *pattern, va_list args)
+ * int snprintf(char* buffer, int maxsize, const char *pattern, va_list args)
  * allowed format specifier are:
  *
  *   %a = adress of type DUMA_ADDR
@@ -155,7 +169,7 @@ sprintLong(char* obuffer, long number, long base)
  *   %c = char
  */
 static int
-DUMA_sprintf(char* buffer, const char *pattern, va_list args)
+DUMA_snprintf(char* buffer, int maxsize, const char *pattern, va_list args)
 {
   char    c;
   static const char  bad_pattern[] = "\nDUMA: Bad pattern specifier %%%c in DUMA_Print().\n";
@@ -164,7 +178,7 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
   DUMA_ADDR n;
 
   c = *s++;
-  while ( c )
+  while ( c && len < (maxsize -2) )
   {
     if ( c == '%' )
     {
@@ -183,11 +197,11 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
          * bits of a void pointer.
          */
         n = va_arg(args, DUMA_ADDR);
-        len += sprintNumber(&buffer[len], n, 0x10);
+        len += snprintNumber(&buffer[len], maxsize - len, n, 0x10);
         break;
       case 'd':   /* DUMA_SIZE */
         n = va_arg(args, DUMA_SIZE);
-        len += sprintNumber(&buffer[len], n, 10);
+        len += snprintNumber(&buffer[len], maxsize - len, n, 10);
         break;
       case 'i':   /* int */
         {
@@ -197,7 +211,7 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
             buffer[len++] = '-';
             n = -n;
           }
-          len += sprintLong(&buffer[len], n, 10);
+          len += snprintLong(&buffer[len], maxsize - len, n, 10);
         }
         break;
       case 'l':   /* long */
@@ -208,7 +222,7 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
             buffer[len++] = '-';
             n = -n;
           }
-          len += sprintLong(&buffer[len], n, 10);
+          len += snprintLong(&buffer[len], maxsize - len, n, 10);
         }
         break;
       case 's':   /* string */
@@ -220,12 +234,16 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
           if (string)
           {
             length = strlen(string);
-            strcpy(&buffer[len], string);
+            if (length >= maxsize - len)
+              length = maxsize - len -1;
+            strncpy(&buffer[len], string, length);
           }
           else
           {
             length = 4; /* = strlen("NULL") */
-            strcpy(&buffer[len], "NULL");
+            if (length >= maxsize - len)
+              length = maxsize - len -1;
+            strncpy(&buffer[len], "NULL", length);
           }
           len += length;
         }
@@ -238,12 +256,16 @@ DUMA_sprintf(char* buffer, const char *pattern, va_list args)
         DUMA_Print(bad_pattern, c);
       }
     }
-    else
+    else if ( len < maxsize -1 )
       buffer[len++] = c;
-    
+	else
+      break;
+
     c = *s++;
   }
 
+  if ( len >= maxsize )
+    len = maxsize -1;
   buffer[len] = '\0';
   return len;
 }
@@ -265,7 +287,7 @@ DUMA_Abort(const char * pattern, ...)
 
   strcpy(buffer, "\nDUMA Aborting: ");
   lena = strlen(buffer);
-  lenb = DUMA_sprintf(&buffer[lena], pattern, args);
+  lenb = DUMA_snprintf(&buffer[lena], STRING_BUFFER_SIZE - lena -4, pattern, args);
   strcat(buffer, "\n");
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
@@ -303,7 +325,7 @@ DUMA_Print(const char * pattern, ...)
   va_list  args;
   va_start(args, pattern);
 
-  len = DUMA_sprintf(buffer, pattern, args);
+  len = DUMA_snprintf(buffer, STRING_BUFFER_SIZE, pattern, args);
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
 #endif
@@ -328,7 +350,7 @@ DUMA_Exit(const char * pattern, ...)
 
   strcpy(buffer, "\nDUMA Exiting: ");
   lena = strlen(buffer);
-  lenb = DUMA_sprintf(&buffer[lena], pattern, args);
+  lenb = DUMA_snprintf(&buffer[lena], STRING_BUFFER_SIZE - lena -4, pattern, args);
   strcat(buffer, "\n");
 #ifdef _MSC_VER
   _RPT0(_CRT_WARN, buffer);
