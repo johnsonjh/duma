@@ -2,6 +2,8 @@
 CHANGELOG:
 ==========
 
+2.4.27 this version is now reachable via cvs on sourceforge.net
+
 2.4.27 published a german article on DUMA on http://duma.sourceforge.net/
        bugfix: removed buffer overflow in DUMA_sprintf() for long filenames:
          added parameter maxsize for output buffers in some functions.
