@@ -208,6 +208,13 @@ endif
 
 
 #
+# define rules how to build objects for createconf
+#
+createconf.o:	duma.c duma.h duma_config.h
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c duma.c -o $@
+
+
+#
 # define rules how to build objects for shared library
 #
 
