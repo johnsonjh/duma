@@ -7,6 +7,12 @@ CHANGELOG:
        (2006-06-17, HA)
        bugfix in new[] operators occured on alpha-linux1 on sf compile farm
        (2006-06-18, HA)
+       bugfix in Makefile: DUMA_OPTIONS was not used
+         when compiling createconf.o
+       bugfix: compile error when DUMA_NO_LEAKDETECTION was set
+         in testoperators.cpp
+       fix: obey EXPLICIT_INIT in testoperators.cpp
+       (2006-06-18, HA)
 
 2.4.27 this version is now reachable via cvs on sourceforge.net
 
