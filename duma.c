@@ -84,7 +84,7 @@
 #include "paging.h"
 
 static const char  version[] =
-"DUMA 2.4.27 "
+"DUMA 2.4.28 "
 #ifdef DUMA_SO_LIBRARY
 "(shared library)\n"
 #else
@@ -123,8 +123,8 @@ enum _DUMA_SlotState
   , DUMAST_IN_USE           /* memory in use by allocator; see following enum AllocType */
   , DUMAST_ALL_PROTECTED    /* memory no more used by allocator; memory is not deallocated but protected */
   , DUMAST_BEGIN_PROTECTED  /* most memory deallocated, but not page covering userAddress:
-                           * slot holds userAddress, userSize and allocator.
-                           */
+                             * slot holds userAddress, userSize and allocator.
+                             */
 };
 
 enum _DUMA_Slot_FileSource
@@ -132,6 +132,16 @@ enum _DUMA_Slot_FileSource
     DUMAFS_EMPTY            /* no filename, lineno */
   , DUMAFS_ALLOCATION       /* filename, lineno from allocation */
   , DUMAFS_DEALLOCATION     /* filename, lineno from deallocation */
+};
+
+
+enum _DUMA_InitState
+{
+    DUMAIS_UNINITIALIZED = 0x1611  /* not initialized */
+  , DUMAIS_IN_CONSTRUCTOR   /* in constructor _duma_init() */
+  , DUMAIS_OUT_CONSTRUCTOR  /* construction _duma_init() finished */
+  , DUMAIS_IN_INIT          /* in initializer duma_init() */
+  , DUMAIS_OUT_INIT         /* initialization duma_init() finished */
 };
 
 /*
@@ -390,12 +400,13 @@ static long numDeallocs = 0;
 static long numAllocs = 0;
 
 /*
- * internal variable: is DUMA_init() already done
+ * internal variable: state of initialization
  */
-static int duma_init_done = 0;
+static enum _DUMA_InitState duma_init_state = DUMAIS_UNINITIALIZED;
+
 
 #ifdef DUMA_EXPLICIT_INIT
-#define IF__DUMA_INIT_DONE  if (duma_init_done)
+#define IF__DUMA_INIT_DONE  if (DUMAIS_OUT_INIT == duma_init_state)
 #else
 #define IF__DUMA_INIT_DONE
 #endif
@@ -441,9 +452,11 @@ void duma_init(void)
   char            * string;
   void            * testAlloc;
 
-  /* avoid double call */
-  if (duma_init_done)
+  /* avoid double call, when initialization already in progress */
+  if ( duma_init_state >= DUMAIS_IN_INIT && duma_init_state <= DUMAIS_OUT_INIT )
     return;
+  else
+    duma_init_state = DUMAIS_IN_INIT;
 
   if ( (string = getenv("DUMA_DISABLE_BANNER")) != 0 )
     DUMA_DISABLE_BANNER = (atoi(string) != 0);
@@ -599,7 +612,8 @@ void duma_init(void)
     DUMA_Abort("free() is not bound to duma.\nDUMA Aborting: Preload lib with 'LD_PRELOAD=libduma.so <prog>'.\n");
 #endif
 
-  duma_init_done = 1;
+  /* initialization finished */
+  duma_init_state = DUMAIS_OUT_INIT;
 }
 
 
@@ -615,13 +629,24 @@ _duma_init(void)
 {
   size_t            size = MEMORY_CREATION_SIZE;
   struct _DUMA_Slot * slot;
+  int               inRecursion = (duma_init_state >= DUMAIS_IN_CONSTRUCTOR && duma_init_state <= DUMAIS_OUT_INIT);
+
+  /* constuction already done? this should not happen! */
+  if (duma_init_state >= DUMAIS_OUT_CONSTRUCTOR && duma_init_state <= DUMAIS_OUT_INIT)
+    goto duma_constructor_callinit;
+  else
+    duma_init_state = DUMAIS_IN_CONSTRUCTOR;
 
   if ( DUMA_PAGE_SIZE != Page_Size() )
     DUMA_Abort("DUMA_PAGE_SIZE is not correct. Run createconf and save results as duma_config.h");
 
-
-  IF__DUMA_INIT_DONE
+  if ( !inRecursion )
     DUMA_GET_SEMAPHORE();
+
+  /* call of DUMA_GET_SEMAPHORE() may already have done the construction recursively! */
+  if ( duma_init_state >= DUMAIS_OUT_CONSTRUCTOR )
+    goto duma_constructor_relsem;
+
 
 #ifndef DUMA_NO_CPP_SUPPORT
   /*
@@ -707,11 +732,24 @@ _duma_init(void)
    */
   unUsedSlots = slotCount - 2;
 
-  IF__DUMA_INIT_DONE
+  /* construction done */
+  if ( duma_init_state < DUMAIS_OUT_CONSTRUCTOR )
+    duma_init_state = DUMAIS_OUT_CONSTRUCTOR;
+
+
+duma_constructor_relsem:
+/***********************/
+
+  if ( !inRecursion )
     DUMA_RELEASE_SEMAPHORE();
 
+
+duma_constructor_callinit:
+/*************************/
+
 #ifndef DUMA_EXPLICIT_INIT
-  duma_init();
+  if ( duma_init_state < DUMAIS_OUT_INIT )
+    duma_init();
 #endif
 }
 
@@ -1064,10 +1102,10 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     fullSlot->filename    = (char*)filename;
   #ifdef DUMA_EXPLICIT_INIT
     /* mark allocations from standard libraries
-     * before duma_init() is called with lineno = -1
+     * before duma_init() is finished with lineno = -1
      * to allow special treatment in leak_checking
      */
-    fullSlot->lineno      = (duma_init_done) ? lineno : -1;
+    fullSlot->lineno      = (DUMAIS_OUT_INIT == duma_init_state) ? lineno : -1;
   #else
     fullSlot->lineno      = lineno;
   #endif
