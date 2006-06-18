@@ -637,7 +637,7 @@ _duma_init(void)
 #ifndef DUMA_EXPLICIT_INIT
     goto duma_constructor_callinit;
 #else
-    return
+    return;
 #endif
   }
   else
