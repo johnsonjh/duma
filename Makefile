@@ -210,8 +210,8 @@ endif
 #
 # define rules how to build objects for createconf
 #
-createconf.o:	duma.c duma.h duma_config.h
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c duma.c -o $@
+createconf.o:
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c createconf.c -o $@
 
 
 #
