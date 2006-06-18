@@ -5,6 +5,8 @@ CHANGELOG:
 2.4.28 fix/enhancement: reworked initialization for RequestID 1458083 on SF
          checks for recursive calls in _duma_init() and duma_init()
        (2006-06-17, HA)
+       bugfix in new[] operators occured on alpha-linux1 on sf compile farm
+       (2006-06-18, HA)
 
 2.4.27 this version is now reachable via cvs on sourceforge.net
 
