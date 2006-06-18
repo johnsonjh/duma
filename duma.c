@@ -633,7 +633,13 @@ _duma_init(void)
 
   /* constuction already done? this should not happen! */
   if (duma_init_state >= DUMAIS_OUT_CONSTRUCTOR && duma_init_state <= DUMAIS_OUT_INIT)
+  {
+#ifndef DUMA_EXPLICIT_INIT
     goto duma_constructor_callinit;
+#else
+    return
+#endif
+  }
   else
     duma_init_state = DUMAIS_IN_CONSTRUCTOR;
 
@@ -744,10 +750,9 @@ duma_constructor_relsem:
     DUMA_RELEASE_SEMAPHORE();
 
 
+#ifndef DUMA_EXPLICIT_INIT
 duma_constructor_callinit:
 /*************************/
-
-#ifndef DUMA_EXPLICIT_INIT
   if ( duma_init_state < DUMAIS_OUT_INIT )
     duma_init();
 #endif
