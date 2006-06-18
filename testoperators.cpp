@@ -101,13 +101,13 @@ throw()
 void * optest::operator new[]( DUMA_SIZE_T s )
 throw(std::bad_alloc)
 {
-  return ::new optest[ s / sizeof(optest) ];    // "s / sizeof()" not correct but works for this test
+  return ::new char[s];     // char should be of size 1
 }
 
 void * optest::operator new[]( DUMA_SIZE_T s, const std::nothrow_t & n )
 throw()
 {
-  return ::new(n) optest[ s / sizeof(optest) ]; // "s / sizeof()" not correct but works for this test
+  return ::new(n) char[s];  // char should be of size 1
 }
 
 void   optest::operator delete[]( void * p )
@@ -155,13 +155,13 @@ throw()
 void * optest::operator new[]( DUMA_SIZE_T s, const char * f, int l )
 throw( std::bad_alloc )
 {
-  return ::new(f,l) optest[s / sizeof(optest)];     // "s / sizeof()" not correct but works for this test
+  return ::new(f,l) char[s];      // char should be of size 1
 }
 
 void * optest::operator new[]( DUMA_SIZE_T s, const std::nothrow_t & n, const char * f, int l )
 throw()
 {
-  return ::new(n, f,l) optest[s / sizeof(optest)];  // "s / sizeof()" not correct but works for this test
+  return ::new(n, f,l) char[s];   // char should be of size 1
 }
 
 void   optest::operator delete[]( void * p, const char * f, int l )
