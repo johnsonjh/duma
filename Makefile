@@ -109,7 +109,7 @@ INSTALL=install
 prefix=/usr
 BIN_INSTALL_DIR= $(prefix)/bin
 LIB_INSTALL_DIR= $(prefix)/lib
-MAN_INSTALL_DIR= $(prefix)/man/man3
+MAN_INSTALL_DIR= $(prefix)/share/man/man3
 
 
 

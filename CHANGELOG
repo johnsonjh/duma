@@ -13,6 +13,10 @@ CHANGELOG:
          in testoperators.cpp
        fix: obey EXPLICIT_INIT in testoperators.cpp
        (2006-06-18, HA)
+       fix: as in RequestID 1482267 on SF:
+         updated install directory for manual. $prefix/share/man/man3 should fit
+         the Filesystem Hierarchy Standard 2.3 for /usr and /usr/local
+       (2006-06-18, HA)
 
 2.4.27 this version is now reachable via cvs on sourceforge.net
 
