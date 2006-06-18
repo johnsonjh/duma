@@ -243,6 +243,10 @@ void rich_test()
 
 int main( int argc, char *argv[] )
 {
+#ifdef DUMA_EXPLICIT_INIT
+  duma_init();
+#endif
+
   pure_test();
   rich_test();
   return 0;
