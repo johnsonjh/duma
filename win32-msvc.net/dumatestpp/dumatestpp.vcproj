@@ -32,6 +32,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE:MULTIPLE"
+				AdditionalDependencies="C:\Projects\duma_2_4_26\stacktrace\lib\stacktraced.lib"
 				OutputFile="$(OutDir)/dumatestpp.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"

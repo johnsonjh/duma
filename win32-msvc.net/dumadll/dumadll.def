@@ -1,0 +1,15 @@
+LIBRARY	dumadll
+
+EXPORTS
+  duma_malloc
+  duma_calloc
+  duma_free
+  duma_memalign
+  duma_realloc
+  duma_valloc
+  duma_strdup
+  duma_memcpy
+  duma_strcpy
+  duma_strncpy
+  duma_strcat
+  duma_strncat

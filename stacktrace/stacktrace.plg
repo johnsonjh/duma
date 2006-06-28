@@ -1,0 +1,35 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: stacktrace - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\MEDDIN~1\LOCALS~1\Temp\RSP95.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GX /ZI /Od /I "internal" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"build/Debug/stacktrace.pch" /YX /Fo"build/Debug/" /Fd"build/Debug/" /FD /GZ /c 
+"C:\Projects\duma_2_4_26\stacktrace20010829\printStackTrace.cpp"
+"C:\Projects\duma_2_4_26\stacktrace20010829\internal\MapFile.cpp"
+"C:\Projects\duma_2_4_26\stacktrace20010829\internal\MapFileEntry.cpp"
+"C:\Projects\duma_2_4_26\stacktrace20010829\internal\StackTrace.cpp"
+"C:\Projects\duma_2_4_26\stacktrace20010829\internal\TextFile.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\MEDDIN~1\LOCALS~1\Temp\RSP95.tmp" 
+Creating command line "link.exe -lib /nologo /out:"lib\stacktraced.lib"  .\build\Debug\printStackTrace.obj .\build\Debug\MapFile.obj .\build\Debug\MapFileEntry.obj .\build\Debug\StackTrace.obj .\build\Debug\TextFile.obj "
+<h3>Output Window</h3>
+Compiling...
+printStackTrace.cpp
+MapFile.cpp
+MapFileEntry.cpp
+StackTrace.cpp
+TextFile.cpp
+Creating library...
+
+
+
+<h3>Results</h3>
+stacktraced.lib - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

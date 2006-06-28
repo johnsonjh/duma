@@ -32,10 +32,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE:MULTIPLE"
+				AdditionalDependencies="C:\Projects\duma_2_4_26\stacktrace\lib\stacktraced.lib"
 				OutputFile="$(OutDir)/tstheap.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/tstheap.pdb"
+				GenerateMapFile="TRUE"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -77,9 +79,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="C:\Projects\duma_2_4_26\stacktrace\lib\stacktraced.lib"
 				OutputFile="$(OutDir)/tstheap.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
+				GenerateMapFile="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

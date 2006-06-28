@@ -191,6 +191,32 @@ DUMA_DISABLE_BANNER
 When set to 1 display of usual startup message on console is suppressed.
 Default is 0.
 
+DUMA_OUTPUT_DEBUG
+-----------------
+Used to control if DUMA output is printed to the win32 debugging console.  
+Output is not by default sent to the debugging console, set to 1 to enable.
+
+DUMA_OUTPUT_STDOUT
+------------------
+Used to control if DUMA output is printed to STDOUT.
+Output is not by default sent to STDOUT, set to 1 to enable.
+
+DUMA_OUTPUT_STDERR
+------------------
+Used to control if DUMA output is printed to STDERR.
+Output is by default sent to STDERR, set to 0 to disable.
+
+DUMA_OUTPUT_FILE
+----------------
+Used to control if DUMA output is printed to a specified file.  
+Set this to the file output should goto.
+
+DUMA_OUTPUT_STACKTRACE
+----------------------
+Used to control if DUMA outputs a stacktrace of the allocation that 
+is not free'd. 
+Option is disabled by default, set to 1 to enable.
+
 
 WORD-ALIGNMENT AND OVERRUN DETECTION
 ====================================

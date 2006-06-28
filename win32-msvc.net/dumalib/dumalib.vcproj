@@ -118,7 +118,13 @@
 				RelativePath="..\..\duma.h">
 			</File>
 			<File
+				RelativePath="..\..\duma_config.h">
+			</File>
+			<File
 				RelativePath="..\..\duma_hlp.h">
+			</File>
+			<File
+				RelativePath="..\..\dumaint.h">
 			</File>
 			<File
 				RelativePath="..\..\dumapp.h">
