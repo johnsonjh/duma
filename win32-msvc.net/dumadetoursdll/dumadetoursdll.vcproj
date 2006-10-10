@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="dumadetoursdll"
 	ProjectGUID="{37A06F53-EBA8-410C-A0BC-DC0A505EA205}"
+	RootNamespace="dumadetoursdll"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -19,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Projects\detours\include;C:\Projects\duma_2_4_26"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\detours\include&quot;;&quot;$(SolutionDir)..&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DUMADETOURSDLL_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -32,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="C:\Projects\detours\lib\detours.lib C:\Projects\duma_2_4_26\win32-msvc.net\dumalib\Debug\dumalib.lib C:\Projects\duma_2_4_26\stacktrace\lib\stacktraced.lib"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)dumalib\Debug\dumalib.lib $(SolutionDir)..\stacktrace\lib\stacktraced.lib"
 				OutputFile="$(OutDir)/dumadetoursdll.dll"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libcmtd.lib;libcd.lib"

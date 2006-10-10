@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Projects\detours\include"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\detours\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -32,7 +32,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="C:\Projects\detours\lib\detours.lib"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib"
 				OutputFile="$(OutDir)/dumadetours.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"

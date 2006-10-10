@@ -1269,7 +1269,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 		_duma_init_slack( fullSlot );
 
 #ifdef WIN32
-		if(!_DUMA_IN_DUMA && duma_init_done && DUMA_OUTPUT_STACKTRACE)
+		if(!_DUMA_IN_DUMA && duma_init_state && DUMA_OUTPUT_STACKTRACE)
 		{
 			_DUMA_IN_DUMA = 1;
 
