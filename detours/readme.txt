@@ -1,0 +1,8 @@
+
+Due to ELA restrictions we cannot distribute Detours source with DUMA.
+To build DUMA with detours support download Detours Express v2.1 and
+install to this folder, then build.  You should end up with \bin, \lib,
+and \include folders here.
+
+http://research.microsoft.com/sn/detours/
+
