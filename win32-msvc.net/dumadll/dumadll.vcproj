@@ -20,7 +20,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\Projects\duma_2_4_26"
+				AdditionalIncludeDirectories="$(SolutionDir).."
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DUMADLL_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -72,7 +72,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="C:\Projects\duma_2_4_26"
+				AdditionalIncludeDirectories="$(SolutionDir).."
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DUMADLL_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="3"
@@ -83,9 +83,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="C:\Projects\detours\lib\detours.lib C:\Projects\duma_2_4_26\win32-msvc.net\dumalib\Debug\dumalib.lib C:\Projects\duma_2_4_26\stacktrace\lib\stacktraced.lib"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)dumalib\release\dumalib.lib $(SolutionDir)..\stacktrace\lib\stacktraced.lib"
 				OutputFile="$(OutDir)/dumadll.dll"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="libcmt.lib;libc.lib"
 				ModuleDefinitionFile="dumadll.def"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
