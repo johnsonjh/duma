@@ -82,7 +82,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)\dumalib\Release\dumalib.lib $(SolutionDir)..\stacktrace\lib\stacktraced.lib"
+				AdditionalOptions="/export:My_HeapAlloc"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)\dumalib\Release\dumalib.lib $(SolutionDir)..\stacktrace\lib\stacktraced.lib $(ProjectDir)\syelog.lib"
 				OutputFile="$(OutDir)/dumadetoursdll.dll"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libcmt.lib;libc.lib"
