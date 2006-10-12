@@ -37,7 +37,7 @@
 				OutputFile="$(OutDir)/dumadll.dll"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="libcmtd.lib;libcd.lib"
-				ModuleDefinitionFile="dumadll.def"
+				ModuleDefinitionFile="$(SolutionDir)..\dumadll\dumadll.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/dumadll.pdb"
 				SubSystem="2"
@@ -87,7 +87,7 @@
 				OutputFile="$(OutDir)/dumadll.dll"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libcmt.lib;libc.lib"
-				ModuleDefinitionFile="dumadll.def"
+				ModuleDefinitionFile="$(SolutionDir)..\dumadll\dumadll.def"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -138,7 +138,7 @@
 				OutputFile="$(OutDir)/dumadll.dll"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libcmt.lib;libc.lib"
-				ModuleDefinitionFile="dumadll.def"
+				ModuleDefinitionFile="$(SolutionDir)..\dumadll\dumadll.def"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -175,13 +175,13 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\dumadll.cpp">
+				RelativePath="..\..\dumadll\dumadll.cpp">
 			</File>
 			<File
-				RelativePath=".\dumadll.def">
+				RelativePath="$(SolutionDir)..\dumadll\dumadll.def">
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp">
+				RelativePath="..\..\dumadll\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -207,10 +207,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath=".\resource.h">
+				RelativePath="..\..\dumadll\resource.h">
 			</File>
 			<File
-				RelativePath=".\stdafx.h">
+				RelativePath="..\..\dumadll\stdafx.h">
 			</File>
 		</Filter>
 		<Filter
@@ -218,9 +218,6 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

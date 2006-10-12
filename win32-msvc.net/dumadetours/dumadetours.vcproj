@@ -116,7 +116,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="C:\Projects\detours\include"
+				AdditionalIncludeDirectories="$(SolutionDir)..\detours\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="3"
@@ -127,7 +127,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="C:\Projects\detours\lib\detours.lib"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib"
 				OutputFile="$(OutDir)/dumadetours.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -165,10 +165,10 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath=".\dumadetours.cpp">
+				RelativePath="..\..\dumadetours\dumadetours.cpp">
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp">
+				RelativePath="..\..\dumadetours\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
@@ -194,7 +194,7 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath=".\stdafx.h">
+				RelativePath="..\..\dumadetours\stdafx.h">
 			</File>
 		</Filter>
 		<Filter
@@ -202,9 +202,6 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

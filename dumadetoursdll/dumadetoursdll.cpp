@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <windows.h>
 #include "detours.h"
-#include "syelog.h"
 
 #include "duma.h"
 
@@ -22,10 +21,7 @@ DETOUR_TRAMPOLINE(HANDLE WINAPI Real_HeapCreate(DWORD flOptions, SIZE_T dwInitia
 
 HANDLE WINAPI My_HeapCreate( DWORD flOptions, SIZE_T dwInitialSize, SIZE_T dwMaximumSize )
 {
-	Syelog(SYELOG_SEVERITY_INFORMATION, "My_HeadCreate");
-	// Duma will handle this
-    //HANDLE pvRet = Real_HeapCreate(flOptions, dwInitialSize, dwMaximumSize);
-    //return pvRet;
+	OutputDebugString("DumaDetours_HeadCreate");
 	return (HANDLE)1;
 }
 
@@ -34,10 +30,7 @@ DETOUR_TRAMPOLINE(BOOL WINAPI Real_HeapDestroy(HANDLE hHeap),
 
 BOOL WINAPI My_HeapDestroy(HANDLE hHeap)
 {
-	Syelog(SYELOG_SEVERITY_INFORMATION, "My_HeapDestroy");
-	// Duma will do this magic
-    //BOOL pvRet = Real_HeapDestroy(hHeap);
-    //return pvRet;
+	OutputDebugString("DumaDetours_HeapDestroy");
 	return TRUE;
 }
 
@@ -46,8 +39,10 @@ DETOUR_TRAMPOLINE(BOOL WINAPI Real_HeapFree(HANDLE hHeap, DWORD dwFlags, LPVOID 
 
 BOOL WINAPI My_HeapFree(HANDLE hHeap, DWORD dwFlags, LPVOID lpMem)
 {
-	Syelog(SYELOG_SEVERITY_INFORMATION, "My_HeapFree %x, %x", hHeap, lpMem);
-    //BOOL pvRet = Real_HeapFree(hHeap, dwFlags, lpMem);
+	char msg[100];
+	_snprintf(msg, 99, "DumaDetours_HeapFree %x, %x", hHeap, lpMem);
+	OutputDebugString(msg);
+
 	_duma_free(lpMem, __FILE__, __LINE__);
     return TRUE;
 }
@@ -57,8 +52,7 @@ DETOUR_TRAMPOLINE(LPVOID WINAPI Real_HeapAlloc(HANDLE Heap, DWORD Flags, DWORD B
 
 LPVOID WINAPI My_HeapAlloc(HANDLE hHeap, DWORD dwFlags, DWORD dwBytes)
 {
-	Syelog(SYELOG_SEVERITY_INFORMATION, "My_HeapAlloc");
-    //return = Real_HeapAlloc(hHeap, dwFlags, dwBytes);
+	OutputDebugString("DumaDetours_HeapAlloc");
     return _duma_malloc(dwBytes, __FILE__, __LINE__);
 }
 
@@ -67,8 +61,7 @@ DETOUR_TRAMPOLINE(LPVOID WINAPI Real_HeapReAlloc(HANDLE hHeap, DWORD dwFlags, LP
 
 LPVOID WINAPI My_HeapReAlloc(HANDLE hHeap, DWORD dwFlags, LPVOID lpMem, SIZE_T dwBytes)
 {
-	Syelog(SYELOG_SEVERITY_INFORMATION, "My_HeapReAlloc");
-    //LPVOID pvRet = Real_HeapReAlloc(hHeap, dwFlags, lpMem, dwBytes);
+	OutputDebugString("DumaDetours_HeapReAlloc");
     return _duma_realloc(lpMem, dwBytes, __FILE__, __LINE__);
 }
 
@@ -82,10 +75,9 @@ BOOL WINAPI DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
         PBYTE pbRealTrampoline;
         PBYTE pbRealTarget;
 
-		SyelogOpen("duma", SYELOG_FACILITY_APPLICATION);
+		OutputDebugString("DumaDetours: Installing!");
+		
 		duma_init();
-
-		Syelog(SYELOG_SEVERITY_INFORMATION, "Installing!");
 
         bOk = DetourFunctionWithTrampolineEx((PBYTE)Real_HeapCreate, (PBYTE)My_HeapCreate,
                                              &pbRealTrampoline, &pbRealTarget);
@@ -102,15 +94,13 @@ BOOL WINAPI DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
     }
     else if (dwReason == DLL_PROCESS_DETACH)
 	{
-		Syelog(SYELOG_SEVERITY_INFORMATION, "DLL_PROCESS_DETACH");
+		OutputDebugString("DumaDetours: DLL_PROCESS_DETACH");
         bInternal = TRUE;
         DetourRemove((PBYTE)Real_HeapCreate, (PBYTE)My_HeapCreate);
         DetourRemove((PBYTE)Real_HeapDestroy, (PBYTE)My_HeapDestroy);
         DetourRemove((PBYTE)Real_HeapFree, (PBYTE)My_HeapFree);
         DetourRemove((PBYTE)Real_HeapAlloc, (PBYTE)My_HeapAlloc);
         DetourRemove((PBYTE)Real_HeapReAlloc, (PBYTE)My_HeapReAlloc);
-		_duma_exit();
-		SyelogClose();
     }
 
     return TRUE;
