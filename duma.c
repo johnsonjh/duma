@@ -84,6 +84,10 @@
 #include "sem_inc.h"
 #include "paging.h"
 
+#ifdef WIN32
+DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilename);
+#endif
+
 static int _DUMA_IN_DUMA = 0;
 
 static const char  version[] =
@@ -245,6 +249,8 @@ static int    frameno = 0;
  * DUMA_OUTPUT_DEBUG is a global variable used to control if DUMA
  * output is printed to the win32 debugging console.  Default is 0,
  * meaning that output is not by default sent to the debugging console.
+ *
+ * OS: WIN32 Only
  */
 int DUMA_OUTPUT_DEBUG = 0;
 
@@ -278,8 +284,21 @@ char* DUMA_OUTPUT_FILE = NULL;
  * DUMA_OUTPUT_STACKTRACE is a global variable used to control if DUMA
  * outputs a stacktrace of the allocation that is not free'd. Default is 0,
  * meaning that this option is disabled.
+ *
+ * OS: WIN32 Only
  */
 int DUMA_OUTPUT_STACKTRACE = 0;
+
+/* Variable: DUMA_OUTPUT_STACKTRACE_MAPFILE
+ *
+ * DUMA_OUTPUT_STACKTRACE_MAPFILE is a global variable used to control 
+ * what mapfile is used for stack traces.  This is needed when using
+ * detours and duma.  Default is NULL, indicating the system will try
+ * and guess.
+ *
+ * OS: WIN32 Only
+ */
+char* DUMA_OUTPUT_STACKTRACE_MAPFILE = NULL;
 
 /* Variable: DUMA_DISABLE_BANNER
  *
@@ -514,12 +533,14 @@ void _duma_assert(const char * exprstr, const char * filename, int lineno)
 {
   int *pcAddr = 0;
   DUMA_Print("\nDUMA: DUMA_ASSERT(%s) failed at\n%s(%i)\n", exprstr, filename, lineno );
+
   /* this is "really" bad, but it works. assert() from assert.h system header
    * stops only the current thread but the program goes on running under MS Visual C++.
    * This way the program definitely halts.
    */
   while (1)
     *pcAddr++ = 0;
+
 }
 
 
@@ -545,12 +566,13 @@ void duma_init(void)
   if ( duma_init_state >= DUMAIS_IN_INIT && duma_init_state <= DUMAIS_OUT_INIT )
     return;
   else
-    duma_init_state = DUMAIS_IN_INIT;
+  {
+#if DUMA_DETOURS
+	  _duma_init();
+#endif
 
-  if ( (string = getenv("DUMA_DISABLE_BANNER")) != 0 )
-    DUMA_DISABLE_BANNER = (atoi(string) != 0);
-  if ( !DUMA_DISABLE_BANNER )
-    DUMA_Print(version);
+	  duma_init_state = DUMAIS_IN_INIT;
+  }
 
   /*
    * Import the user's environment specification of the default
@@ -653,6 +675,22 @@ void duma_init(void)
   if ( (string = getenv("DUMA_SUPPRESS_ATEXIT")) != 0 )
     DUMA_SUPPRESS_ATEXIT = (atoi(string) != 0);
 
+	/*
+	 * DUMA_OUTPUT_STACKTRACE is a global variable used to control if DUMA
+	 * outputs a stacktrace of the allocation that is not free'd. Default is 0,
+	 * meaning that this option is disabled.
+	 */
+	if ( (string = getenv("DUMA_OUTPUT_STACKTRACE")) != 0 )
+		DUMA_OUTPUT_STACKTRACE = (atoi(string) != 0);
+
+	/*
+	 * DUMA_OUTPUT_STACKTRACE is a global variable used to control if DUMA
+	 * outputs a stacktrace of the allocation that is not free'd. Default is 0,
+	 * meaning that this option is disabled.
+	 */
+	if ( (string = getenv("DUMA_OUTPUT_STACKTRACE_MAPFILE")) != 0 )
+		DUMA_OUTPUT_STACKTRACE_MAPFILE = strdup(string);
+
 	/* 
 	 * DUMA_OUTPUT_DEBUG is a global variable used to control if DUMA
 	 * output is printed to the win32 debugging console.  Default is 0,
@@ -684,6 +722,13 @@ void duma_init(void)
 	 */
 	if ( (string = getenv("DUMA_OUTPUT_FILE")) != 0 )
 		DUMA_OUTPUT_FILE = strdup(string);
+
+	// Should we send banner?
+	if ( (string = getenv("DUMA_DISABLE_BANNER")) != 0 )
+		DUMA_DISABLE_BANNER = (atoi(string) != 0);
+	if ( !DUMA_DISABLE_BANNER )
+		DUMA_Print(version);
+
 
 #if ( !defined(DUMA_NO_LEAKDETECTION) && ( defined(DUMA_PREFER_ATEXIT) || !defined(DUMA_GNU_INIT_ATTR) ) )
   /*
@@ -754,7 +799,7 @@ _duma_init(void)
 	size_t size = MEMORY_CREATION_SIZE;
 	struct _DUMA_Slot * slot;
 	int               inRecursion = (duma_init_state >= DUMAIS_IN_CONSTRUCTOR && duma_init_state <= DUMAIS_OUT_INIT);
-	
+
 	/* constuction already done? this should not happen! */
 	if (duma_init_state >= DUMAIS_OUT_CONSTRUCTOR && duma_init_state <= DUMAIS_OUT_INIT)
 	{
@@ -925,10 +970,6 @@ static void allocateMoreSlots(void)
 	#endif
 }
 
-#ifdef WIN32
-DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize);
-#endif
-
 /* Function: _duma_allocate
  * 
  * This is the memory allocator. When asked to allocate a buffer, allocate
@@ -960,7 +1001,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 	struct _DUMA_Slot * emptySlots[2];
 	DUMA_ADDR           intAddr, userAddr, protAddr, endAddr;
 	size_t              internalSize;
-	char				  stacktrace[5000];
+	char				stacktrace[5000];
 	char* tmp;
 
 	DUMA_ASSERT( 0 != _duma_allocList );
@@ -1275,9 +1316,9 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 
 			/* Get stacktrace */
 			if(fullSlot->stacktrace)
-			LocalFree(fullSlot->stacktrace);
+				LocalFree(fullSlot->stacktrace);
 
-			printStackTrace(stacktrace, 5000);
+			printStackTrace(stacktrace, 5000, DUMA_OUTPUT_STACKTRACE_MAPFILE);
 			internalSize = strlen(stacktrace) * sizeof(char) + 1;
 			tmp = (char*) LocalAlloc(NULL, internalSize);
 			fullSlot->stacktrace = tmp;
@@ -1324,7 +1365,15 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 	long                internalSizekB;
 
 	if ( 0 == _duma_allocList )
+	{
+#ifdef DUMA_DETOURS
+		// Odd things happen with detours sometimes...
+		DUMA_Print("DUMA_Warning: free() called before first malloc().");
+		return;
+#else
 		DUMA_Abort("free() called before first malloc().");
+#endif
+	}
 
 	if ( 0 == address )
 		return;
@@ -1354,7 +1403,15 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 					(DUMA_ADDR)address, (DUMA_ADDR)slot->userAddress);
 		}
 		else
+		{
+#if DUMA_DETOURS
+			// For Detours we need to not dump out, we get one extra free up front for some reason.
+			DUMA_Print("DUMA_Warning: free(%a): address not from DUMA or already freed.", (DUMA_ADDR)address);
+			return;
+#else
 			DUMA_Abort("free(%a): address not from DUMA or already freed.", (DUMA_ADDR)address);
+#endif
+		}
 	}
 
 	if ( DUMAST_ALL_PROTECTED == slot->state || DUMAST_BEGIN_PROTECTED == slot->state )

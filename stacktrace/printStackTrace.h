@@ -8,7 +8,7 @@
  * Uses stack frame to find out the caller function address and 
  * the map file to find out the function name.
  */
-extern "C" void printStackTrace( char* buffer, int bufferSize );
+extern "C" void printStackTrace( char* buffer, int bufferSize, char* mapFilename );
 
 
 #endif // _PRINTSTACKTRACE_H

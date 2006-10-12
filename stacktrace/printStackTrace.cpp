@@ -14,11 +14,14 @@ using namespace dev;
  * Prints stack trace to user defined buffer.
  * Always terminates the buffer with 0.
  */
-extern "C" void printStackTrace( char* buffer, int bufferSize )
+extern "C" void printStackTrace( char* buffer, int bufferSize, char* mapFilename )
 {
 	// find out map file name
 	char modname[500];
-	MapFile::getModuleMapFilename( modname, sizeof(modname) );
+	if(mapFilename == NULL)
+		MapFile::getModuleMapFilename( modname, sizeof(modname) );
+	else
+		strncpy(modname, mapFilename, sizeof(modname)/sizeof(char));
 
 	// parse map file
 	char buf[600];

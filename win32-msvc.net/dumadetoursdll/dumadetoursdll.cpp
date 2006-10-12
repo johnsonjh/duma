@@ -74,15 +74,6 @@ LPVOID WINAPI My_HeapReAlloc(HANDLE hHeap, DWORD dwFlags, LPVOID lpMem, SIZE_T d
 
 ///////////////////////////////////////////////////////////////////////////
 
-int myonexit(void);
-
-int myonexit(void)
-{
-	Syelog(SYELOG_SEVERITY_INFORMATION, "myonexit");
-	_duma_exit();
-	return TRUE;
-}
-
 BOOL WINAPI DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
 {
     if (dwReason == DLL_PROCESS_ATTACH)
@@ -93,8 +84,6 @@ BOOL WINAPI DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
 
 		SyelogOpen("duma", SYELOG_FACILITY_APPLICATION);
 		duma_init();
-
-		_onexit(myonexit);
 
 		Syelog(SYELOG_SEVERITY_INFORMATION, "Installing!");
 
