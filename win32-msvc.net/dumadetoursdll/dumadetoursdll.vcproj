@@ -134,10 +134,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:My_HeapAlloc"
-				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)\dumalib\Detours\dumalib.lib $(SolutionDir)..\stacktrace\lib\stacktraced.lib"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)\dumalib\Detours\dumalib.lib $(SolutionDir)stacktrace\Detours\stacktrace.lib"
 				OutputFile="$(OutDir)/dumadetoursdll.dll"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="libcmt.lib;libc.lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"

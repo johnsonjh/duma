@@ -5,13 +5,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "createconf", "createconf\cr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumalib", "dumalib\dumalib.vcproj", "{31A93E3A-962A-4769-812A-45A3803B6127}"
 	ProjectSection(ProjectDependencies) = postProject
-		{560B30E2-49FE-40EE-8287-3651371EEBB3} = {560B30E2-49FE-40EE-8287-3651371EEBB3}
+		{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB} = {56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumatest", "dumatest\dumatest.vcproj", "{CDD36623-87AF-4CDE-861E-31A9AB1B1D63}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31A93E3A-962A-4769-812A-45A3803B6127} = {31A93E3A-962A-4769-812A-45A3803B6127}
-		{560B30E2-49FE-40EE-8287-3651371EEBB3} = {560B30E2-49FE-40EE-8287-3651371EEBB3}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumatestpp", "dumatestpp\dumatestpp.vcproj", "{C67F03DD-E18F-44D9-8250-78BD411C5F01}"
@@ -22,10 +21,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tstheap", "tstheap\tstheap.vcproj", "{5404C919-56FD-41A9-BB75-DB96201E08A1}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31A93E3A-962A-4769-812A-45A3803B6127} = {31A93E3A-962A-4769-812A-45A3803B6127}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stacktrace", "..\stacktrace\stacktrace.vcproj", "{560B30E2-49FE-40EE-8287-3651371EEBB3}"
-	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumadetours", "dumadetours\dumadetours.vcproj", "{E6C785A7-4412-485F-AFA0-B4FC69976E05}"
@@ -40,6 +35,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumadll", "dumadll\dumadll.vcproj", "{B46EFEB6-2148-4FCA-9CEC-40CC261D1840}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31A93E3A-962A-4769-812A-45A3803B6127} = {31A93E3A-962A-4769-812A-45A3803B6127}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stacktrace", "stacktrace\stacktrace.vcproj", "{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}"
+	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
 Global
@@ -64,27 +63,18 @@ Global
 		{CDD36623-87AF-4CDE-861E-31A9AB1B1D63}.Debug.ActiveCfg = Debug|Win32
 		{CDD36623-87AF-4CDE-861E-31A9AB1B1D63}.Debug.Build.0 = Debug|Win32
 		{CDD36623-87AF-4CDE-861E-31A9AB1B1D63}.Detours.ActiveCfg = Detours|Win32
-		{CDD36623-87AF-4CDE-861E-31A9AB1B1D63}.Detours.Build.0 = Detours|Win32
 		{CDD36623-87AF-4CDE-861E-31A9AB1B1D63}.Release.ActiveCfg = Release|Win32
 		{CDD36623-87AF-4CDE-861E-31A9AB1B1D63}.Release.Build.0 = Release|Win32
 		{C67F03DD-E18F-44D9-8250-78BD411C5F01}.Debug.ActiveCfg = Debug|Win32
 		{C67F03DD-E18F-44D9-8250-78BD411C5F01}.Debug.Build.0 = Debug|Win32
 		{C67F03DD-E18F-44D9-8250-78BD411C5F01}.Detours.ActiveCfg = Detours|Win32
-		{C67F03DD-E18F-44D9-8250-78BD411C5F01}.Detours.Build.0 = Detours|Win32
 		{C67F03DD-E18F-44D9-8250-78BD411C5F01}.Release.ActiveCfg = Release|Win32
 		{C67F03DD-E18F-44D9-8250-78BD411C5F01}.Release.Build.0 = Release|Win32
 		{5404C919-56FD-41A9-BB75-DB96201E08A1}.Debug.ActiveCfg = Debug|Win32
 		{5404C919-56FD-41A9-BB75-DB96201E08A1}.Debug.Build.0 = Debug|Win32
 		{5404C919-56FD-41A9-BB75-DB96201E08A1}.Detours.ActiveCfg = Detours|Win32
-		{5404C919-56FD-41A9-BB75-DB96201E08A1}.Detours.Build.0 = Detours|Win32
 		{5404C919-56FD-41A9-BB75-DB96201E08A1}.Release.ActiveCfg = Release|Win32
 		{5404C919-56FD-41A9-BB75-DB96201E08A1}.Release.Build.0 = Release|Win32
-		{560B30E2-49FE-40EE-8287-3651371EEBB3}.Debug.ActiveCfg = Debug|Win32
-		{560B30E2-49FE-40EE-8287-3651371EEBB3}.Debug.Build.0 = Debug|Win32
-		{560B30E2-49FE-40EE-8287-3651371EEBB3}.Detours.ActiveCfg = Detours|Win32
-		{560B30E2-49FE-40EE-8287-3651371EEBB3}.Detours.Build.0 = Detours|Win32
-		{560B30E2-49FE-40EE-8287-3651371EEBB3}.Release.ActiveCfg = Release|Win32
-		{560B30E2-49FE-40EE-8287-3651371EEBB3}.Release.Build.0 = Release|Win32
 		{E6C785A7-4412-485F-AFA0-B4FC69976E05}.Debug.ActiveCfg = Debug|Win32
 		{E6C785A7-4412-485F-AFA0-B4FC69976E05}.Detours.ActiveCfg = Detours|Win32
 		{E6C785A7-4412-485F-AFA0-B4FC69976E05}.Detours.Build.0 = Detours|Win32
@@ -96,9 +86,14 @@ Global
 		{B46EFEB6-2148-4FCA-9CEC-40CC261D1840}.Debug.ActiveCfg = Debug|Win32
 		{B46EFEB6-2148-4FCA-9CEC-40CC261D1840}.Debug.Build.0 = Debug|Win32
 		{B46EFEB6-2148-4FCA-9CEC-40CC261D1840}.Detours.ActiveCfg = Detours|Win32
-		{B46EFEB6-2148-4FCA-9CEC-40CC261D1840}.Detours.Build.0 = Detours|Win32
 		{B46EFEB6-2148-4FCA-9CEC-40CC261D1840}.Release.ActiveCfg = Release|Win32
 		{B46EFEB6-2148-4FCA-9CEC-40CC261D1840}.Release.Build.0 = Release|Win32
+		{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}.Debug.ActiveCfg = Debug|Win32
+		{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}.Debug.Build.0 = Debug|Win32
+		{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}.Detours.ActiveCfg = Detours|Win32
+		{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}.Detours.Build.0 = Detours|Win32
+		{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}.Release.ActiveCfg = Release|Win32
+		{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

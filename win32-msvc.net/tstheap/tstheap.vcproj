@@ -32,7 +32,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE:MULTIPLE"
-				AdditionalDependencies="$(SolutionDir)..\stacktrace\lib\stacktraced.lib"
+				AdditionalDependencies="$(SolutionDir)stacktrace\Debug\stacktrace.lib"
 				OutputFile="$(OutDir)/tstheap.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
@@ -79,10 +79,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(SolutionDir)..\stacktrace\lib\stacktraced.lib"
+				AdditionalDependencies="$(SolutionDir)stacktrace\Release\stacktrace.lib"
 				OutputFile="$(OutDir)/tstheap.exe"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="libc.lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				GenerateMapFile="TRUE"
 				SubSystem="1"

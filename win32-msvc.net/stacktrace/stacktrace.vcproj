@@ -3,45 +3,36 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="stacktrace"
-	ProjectGUID="{FD3309F5-F66B-41B2-942C-F252849A88A8}"
-	SccProjectName=""
-	SccLocalPath="">
+	ProjectGUID="{56ABCE73-B688-4BC4-8D94-8ED6EC9083FB}"
+	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\build/Release"
-			IntermediateDirectory=".\build/Release"
+			Name="Debug|Win32"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug"
 			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="internal"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\build/Release/stacktrace.pch"
-				AssemblerListingLocation=".\build/Release/"
-				ObjectFile=".\build/Release/"
-				ProgramDataBaseFileName=".\build/Release/"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..;..\..\stacktrace;..\..\stacktrace\internal"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="5"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				CompileAs="0"/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="lib\stacktrace.lib"
-				SuppressStartupBanner="TRUE"/>
+				OutputFile="$(OutDir)/stacktrace.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -51,9 +42,7 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1035"/>
+				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -64,35 +53,25 @@
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory=".\build/Debug"
-			IntermediateDirectory=".\build/Debug"
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
 			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="internal"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\build/Debug/stacktrace.pch"
-				AssemblerListingLocation=".\build/Debug/"
-				ObjectFile=".\build/Debug/"
-				ProgramDataBaseFileName=".\build/Debug/"
+				AdditionalIncludeDirectories="..\..;..\..\stacktrace;..\..\stacktrace\internal"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				RuntimeLibrary="4"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"
-				CompileAs="0"/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="lib\stacktraced.lib"
-				SuppressStartupBanner="TRUE"/>
+				OutputFile="$(OutDir)/stacktrace.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -102,9 +81,46 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1035"/>
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Detours|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="4"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..;..\..\stacktrace;..\..\stacktrace\internal"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				RuntimeLibrary="4"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/stacktrace.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -120,137 +136,52 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="printStackTrace.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"/>
-				</FileConfiguration>
+				RelativePath="..\..\stacktrace\internal\MapFile.cpp">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\internal\MapFileEntry.cpp">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\printStackTrace.cpp">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\internal\StackTrace.cpp">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\internal\TextFile.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl">
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="printStackTrace.h">
+				RelativePath="..\..\stacktrace\internal\Array.h">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\internal\MapFile.h">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\internal\MapFileEntry.h">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\printStackTrace.h">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\internal\StackTrace.h">
+			</File>
+			<File
+				RelativePath="..\..\stacktrace\internal\TextFile.h">
 			</File>
 		</Filter>
 		<Filter
-			Name="internal"
-			Filter="">
-			<File
-				RelativePath="internal\Array.h">
-			</File>
-			<File
-				RelativePath="internal\MapFile.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="internal\MapFile.h">
-			</File>
-			<File
-				RelativePath="internal\MapFileEntry.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="internal\MapFileEntry.h">
-			</File>
-			<File
-				RelativePath="internal\StackTrace.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="internal\StackTrace.h">
-			</File>
-			<File
-				RelativePath="internal\TextFile.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="internal\TextFile.h">
-			</File>
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
-		<File
-			RelativePath="stacktrace.html">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

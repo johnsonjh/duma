@@ -79,7 +79,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/dumatest.exe"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="libc.lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
