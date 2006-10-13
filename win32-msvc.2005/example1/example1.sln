@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example1", "example1.vcproj", "{7767D2B3-B7AE-4DE7-B6AD-F8BBA268E956}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31A93E3A-962A-4769-812A-45A3803B6127} = {31A93E3A-962A-4769-812A-45A3803B6127}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumalib", "..\dumalib\dumalib.vcproj", "{31A93E3A-962A-4769-812A-45A3803B6127}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{7767D2B3-B7AE-4DE7-B6AD-F8BBA268E956}.Debug.ActiveCfg = Debug|Win32
+		{7767D2B3-B7AE-4DE7-B6AD-F8BBA268E956}.Debug.Build.0 = Debug|Win32
+		{7767D2B3-B7AE-4DE7-B6AD-F8BBA268E956}.Release.ActiveCfg = Release|Win32
+		{7767D2B3-B7AE-4DE7-B6AD-F8BBA268E956}.Release.Build.0 = Release|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Debug.ActiveCfg = Debug|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Debug.Build.0 = Debug|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Release.ActiveCfg = Release|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
