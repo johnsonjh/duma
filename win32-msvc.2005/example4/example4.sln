@@ -1,30 +1,33 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "example4", "example4.vcproj", "{406A19CF-D684-4989-BE5F-21F9E05FE412}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31A93E3A-962A-4769-812A-45A3803B6127} = {31A93E3A-962A-4769-812A-45A3803B6127}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dumalib", "..\dumalib\dumalib.vcproj", "{31A93E3A-962A-4769-812A-45A3803B6127}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Detours|Win32 = Detours|Win32
+		Release|Win32 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Debug.ActiveCfg = Debug|Win32
-		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Debug.Build.0 = Debug|Win32
-		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Release.ActiveCfg = Release|Win32
-		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Release.Build.0 = Release|Win32
-		{31A93E3A-962A-4769-812A-45A3803B6127}.Debug.ActiveCfg = Debug|Win32
-		{31A93E3A-962A-4769-812A-45A3803B6127}.Debug.Build.0 = Debug|Win32
-		{31A93E3A-962A-4769-812A-45A3803B6127}.Release.ActiveCfg = Release|Win32
-		{31A93E3A-962A-4769-812A-45A3803B6127}.Release.Build.0 = Release|Win32
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Debug|Win32.ActiveCfg = Debug|Win32
+		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Debug|Win32.Build.0 = Debug|Win32
+		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Detours|Win32.ActiveCfg = Debug|Win32
+		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Detours|Win32.Build.0 = Debug|Win32
+		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Release|Win32.ActiveCfg = Release|Win32
+		{406A19CF-D684-4989-BE5F-21F9E05FE412}.Release|Win32.Build.0 = Release|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Debug|Win32.ActiveCfg = Debug|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Debug|Win32.Build.0 = Debug|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Detours|Win32.ActiveCfg = Detours|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Detours|Win32.Build.0 = Detours|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Release|Win32.ActiveCfg = Release|Win32
+		{31A93E3A-962A-4769-812A-45A3803B6127}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

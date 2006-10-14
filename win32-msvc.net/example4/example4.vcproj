@@ -33,10 +33,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE:MULTIPLE"
+				AdditionalDependencies="$(SolutionDir)..\stacktrace\debug\stacktrace.lib"
 				OutputFile="$(OutDir)/example4.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/example4.pdb"
+				GenerateMapFile="TRUE"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -78,9 +80,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(SolutionDir)..\stacktrace\release\stacktrace.lib"
 				OutputFile="$(OutDir)/example4.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
+				GenerateMapFile="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

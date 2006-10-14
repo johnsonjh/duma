@@ -7,8 +7,6 @@
 #ifndef _DUMA_CONFIG_H_
 #define _DUMA_CONFIG_H_
 
-#define DUMA_DLL_LIBRARY 1
-
 /*
  * Configuration of DUMA:
  */

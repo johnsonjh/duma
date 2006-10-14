@@ -21,7 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(SolutionDir).."
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DUMADLL_EXPORTS"
+				PreprocessorDefinitions="DUMA_DLL_LIBRARY"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -73,7 +73,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(SolutionDir).."
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DUMADLL_EXPORTS"
+				PreprocessorDefinitions="DUMA_DLL_LIBRARY"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
@@ -124,7 +124,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(SolutionDir).."
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;DUMADLL_EXPORTS"
+				PreprocessorDefinitions="DUMA_DLL_LIBRARY"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="3"
 				WarningLevel="3"
