@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2006 Michael Eddington
+ * Copyright (c) 2001 Jani Kajala
+ *
+ * Permission to use, copy, modify, distribute and sell this
+ * software and its documentation for any purpose is hereby
+ * granted without fee, provided that the above copyright notice
+ * appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation.
+ * Jani Kajala makes no representations about the suitability 
+ * of this software for any purpose. It is provided "as is" 
+ * without express or implied warranty.
+ */
+
+// $Id$
+
 #include "MapFile.h"
 #include "MapFileEntry.h"
 #include "TextFile.h"
@@ -9,22 +25,21 @@
 #include <windows.h>
 #endif
 
-#include "duma.h"
-
-
 //-----------------------------------------------------------------------------
 
 namespace dev
 {
 
-
+// Lots of changes from origional to fix bugs
+// improve spead, and clean things up.
+// We are only parsing function entries now, but
+// should add support for line numbers.
 class MapFile::MapFileImpl
 {
 public:
 	long				loadAddr;
 	char				name[256];
-	Array<MapFileEntry> segments;
-	Array<MapFileEntry> entries;
+	Array<MapFileEntry*> entries;
 
 	MapFileImpl( const char* filename ) :
 		loadAddr(0), m_file( filename ), m_err( MapFile::ERROR_NONE )
@@ -34,17 +49,12 @@ public:
 		char buf[1024];
 		while ( m_file.readString(buf,sizeof(buf)) )
 		{
-			if ( !strcmp("Preferred",buf) )
-				parseLoadAddress();
-			else if ( !strcmp("Start",buf) )
-				parseSegments();
-			else if ( !strcmp("Address",buf) )
+			if ( !strcmp("Address",buf) )
 				parseEntries();
 			else
 				m_file.skipLine();
 		}
 
-		std::sort( segments.begin(), segments.end() );
 		std::sort( entries.begin(), entries.end() );
 	}
 
@@ -134,40 +144,19 @@ private:
 
 	/**
 	 * Example:
-	 * (Start)       Length     Name                   Class
-	 * 0001:00000000 00002c05H .text                   CODE
-	 */
-	void parseSegments()
-	{
-		parse( "Length" );
-		parse( "Name" );
-		parse( "Class" );
-		m_file.skipWhitespace();
-		
-		while ( !error() )
-		{
-			int seg = m_file.readHex();
-			parse( ':' );
-			int offs = m_file.readHex();
-			int len = m_file.readHex();
-			parse( 'H' );
-			char buf[256];
-			m_file.readString( buf, sizeof(buf) );
-			segments.add( MapFileEntry(seg,offs,len,buf) );
-
-			// break at empty line
-			if ( nextLineEmpty() )
-				break;
-		}
-	}
-
-	/**
-	 * Example:
 	 * (Address)       Publics by Value           Rva+Base     Lib:Object
 	 * 0001:000001a0   ?stackTrace@@YAXXZ         004011a0 f   main.obj
 	 */
 	void parseEntries()
 	{
+		unsigned int seg;
+		unsigned int offs;
+		unsigned int rvabase;
+		char	buf[256];
+		char*	entryname;
+		char	lib[256];
+		char*	str;
+
 		parse( "Publics" ); parse( "by" ); parse( "Value" );
 		parse( "Rva+Base" );
 		parse( "Lib:Object" );
@@ -175,26 +164,31 @@ private:
 		
 		while ( !error() )
 		{
-			int seg = m_file.readHex();
+			seg = m_file.readHex();
 			parse( ':' );
-			int offs = m_file.readHex();
-			char buf[256];
+			offs = m_file.readHex();
 			m_file.readString( buf, sizeof(buf) );
-			char* entryname = buf;
+			entryname = buf;
+			rvabase = m_file.readHex();
+			m_file.readString( lib, sizeof(lib) );
+			if(!strcmp(lib, "f"))
+				m_file.readString( lib, sizeof(lib) );
 
 			// chop entry name at @@
-			char* end = strstr( entryname, "@@" );
-			if ( end )
-				*end = 0;
+			str = strstr( entryname, "@@" );
+			if ( str )
+				*str = 0;
+
 			// skip preceding ?01..
 			while ( isdigit(*entryname) || *entryname == '?' || *entryname == '$' )
 				++entryname;
+
 			// conv @ -> .
-			for ( char* str = entryname ; *str ; ++str )
+			for ( str = entryname ; *str ; ++str )
 				if ( *str == '@' )
 					*str = '.';
 
-			entries.add( MapFileEntry(seg,offs,0,entryname) );
+			entries.add( new MapFileEntry(seg,offs,0,entryname, rvabase, lib) );
 
 			// break at empty line
 			if ( nextLineEmpty() )
@@ -220,19 +214,9 @@ long MapFile::loadAddress() const
 	return m_this->loadAddr;
 }
 
-const MapFileEntry&	MapFile::getSegment( int i ) const
-{
-	return m_this->segments[i];
-}
-
-const MapFileEntry&	MapFile::getEntry( int i ) const
+MapFileEntry*	MapFile::getEntry( int i ) const
 {
 	return m_this->entries[i];
-}
-
-int MapFile::segments() const
-{
-	return m_this->segments.size();
 }
 
 int MapFile::entries() const
@@ -252,27 +236,26 @@ int MapFile::line() const
 
 int MapFile::findEntry( long addr ) const
 {
-	for ( int j = 0 ; j < segments() ; ++j )
-	{
-		const MapFileEntry& segment = getSegment( j );
-		long section = segment.section();
-		long segmentBegin = loadAddress() + (segment.section() << 12) + segment.offset();
-		long segmentEnd = segmentBegin + segment.length();
+	// Changed this to use the rvabase instead
+	// of calculating things based on segment.
 
-		if ( addr >= segmentBegin && addr < segmentEnd )
-		{
-			for ( int i = entries()-1 ; i >= 0  ; --i )
-			{
-				const MapFileEntry entry = getEntry( i );
-				if ( entry.section() == section )
-				{
-					long entryAddr = loadAddress() + (entry.section() << 12) + entry.offset();
-					if ( entryAddr <= addr )
-						return i;
-				}
-			}
-		}
+	// Addresses of zero are bogus
+	if(addr == 0)
+		return -1;
+
+	// Check and see if our addr is way larger then
+	// the highest rva+base address we have.
+	if(addr > (getEntry(entries()-1)->rvabase() + 10000))
+		return -1;
+	
+	// Entries are sorted, so searching from last
+	// to first will work well
+	for ( int i = entries()-1 ; i >= 0  ; --i )
+	{
+		if(getEntry( i )->rvabase() <= addr)
+			return i;
 	}
+
 	return -1;
 }
 
@@ -304,15 +287,3 @@ void MapFile::getModuleMapFilename( char* buffer, int bufferSize )
 
 
 } // dev
-/*
- * Copyright (c) 2001 Jani Kajala
- *
- * Permission to use, copy, modify, distribute and sell this
- * software and its documentation for any purpose is hereby
- * granted without fee, provided that the above copyright notice
- * appear in all copies and that both that copyright notice and
- * this permission notice appear in supporting documentation.
- * Jani Kajala makes no representations about the suitability 
- * of this software for any purpose. It is provided "as is" 
- * without express or implied warranty.
- */

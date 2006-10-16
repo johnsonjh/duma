@@ -120,9 +120,9 @@
   DUMA_EXTERN_C void _duma_init(void);
   DUMA_EXTERN_C void _duma_assert(const char * exprstr, const char * filename, int lineno);
 
-  #ifdef DUMA_EXPLICIT_INIT
-    DUMA_EXTERN_C void   duma_init(void);
-  #endif
+#ifdef DUMA_EXPLICIT_INIT
+DUMA_EXTERN_C void   duma_init(void);
+#endif
 
   #ifndef DUMA_NO_LEAKDETECTION
     DUMA_EXTERN_C void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _DUMA_Allocator allocator, enum _DUMA_FailReturn fail, const char * filename, int lineno);
@@ -178,7 +178,7 @@
   #define DUMA_newFrame()             do { } while(0)
   #define DUMA_delFrame()             do { } while(0)
 #endif /* DUMA_NO_LEAKDETECTION */
-#endif
+#endif // DUMA_SKIP_SETUP
 
 #ifndef DUMA_ASSERT
   #define DUMA_ASSERT(EXPR)    (  (EXPR) || ( _duma_assert(#EXPR, __FILE__, __LINE__), 0 )  )

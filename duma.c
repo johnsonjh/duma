@@ -2,7 +2,7 @@
 /* 
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
- * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2006 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
@@ -52,6 +52,7 @@
  */
 
 #ifndef DUMA_NO_DUMA
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory.h>
@@ -94,6 +95,8 @@ static const char  version[] =
 "DUMA 2.4.28 EDDINGTON"
 #ifdef DUMA_SO_LIBRARY
 "(shared library)\n"
+#elif DUMA_DLL_LIBRARY
+"(DLL library)\n"
 #else
 "(static library)\n"
 #endif
@@ -115,7 +118,6 @@ static const char unknown_file[] =
 #define DUMA_PARAMS_FL
 #define DUMA_PARAMS_UK
 #endif
-
 
 /* Variable: MEMORY_CREATION_SIZE
  *
@@ -239,6 +241,12 @@ _duma_allocDesc[] =
   , { "member vector new[]"   , DUMAAT_MEMBER_NEW_ARRAY }
   , { "member vector delete[]", DUMAAT_MEMBER_NEW_ARRAY }
 };
+
+#ifdef DUMA_EXPLICIT_INIT
+#define IF__DUMA_INIT_DONE if (DUMAIS_OUT_INIT == duma_init_state)
+#else
+#define IF__DUMA_INIT_DONE
+#endif
 
 #ifndef DUMA_NO_LEAKDETECTION
 static int    frameno = 0;
@@ -500,12 +508,6 @@ static long numAllocs = 0;
  * internal variable: state of initialization
  */
 static enum _DUMA_InitState duma_init_state = DUMAIS_UNINITIALIZED;
-
-#ifdef DUMA_EXPLICIT_INIT
-#define IF__DUMA_INIT_DONE  if (DUMAIS_OUT_INIT == duma_init_state)
-#else
-#define IF__DUMA_INIT_DONE
-#endif
 
 
 /*
@@ -1001,10 +1003,31 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 	struct _DUMA_Slot * emptySlots[2];
 	DUMA_ADDR           intAddr, userAddr, protAddr, endAddr;
 	size_t              internalSize;
-	char				stacktrace[5000];
-	char* tmp;
+	char				stacktrace[601];
+	char*				ptrStacktrace;
 
 	DUMA_ASSERT( 0 != _duma_allocList );
+
+#ifdef WIN32
+	// When getting the stack trace memory will be allocated
+	// via DUMA.  In situations were additional slots must
+	// be allocated we must do this prior to getting a pointer
+	// to the new empty slot.  For this reason please leave
+	// this code at the top of this function.
+	if(!_DUMA_IN_DUMA && duma_init_state && DUMA_OUTPUT_STACKTRACE)
+	{
+		_DUMA_IN_DUMA = 1;
+
+		printStackTrace(stacktrace, sizeof(stacktrace), DUMA_OUTPUT_STACKTRACE_MAPFILE);
+		internalSize = strlen(stacktrace) * sizeof(char) + 1;
+		ptrStacktrace = (char*) LocalAlloc(NULL, internalSize);
+		strcpy(ptrStacktrace, stacktrace);
+		memset(stacktrace, 0, 600);
+
+		_DUMA_IN_DUMA = 0;
+	}
+#endif
+
 
 	/* initialize return value */
 	userAddr = 0;
@@ -1318,11 +1341,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 			if(fullSlot->stacktrace)
 				LocalFree(fullSlot->stacktrace);
 
-			printStackTrace(stacktrace, 5000, DUMA_OUTPUT_STACKTRACE_MAPFILE);
-			internalSize = strlen(stacktrace) * sizeof(char) + 1;
-			tmp = (char*) LocalAlloc(NULL, internalSize);
-			fullSlot->stacktrace = tmp;
-			strcpy(fullSlot->stacktrace, stacktrace);
+			fullSlot->stacktrace = ptrStacktrace;
 
 			_DUMA_IN_DUMA = 0;
 		}

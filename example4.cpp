@@ -2,7 +2,6 @@
 #include <new>
 #include <duma.h>
 #include <dumapp.h>
-#define malloc(SIZE)                _duma_malloc(SIZE, __FILE__, __LINE__)
 
 void main()
 {

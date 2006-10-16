@@ -70,8 +70,10 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(SolutionDir)../.."
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="4"
+				BufferSecurityCheck="FALSE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -82,7 +84,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(SolutionDir)..\stacktrace\release\stacktrace.lib"
 				OutputFile="$(OutDir)/example4.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				GenerateMapFile="TRUE"
 				SubSystem="1"

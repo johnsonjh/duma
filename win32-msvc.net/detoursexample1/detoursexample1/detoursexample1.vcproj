@@ -35,6 +35,8 @@
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/detoursexample1.pdb"
+				GenerateMapFile="TRUE"
+				MapFileName="detoursexample1.map"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -63,6 +65,7 @@
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
+			UseOfMFC="0"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
@@ -80,6 +83,7 @@
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				GenerateMapFile="TRUE"
+				MapFileName="detoursexample1.map"
 				MapExports="TRUE"
 				MapLines="TRUE"
 				SubSystem="1"

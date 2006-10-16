@@ -6,23 +6,27 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	fprintf(stderr, "detoursexample1 starting\n");
+	fprintf(stderr, "!!!!detoursexample1 starting!!!\n");
+	printf("!!!!detoursexample1 starting!!!\n");
+	fflush(stdout);
+	OutputDebugString("!!!! ITS ME !!!!");
 	for(int i=0; i<100; i++)
 	{
 		fprintf(stderr, ".");
 		char* tmp = (char*) malloc(100);
-		free(tmp);
+		//tmp[110] = 'a';
+		//free(tmp);
 	}
 
-	HANDLE h = HeapCreate(NULL, 1024, 2024);
+/*	HANDLE h = HeapCreate(NULL, 1024, 2024);
 	for(int i=0; i<100; i++)
 	{
 		fprintf(stderr, "+");
 		char* tmp = (char*) HeapAlloc(h, 0, 100);
-		//HeapFree(h, 0, tmp);
+		HeapFree(h, 0, tmp);
 	}
 	HeapDestroy(h);
-
+*/
 	fprintf(stderr, "detoursexample1 done\n");
 
 	return 0;

@@ -269,9 +269,6 @@ DUMA_Abort(const char * pattern, ...)
   lena = strlen(buffer);
   lenb = DUMA_sprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
-#ifdef _MSC_VER
-  _RPT0(_CRT_WARN, buffer);
-#endif
   DUMA_Print("%s", buffer);
   va_end(args);
 
@@ -308,9 +305,6 @@ DUMA_Print(const char * pattern, ...)
   va_start(args, pattern);
 
   len = DUMA_sprintf(buffer, pattern, args);
-#ifdef _MSC_VER
-  _RPT0(_CRT_WARN, buffer);
-#endif
 
 #ifdef WIN32
 	if(DUMA_OUTPUT_DEBUG)
@@ -358,9 +352,6 @@ DUMA_Exit(const char * pattern, ...)
   lena = strlen(buffer);
   lenb = DUMA_sprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
-#ifdef _MSC_VER
-  _RPT0(_CRT_WARN, buffer);
-#endif
   DUMA_Print("%s", buffer);
   va_end(args);
 
