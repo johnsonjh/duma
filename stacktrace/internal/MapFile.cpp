@@ -60,6 +60,8 @@ public:
 
 	~MapFileImpl()
 	{
+		for(int i = entries.size(); i; i--)
+			delete entries[i];
 	}
 
 	ErrorType error() const

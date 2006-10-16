@@ -97,6 +97,8 @@ static const char  version[] =
 "(shared library)\n"
 #elif DUMA_DLL_LIBRARY
 "(DLL library)\n"
+#elif DUMA_DETOURS
+"(detours)\n"
 #else
 "(static library)\n"
 #endif
@@ -2001,25 +2003,25 @@ void  DUMA_delFrame(void)
 			)
 			{
 
+#ifdef DUMA_DLL_LIBRARY
+			DUMA_Print("\nDUMA: ptr=0x%a size=%d not freed\n",
+#elif DUMA_SO_LIBRARY
+			DUMA_Print("\nDUMA: ptr=0x%a size=%d not freed\n",
+#elif DUMA_DETOURS
+			DUMA_Print("\nDUMA: ptr=0x%a size=%d not freed\n",
+#else
+			DUMA_Print("\nDUMA: ptr=0x%a size=%d alloced from %s(%i) not freed\n",
+#endif
+				(DUMA_ADDR)slot->userAddress,
+				(DUMA_SIZE)slot->userSize,
+				slot->filename,
+				slot->lineno);
+
 #ifdef WIN32
 				if(DUMA_OUTPUT_STACKTRACE)
 				{
-					DUMA_Print("\nDUMA: ptr=0x%a size=%d alloced from %s(%i) not freed\nStacktrace of allocation:\n%s\n",
-						(DUMA_ADDR)slot->userAddress,
-						(DUMA_SIZE)slot->userSize,
-						slot->filename,
-						slot->lineno,
+					DUMA_Print("Stacktrace of allocation:\n%s\n",
 						slot->stacktrace);
-				}
-				else
-				{
-#endif
-					DUMA_Print("\nDUMA: ptr=0x%a size=%d alloced from %s(%i) not freed\n",
-						(DUMA_ADDR)slot->userAddress,
-						(DUMA_SIZE)slot->userSize,
-						slot->filename,
-						slot->lineno);
-#ifdef WIN32
 				}
 #endif
 				++nonFreed;
@@ -2054,6 +2056,7 @@ __attribute ((destructor))
 #endif
 _duma_exit(void)
 {
+	StackTraceCleanup();
 	/* DUMA_ASSERT(0); */
 	while (-1 != frameno)
 		DUMA_delFrame();

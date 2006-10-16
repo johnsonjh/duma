@@ -31,6 +31,14 @@ using namespace dev;
 // after we create it.
 static MapFile*	map = NULL;
 
+
+// Clean up any used memory
+extern "C" void StackTraceCleanup()
+{
+	delete map;
+	map = NULL;
+}
+
 /**
  * Prints stack trace to user defined buffer.
  * Always terminates the buffer with 0.

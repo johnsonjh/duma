@@ -20,12 +20,33 @@
 
 //-----------------------------------------------------------------------------
 
+static const char* internalFunctions[] = {
+	"__duma_malloc",
+	"__duma_calloc",
+	"__duma_realloc",
+	"__duma_valloc",
+	"__duma_allocate",
+	"_printStackTrace",
+	0
+	};
+
 #define MAX_DEPTH 32
 
 //-----------------------------------------------------------------------------
 
 namespace dev
 {
+
+static int IsInternalFunction(const char* func)
+{
+	for(int i=0; internalFunctions[i]; i++)
+	{
+		if(!strcmp(func, internalFunctions[i]))
+			return 1;
+	}
+
+	return 0;
+}
 
 
 /*
@@ -132,6 +153,9 @@ int StackTrace::printStackTrace( MapFile** map, int maps,
 	{
 		addr = callersAddr[callers-i];
 
+		if(IsInternalFunction(callersEntry[callers-i]->name()))
+			continue;
+
 		// format entry to tempory buf
 		char buf[MapFileEntry::MAX_NAME+MAX_DEPTH+20];	// name + margin + hex number
 		buf[0] = 0;
@@ -145,7 +169,7 @@ int StackTrace::printStackTrace( MapFile** map, int maps,
 			sprintf( buf+strlen(buf), "%s (%x)\n", callersEntry[callers-i]->name(), addr );
 
 		// append temporary buf to output buffer if space left
-		needed += strlen( buf );
+		needed += (int)strlen( buf );
 		if ( needed < bufferSize )
 			strcat( buffer, buf );
 	}
@@ -158,6 +182,5 @@ int StackTrace::printStackTrace( MapFile** map, int maps,
 
 	return needed;
 }
-
 
 } // dev

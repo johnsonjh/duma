@@ -23,6 +23,7 @@
  * the map file to find out the function name.
  */
 extern "C" void printStackTrace( char* buffer, int bufferSize, char* mapFilename );
+extern "C" void StackTraceCleanup();
 
 
 #endif // _PRINTSTACKTRACE_H

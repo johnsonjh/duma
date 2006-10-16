@@ -29,14 +29,6 @@
 // by always returning 1 for HeapCreate.  Any other heap handle will
 // be passed to the real HeapXxxx functions.
 //
-// When using DUMA via detours you will always see a number of unfree'd
-// allocations made by the CRT startup code.  I'm not sure how to weed
-// these out, nor am I sure they are actual failed free's due to when
-// duma is detached from the process.  A few attempts included detoring
-// several API's used in CRT startup to try and start duma later in the
-// crt startup code, but we must be before the crt creates the heap block
-// for general use by malloc and such things.
-//
 // It is very usefull to have a map file when using duma + detours and
 // enable stacktrace output (DUMA_OUTPUT_STACKTRACE, and 
 // DUMA_OUTPUT_STACKTRACE_MAPFILE) as you will not have filename's in 
