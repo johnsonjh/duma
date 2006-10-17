@@ -33,10 +33,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE:MULTIPLE"
+				AdditionalDependencies="$(SolutionDir)..\stacktrace\debug\stacktrace.lib"
 				OutputFile="$(OutDir)/example4.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/example4.pdb"
+				GenerateMapFile="TRUE"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -68,8 +70,10 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(SolutionDir)../.."
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="4"
+				BufferSecurityCheck="FALSE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -78,9 +82,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(SolutionDir)..\stacktrace\release\stacktrace.lib"
 				OutputFile="$(OutDir)/example4.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
+				GenerateMapFile="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

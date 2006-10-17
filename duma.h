@@ -1,6 +1,7 @@
 
 /*
  * DUMA - Red-Zone memory allocator.
+ * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
  * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -24,6 +25,8 @@
  * header file for inclusion from YOUR application code
  */
 
+#include <stdlib.h>
+
 /*
  * #include <stdlib.h>
  *
@@ -35,76 +38,78 @@
 /* remove previous definitions */
 #include "noduma.h"
 
-#ifndef _DUMA_CONFIG_H_
 #include "duma_config.h"
-#endif
 
 #ifdef __cplusplus
-#define DUMA_EXTERN_C   extern "C"
+	#define DUMA_EXTERN_C   extern "C"
 #else
-#define DUMA_EXTERN_C   extern
+	#define DUMA_EXTERN_C   extern
 #endif
-
 
 #ifdef DUMA_NO_DUMA
 
-/* enable these macros even in release code, but do nothing */
-#define DUMA_newFrame()             do { } while(0)
-#define DUMA_delFrame()             do { } while(0)
+	/* enable these macros even in release code, but do nothing */
+	#define DUMA_newFrame()             do { } while(0)
+	#define DUMA_delFrame()             do { } while(0)
 
-#define DUMA_ASSERT(EXPR)           do { } while(0)
+	#define DUMA_ASSERT(EXPR)           do { } while(0)
 
-#define CA_DECLARE(NAME,SIZE)       do { } while(0)
-#define CA_DEFINE(TYPE,NAME,SIZE)   TYPE NAME[SIZE]
-#define CA_REF(NAME,INDEX)          NAME[INDEX]
+	#define CA_DECLARE(NAME,SIZE)       do { } while(0)
+	#define CA_DEFINE(TYPE,NAME,SIZE)   TYPE NAME[SIZE]
+	#define CA_REF(NAME,INDEX)          NAME[INDEX]
 
 #else /* ifndef DUMA_NO_DUMA */
 
-#ifndef DUMA_EXTERNS_DECLARED
-#define DUMA_EXTERNS_DECLARED
-/* global DUMA variables */
-DUMA_EXTERN_C int  DUMA_PROTECT_BELOW;
-DUMA_EXTERN_C int  DUMA_ALIGNMENT;
-DUMA_EXTERN_C int  DUMA_FILL;
-DUMA_EXTERN_C struct _DUMA_Slot * _duma_allocList;
-#ifndef DUMA_NO_CPP_SUPPORT
-DUMA_EXTERN_C void * _duma_cxx_null_addr;
-#endif
-#endif /* DUMA_EXTERNS_DECLARED */
+	#ifndef DUMA_EXTERNS_DECLARED
+	#define DUMA_EXTERNS_DECLARED
+	/* global DUMA variables */
+	DUMA_EXTERN_C int DUMA_OUTPUT_DEBUG;
+	DUMA_EXTERN_C int DUMA_OUTPUT_STDOUT;
+	DUMA_EXTERN_C int DUMA_OUTPUT_STDERR;
+	DUMA_EXTERN_C char* DUMA_OUTPUT_FILE;
+	DUMA_EXTERN_C int DUMA_OUTPUT_STACKTRACE;
+	DUMA_EXTERN_C int  DUMA_PROTECT_BELOW;
+	DUMA_EXTERN_C int  DUMA_ALIGNMENT;
+	DUMA_EXTERN_C int  DUMA_FILL;
+	DUMA_EXTERN_C struct _DUMA_Slot * _duma_allocList;
+	#ifndef DUMA_NO_CPP_SUPPORT
+	DUMA_EXTERN_C void * _duma_cxx_null_addr;
+	#endif
+	#endif /* DUMA_EXTERNS_DECLARED */
 
-#ifndef DUMA_ENUMS_DECLARED
-#define DUMA_ENUMS_DECLARED
+	#ifndef DUMA_ENUMS_DECLARED
+	#define DUMA_ENUMS_DECLARED
 
-enum _DUMA_Allocator
-{
-    EFA_INT_ALLOC
-  , EFA_INT_DEALLOC
-  , EFA_MALLOC
-  , EFA_CALLOC
-  , EFA_FREE
-  , EFA_MEMALIGN
-  , EFA_REALLOC
-  , EFA_VALLOC
-  , EFA_STRDUP
-  , EFA_NEW_ELEM
-  , EFA_DEL_ELEM
-  , EFA_NEW_ARRAY
-  , EFA_DEL_ARRAY
+	enum _DUMA_Allocator
+	{
+		EFA_INT_ALLOC
+	, EFA_INT_DEALLOC
+	, EFA_MALLOC
+	, EFA_CALLOC
+	, EFA_FREE
+	, EFA_MEMALIGN
+	, EFA_REALLOC
+	, EFA_VALLOC
+	, EFA_STRDUP
+	, EFA_NEW_ELEM
+	, EFA_DEL_ELEM
+	, EFA_NEW_ARRAY
+	, EFA_DEL_ARRAY
 
-  /* use following enums when calling _duma_allocate()/_duma_deallocate()
-   * from user defined member operators
-   */
-  , EFA_MEMBER_NEW_ELEM
-  , EFA_MEMBER_DEL_ELEM
-  , EFA_MEMBER_NEW_ARRAY
-  , EFA_MEMBER_DEL_ARRAY
-};
+	/* use following enums when calling _duma_allocate()/_duma_deallocate()
+	* from user defined member operators
+	*/
+	, EFA_MEMBER_NEW_ELEM
+	, EFA_MEMBER_DEL_ELEM
+	, EFA_MEMBER_NEW_ARRAY
+	, EFA_MEMBER_DEL_ARRAY
+	};
 
-enum _DUMA_FailReturn
-{
-    DUMA_FAIL_NULL
-  , DUMA_FAIL_ENV
-};
+	enum _DUMA_FailReturn
+	{
+		DUMA_FAIL_NULL
+	, DUMA_FAIL_ENV
+	};
 
 #endif /* DUMA_ENUMS_DECLARED */
 
@@ -115,9 +120,9 @@ enum _DUMA_FailReturn
   DUMA_EXTERN_C void _duma_init(void);
   DUMA_EXTERN_C void _duma_assert(const char * exprstr, const char * filename, int lineno);
 
-  #ifdef DUMA_EXPLICIT_INIT
-    DUMA_EXTERN_C void   duma_init(void);
-  #endif
+#ifdef DUMA_EXPLICIT_INIT
+DUMA_EXTERN_C void   duma_init(void);
+#endif
 
   #ifndef DUMA_NO_LEAKDETECTION
     DUMA_EXTERN_C void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int fillByte, int protectAllocList, enum _DUMA_Allocator allocator, enum _DUMA_FailReturn fail, const char * filename, int lineno);
@@ -155,7 +160,7 @@ enum _DUMA_FailReturn
 
 #endif /* DUMA_FUNCTIONS_DECLARED */
 
-
+#ifndef DUMA_SKIP_SETUP
 #ifndef DUMA_NO_LEAKDETECTION
   #define malloc(SIZE)                _duma_malloc(SIZE, __FILE__, __LINE__)
   #define calloc(ELEMCOUNT, ELEMSIZE) _duma_calloc(ELEMCOUNT, ELEMSIZE, __FILE__, __LINE__)
@@ -173,6 +178,7 @@ enum _DUMA_FailReturn
   #define DUMA_newFrame()             do { } while(0)
   #define DUMA_delFrame()             do { } while(0)
 #endif /* DUMA_NO_LEAKDETECTION */
+#endif // DUMA_SKIP_SETUP
 
 #ifndef DUMA_ASSERT
   #define DUMA_ASSERT(EXPR)    (  (EXPR) || ( _duma_assert(#EXPR, __FILE__, __LINE__), 0 )  )

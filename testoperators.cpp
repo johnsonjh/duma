@@ -101,13 +101,13 @@ throw()
 void * optest::operator new[]( DUMA_SIZE_T s )
 throw(std::bad_alloc)
 {
-  return ::new char[s];     // char should be of size 1
+  return ::new optest[ s / sizeof(optest) ];    // "s / sizeof()" not correct but works for this test
 }
 
 void * optest::operator new[]( DUMA_SIZE_T s, const std::nothrow_t & n )
 throw()
 {
-  return ::new(n) char[s];  // char should be of size 1
+  return ::new(n) optest[ s / sizeof(optest) ]; // "s / sizeof()" not correct but works for this test
 }
 
 void   optest::operator delete[]( void * p )
@@ -155,13 +155,13 @@ throw()
 void * optest::operator new[]( DUMA_SIZE_T s, const char * f, int l )
 throw( std::bad_alloc )
 {
-  return ::new(f,l) char[s];      // char should be of size 1
+  return ::new(f,l) optest[s / sizeof(optest)];     // "s / sizeof()" not correct but works for this test
 }
 
 void * optest::operator new[]( DUMA_SIZE_T s, const std::nothrow_t & n, const char * f, int l )
 throw()
 {
-  return ::new(n, f,l) char[s];   // char should be of size 1
+  return ::new(n, f,l) optest[s / sizeof(optest)];  // "s / sizeof()" not correct but works for this test
 }
 
 void   optest::operator delete[]( void * p, const char * f, int l )
@@ -214,14 +214,11 @@ void rich_test()
   s = new optest;
   delete s;
 
-#ifndef DUMA_NO_LEAKDETECTION
 #include "noduma.h"
   s = new(std::nothrow,__FILE__,__LINE__) optest;
 #include "dumapp.h"
   delete s;
-#else
-  printf("skipping new(std::nothrow,__FILE__,__LINE__) cause of DUMA_NO_LEAKDETECTION\n");
-#endif
+
 
   v = new optest[0];
   delete []v;
@@ -229,24 +226,16 @@ void rich_test()
   v = new optest[10];
   delete []v;
 
-#ifndef DUMA_NO_LEAKDETECTION
 #include "noduma.h"
   v = new(std::nothrow,__FILE__,__LINE__) optest[10];
 #include "dumapp.h"
   delete []v;
-#else
-  printf("skipping new(std::nothrow,__FILE__,__LINE__)[] cause of DUMA_NO_LEAKDETECTION\n");
-#endif
 }
 
 
 
 int main( int argc, char *argv[] )
 {
-#ifdef DUMA_EXPLICIT_INIT
-  duma_init();
-#endif
-
   pure_test();
   rich_test();
   return 0;

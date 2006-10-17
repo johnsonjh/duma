@@ -24,17 +24,18 @@
  */
 
 
-/*
+/* Function: reduceProtectedMemory
+ *
  * delete reductionSizekB amount of memory, which has already
  * been freed but got protected
  * return != 0 when more memory reducable
  */
 static int
-reduceProtectedMemory( long reductionSizekB )
+reduceProtectedMemory( size_t reductionSizekB )
 {
   struct _DUMA_Slot * slot            = _duma_allocList;
   size_t            count           = slotCount;
-  long              alreadyReducekB = 0;
+  size_t              alreadyReducekB = 0;
 
 #ifndef WIN32
   /* Windows VirtualFree(,,MEM_RELEASE) can only free whole allocations. not parts */
@@ -102,7 +103,8 @@ reduceProtectedMemory( long reductionSizekB )
 }
 
 
-/*
+/* Function: slotForUserAddress
+ *
  * Find the slot structure for a user address.
  */
 static struct _DUMA_Slot *
@@ -118,7 +120,8 @@ slotForUserAddress(void * address)
 }
 
 
-/*
+/* Function: nearestSlotForUserAddress
+ *
  * Find the nearest slot structure for a user address.
  */
 static struct _DUMA_Slot *
@@ -136,7 +139,8 @@ nearestSlotForUserAddress(void * userAddress)
 }
 
 
-/*
+/* Function: slotForInternalAddrNextTo
+ *
  * Find the slot structure for an internal address.
  */
 static struct _DUMA_Slot *
@@ -152,7 +156,8 @@ slotForInternalAddrNextTo(void * address)
 }
 
 
-/*
+/* Function: slotForInternalAddrPrevTo
+ *
  * Given the internal address of a buffer, find the buffer immediately
  * before that buffer in the address space. This is used by free() to
  * coalesce two free buffers into one.
@@ -170,7 +175,8 @@ slotForInternalAddrPrevTo(void * address)
 }
 
 
-/*
+/* Function: _duma_init_slack
+ *
  * Initialise the no mans land, for a given slot
  */
 static
@@ -210,7 +216,8 @@ void _duma_init_slack( struct _DUMA_Slot * slot )
 }
 
 
-/*
+/* Function: _duma_check_slack
+ *
  * Checks the integrity of no mans land, for a given slot
  */
 static
@@ -270,3 +277,4 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
   }
 }
 
+// end

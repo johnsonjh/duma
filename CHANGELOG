@@ -2,6 +2,17 @@
 CHANGELOG:
 ==========
 
+2.5
+	* Documentation updates.  Now using Natural Docs
+	* win32: Detours support for using DUMA with just binaries
+	* win32: Can compile a duma dll
+	* win32: DUMA can perform stacktraces of each allocation
+	* win32: Support for Visual Studio 2005
+	* win32: Support for output to debug console
+	* Support for output to a file
+	* Can control output via environmental variables
+
+
 2.4.28 fix/enhancement: reworked initialization for RequestID 1458083 on SF
          checks for recursive calls in _duma_init() and duma_init()
        (2006-06-17, HA)

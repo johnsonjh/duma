@@ -32,10 +32,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/FORCE:MULTIPLE"
+				AdditionalDependencies="C:\Projects\duma_2_4_26\stacktrace\lib\stacktraced.lib"
 				OutputFile="$(OutDir)/example2.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/example2.pdb"
+				GenerateMapFile="TRUE"
+				MapLines="TRUE"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -77,9 +80,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="C:\Projects\duma_2_4_26\stacktrace\lib\stacktraced.lib"
 				OutputFile="$(OutDir)/example2.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
+				GenerateMapFile="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

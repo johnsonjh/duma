@@ -1,0 +1,86 @@
+<head>
+<title>printStackTrace</title>
+</head>
+<html>
+<body>
+
+
+<h2>void printStackTrace( char* buffer, int bufferSize )</h2>
+<b>(printStackTrace.h)</b>
+
+<h3>Motivation</h3>
+Assertion failed in some string function while your client was
+testing the application. Well, the string function got some wrong input.
+The function is used in couple of other functions, which, in turn, 
+are used in couple of other functions... At the end you have no idea what 
+caused the problem without the help of debugger.
+Which isnt always available, especially while beta testing something.
+
+<h3>Description</h3>
+<p>printStackTrace prints formatted call stack to the user defined buffer,
+always terminating the buffer with 0. 
+Uses stack frame to find out the caller function address and the map 
+file to find out the function name.
+
+<h3>Install</h3>
+MSVC: Just open the stacktrace.dsw and compile the test project.
+The test project shows how the library can be used to boost
+simple assert macro. To use the library in a new project, create
+a workspace and insert stacktrace.dsp to the workspace.
+Be sure to use (Debug) Multithreaded DLL runtime (or just modify the 
+library options if you prefer Single-Threaded or plain Multithreaded runtimes)
+
+<h3>Map Files</h3>
+<p>Library requires that the executable has proper map file. 
+The map file must be in the same directory as the exe and 
+the map file must have <code>.map</code> extension. From MS Visual Studio 
+map file creation can be enabled by checking 'Generate mapfile'
+box from 'Link' tab of 'Project Settings' dialog (ALT+F7). 
+
+<h3>About Output</h3>
+<p>The output is printed only in debug build (_DEBUG is defined).
+In release build the user buffer receives only terminating 0,
+or error message if the map file is missing.
+The library could be used also in release build, but as it requires special
+options (frame pointer omission optimization must be disabled)
+the release build usage is not currently enabled.
+
+<p>Namespaces and other scopes get printed as 
+they appear in a map file (a bit cleanup is done tho), 
+so for example class name and namespaces get printed
+after the function name.
+
+<p>Example output:
+<pre>
+ _mainCRTStartup (403fa9)
+  _main (4011ff)
+   testfunc1 (4011b1)
+    testfunc2.nspace (401161)
+     testfunc3.MyClass.nspace (40110a)
+      internalError (40105f)
+       printStackTrace (401360)
+</pre>
+
+<h3>Known issues</h3>
+<ul>
+<li>Local functions dont get reported correctly. Local functions are not
+listed in the map file and the end points of the functions are not known,
+so the preceding public function will be reported when the stack is printed. </li>
+<li>Template name output formatting isnt too pretty. If you happen to 
+implement proper MSVC mangled name parser feel free put it in this library. :) </li>
+</ul>
+
+<br>
+<p>Copyright (c) 2001 <a href="mailto:jani@sumea.com">Jani Kajala</a><br>
+Permission to use, copy, modify, distribute and sell this
+software and its documentation for any purpose is hereby
+granted without fee, provided that the above copyright notice
+appear in all copies and that both that copyright notice and
+this permission notice appear in supporting documentation.
+Jani Kajala makes no representations about the suitability 
+of this software for any purpose. It is provided "as is" 
+without express or implied warranty.
+
+
+</body>
+</html>

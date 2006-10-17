@@ -37,10 +37,6 @@ TODO (listed from highest to lowest priority):
  by default C programs work with quiet NANs or similar values after an error
  this feature shall allow detecting of floating point division by zero, overflow, ..
 
--write program loader for Windows, catching memory allocation/deallocation
- calls in that program to msvcrt.dll and its newer versions, redirecting them
- to DUMA
-
 -define new thread-safe macros,
  which don't have to use the global variable DUMA_PROTECT_BELOW:
  1- NEW_PROTECT_BELOW: a 'new' replacement which protects the lower bound
