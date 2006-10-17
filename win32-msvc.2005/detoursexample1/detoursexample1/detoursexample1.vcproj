@@ -4,6 +4,7 @@
 	Version="8.00"
 	Name="detoursexample1"
 	ProjectGUID="{AA0D62FE-91EA-4F4B-A372-687F01F85126}"
+	RootNamespace="detoursexample1"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -64,6 +65,8 @@
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/detoursexample1.pdb"
+				GenerateMapFile="true"
+				MapFileName="$(OutDir)/detoursexample1.map"
 				SubSystem="1"
 				TargetMachine="1"
 			/>

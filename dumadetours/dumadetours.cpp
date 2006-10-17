@@ -32,7 +32,10 @@ int main(int argc, char **argv)
 {
 	char* pszDllPath = "dumadetoursdll.dll";
 
-	printf("| DUMA -- Detours DUMA Loader\n| Copyright (c) 2006 Michael Eddington\n\n");
+	if(getenv("DUMA_DETOURS_DLL"))
+		pszDllPath = getenv("DUMA_DETOURS_DLL");
+
+	printf("\n| DUMA -- Detours DUMA Loader\n| Copyright (c) 2006 Michael Eddington\n\n");
 
 	if (argc < 2)
 	{

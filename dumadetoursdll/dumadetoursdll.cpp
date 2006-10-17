@@ -131,8 +131,8 @@ BOOL WINAPI DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
 	if (dwReason == DLL_PROCESS_ATTACH)
 	{
 		// For debugging.  Allows us time to attach a debugger.
-		//fprintf(stderr, "DUMA: Press any key to continue...");
-		//fgetc(stdin);
+		fprintf(stderr, "DUMA: Press any key to continue...");
+		fgetc(stdin);
 		
 		duma_init();
 		
