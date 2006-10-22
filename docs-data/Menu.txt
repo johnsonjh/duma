@@ -30,10 +30,18 @@ Format: 1.35
 # --------------------------------------------------------------------------
 
 
-File: duma.c  (duma.c)
-File: dumapp.cpp  (dumapp.cpp)
-File: h  (paging.h)
-File: print.c  (print.c)
+File: README  (README.txt)
+File: Win32 Detours Howto  (WIN32_DETOURS_HOWTO.txt)
+
+Group: Source  {
+
+   File: duma.c  (duma.c)
+   File: duma_hlp.h  (duma_hlp.h)
+   File: dumapp.cpp  (dumapp.cpp)
+   File: h  (paging.h)
+   File: print.c  (print.c)
+   File: stacktrace\printStackTrace.cpp  (stacktrace\printStackTrace.cpp)
+   }  # Group: Source
 
 Group: Index  {
 

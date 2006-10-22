@@ -1,4 +1,6 @@
 
+Title: Win32 Detours Howto
+
 It is now possible to use detours with duma on already compiled binaries.
 This document will explain an example working configuration and environment.
 
@@ -13,35 +15,35 @@ Known Limitations:
 
 Things you will need:
 
- 1) Detours v1.5 or v2.1, available from Microsoft research as a free download
- 2) DebugView from Sysinternals, this allows you to read the debug console
- 3) Microsoft Visual Studio 2003 or 2005
+ - Detours v1.5 or v2.1, available from Microsoft research as a free download
+ - DebugView from Sysinternals, this allows you to read the debug console
+ - Microsoft Visual Studio 2003 or 2005
 
 
 Conifiguration:
 
- 1) Expand detours into your duma\detours folder
- 2) Open Visual Studio command prompt, browse to duma\detours and
+ - Expand detours into your duma\detours folder
+ - Open Visual Studio command prompt, browse to duma\detours and
     build detours (nmake)
- 3) Open Visual Studio, select "Detours1.5" or "Detours2.1" build (instead of 
+ - Open Visual Studio, select "Detours1.5" or "Detours2.1" build (instead of 
     debug or release) and build solution
- 4) Open detoursexample1 and build (debug version)
- 5) Open command prompt and issue the following:
-	set DUMA_OUTPUT_DEBUG=1
-	set DUMA_OUTPUT_STDOUT=0
-	set DUMA_OUTPUT_STDERR=0
-	set DUMA_OUTPUT_STACKTRACE=1
-	set DUMA_OUTPUT_STACKTRACE_MAPFILE=detoursexample1.map
- 6) Copy dumadetours.exe, detoursexample1.exe, detoursexample1.map into the 
+ - Open detoursexample1 and build (debug version)
+ - Open command prompt and issue the following:
+:	set DUMA_OUTPUT_DEBUG=1
+:	set DUMA_OUTPUT_STDOUT=0
+:	set DUMA_OUTPUT_STDERR=0
+:	set DUMA_OUTPUT_STACKTRACE=1
+:	set DUMA_OUTPUT_STACKTRACE_MAPFILE=detoursexample1.map
+ - Copy dumadetours.exe, detoursexample1.exe, detoursexample1.map into the 
     dumadetoursdll Detours1.5 or Detours2.1 build folder
- 7) Run DebugView
- 8) Run "dumadetours detoursexample1.exe"
- 9) You should see duma output in the DebugView window.
-
-NOTE: For detours v2.1 you will also need detoured.dll from the detours distribution
-      in the current directory.
+ - Run DebugView
+ - Run "dumadetours detoursexample1.exe"
+ - You should see duma output in the DebugView window.
+ - For detours v2.1 you will also need detoured.dll from the detours distribution in the current directory.
 
 
-Report problems and patches for DUMA + Detours to meddington@gmail.com
+Bug reports:
+
+ Report problems and patches for DUMA + Detours to meddington@gmail.com
 
 

@@ -32,19 +32,41 @@ using namespace dev;
 static MapFile*	map = NULL;
 
 
-// Clean up any used memory
+/* Function: StackTraceCleanup
+ * 
+ * Cleanup memory used by stacktrace library.
+ *
+ * See Also:
+ *
+ *   <printStackTrace>
+ */
 extern "C" void StackTraceCleanup()
 {
-	delete map;
+	if(map)
+		delete map;
+
 	map = NULL;
 }
 
-/**
+/* Function: printStackTrace
+ *
  * Prints stack trace to user defined buffer.
  * Always terminates the buffer with 0.
  *
+ * Must call <StackTraceCleanup> to free used memory.
+ *
  * TODO: Support for multiple map files in func def.
  *       already supported by core code.
+ *
+ * Parameters:
+ *
+ *    buffer - Buffer to recieve stacktrace, at least 600 bytes
+ *    bufferSize - Size of buffer
+ *    mapFilename - [Optional] Location of map file to use
+ *
+ * See Also:
+ *
+ *    <StackTraceCleanup>
  */
 extern "C" void printStackTrace( char* buffer, int bufferSize, char* mapFilename )
 {
