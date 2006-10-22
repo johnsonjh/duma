@@ -2056,7 +2056,12 @@ __attribute ((destructor))
 #endif
 _duma_exit(void)
 {
+#ifdef WIN32
+	// Cleanup memory owned by the stack library
+	// wouldn't do to leak memory :)
 	StackTraceCleanup();
+#endif
+
 	/* DUMA_ASSERT(0); */
 	while (-1 != frameno)
 		DUMA_delFrame();
