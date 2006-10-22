@@ -214,7 +214,8 @@ Page_Create(size_t size, int exitonfail, int printerror)
 
 #endif
 
-  memset((void*)allocation, 0, startAddr);
+// TESTING
+//  memset((void*)allocation, 0, startAddr);
 
   return (void *)allocation;
 }

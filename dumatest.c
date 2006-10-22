@@ -53,7 +53,7 @@ struct diagnostic
 };
 
 extern int  DUMA_PROTECT_BELOW;
-extern int  DUMA_ALIGNMENT;
+extern size_t  DUMA_ALIGNMENT;
 
 static jmp_buf  env;
 

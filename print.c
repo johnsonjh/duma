@@ -287,7 +287,7 @@ DUMA_Abort(const char * pattern, ...)
   _exit(-1);
 }
 
-#include <FCNTL.H>
+#include <fcntl.h>
 
 /* Function: DUMA_Print
  *
@@ -325,9 +325,17 @@ DUMA_Print(const char * pattern, ...)
 
 	if(DUMA_OUTPUT_FILE != NULL)
 	{
+#ifdef WIN32
 		fd = _open(DUMA_OUTPUT_FILE, _O_APPEND|_O_CREAT|_O_WRONLY);
+#else
+		fd = open(DUMA_OUTPUT_FILE, O_APPEND|O_CREAT|O_WRONLY);
+#endif
 		write(fd, buffer, len);
+#ifdef WIN32
 		_close(fd);
+#else
+                close(fd);
+#endif
 	}
 
 	va_end(args);
