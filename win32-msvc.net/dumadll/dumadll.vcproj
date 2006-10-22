@@ -323,6 +323,59 @@
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Detours2.1|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="$(SolutionDir).."
+				PreprocessorDefinitions="DUMA_DLL_LIBRARY;DUMA_SKIP_SETUP"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="3"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)dumalib\Debug\dumalib.lib $(SolutionDir)stacktrace\Debug\stacktrace.lib"
+				OutputFile="$(OutDir)/dumadll.dll"
+				LinkIncremental="2"
+				IgnoreDefaultLibraryNames=""
+				ModuleDefinitionFile="$(SolutionDir)..\dumadll\dumadll.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/dumadll.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/dumadll.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -371,6 +424,12 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Detours Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Detours2.1|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						UsePrecompiledHeader="1"/>

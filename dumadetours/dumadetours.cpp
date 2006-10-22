@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-
+		
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 	char szCommand[2048];
@@ -52,11 +52,11 @@ int main(int argc, char **argv)
 	char szFullExe[1024] = "\0";
 	char* pszFileExe = NULL;
 	int cnt = 1;
-    
+	
 	ZeroMemory(&si, sizeof(si));
 	ZeroMemory(&pi, sizeof(pi));
 	si.cb = sizeof(si);
-
+	
 	szCommand[0] = L'\0';
 	strcpy(szExe, argv[cnt]);
 	for (; cnt < argc; cnt++)
@@ -75,24 +75,40 @@ int main(int argc, char **argv)
 		if (cnt + 1 < argc)
 			strcat(szCommand, " ");
 	}
-
+	
 	printf("dumadetours.exe: Starting: [%s]\n\n", szCommand);
     fflush(stdout);
-
+	
 	SetLastError(0);
 	SearchPath(NULL, szExe, ".exe", arrayof(szFullExe), szFullExe, &pszFileExe);
 	
+#ifdef DUMA_DUMA_DETOURS_VERSION == 2.1
+    if (!DetourCreateProcessWithDll(szFullExe[0] ? szFullExe : NULL,	// lpApplicationName
+                                    szCommand,							// lpCommandLine
+									NULL,								// lpProcessAttributes
+									NULL,								// lpThreadAttributes
+									TRUE,								// bInheritHandles
+                                    CREATE_DEFAULT_ERROR_MODE,			// dwCreationFlags
+									NULL,								// lpEnvironment
+									NULL,								// lpCurrentDirectory
+                                    &si,								// lpStartupInfo
+									&pi,								// lpProcessInformation
+									NULL,								// lpDetouredDllPath
+									pszDllPath,							// lpDllName
+									NULL))								// pfCreateProcessW
+#else
     if (!DetourCreateProcessWithDll(szFullExe[0] ? szFullExe : NULL,
                                     szCommand, NULL, NULL, TRUE,
                                     CREATE_DEFAULT_ERROR_MODE, NULL, NULL,
                                     &si, &pi, pszDllPath, NULL))
+#endif
 	{
         printf("dumadetours.exe: DetourCreateProcessWithDll failed: %d\n", GetLastError());
         ExitProcess(2);
     }
  	
 	WaitForSingleObject(pi.hProcess, INFINITE);
-
+	
 	DWORD dwResult = 0;
 	if (!GetExitCodeProcess(pi.hProcess, &dwResult))
 	{
