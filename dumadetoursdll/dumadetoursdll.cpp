@@ -154,7 +154,7 @@ BOOL WINAPI My_HeapValidate(HANDLE hHeap, DWORD dwFlags, LPCVOID lpMem)
 
 ///////////////////////////////////////////////////////////////////////////
 
-BOOL WINAPI DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
+BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
 {
 	if (dwReason == DLL_PROCESS_ATTACH)
 	{
@@ -226,6 +226,10 @@ BOOL WINAPI DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
     }
 	
     return TRUE;
+}
+
+VOID NullExport()
+{
 }
 
 // end

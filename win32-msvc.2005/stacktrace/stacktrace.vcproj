@@ -143,7 +143,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Detours|Win32"
+			Name="Detours1.5|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"

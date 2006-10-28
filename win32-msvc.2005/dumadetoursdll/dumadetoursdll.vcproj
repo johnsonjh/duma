@@ -179,7 +179,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Detours|Win32"
+			Name="Detours1.5|Win32"
 			OutputDirectory="$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
@@ -225,7 +225,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:My_HeapAlloc"
-				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)\dumalib\Detours\dumalib.lib $(SolutionDir)stacktrace\Detours\stacktrace.lib"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)\dumalib\Detours1.5\dumalib.lib $(SolutionDir)stacktrace\Detours1.5\stacktrace.lib"
 				OutputFile="$(OutDir)/dumadetoursdll.dll"
 				LinkIncremental="1"
 				GenerateManifest="false"
@@ -312,7 +312,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/export:My_HeapAlloc"
-				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)\dumalib\Detours\dumalib.lib $(SolutionDir)stacktrace\Detours\stacktrace.lib $(SolutionDir)..\detours\lib\detoured.lib"
+				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)\dumalib\Detours2.1\dumalib.lib $(SolutionDir)stacktrace\Detours2.1\stacktrace.lib $(SolutionDir)..\detours\lib\detoured.lib"
 				OutputFile="$(OutDir)/dumadetoursdll.dll"
 				LinkIncremental="1"
 				GenerateManifest="false"
@@ -385,7 +385,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Detours|Win32"
+					Name="Detours1.5|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

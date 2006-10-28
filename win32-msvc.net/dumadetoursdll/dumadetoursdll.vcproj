@@ -344,6 +344,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/export:NullExport"
 				AdditionalDependencies="$(SolutionDir)..\detours\lib\detours.lib $(SolutionDir)..\detours\lib\detoured.lib $(SolutionDir)stacktrace\detours2.1\stacktrace.lib"
 				OutputFile="$(OutDir)/dumadetoursdll.dll"
 				LinkIncremental="2"
