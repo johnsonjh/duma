@@ -307,19 +307,22 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 	fprintf(f, "\n");
 
 	fprintf(f, "\n");
-	fprintf(f, "/*\n");
+	fprintf(f, "/* Variable: DUMA_PAGE_SIZE\n");
+	fprintf(f, " *\n");
 	fprintf(f, " * Number of bytes per virtual-memory page, as returned by Page_Size().\n");
 	fprintf(f, " */\n");
 	fprintf(f, "#define DUMA_PAGE_SIZE %lu\n", pagesize);
 
 	fprintf(f, "\n");
-	fprintf(f, "/*\n");
+	fprintf(f, "/* Variable: DUMA_MIN_ALIGNMENT\n");
+	fprintf(f, " *\n");
 	fprintf(f, " * Minimum required alignment by CPU.\n");
 	fprintf(f, " */\n");
 	fprintf(f, "#define DUMA_MIN_ALIGNMENT %d\n", alignment);
 
 	fprintf(f, "\n");
-	fprintf(f, "/*\n");
+	fprintf(f, "/* Variable: DUMA_GNU_INIT_ATTR\n");
+	fprintf(f, " *\n");
 	fprintf(f, " * Build environment supports the '__attribute ((constructor))'?\n");
 	fprintf(f, " */\n");
 	if (initattr_ok)
@@ -328,7 +331,8 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 		fprintf(f, "/* #define DUMA_GNU_INIT_ATTR 0 */\n");
 
 	fprintf(f, "\n");
-	fprintf(f, "/*\n");
+	fprintf(f, "/* Type: DUMA_ADDR\n");
+	fprintf(f, " *\n");
 	fprintf(f, " * An integer type with same size as 'void *'\n");
 	fprintf(f, " */\n");
 	if (addrIdx >= 0)
@@ -337,7 +341,8 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 		fprintf(f, "/* Error: No datatype for DUMA_ADDR found! */\n");
 
 	fprintf(f, "\n");
-	fprintf(f, "/*\n");
+	fprintf(f, "/* Type: DUMA_SIZE\n");
+	fprintf(f, " *\n");
 	fprintf(f, " * An integer type with same size as 'size_t'\n");
 	fprintf(f, " */\n");
 	if (sizeIdx >= 0)
