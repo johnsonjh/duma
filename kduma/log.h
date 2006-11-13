@@ -24,6 +24,9 @@
 #  define inline
 #endif
 
+/* Title: log.h
+ */
+
 #if defined(WANT_ASM) && defined(_MSC_VER) && defined(_M_IX86)
 /* MS C Inline Asm */
 #  pragma warning( disable : 4035 )
@@ -36,6 +39,11 @@ static inline int ilog2(int val) { __asm
 #  pragma warning( default : 4035 )
 #elif defined(WANT_ASM) && defined(__GNUC__) && (defined(__i386__) || defined(i386))
 /* GNU Inline Asm */
+/* Function: ilog2
+ *
+ * Base 2 log computation.  Used to calculate order
+ * parameters for kernel page allocations.
+ */
 static inline int ilog2(int val)
 {
    int a;

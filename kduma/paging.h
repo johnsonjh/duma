@@ -37,6 +37,10 @@
 #define  PROT_NONE  0
 #endif
 
+#ifndef size_t
+#define size_t unsigned long
+#endif
+
 static caddr_t  startAddr = (caddr_t) 0;
 
 /* Function: mprotectFailed
@@ -46,11 +50,7 @@ static caddr_t  startAddr = (caddr_t) 0;
  */
 static void mprotectFailed(void)
 {
-#if defined(WIN32)
-	DUMA_Abort("VirtualProtect() failed: %s", stringErrorReport());
-#else
 	DUMA_Abort("mprotect() failed: %s", stringErrorReport());
-#endif
 }
 
 
@@ -113,35 +113,8 @@ void Page_AllowAccess(void * address, size_t size)
  */
 static void Page_DenyAccess(void * address, size_t size)
 {
-#if defined(WIN32)
-  SIZE_T OldProtect, retQuery;
-  MEMORY_BASIC_INFORMATION MemInfo;
-  size_t tail_size;
-  BOOL ret;
-
-  while (size >0)
-  {
-    retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
-    if (retQuery < sizeof(MemInfo))
-      DUMA_Abort("VirtualQuery() failed\n");
-    tail_size = (size > MemInfo.RegionSize) ? MemInfo.RegionSize : size;
-    ret = VirtualProtect(
-                          (LPVOID) address        /* address of region of committed pages */
-                        , (DWORD) tail_size       /* size of the region */
-                        , (DWORD) PAGE_NOACCESS   /* desired access protection */
-                        , (PDWORD) &OldProtect    /* address of variable to get old protection */
-                        );
-    if (0 == ret)
-      mprotectFailed();
-
-    address = ((char *)address) + tail_size;
-    size -= tail_size;
-  }
-
-#else
-  if ( mprotect((caddr_t)address, size, PROT_NONE) < 0 )
-    mprotectFailed();
-#endif
+	if ( mprotect((caddr_t)address, size, PROT_NONE) < 0 )
+		mprotectFailed();
 }
 
 extern struct _DUMA_Slot;
@@ -157,54 +130,14 @@ extern struct _DUMA_Slot;
  */
 static void Page_Delete(void * address, size_t size)
 {
-#if defined(WIN32)
 
-	void * alloc_address  = address;
-	size_t alloc_size     = size;
-	SIZE_T retQuery;
-	MEMORY_BASIC_INFORMATION MemInfo;
-	BOOL ret;
+	unsigned long numPages = size/DUMA_PAGE_SIZE;
+	if( size % DUMA_AGE_SIZE )
+		numPages++;
+	
+	unsigned long order = ilog2(numPages);
+	__free_pages(address, size);
 
-	/* release physical memory commited to virtual address space */
-	while (size >0)
-	{
-		retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
-
-		if (retQuery < sizeof(MemInfo))
-			DUMA_Abort("VirtualQuery() failed\n");
-
-		if ( MemInfo.State == MEM_COMMIT )
-		{
-			ret = VirtualFree(
-				(LPVOID) MemInfo.BaseAddress /* base of committed pages */
-				, (DWORD) MemInfo.RegionSize   /* size of the region */
-				, (DWORD) MEM_DECOMMIT         /* type of free operation */
-				);
-
-			if (0 == ret)
-				DUMA_Abort("VirtualFree(,,MEM_DECOMMIT) failed: %s", stringErrorReport());
-		}
-
-		address = ((char *)address) + MemInfo.RegionSize;
-		size -= MemInfo.RegionSize;
-	}
-
-	/* release virtual address space */
-	ret = VirtualFree(
-		(LPVOID) alloc_address
-		, (DWORD) 0
-		, (DWORD) MEM_RELEASE
-		);
-
-	if (0 == ret)
-		DUMA_Abort("VirtualFree(,,MEM_RELEASE) failed: %s", stringErrorReport());
-
-#else
-
-	if ( munmap((caddr_t)address, size) < 0 )
-		Page_DenyAccess(address, size);
-
-#endif
 }
 
 
@@ -215,19 +148,7 @@ static void Page_Delete(void * address, size_t size)
 static size_t
 Page_Size(void)
 {
-#if defined(WIN32)
-  SYSTEM_INFO SystemInfo;
-  GetSystemInfo( &SystemInfo );
-  return (size_t)SystemInfo.dwPageSize;
-#elif defined(_SC_PAGESIZE)
-	return (size_t)sysconf(_SC_PAGESIZE);
-#elif defined(_SC_PAGE_SIZE)
-	return (size_t)sysconf(_SC_PAGE_SIZE);
-#else
-/* extern int	getpagesize(); */
 	return getpagesize();
-#endif
 }
-
 
 #endif /* DUMA_PAGING_H */
