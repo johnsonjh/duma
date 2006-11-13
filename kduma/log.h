@@ -24,9 +24,6 @@
 #  define inline
 #endif
 
-/* Title: log.h
- */
-
 #if defined(WANT_ASM) && defined(_MSC_VER) && defined(_M_IX86)
 /* MS C Inline Asm */
 #  pragma warning( disable : 4035 )
@@ -82,5 +79,10 @@ static inline int ilog2(int val)
    return (i);
 }
 #endif
+
+/* Variable: none 
+ *
+ * Fake variable to make docs work right :(
+ */
 
 // end

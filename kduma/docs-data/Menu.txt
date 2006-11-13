@@ -30,10 +30,11 @@ Format: 1.35
 # --------------------------------------------------------------------------
 
 
+File: 00README  (README.txt)
 File: duma_config.h  (duma_config.h)
-File: h  (log.h)
 File: kduma.c  (kduma.c)
 File: kduma.h  (kduma.h)
+File: log.h  (log.h)
 File: paging.h  (paging.h)
 
 Group: Index  {
