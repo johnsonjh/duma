@@ -30,9 +30,12 @@
  * KDUMA version string
  */
 static const char  version[] = 
-	"KDUMA v0.1 -- Red-Zone Memory Allocator\n"
-	"Copyright (c) 2006 Michael Eddington\n"
-	"Copyright (c) 2006 Eric Rachner\n";
+	"KDUMA v0.1 -- Kernel Mode Red-Zone Memory Allocator\n"
+	"  Copyright (C) 2006 Michael Eddington\n"
+	"  Copyright (C) 2006 Eric Rachner\n"
+	"  Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
+	"  Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n"
+	"  License: GNU GPL (GNU General Public License, see COPYING-GPL)\n";
 
 /* Variable: MEMORY_CREATION_SIZE
  *
@@ -1012,6 +1015,312 @@ void * _duma_kmalloc(size_t size, int flags  DUMA_PARAMLIST_FL)
 	return _duma_allocate(0, size, flags, DUMA_PROTECT_BELOW, 
 		DUMA_FILL, 1 /*=protectAllocList*/, EFA_MALLOC, 
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
+}
+
+/* Function: _duma_kfree
+ * 
+ * A version of free.
+ */
+void   _duma_kfree(void * baseAdr  DUMA_PARAMLIST_FL)
+{
+  if ( _duma_allocList == 0 )
+	  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
+	
+	_duma_deallocate(baseAdr, 1 /*=protectAllocList*/, EFA_FREE  DUMA_PARAMS_FL);
+}
+
+
+/* Function: _duma_valloc
+ * 
+ * A version of valloc.
+ */
+void * _duma_valloc(size_t size  DUMA_PARAMLIST_FL)
+{
+	if ( _duma_allocList == 0 )
+		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
+
+	return _duma_allocate(DUMA_PAGE_SIZE, size, DUMA_PROTECT_BELOW, 
+		DUMA_FILL, 1 /*=protectAllocList*/, EFA_VALLOC, 
+		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
+}
+
+/* Function: _duma_vfree
+ * 
+ * A version of free.
+ */
+void   _duma_vfree(void * baseAdr  DUMA_PARAMLIST_FL)
+{
+  if ( _duma_allocList == 0 )
+	  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
+	
+	_duma_deallocate(baseAdr, 1 /*=protectAllocList*/, EFA_FREE  DUMA_PARAMS_FL);
+}
+
+/* Function: _duma_strdup
+ * 
+ * A version of strdup.
+ */
+char * _duma_strdup(const char * str  DUMA_PARAMLIST_FL)
+{
+	size_t size;
+	char * dup;
+	unsigned i;
+
+	if ( _duma_allocList == 0 )
+		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
+
+	size = 0;
+	while (str[size])
+		++size;
+
+	dup = _duma_allocate(0, size +1, DUMA_PROTECT_BELOW, 
+		-1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP, 
+		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
+
+	if (dup)                    /* if successful */
+		for (i=0; i<=size; ++i)   /* copy string */
+			dup[i] = str[i];
+
+	return dup;
+}
+
+
+/* Function: _duma_memcpy
+ * 
+ * A version of memcpy that provides extra checks based on
+ * information we know about HEAP.
+ *
+ * Currently the only check we perform is overlapping memory
+ * regions.  This should be expanded to include checking size
+ * of dest to verify assumptions.
+ */
+void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
+{
+	char       * d = (char *)dest;
+	const char * s = (const char *)src;
+	unsigned i;
+
+	if ( (s < d  &&  d < s + size) || (d < s  &&  s < d + size) )
+		DUMA_Abort("memcpy(%a, %a, %d): memory regions overlap.",
+			(DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size);
+
+	for (i=0; i<size; ++i)
+		d[i] = s[i];
+
+	return dest;
+}
+
+
+/* Function: _duma_strcpy
+ * 
+ * A version of strcpy that provides extra checks based on
+ * information we know about HEAP.
+ *
+ * Currently the only check we perform is overlapping memory
+ * regions.  This should be expanded to include checking size
+ * of dest to verify assumptions.
+ */
+char * _duma_strcpy(char *dest, const char *src  DUMA_PARAMLIST_FL)
+{
+	unsigned i;
+	size_t size = strlen(src) +1;
+
+	if ( src < dest  &&  dest < src + size )
+		DUMA_Abort("strcpy(%a, %a): memory regions overlap.", (DUMA_ADDR)dest, (DUMA_ADDR)src);
+
+	for (i=0; i<size; ++i)
+		dest[i] = src[i];
+
+	return dest;
+}
+
+
+/* Function: _duma_strncpy
+ * 
+ * A version of strncpy that provides extra checks based on
+ * information we know about HEAP.
+ *
+ * Currently the only check we perform is overlapping memory
+ * regions.  This should be expanded to include checking size
+ * of dest to verify assumptions.
+ */
+char * _duma_strncpy(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL)
+{
+	size_t srcsize;
+	unsigned i;
+
+	if ( size > 0  &&  src < dest  &&  dest < src + size )
+		DUMA_Abort("strncpy(%a, %a, %d): memory regions overlap.",
+			(DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size);
+
+	/* calculate number of characters to copy from src to dest */
+	srcsize = strlen(src) + 1;
+	if ( srcsize > size )
+		srcsize = size;
+
+	/* copy src to dest */
+	for (i=0; i<srcsize; ++i)
+		dest[i] = src[i];
+
+	/* fill rest with '\0' character */
+	for ( ; i<size; ++i)
+		dest[i] = 0;
+
+	return dest;
+}
+
+
+/* Function: _duma_strcat
+ * 
+ * A version of strcat that provides extra checks based on
+ * information we know about HEAP.
+ *
+ * Currently the only check we perform is overlapping memory
+ * regions.  This should be expanded to include checking size
+ * of dest to verify assumptions.
+ */
+char * _duma_strcat(char *dest, const char *src  DUMA_PARAMLIST_FL)
+{
+	unsigned i;
+	size_t destlen = strlen(dest);
+	size_t srcsize = strlen(src) + 1;
+
+	if ( src < dest +destlen  &&  dest + destlen < src + srcsize )
+		DUMA_Abort("strcat(%a, %a): memory regions overlap.", (DUMA_ADDR)dest, (DUMA_ADDR)src);
+
+	for (i=0; i<srcsize; ++i)
+		dest[destlen+i] = src[i];
+
+	return dest;
+}
+
+/* Function: _duma_strncat
+ * 
+ * A version of strncat that provides extra checks based on
+ * information we know about HEAP.
+ *
+ * Currently the only check we perform is overlapping memory
+ * regions.  This should be expanded to include checking size
+ * of dest to verify assumptions (like is size right).
+ */
+char * _duma_strncat(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL)
+{
+	unsigned i;
+	size_t destlen, srclen;
+
+	/* do nothing, when size not > 0 */
+	if ( size <= 0 )
+		return dest;
+
+	/* calculate number of characters to copy from src to dest */
+	destlen = strlen(dest);
+	srclen  = strlen(src);
+
+	if ( srclen > size )
+		srclen = size;
+
+	/* CHECK: Verify memory regions do not overlap */
+	if ( src < (dest + destlen) && (dest + destlen) < (src + srclen + 1) )
+		DUMA_Abort("strncat(%a, %a, %d): memory regions overlap.",
+			(DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size);
+
+	/* copy up to size characters from src to dest */
+	for (i=0; i<srclen; ++i)
+		dest[destlen+i] = src[i];
+
+	/* append single '\0' character */
+	dest[destlen+srclen] = 0;
+
+	return dest;
+}
+
+
+/*********************************************************/
+
+/* Function DUMA_newFrame
+ *
+ * Increments the frameno variable.  Not sure why we do this :)
+ */
+void  DUMA_newFrame(void)
+{
+#ifdef DUMA_USE_FRAMENO
+	++frameno;
+#endif
+}
+
+
+/* Function DUMA_delFrame
+ *
+ * Will output DUMA message for all in use frames along with totals.
+ * This method is called to when all memory should have been free'd by
+ * the application to locate memory leaks.
+ *
+ * Note: No frames are deleted or modified by this function.
+ */
+void  DUMA_delFrame(void)
+{
+	if (-1 != frameno)
+	{
+		struct _DUMA_Slot *	slot	= _duma_allocList;
+		size_t			  count		= slotCount;
+		int				  nonFreed	= 0;
+
+		IF__DUMA_INIT_DONE
+		DUMA_GET_SEMAPHORE();
+
+		Page_AllowAccess(_duma_allocList, _duma_allocListSize);
+
+		for	( ;	count >	0; --count,	++slot )
+		{
+			if ( DUMAST_IN_USE	== slot->state
+#ifdef DUMA_USE_FRAMENO
+				&& frameno == slot->frame
+#endif
+				&& EFA_INT_ALLOC	!= slot->allocator
+#ifdef DUMA_EXPLICIT_INIT
+				&& -1 !=	slot->lineno
+#endif
+			)
+			{
+
+			DUMA_Print("\nDUMA: ptr=0x%a size=%d alloced from %s(%i) not freed\n",
+				(DUMA_ADDR)slot->userAddress,
+				(DUMA_SIZE)slot->userSize,
+				slot->filename,
+				slot->lineno);
+				
+				++nonFreed;
+			}
+		}
+	
+		if (nonFreed)
+			DUMA_Abort("DUMA_delFrame(): Found non free'd pointers.\n");
+
+		Page_DenyAccess(_duma_allocList, _duma_allocListSize);
+
+		IF__DUMA_INIT_DONE
+		DUMA_RELEASE_SEMAPHORE();
+
+		--frameno;
+	}
+
+	if (DUMA_SHOW_ALLOC)
+		DUMA_Print("\nDUMA:	DUMA_delFrame(): Processed %l allocations and %l deallocations in total.\n", numAllocs,	numDeallocs);
+}
+
+
+/* Function: _duma_exit
+ *
+ * DUMA's exit function, called atexit() or with GNU C Compiler's destructor attribute.
+ * This function also calls DUMA_delFrame to check for still in use memory and allert
+ * the user.
+ */
+void
+_duma_exit(void)
+{
+	/* DUMA_ASSERT(0); */
+	while (-1 != frameno)
+		DUMA_delFrame();
 }
 
 /* end */
