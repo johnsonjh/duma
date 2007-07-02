@@ -291,6 +291,14 @@ and translation buffer entries being flushed with each call to malloc or free.
 The end result is that your program will be much slower and use more resources
 while you are debugging it with DUMA.
 
+The Linux kernel also limits the number of different page mappings per process.
+Have a look for
+/proc/sys/vm/max_map_count
+f.e. under
+http://www.redhat.com/docs/manuals/enterprise/RHEL-4-Manual/en-US/Reference_Guide/s3-proc-sys-vm.html
+You may have to increase this value to allow debugging with DUMA with a command like:
+"sudo sysctl -w vm.max_map_count=1000000"
+
 Don't leave libduma.a linked into production software! Use it only for
 debugging.
 
