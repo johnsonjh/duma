@@ -68,14 +68,91 @@
 	DUMA_EXTERN_C int DUMA_OUTPUT_STDERR;
 	DUMA_EXTERN_C char* DUMA_OUTPUT_FILE;
 	DUMA_EXTERN_C int DUMA_OUTPUT_STACKTRACE;
-	DUMA_EXTERN_C int  DUMA_PROTECT_BELOW;
-	DUMA_EXTERN_C size_t  DUMA_ALIGNMENT;
-	DUMA_EXTERN_C int  DUMA_FILL;
 	DUMA_EXTERN_C struct _DUMA_Slot * _duma_allocList;
 	#ifndef DUMA_NO_CPP_SUPPORT
 	DUMA_EXTERN_C void * _duma_cxx_null_addr;
 	#endif
 	#endif /* DUMA_EXTERNS_DECLARED */
+
+
+
+  /* set Maximum Delete Depth (depth of recursive destructor calls) */
+  #ifndef DUMA_MAX_DEL_DEPTH
+    #define DUMA_MAX_DEL_DEPTH    256
+  #endif
+
+
+#ifndef DUMA_TLSVARTYPE_DEFINED
+#define DUMA_TLSVARTYPE_DEFINED
+  /* TODO following variables should exist per thread ("thread-local") */
+  typedef struct
+  {
+    /*
+     * ALIGNMENT is a global variable used to control the default alignment
+     * of buffers returned by malloc(), calloc(), and realloc(). It is all-caps
+     * so that its name matches the name of the environment variable that is used
+     * to set it. This gives the programmer one less name to remember.
+     */
+    int           ALIGNMENT;
+
+    /*
+     * PROTECT_BELOW is used to modify the behavior of the allocator. When
+     * its value is non-zero, the allocator will place an inaccessable page
+     * immediately _before_ the malloc buffer in the address space, instead
+     * of _after_ it. Use this to detect malloc buffer under-runs, rather than
+     * over-runs. It won't detect both at the same time, so you should test your
+     * software twice, once with this value clear, and once with it set.
+     */
+    int           PROTECT_BELOW;
+
+    /*
+     * FILL is set to 0-255 if DUMA should fill all new allocated
+     * memory with the specified value. Set to -1 when DUMA should not
+     * initialise allocated memory.
+     * default is set to initialise with 255, cause many programs rely on
+     * initialisation to 0!
+     */
+    int           FILL;
+
+  #if !defined(DUMA_NO_CPP_SUPPORT) && !defined(DUMA_NO_LEAKDETECTION)
+    int           Magic;
+    int           DelPtr;
+    const char *  DelFile[DUMA_MAX_DEL_DEPTH];
+    int           DelLine[DUMA_MAX_DEL_DEPTH];
+  #endif
+  } DUMA_TLSVARS_T;
+#endif
+
+#ifdef DUMA_NO_THREAD_SAFETY
+
+#ifndef DUMA_TLS_DEFINED
+#define DUMA_TLS_DEFINED
+  DUMA_EXTERN_C DUMA_TLSVARS_T DUMA_TLS;
+#endif
+
+  #define GET_DUMA_TLSVARS()  (&DUMA_TLS)
+
+#else
+
+#ifndef DUMA_TLS_DEFINED
+#define DUMA_TLS_DEFINED
+  DUMA_EXTERN_C DUMA_TLSVARS_T DUMA_TLS;
+#endif
+
+  #define GET_DUMA_TLSVARS()  (&DUMA_TLS)
+
+#endif
+
+#ifndef DUMA_SET_ALIGNMENT
+  #define DUMA_SET_ALIGNMENT(V)      GET_DUMA_TLSVARS()->ALIGNMENT = (V)
+#endif
+#ifndef DUMA_SET_PROTECT_BELOW
+  #define DUMA_SET_PROTECT_BELOW(V)  GET_DUMA_TLSVARS()->PROTECT_BELOW = (V)
+#endif
+#ifndef DUMA_SET_FILL
+  #define DUMA_SET_FILL(V)           GET_DUMA_TLSVARS()->FILL = (V)
+#endif
+
 
 	#ifndef DUMA_ENUMS_DECLARED
 	#define DUMA_ENUMS_DECLARED
@@ -88,6 +165,7 @@
 	, EFA_CALLOC
 	, EFA_FREE
 	, EFA_MEMALIGN
+  , EFA_POSIX_MEMALIGN
 	, EFA_REALLOC
 	, EFA_VALLOC
 	, EFA_STRDUP
@@ -131,6 +209,7 @@ DUMA_EXTERN_C void   duma_init(void);
     DUMA_EXTERN_C void * _duma_calloc(size_t elemCount, size_t elemSize, const char * filename, int lineno);
     DUMA_EXTERN_C void   _duma_free(void * baseAdr, const char * filename, int lineno);
     DUMA_EXTERN_C void * _duma_memalign(size_t alignment, size_t userSize, const char * filename, int lineno);
+    DUMA_EXTERN_C int    _duma_posix_memalign(void **memptr, size_t alignment, size_t userSize, const char * filename, int lineno);
     DUMA_EXTERN_C void * _duma_realloc(void * baseAdr, size_t newSize, const char * filename, int lineno);
     DUMA_EXTERN_C void * _duma_valloc(size_t size, const char * filename, int lineno);
     DUMA_EXTERN_C char * _duma_strdup(const char *str, const char * filename, int lineno);
@@ -148,6 +227,7 @@ DUMA_EXTERN_C void   duma_init(void);
     DUMA_EXTERN_C void * _duma_calloc(size_t elemCount, size_t elemSize);
     DUMA_EXTERN_C void   _duma_free(void * baseAdr);
     DUMA_EXTERN_C void * _duma_memalign(size_t alignment, size_t userSize);
+    DUMA_EXTERN_C int    _duma_posix_memalign(void **memptr, size_t alignment, size_t userSize);
     DUMA_EXTERN_C void * _duma_realloc(void * baseAdr, size_t newSize);
     DUMA_EXTERN_C void * _duma_valloc(size_t size);
     DUMA_EXTERN_C char * _duma_strdup(const char *str);
@@ -166,6 +246,7 @@ DUMA_EXTERN_C void   duma_init(void);
   #define calloc(ELEMCOUNT, ELEMSIZE) _duma_calloc(ELEMCOUNT, ELEMSIZE, __FILE__, __LINE__)
   #define free(BASEADR)               _duma_free(BASEADR, __FILE__, __LINE__)
   #define memalign(ALIGNMENT, SIZE)   _duma_memalign(ALIGNMENT, SIZE, __FILE__, __LINE__)
+  #define posix_memalign(MEMPTR, ALIGNMENT, SIZE)  _duma_posix_memalign(MEMPTR, ALIGNMENT, SIZE, __FILE__, __LINE__)
   #define realloc(BASEADR, NEWSIZE)   _duma_realloc(BASEADR, NEWSIZE, __FILE__, __LINE__)
   #define valloc(SIZE)                _duma_valloc(SIZE, __FILE__, __LINE__)
   #define strdup(STR)                 _duma_strdup(STR, __FILE__, __LINE__)

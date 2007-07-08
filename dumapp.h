@@ -123,25 +123,6 @@
       #include "sem_inc.h"
     #endif
 
-    #ifndef DUMA_DELETE_VARS
-    #define DUMA_DELETE_VARS
-      /* set Maximum Delete Depth (depth of recursive destructor calls) */
-      #ifndef DUMA_MAX_DEL_DEPTH
-        #define DUMA_MAX_DEL_DEPTH    256
-      #endif
-
-      /* TODO following variables should exist per thread ("thread-local") */
-      typedef struct
-      {
-        int          Magic;
-        int          DelPtr;
-        const char * DelFile[DUMA_MAX_DEL_DEPTH];
-        int          DelLine[DUMA_MAX_DEL_DEPTH];
-      } DUMA_TLSVARS_T;
-
-      extern DUMA_TLSVARS_T DUMA_TLS;
-    #endif
-
     /* define macros as wrapper for our special operators */
 
     #ifdef DUMA_OLD_NEW_MACRO

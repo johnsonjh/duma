@@ -55,6 +55,10 @@
 #undef memalign
 #endif
 
+#ifdef posix_memalign
+#undef posix_memalign
+#endif
+
 #ifdef realloc
 #undef realloc
 #endif

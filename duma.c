@@ -92,7 +92,7 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 static int _DUMA_IN_DUMA = 0;
 
 static const char  version[] =
-"DUMA 2.5"
+"DUMA 2.5.1"
 #ifdef DUMA_SO_LIBRARY
 "(shared library)\n"
 #elif DUMA_DLL_LIBRARY
@@ -103,7 +103,7 @@ static const char  version[] =
 "(static library)\n"
 #endif
 "Copyright (C) 2006 Michael Eddington <meddington@gmail.com>\n"
-"Copyright (C) 2002-2006 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
+"Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n\n";
 
 
@@ -231,6 +231,7 @@ _duma_allocDesc[] =
   , { "calloc()"              , DUMAAT_MALLOC    }
   , { "free()"                , DUMAAT_MALLOC    }
   , { "memalign()"            , DUMAAT_MALLOC    }
+  , { "posix_memalign()"      , DUMAAT_MALLOC    }
   , { "realloc()"             , DUMAAT_MALLOC    }
   , { "valloc()"              , DUMAAT_MALLOC    }
   , { "strdup()"              , DUMAAT_MALLOC    }
@@ -253,6 +254,26 @@ _duma_allocDesc[] =
 #ifndef DUMA_NO_LEAKDETECTION
 static int    frameno = 0;
 #endif
+
+
+/* #ifdef DUMA_NO_THREAD_SAFETY */
+#if 1
+
+  DUMA_TLSVARS_T DUMA_TLS =
+  {   DUMA_MIN_ALIGNMENT
+    , 0     /* PROTECT_BELOW */
+    , 255   /* FILL */
+    #if !defined(DUMA_NO_CPP_SUPPORT) && !defined(DUMA_NO_LEAKDETECTION)
+      , 0     /* Magic */
+      , 0     /* DelPtr */
+      , { 0 }
+      , { 0 }
+    #endif
+  };
+
+#endif
+
+
 
 /* Variable: DUMA_OUTPUT_DEBUG
  *
@@ -317,36 +338,6 @@ char* DUMA_OUTPUT_STACKTRACE_MAPFILE = NULL;
  * gets printed.
  */
 static int DUMA_DISABLE_BANNER = 0;
-
-/* Variable: DUMA_ALIGNMENT
- *
- * DUMA_ALIGNMENT is a global variable used to control the default alignment
- * of buffers returned by malloc(), calloc(), and realloc(). It is all-caps
- * so that its name matches the name of the environment variable that is used
- * to set it. This gives the programmer one less name to remember.
- */
-size_t DUMA_ALIGNMENT = DUMA_MIN_ALIGNMENT;
-
-/* Variable: DUMA_PROTECT_BELOW
- *
- * DUMA_PROTECT_BELOW is used to modify the behavior of the allocator. When
- * its value is non-zero, the allocator will place an inaccessable page
- * immediately _before_ the malloc buffer in the address space, instead
- * of _after_ it. Use this to detect malloc buffer under-runs, rather than
- * over-runs. It won't detect both at the same time, so you should test your
- * software twice, once with this value clear, and once with it set.
- */
-int DUMA_PROTECT_BELOW = 0;
-
-/* Variable: DUMA_FILL
- *
- * DUMA_FILL is set to 0-255 if DUMA should fill all new allocated
- * memory with the specified value. Set to -1 when DUMA should not
- * initialise allocated memory.
- * default is set to initialise with 255, cause many programs rely on
- * initialisation to 0!
- */
-int DUMA_FILL = 255;
 
 /* Variable: DUMA_SLACKFILL
  *
@@ -565,6 +556,8 @@ void duma_init(void)
 {
   char            * string;
   void            * testAlloc;
+  DUMA_TLSVARS_T  * duma_tls;
+
 
   /* avoid double call, when initialization already in progress */
   if ( duma_init_state >= DUMAIS_IN_INIT && duma_init_state <= DUMAIS_OUT_INIT )
@@ -577,6 +570,8 @@ void duma_init(void)
 
 	  duma_init_state = DUMAIS_IN_INIT;
   }
+
+  duma_tls = GET_DUMA_TLSVARS();
 
   /*
    * Import the user's environment specification of the default
@@ -599,10 +594,10 @@ void duma_init(void)
    */
   if ( (string = getenv("DUMA_ALIGNMENT")) != 0 )
   {
-    DUMA_ALIGNMENT = (size_t)atoi(string);
+    duma_tls->ALIGNMENT = (size_t)atoi(string);
     /* we could check for DUMA_MIN_ALIGNMENT. should we do so? */
-    if (!DUMA_ALIGNMENT)
-      DUMA_ALIGNMENT = 1;
+    if (!duma_tls->ALIGNMENT)
+      duma_tls->ALIGNMENT = 1;
   }
 
   /*
@@ -610,7 +605,7 @@ void duma_init(void)
    * rather than that above a buffer.
    */
   if ( (string = getenv("DUMA_PROTECT_BELOW")) != 0 )
-    DUMA_PROTECT_BELOW = (atoi(string) != 0);
+    duma_tls->PROTECT_BELOW = (atoi(string) != 0);
 
   /*
    * See if the user wants to protect memory that has been freed until
@@ -655,9 +650,9 @@ void duma_init(void)
    */
   if ( (string = getenv("DUMA_FILL")) != 0)
   {
-    DUMA_FILL = atoi(string);
-    if ( -1 != DUMA_FILL )
-      DUMA_FILL &= 255;
+    duma_tls->FILL = atoi(string);
+    if ( -1 != duma_tls->FILL )
+      duma_tls->FILL &= 255;
   }
 
   /*
@@ -1007,6 +1002,8 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 	size_t              internalSize;
 	char				stacktrace[601];
 	char*				ptrStacktrace;
+  DUMA_TLSVARS_T    * duma_tls = GET_DUMA_TLSVARS();
+
 
 	DUMA_ASSERT( 0 != _duma_allocList );
 
@@ -1052,7 +1049,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 	/* check alignment */
 	if ( ! alignment )
 	{
-		DUMA_SIZE a = (DUMA_SIZE)DUMA_ALIGNMENT;
+		DUMA_SIZE a = (DUMA_SIZE)duma_tls->ALIGNMENT;
 		DUMA_SIZE s = (DUMA_SIZE)userSize;
 
 		if ( s < a )
@@ -1452,10 +1449,12 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 	{
 #ifndef DUMA_NO_LEAKDETECTION
 		if ( DUMAFS_ALLOCATION == slot->fileSource )
+      /*                                    1            2  3                        4             5  6 */
 			DUMA_Abort("Free mismatch: allocator '%s' used  at %s(%i)\n  but  deallocator '%s' called at %s(%i)!",
 				_duma_allocDesc[slot->allocator].name, slot->filename, slot->lineno,
 				_duma_allocDesc[allocator].name, filename, lineno );
 		else if ( DUMAFS_DEALLOCATION == slot->fileSource )
+      /*                                    1                           2             3  4 */
 			DUMA_Abort("Free mismatch: allocator '%s' used \nbut deallocator '%s' called at %s(%i)!",
 				_duma_allocDesc[slot->allocator].name,
 				_duma_allocDesc[allocator].name, filename, lineno );
@@ -1569,11 +1568,15 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
  */
 void * _duma_malloc(size_t size  DUMA_PARAMLIST_FL)
 {
+  DUMA_TLSVARS_T  * duma_tls;
+
 	if ( _duma_allocList == 0 )
 		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
 
-	return _duma_allocate(0, size, DUMA_PROTECT_BELOW, 
-		DUMA_FILL, 1 /*=protectAllocList*/, EFA_MALLOC, 
+  duma_tls = GET_DUMA_TLSVARS();
+
+	return _duma_allocate(0, size, duma_tls->PROTECT_BELOW, 
+		duma_tls->FILL, 1 /*=protectAllocList*/, EFA_MALLOC, 
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
 
@@ -1584,11 +1587,15 @@ void * _duma_malloc(size_t size  DUMA_PARAMLIST_FL)
  */
 void * _duma_calloc(size_t nelem, size_t elsize  DUMA_PARAMLIST_FL)
 {
+  DUMA_TLSVARS_T  * duma_tls;
+
   if ( _duma_allocList == 0 )
 	  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
 
+  duma_tls = GET_DUMA_TLSVARS();
+
   return _duma_allocate(0, nelem * elsize, 
-	  DUMA_PROTECT_BELOW, 0 /*=fillByte*/, 
+	  duma_tls->PROTECT_BELOW, 0 /*=fillByte*/, 
 	  1 /*=protectAllocList*/, EFA_CALLOC, 
 	  DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
@@ -1613,12 +1620,50 @@ void   _duma_free(void * baseAdr  DUMA_PARAMLIST_FL)
  */
 void * _duma_memalign(size_t alignment, size_t size  DUMA_PARAMLIST_FL)
 {
+  DUMA_TLSVARS_T  * duma_tls;
+
 	if ( _duma_allocList == 0 )
 		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-	
-	return _duma_allocate(alignment, size, DUMA_PROTECT_BELOW, 
-		DUMA_FILL, 1 /*=protectAllocList*/, EFA_MEMALIGN, 
+
+  duma_tls = GET_DUMA_TLSVARS();
+
+	return _duma_allocate(alignment, size, duma_tls->PROTECT_BELOW, 
+		duma_tls->FILL, 1 /*=protectAllocList*/, EFA_MEMALIGN, 
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
+}
+
+
+/* Function: _duma_posix_memalign
+ * 
+ * A version of posix_memalign.
+ */
+int    _duma_posix_memalign(void **memptr, size_t alignment, size_t size  DUMA_PARAMLIST_FL)
+{
+  DUMA_TLSVARS_T  * duma_tls;
+  void * retptr;
+
+  if ( (alignment & (alignment -1)) || alignment < sizeof(void *) )
+    return EINVAL;
+
+	if ( _duma_allocList == 0 )
+		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
+
+  duma_tls = GET_DUMA_TLSVARS();
+
+	retptr = _duma_allocate(alignment, size, duma_tls->PROTECT_BELOW, 
+		duma_tls->FILL, 1 /*=protectAllocList*/, EFA_POSIX_MEMALIGN, 
+		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
+
+  if ( retptr )
+  {
+    (*(char**)memptr) = (char*)retptr;
+    return 0;
+  }
+  else
+  {
+    (*(char**)memptr) = NULL;
+    return ENOMEM;
+  }
 }
 
 
@@ -1630,16 +1675,19 @@ void * _duma_memalign(size_t alignment, size_t size  DUMA_PARAMLIST_FL)
 void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
 {
 	void * ptr;
+  DUMA_TLSVARS_T  * duma_tls;
 
 	if( _duma_allocList == 0 )
 		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
+
+  duma_tls = GET_DUMA_TLSVARS();
 
 	IF__DUMA_INIT_DONE
 	DUMA_GET_SEMAPHORE();
 
 	Page_AllowAccess(_duma_allocList, _duma_allocListSize);
 
-	ptr = _duma_allocate(0, newSize, DUMA_PROTECT_BELOW, 
+	ptr = _duma_allocate(0, newSize, duma_tls->PROTECT_BELOW, 
 		-1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC, 
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 
@@ -1677,11 +1725,15 @@ void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
  */
 void * _duma_valloc(size_t size  DUMA_PARAMLIST_FL)
 {
+  DUMA_TLSVARS_T  * duma_tls;
+
 	if ( _duma_allocList == 0 )
 		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
 
-	return _duma_allocate(DUMA_PAGE_SIZE, size, DUMA_PROTECT_BELOW, 
-		DUMA_FILL, 1 /*=protectAllocList*/, EFA_VALLOC, 
+  duma_tls = GET_DUMA_TLSVARS();
+
+	return _duma_allocate(DUMA_PAGE_SIZE, size, duma_tls->PROTECT_BELOW, 
+		duma_tls->FILL, 1 /*=protectAllocList*/, EFA_VALLOC, 
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
 
@@ -1694,16 +1746,19 @@ char * _duma_strdup(const char * str  DUMA_PARAMLIST_FL)
 {
 	size_t size;
 	char * dup;
+  DUMA_TLSVARS_T  * duma_tls;
 	unsigned i;
 
 	if ( _duma_allocList == 0 )
 		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
 
+  duma_tls = GET_DUMA_TLSVARS();
+
 	size = 0;
 	while (str[size])
 		++size;
 
-	dup = _duma_allocate(0, size +1, DUMA_PROTECT_BELOW, 
+	dup = _duma_allocate(0, size +1, duma_tls->PROTECT_BELOW, 
 		-1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP, 
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 
@@ -1901,6 +1956,12 @@ void   free(void * address)
 void * memalign(size_t alignment, size_t size)
 {
   return _duma_memalign(alignment, size  DUMA_PARAMS_UK);
+}
+
+
+int    posix_memalign(void **memptr, size_t alignment, size_t size)
+{
+  return _duma_posix_memalign(memptr, alignment, size  DUMA_PARAMS_UK);
 }
 
 

@@ -57,6 +57,19 @@ public:
 int main( int argc, char ** argv )
 {
 #if 0
+  int * x = 0;
+  int ret;
+  ret = posix_memalign(&x, 2048, sizeof(int) );
+  if ( !ret )
+    *x = 1;
+  free(x);
+#elif 0
+#include "noduma.h"
+  int * x = 0;
+  x = new int[10];
+  x[0] = 0;
+  delete x;
+#elif 0
 	std::fstream *f = new std::fstream();
 	delete f;
 

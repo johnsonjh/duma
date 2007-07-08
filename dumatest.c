@@ -52,9 +52,6 @@ struct diagnostic
   const char  * explanation;        /* explanation of that test */
 };
 
-extern int  DUMA_PROTECT_BELOW;
-extern size_t  DUMA_ALIGNMENT;
-
 static jmp_buf  env;
 
 /*
@@ -184,14 +181,14 @@ freeMemory(void)
 static int
 protectBelow(void)
 {
-  DUMA_PROTECT_BELOW = 1;
+  DUMA_SET_PROTECT_BELOW(1);
   return 0;
 }
 
 static int
 protectAbove(void)
 {
-  DUMA_PROTECT_BELOW = 0;
+  DUMA_SET_PROTECT_BELOW(0);
   return 0;
 }
 
@@ -294,8 +291,8 @@ main(int argc, char * * argv)
   duma_init();
 #endif
 
-  DUMA_PROTECT_BELOW = 0;
-  DUMA_ALIGNMENT = DUMA_MIN_ALIGNMENT;
+  DUMA_SET_PROTECT_BELOW(0);
+  DUMA_SET_ALIGNMENT(DUMA_MIN_ALIGNMENT);
 
   allocation = 0;
 

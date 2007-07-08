@@ -57,8 +57,14 @@
 
   #define DUMA_thread_self()  pthread_self()
 
+#ifndef DUMA_SEMAPHORES
+  static pthread_mutex_t mutex;
+  static pid_t mutexpid=0;
+  static int locknr=0;
+#else
   static sem_t      DUMA_sem = { 0 };
   static pthread_t  semThread = (pthread_t) 0;
+#endif
 
 #else /* WIN32 */
 
@@ -87,6 +93,39 @@ static int semInInit = 0;
 static int semInited = 0;
 static int semDepth  = 0;
 
+#ifndef WIN32
+#ifndef DUMA_SEMAPHORES
+static void lock()
+{
+  if (pthread_mutex_trylock(&mutex))
+  {
+    if ( mutexpid==getpid() )
+    {
+      ++locknr;
+      return;
+    }
+    else
+    {
+      pthread_mutex_lock(&mutex);
+    }
+  } 
+  mutexpid=getpid();
+  locknr=1;
+}
+
+static void unlock()
+{
+  --locknr;
+  if (!locknr)
+  {
+    mutexpid=0;
+    pthread_mutex_unlock(&mutex);
+  }
+}
+
+#endif
+#endif
+
 
 void
 DUMA_init_sem(void)
@@ -105,8 +144,13 @@ DUMA_init_sem(void)
   semInInit = 1;
 
 #ifndef WIN32
+#ifndef DUMA_SEMAPHORES
+  pthread_mutex_init(&mutex, NULL);
+  semInited = 1;
+#else
   if (sem_init(&DUMA_sem, 0, 1) >= 0)
     semInited = 1;
+#endif
 #else
   pid = GetCurrentProcessId();
   SEM_STRCPY(semLocalName, semObjectName);
@@ -145,15 +189,23 @@ void DUMA_get_sem(void)
   if (semInInit)      return;             /* avoid recursion */
   if (!semInited)     DUMA_init_sem();    /* initialize if necessary */
 
+#ifndef WIN32
+#ifndef DUMA_SEMAPHORES
+  lock();
+#else
   if (semThread != DUMA_thread_self())
   {
-#ifndef WIN32
     while (sem_wait(&DUMA_sem) < 0);   /* wait for the semaphore. */
-#else
-    while (WaitForSingleObject(semHandle, 1000) != WAIT_OBJECT_0) ; /* wait for the semaphore. */
-#endif
     semThread = DUMA_thread_self();     /* let everyone know who has the semaphore. */
   }
+#endif
+#else
+  if (semThread != DUMA_thread_self())
+  {
+    while (WaitForSingleObject(semHandle, 1000) != WAIT_OBJECT_0) ; /* wait for the semaphore. */
+    semThread = DUMA_thread_self();     /* let everyone know who has the semaphore. */
+  }
+#endif
   ++semDepth;                         /* increment semDepth - push one stack level */
 }
 
@@ -163,19 +215,26 @@ void DUMA_rel_sem(void)
   if (semInInit)      return;             /* avoid recursion */
   if (!semInited)     DUMA_Abort("\nSemaphore isn't initialised");
 
+#ifdef DUMA_SEMAPHORES
   if (!semThread)     DUMA_Abort("\nSemaphore isn't owned by this thread");
+#endif
   if (semDepth <= 0)  DUMA_Abort("\nSemaphore isn't locked");
 
   if (!(--semDepth))              /* decrement semDepth - popping one stack level */
   {
 #ifndef WIN32
+#ifndef DUMA_SEMAPHORES
+    unlock();
+#else
     semThread = (pthread_t) 0;        /* zero this before actually free'ing the semaphore. */
     if (sem_post(&DUMA_sem) < 0)
+      DUMA_Abort("Failed to post the semaphore.");
+#endif
 #else
     semThread = 0;                    /* zero this before actually free'ing the semaphore. */
     if (0 == ReleaseSemaphore(semHandle, 1 /* amount to add to current count */, NULL) )
-#endif
       DUMA_Abort("Failed to post the semaphore.");
+#endif
   }
 }
 

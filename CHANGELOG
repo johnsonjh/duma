@@ -2,6 +2,14 @@
 CHANGELOG:
 ==========
 
+2.5.1
+  * turned global variables DUMA_PROTECT_BELOW, DUMA_ALIGNMENT and DUMA_FILL
+    to thread local variables. Acces now with new function macros
+      DUMA_SET_ALIGNMENT(), DUMA_SET_PROTECT_BELOW() and DUMA_SET_FILL()
+  * support for posix_memalign()
+  * pthread_mutex implementation alternative to semaphores
+  (2007-07-03, HA)
+
 2.5
 	* Documentation updates.  Now using Natural Docs
 	* win32: Detours support for using DUMA with just binaries

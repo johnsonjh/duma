@@ -45,10 +45,6 @@ static const char unknown_cxx_file[] =
  "UNKNOWN (use #include \"dumapp.h\")";
 
 #ifndef DUMA_NO_LEAKDETECTION
-  DUMA_TLSVARS_T DUMA_TLS = { 0, -1, { unknown_cxx_file } };
-#endif
-
-#ifndef DUMA_NO_LEAKDETECTION
 #define DUMA_PARAMS_UK          , unknown_cxx_file, 0
 #else
 #define DUMA_PARAMS_UK
@@ -121,13 +117,15 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
   if ( _duma_allocList == 0 )
     _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
 
+  DUMA_TLSVARS_T  * duma_tls = GET_DUMA_TLSVARS();
+
   do
   {
     // try allocation
     ret = _duma_allocate( 0 /*=alignment*/
                         , userSize
-                        , DUMA_PROTECT_BELOW
-                        , DUMA_FILL
+                        , duma_tls->PROTECT_BELOW
+                        , duma_tls->FILL
                         , 1 /*=protectAllocList*/
                         , allocator
                         , DUMA_FAIL_NULL
@@ -221,7 +219,10 @@ throw()
 {
   if (ptr != _duma_cxx_null_addr)
 #ifndef DUMA_NO_LEAKDETECTION
-    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, DUMA_TLS.DelFile[DUMA_TLS.DelPtr], DUMA_TLS.DelLine[DUMA_TLS.DelPtr]);
+  {
+    DUMA_TLSVARS_T & duma_tls = * GET_DUMA_TLSVARS();
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, duma_tls.DelFile[duma_tls.DelPtr], duma_tls.DelLine[duma_tls.DelPtr]);
+  }
 #else
     _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM  DUMA_PARAMS_UK);
 #endif
@@ -238,7 +239,10 @@ throw()
 {
   if (ptr != _duma_cxx_null_addr)
 #ifndef DUMA_NO_LEAKDETECTION
-    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, DUMA_TLS.DelFile[DUMA_TLS.DelPtr], DUMA_TLS.DelLine[DUMA_TLS.DelPtr]);
+  {
+    DUMA_TLSVARS_T & duma_tls = * GET_DUMA_TLSVARS();
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM, duma_tls.DelFile[duma_tls.DelPtr], duma_tls.DelLine[duma_tls.DelPtr]);
+  }
 #else
     _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM  DUMA_PARAMS_UK);
 #endif
@@ -291,7 +295,10 @@ throw()
 {
   if (ptr != _duma_cxx_null_addr)
 #ifndef DUMA_NO_LEAKDETECTION
-    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, DUMA_TLS.DelFile[DUMA_TLS.DelPtr], DUMA_TLS.DelLine[DUMA_TLS.DelPtr]);
+  {
+    DUMA_TLSVARS_T & duma_tls = * GET_DUMA_TLSVARS();
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, duma_tls.DelFile[duma_tls.DelPtr], duma_tls.DelLine[duma_tls.DelPtr]);
+  }
 #else
     _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY  DUMA_PARAMS_UK);
 #endif
@@ -308,7 +315,10 @@ throw()
 {
   if (ptr != _duma_cxx_null_addr)
 #ifndef DUMA_NO_LEAKDETECTION
-    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, DUMA_TLS.DelFile[DUMA_TLS.DelPtr], DUMA_TLS.DelLine[DUMA_TLS.DelPtr]);
+  {
+    DUMA_TLSVARS_T & duma_tls = * GET_DUMA_TLSVARS();
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY, duma_tls.DelFile[duma_tls.DelPtr], duma_tls.DelLine[duma_tls.DelPtr]);
+  }
 #else
     _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY  DUMA_PARAMS_UK);
 #endif
