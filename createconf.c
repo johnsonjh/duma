@@ -326,6 +326,16 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 	fprintf(f, "#undef DUMA_NO_THREAD_SAFETY\n");
 	fprintf(f, "#endif\n\n");
 
+#ifndef DUMA_SEMAPHORES
+	fprintf(f, "#ifdef DUMA_SEMAPHORES\n");
+	fprintf(f, "#undef DUMA_SEMAPHORES\n");
+	fprintf(f, "#endif\n\n");
+#else
+	fprintf(f, "#ifndef DUMA_SEMAPHORES\n");
+	fprintf(f, "#define DUMA_SEMAPHORES\n");
+	fprintf(f, "#endif\n\n");
+#endif
+
 #ifndef DUMA_SO_NO_CPP_SUPPORT
 	fprintf(f, "#ifdef DUMA_NO_CPP_SUPPORT\n");
 	fprintf(f, "#undef DUMA_NO_CPP_SUPPORT\n");

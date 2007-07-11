@@ -12,6 +12,10 @@
 # add "-DDUMA_NO_THREAD_SAFETY" (without quotes)
 #    for not supporting multi-threading
 #
+# add "-DDUMA_SEMAPHORES" (without quotes)
+#    for using pthread semaphores
+#    elseway pthread mutexes get used
+#
 # add "-DDUMA_NO_CPP_SUPPORT" (without quotes)
 #    for not directing new/delete to malloc/free
 #
