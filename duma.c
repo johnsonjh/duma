@@ -2,7 +2,7 @@
 /* 
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
- * Copyright (C) 2002-2006 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
@@ -92,7 +92,7 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 static int _DUMA_IN_DUMA = 0;
 
 static const char  version[] =
-"DUMA 2.5.1"
+"DUMA 2.5.2"
 #ifdef DUMA_SO_LIBRARY
 "(shared library)\n"
 #elif DUMA_DLL_LIBRARY
