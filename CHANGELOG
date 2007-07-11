@@ -2,6 +2,14 @@
 CHANGELOG:
 ==========
 
+2.5.2
+  * minor corrections
+  * added preprocessor option "DUMA_SEMAPHORES" to select pthreads
+      locking mechanism: semaphores or mutexes
+  * removed automatically generated visual c++ file detoursexample1.ncb
+      from CVS and archives
+  (2007-07-12, HA)
+
 2.5.1
   * turned global variables DUMA_PROTECT_BELOW, DUMA_ALIGNMENT and DUMA_FILL
     to thread local variables. Acces now with new function macros
