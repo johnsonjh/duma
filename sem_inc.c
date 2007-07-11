@@ -58,7 +58,7 @@
   #define DUMA_thread_self()  pthread_self()
 
 #ifndef DUMA_SEMAPHORES
-  static pthread_mutex_t mutex;
+  static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
   static pid_t mutexpid=0;
   static int locknr=0;
 #else
@@ -90,7 +90,11 @@
 
 
 static int semInInit = 0;
+#if !defined(WIN32) && !defined(DUMA_SEMAPHORES)
+static int semInited = 1;
+#else
 static int semInited = 0;
+#endif
 static int semDepth  = 0;
 
 #ifndef WIN32
