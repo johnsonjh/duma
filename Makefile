@@ -76,7 +76,10 @@ DUMA_SO_OPTIONS = $(PIC) -DDUMA_SO_LIBRARY
 #
 # for FreeBSD 5.4 if DUMA_EXPLICIT_INIT is not set
 # DUMA_OPTIONS += -DDUMA_NO_LEAKDETECTION
-
+#
+# for cygwin environment on Windows
+# DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+# also define 'WIN32'
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
@@ -85,12 +88,25 @@ ifeq ($(OS), Windows_NT)
     CFLAGS= -g -O0
     CPPFLAGS= -g -O0
     LIBS=
+    EXEPOSTFIX=.exe
   else
-    CURPATH=
-    DUMASO=
-    CFLAGS= -g -O0
-    CPPFLAGS= -g -O0
-    LIBS=
+    ifeq ($(OSTYPE), cygwin)
+      CURPATH=./
+      DUMASO=
+      CFLAGS= -g -O0
+      CPPFLAGS= -g -O0
+      LIBS=
+      EXEPOSTFIX=.exe
+    else
+# my cygwin gets here!!!
+      DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+      CURPATH=./
+      DUMASO=
+      CFLAGS= -g -O0 -DWIN32
+      CPPFLAGS= -g -O0 -DWIN32
+      LIBS=
+      EXEPOSTFIX=.exe
+    endif
   endif
 else
   CURPATH=./
@@ -100,6 +116,7 @@ else
   CFLAGS= -g -O0
   CPPFLAGS= -g -O0
   LIBS=-lpthread
+  EXEPOSTFIX=
 endif
 
 
@@ -127,12 +144,12 @@ OBJECTS = dumapp.o duma.o sem_inc.o print.o
 
 SO_OBJECTS = dumapp_so.o duma_so.o sem_inc_so.o print_so.o
 
-all:	libduma.a $(DUMASO) tstheap dumatest dumatestpp testoperators tstheap_so dumatestpp_so
+all:	libduma.a $(DUMASO) tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
 	@ echo "Testing DUMA."
 	@ echo "After the last test, it should print that the test has PASSED."
-	$(CURPATH)dumatest
-	$(CURPATH)tstheap 3072
-	$(CURPATH)testoperators
+	$(CURPATH)dumatest$(EXEPOSTFIX)
+	$(CURPATH)tstheap$(EXEPOSTFIX) 3072
+	$(CURPATH)testoperators$(EXEPOSTFIX)
 	(export LD_PRELOAD=./$(DUMASO); exec $(CURPATH)tstheap_so 3072)
 	@ echo
 	@ echo "DUMA confidence test PASSED."
@@ -150,7 +167,7 @@ install: libduma.a duma.3 $(DUMASO)
 clean:
 	- rm -f $(OBJECTS) $(SO_OBJECTS) createconf.o tstheap.o dumatest.o dumatestpp.o \
 		tstheap_so.o dumatestpp_so.o testoperators.o \
-		tstheap tstheap_so dumatest dumatestpp dumatestpp_so testoperators createconf \
+		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) createconf$(EXEPOSTFIX) \
 		libduma.a $(DUMASO) libduma.cat DUMA.shar \
 		duma_config.h
 
@@ -168,36 +185,36 @@ libduma.a: duma_config.h $(OBJECTS)
 	$(AR) crv libduma.a $(OBJECTS)
 
 
-duma_config.h: createconf
-	- $(CURPATH)createconf >duma_config.h
+duma_config.h: createconf$(EXEPOSTFIX)
+	- $(CURPATH)createconf$(EXEPOSTFIX) >duma_config.h
 
-createconf: createconf.o
-	- rm -f createconf
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) createconf.o -o createconf
+createconf$(EXEPOSTFIX): createconf.o
+	- rm -f createconf$(EXEPOSTFIX)
+	$(CC) $(CFLAGS) $(DUMA_OPTIONS) createconf.o -o createconf$(EXEPOSTFIX)
 
-tstheap: libduma.a tstheap.o
-	- rm -f tstheap
-	$(CC) $(CFLAGS) tstheap.o libduma.a -o tstheap $(LIBS)
+tstheap$(EXEPOSTFIX): libduma.a tstheap.o
+	- rm -f tstheap$(EXEPOSTFIX)
+	$(CC) $(CFLAGS) tstheap.o libduma.a -o tstheap$(EXEPOSTFIX) $(LIBS)
 
-dumatest: libduma.a dumatest.o
-	- rm -f dumatest
-	$(CC) $(CFLAGS) dumatest.o libduma.a -o dumatest $(LIBS)
+dumatest$(EXEPOSTFIX): libduma.a dumatest.o
+	- rm -f dumatest$(EXEPOSTFIX)
+	$(CC) $(CFLAGS) dumatest.o libduma.a -o dumatest$(EXEPOSTFIX) $(LIBS)
 
-dumatestpp: libduma.a dumatestpp.o dumapp.h
-	- rm -f dumatestpp
-	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp $(LIBS)
+dumatestpp$(EXEPOSTFIX): libduma.a dumatestpp.o dumapp.h
+	- rm -f dumatestpp$(EXEPOSTFIX)
+	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp$(EXEPOSTFIX) $(LIBS)
 
-testoperators: libduma.a testoperators.o dumapp.h
-	- rm -f testoperators
-	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators $(LIBS)
+testoperators$(EXEPOSTFIX): libduma.a testoperators.o dumapp.h
+	- rm -f testoperators$(EXEPOSTFIX)
+	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators$(EXEPOSTFIX) $(LIBS)
 
-tstheap_so: tstheap_so.o
-	- rm -f tstheap_so
-	$(CC) $(CFLAGS) tstheap_so.o -o tstheap_so $(LIBS)
+tstheap_so$(EXEPOSTFIX): tstheap_so.o
+	- rm -f tstheap_so$(EXEPOSTFIX)
+	$(CC) $(CFLAGS) tstheap_so.o -o tstheap_so$(EXEPOSTFIX) $(LIBS)
 
-dumatestpp_so: dumatestpp_so.o
-	- rm -f dumatestpp_so
-	$(CXX) $(CPPFLAGS) dumatestpp_so.o -o dumatestpp_so $(LIBS)
+dumatestpp_so$(EXEPOSTFIX): dumatestpp_so.o
+	- rm -f dumatestpp_so$(EXEPOSTFIX)
+	$(CXX) $(CPPFLAGS) dumatestpp_so.o -o dumatestpp_so$(EXEPOSTFIX) $(LIBS)
 
 
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h

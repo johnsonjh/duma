@@ -43,7 +43,10 @@
   #include <winbase.h>
   #include <io.h>
 
+#ifndef __CYGWIN__
+  /* already defined in cygwin headers */
   typedef LPVOID caddr_t;
+#endif
 #endif
 
 #ifdef _MSC_VER

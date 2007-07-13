@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef WIN32
+#if !defined(WIN32) || defined(__CYGWIN__)
   #include <unistd.h>
 #else
   #include <io.h>
@@ -66,10 +66,11 @@ segmentationFaultHandler(
 #endif
 )
 {
-#ifdef WIN32
-  longjmp(env, 1);
-#else
+
+#if !defined(WIN32) || defined(__CYGWIN__)
   siglongjmp(env, 1);
+#else
+  longjmp(env, 1);
 #endif
 }
 
@@ -77,7 +78,7 @@ segmentationFaultHandler(
 static int
 gotSegmentationFault(int (*test)(void))
 {
-#ifndef WIN32
+#if !defined(WIN32) || defined(__CYGWIN__)
   sigset_t newmask, oldmask;
   int savemask;
 #endif
@@ -85,19 +86,21 @@ gotSegmentationFault(int (*test)(void))
   void (*oldhandler)(int)         = SIG_ERR;
 #else
   void (*oldSIGSEGVhandler)(int)  = SIG_ERR;
-#ifndef WIN32
+
+#if !defined(WIN32) || defined(__CYGWIN__)
   void (*oldSIGBUShandler)(int)   = SIG_ERR;
 #endif
 #endif
   int status;
 
-#ifdef WIN32
-  if ( 0 == setjmp(env) )
-#else
+
+#if !defined(WIN32) || defined(__CYGWIN__)
   if ( 0 == sigsetjmp(env, savemask) )
+#else
+  if ( 0 == setjmp(env) )
 #endif
   {
-#ifndef WIN32
+#if !defined(WIN32) || defined(__CYGWIN__)
     /* unblock signal and save previous signal mask */
     sigemptyset(&newmask);
   #ifdef PAGE_PROTECTION_VIOLATED_SIGNAL
@@ -113,7 +116,7 @@ gotSegmentationFault(int (*test)(void))
     oldhandler = signal(PAGE_PROTECTION_VIOLATED_SIGNAL, segmentationFaultHandler);
 #else
     oldSIGSEGVhandler = signal(SIGSEGV, segmentationFaultHandler);
-  #ifndef WIN32
+  #if !defined(WIN32) || defined(__CYGWIN__)
     oldSIGBUShandler  = signal(SIGBUS, segmentationFaultHandler);
   #endif
 #endif
@@ -131,13 +134,13 @@ gotSegmentationFault(int (*test)(void))
 #else
   if (SIG_ERR != oldSIGSEGVhandler)
     signal(SIGSEGV, oldSIGSEGVhandler);
-#ifndef WIN32
+#if !defined(WIN32) || defined(__CYGWIN__)
   if (SIG_ERR != oldSIGBUShandler)
     signal(SIGBUS, oldSIGBUShandler);
 #endif
 #endif
 
-#ifndef WIN32
+#if !defined(WIN32) || defined(__CYGWIN__)
   /* restore signal mask */
   sigprocmask(SIG_SETMASK, &oldmask, NULL);
 #endif
@@ -145,7 +148,7 @@ gotSegmentationFault(int (*test)(void))
 }
 
 
-static char *  allocation;
+static char *  allocation = (char*)0;
 /* c is global so that assignments to it won't be optimized out. */
 char  c;
 
@@ -156,7 +159,9 @@ testSizes(void)
    * If DUMA_ADDR can't hold all of the bits of a void *,
    * have the user call createconf.
    */
-  return ( sizeof(DUMA_ADDR) < sizeof(void *) );
+  size_t sd = sizeof(DUMA_ADDR);
+  size_t sv = sizeof(void *);
+  return ( sd < sv );
 }
 
 static int
@@ -164,7 +169,7 @@ allocateMemory(void)
 {
   allocation = (char *)malloc(1);
 
-  if ( allocation != 0 )
+  if ( allocation != (char*)0 )
     return 0;
   else
     return 1;
@@ -174,7 +179,7 @@ static int
 freeMemory(void)
 {
   free(allocation);
-  allocation = 0;
+  allocation = (char*)0;
   return 0;
 }
 

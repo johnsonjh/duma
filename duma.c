@@ -71,8 +71,12 @@
   #include <winbase.h>
   #include <io.h>
 
+#ifndef __CYGWIN__
+  /* already defined in cygwin headers */
   typedef LPVOID caddr_t;
   typedef unsigned u_int;
+#endif
+
 #endif
 
 #ifdef _MSC_VER
@@ -85,14 +89,14 @@
 #include "sem_inc.h"
 #include "paging.h"
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilename);
 #endif
 
 static int _DUMA_IN_DUMA = 0;
 
 static const char  version[] =
-"DUMA 2.5.2"
+"DUMA 2.5.3"
 #ifdef DUMA_SO_LIBRARY
 "(shared library)\n"
 #elif DUMA_DLL_LIBRARY
@@ -199,7 +203,7 @@ struct _DUMA_Slot
 #endif
 
 /* Feature currently only works on win32 */
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
   char*				stacktrace; /* stacktrace of allocation */
 #endif
 
@@ -1000,14 +1004,16 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 	struct _DUMA_Slot * emptySlots[2];
 	DUMA_ADDR           intAddr, userAddr, protAddr, endAddr;
 	size_t              internalSize;
+#if defined(WIN32) && !defined(__CYGWIN__)
 	char				stacktrace[601];
 	char*				ptrStacktrace;
+#endif
   DUMA_TLSVARS_T    * duma_tls = GET_DUMA_TLSVARS();
 
 
 	DUMA_ASSERT( 0 != _duma_allocList );
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 	// When getting the stack trace memory will be allocated
 	// via DUMA.  In situations were additional slots must
 	// be allocated we must do this prior to getting a pointer
@@ -1331,7 +1337,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 		/* initialise no mans land of slot */
 		_duma_init_slack( fullSlot );
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 		if(!_DUMA_IN_DUMA && duma_init_state && DUMA_OUTPUT_STACKTRACE)
 		{
 			_DUMA_IN_DUMA = 1;
@@ -1542,7 +1548,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 		slot->filename      = 0;
 		slot->lineno        = 0;
 #endif
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 		if(slot->stacktrace)
 		{
 			slot->stacktrace = 0;
@@ -2078,7 +2084,7 @@ void  DUMA_delFrame(void)
 				slot->filename,
 				slot->lineno);
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 				if(DUMA_OUTPUT_STACKTRACE)
 				{
 					DUMA_Print("Stacktrace of allocation:\n%s\n",
@@ -2117,7 +2123,7 @@ __attribute ((destructor))
 #endif
 _duma_exit(void)
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
 	// Cleanup memory owned by the stack library
 	// wouldn't do to leak memory :)
 	StackTraceCleanup();
