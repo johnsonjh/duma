@@ -49,8 +49,12 @@
 #include <windows.h>
 #include <winbase.h>
 
-typedef LPVOID caddr_t;
-typedef unsigned u_int;
+#ifndef __CYGWIN__
+  /* already defined in cygwin headers */
+  typedef LPVOID caddr_t;
+  typedef unsigned u_int;
+#endif
+
 #endif
 
 
@@ -287,7 +291,7 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 #if defined(_MSC_VER)
 	fprintf(f, " * using Microsoft Visual C++ under MS Windows(TM) the %s\n", __DATE__ );
 #else
-	printf(f, " * under MS Windows(TM) the %s\n", __DATE__ );
+	fprintf(f, " * under MS Windows(TM) the %s\n", __DATE__ );
 #endif
 #elif ( defined(sgi) )
 	fprintf(f, " * under sgi the %s\n", __DATE__ );
