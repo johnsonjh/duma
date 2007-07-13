@@ -2,6 +2,15 @@
 CHANGELOG:
 ==========
 
+2.5.3
+  * bugfix in createconf.c for Win32 but non Visual C++
+  * got cygwin to work:
+      switched off stacktrace (before trying to integrate in Makefile)
+      caddr_t and u_int were already defined
+      use signals as on Linux/Unix in dumatest.c
+      updated Makefile
+  (2007-07-13, HA)
+
 2.5.2
   * minor corrections
   * added preprocessor option "DUMA_SEMAPHORES" to select pthreads
