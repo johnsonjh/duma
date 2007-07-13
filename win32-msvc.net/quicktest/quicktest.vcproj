@@ -32,6 +32,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/FORCE:MULTIPLE"
 				AdditionalDependencies="$(SolutionDir)dumalib\debug\dumalib.lib"
 				OutputFile="$(OutDir)/quicktest.exe"
 				LinkIncremental="2"
