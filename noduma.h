@@ -91,6 +91,7 @@
 #undef strncat
 #endif
 
+#ifndef SKIP_DUMA_NO_CXX
 
 /* remove previous wrappers to standard C++ functions / operators */
 
@@ -140,6 +141,8 @@
 #ifdef DEL_ARRAY_NOTHROW
 #undef DEL_ARRAY_NOTHROW
 #endif
+
+#endif /* SKIP_DUMA_NO_CXX */
 
 
 /* remove definitions for protection of functions return address */
