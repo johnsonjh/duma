@@ -138,14 +138,27 @@ else
     LIBS=-lpthread
     EXEPOSTFIX=
   else
-    CURPATH=./
-    DUMASO=libduma.so.0.0
-    DUMASO_LINK1=libduma.so.0
-    DUMASO_LINK2=libduma.so
-    CFLAGS= -g -O0
-    CPPFLAGS= -g -O0
-    LIBS=-lpthread
-    EXEPOSTFIX=
+    ifeq ($(OS), freebsd)
+      DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
+      DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+      CURPATH=./
+      DUMA_DYN_DEPS=
+      DUMASO=
+      DUMASO_LINK1=
+      CFLAGS= -g -O0
+      CPPFLAGS= -g -O0
+      LIBS=-lpthread
+      EXEPOSTFIX=
+    else
+      CURPATH=./
+      DUMASO=libduma.so.0.0
+      DUMASO_LINK1=libduma.so.0
+      DUMASO_LINK2=libduma.so
+      CFLAGS= -g -O0
+      CPPFLAGS= -g -O0
+      LIBS=-lpthread
+      EXEPOSTFIX=
+    endif
   endif
 endif
 
