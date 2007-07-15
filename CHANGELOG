@@ -3,6 +3,11 @@ CHANGELOG:
 ==========
 
 2.5.3
+  * added simple Makefiles for examples
+  * dumapp.h now keeps C macro definitions
+  * support for max osx when calling make with OS=osx
+  * support for win32 cygwin when calling make with OSTYPE=cygwin
+  (2007-07-14, HA)
   * bugfix in createconf.c for Win32 but non Visual C++
   * got cygwin to work:
       switched off stacktrace (before trying to integrate in Makefile)
