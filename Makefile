@@ -87,12 +87,16 @@ CXX=g++
 AR=ar
 INSTALL=install
 
+# dynamic dependencies
+DUMA_DYN_DEPS = $(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
+
 
 # some OS specific:
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
     CURPATH=./
+    DUMA_DYN_DEPS=
     DUMASO=
     CFLAGS= -g -O0
     CPPFLAGS= -g -O0
@@ -100,9 +104,10 @@ ifeq ($(OS), Windows_NT)
     EXEPOSTFIX=.exe
   else
     ifeq ($(OSTYPE), cygwin)
-      # call make OSTYPE=cygwin 
+      # call make OSTYPE=cygwin
       DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
       CURPATH=./
+      DUMA_DYN_DEPS=
       DUMASO=
       CFLAGS= -g -O0 -DWIN32
       CPPFLAGS= -g -O0 -DWIN32
@@ -111,6 +116,7 @@ ifeq ($(OS), Windows_NT)
     else
       DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
       CURPATH=./
+      DUMA_DYN_DEPS=
       DUMASO=
       CFLAGS= -g -O0 -DWIN32
       CPPFLAGS= -g -O0 -DWIN32
@@ -124,6 +130,7 @@ else
     # call: make OS=osx
     DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
     CURPATH=./
+    DUMA_DYN_DEPS=
     DUMASO=libduma.dylib
     DUMASO_LINK1=libduma.dylib
     CFLAGS= -g -O0
@@ -162,15 +169,20 @@ OBJECTS = dumapp.o duma.o sem_inc.o print.o
 
 SO_OBJECTS = dumapp_so.o duma_so.o sem_inc_so.o print_so.o
 
-all:	libduma.a $(DUMASO) tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
-	@ echo "Testing DUMA."
-	@ echo "After the last test, it should print that the test has PASSED."
+all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) $(DUMA_DYN_DEPS)
+	@ echo
+	@ echo "Testing DUMA (static library):"
 	$(CURPATH)dumatest$(EXEPOSTFIX)
 	$(CURPATH)tstheap$(EXEPOSTFIX) 3072
 	$(CURPATH)testoperators$(EXEPOSTFIX)
+	@ echo
+	@ echo "DUMA static confidence test PASSED."
+	@ echo
+	@ echo "Testing DUMA (dynamic library)."
 	(export LD_PRELOAD=./$(DUMASO); exec $(CURPATH)tstheap_so 3072)
 	@ echo
-	@ echo "DUMA confidence test PASSED."
+	@ echo "DUMA dynamic confidence test PASSED."
+	@ echo
 
 install: libduma.a duma.3 $(DUMASO)
 	$(INSTALL) -m 755 duma.sh $(BIN_INSTALL_DIR)/duma
