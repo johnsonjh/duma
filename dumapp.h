@@ -199,3 +199,4 @@
 
 #endif /*	end ifdef DUMA_NO_CPP_SUPPORT */
 
+#include "duma.h"
