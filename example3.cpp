@@ -1,10 +1,11 @@
-#include <malloc.h>
+#include <stdlib.h>
 #include <duma.h>
 
-void main()
+int main()
 {
   int *pi = (int*)malloc(10*sizeof(int));
   int i;
   for(i=0; i<10; ++i)
     pi[i] = i;
+  return 0;
 }
