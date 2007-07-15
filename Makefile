@@ -81,6 +81,15 @@ DUMA_SO_OPTIONS = $(PIC) -DDUMA_SO_LIBRARY
 # DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
 # also define 'WIN32'
 
+# some defaults:
+CC=gcc
+CXX=g++
+AR=ar
+INSTALL=install
+
+
+# some OS specific:
+
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
     CURPATH=./
@@ -91,14 +100,15 @@ ifeq ($(OS), Windows_NT)
     EXEPOSTFIX=.exe
   else
     ifeq ($(OSTYPE), cygwin)
+      # call make OSTYPE=cygwin 
+      DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
       CURPATH=./
       DUMASO=
-      CFLAGS= -g -O0
-      CPPFLAGS= -g -O0
+      CFLAGS= -g -O0 -DWIN32
+      CPPFLAGS= -g -O0 -DWIN32
       LIBS=
       EXEPOSTFIX=.exe
     else
-# my cygwin gets here!!!
       DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
       CURPATH=./
       DUMASO=
@@ -109,21 +119,29 @@ ifeq ($(OS), Windows_NT)
     endif
   endif
 else
-  CURPATH=./
-  DUMASO=libduma.so.0.0
-  DUMASO_LINK1=libduma.so.0
-  DUMASO_LINK2=libduma.so
-  CFLAGS= -g -O0
-  CPPFLAGS= -g -O0
-  LIBS=-lpthread
-  EXEPOSTFIX=
+  ifeq ($(OS), osx)
+    # tested on darwin 8.0, which is the base for mac-osx
+    # call: make OS=osx
+    DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
+    CURPATH=./
+    DUMASO=libduma.dylib
+    DUMASO_LINK1=libduma.dylib
+    CFLAGS= -g -O0
+    CPPFLAGS= -g -O0
+    LIBS=-lpthread
+    EXEPOSTFIX=
+  else
+    CURPATH=./
+    DUMASO=libduma.so.0.0
+    DUMASO_LINK1=libduma.so.0
+    DUMASO_LINK2=libduma.so
+    CFLAGS= -g -O0
+    CPPFLAGS= -g -O0
+    LIBS=-lpthread
+    EXEPOSTFIX=
+  endif
 endif
 
-
-CC=gcc
-CXX=g++
-AR=ar
-INSTALL=install
 
 ############################################################
 
@@ -219,11 +237,23 @@ dumatestpp_so$(EXEPOSTFIX): dumatestpp_so.o
 
 $(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
 
-ifneq ($(OS), Windows_NT)
+ifeq ($(OS), Windows_NT)
+  # do nothing
+else
+  ifeq ($(OS), osx)
+    # overthink!
+    # switch off dynamic libarary for now
+#$(DUMASO): duma_config.h $(SO_OBJECTS)
+#	$(CXX) -g -Wl -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+#	$(CXX) -g -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+
+  else
 
 $(DUMASO): duma_config.h $(SO_OBJECTS)
 	$(CXX) -g -shared -Wl,-soname,$(DUMASO) -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
 	$(CXX) -g -shared -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+
+  endif
 
 endif
 
