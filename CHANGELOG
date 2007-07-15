@@ -3,7 +3,8 @@ CHANGELOG:
 ==========
 
 2.5.3
-  * added simple Makefiles for examples
+  * added simple Makefiles for examples in subdir example_makes/ex*/
+  * modified Makefile to avoid build of shared libs/executables specific to OS
   * dumapp.h now keeps C macro definitions
   * support for max osx when calling make with OS=osx
   * support for win32 cygwin when calling make with OSTYPE=cygwin
