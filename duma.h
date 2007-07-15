@@ -36,7 +36,9 @@
 
 /* for enabling inclusion of duma.h after inclusion of efencint.h */
 /* remove previous definitions */
+#define SKIP_DUMA_NO_CXX
 #include "noduma.h"
+#undef SKIP_DUMA_NO_CXX
 
 #include "duma_config.h"
 
