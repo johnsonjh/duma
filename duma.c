@@ -89,7 +89,7 @@
 #include "sem_inc.h"
 #include "paging.h"
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilename);
 #endif
 
@@ -203,8 +203,8 @@ struct _DUMA_Slot
 #endif
 
 /* Feature currently only works on win32 */
-#if defined(WIN32) && !defined(__CYGWIN__)
-  char*				stacktrace; /* stacktrace of allocation */
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+  char            * stacktrace; /* stacktrace of allocation */
 #endif
 
 #ifdef DUMA_EXPLICIT_INIT
@@ -1004,7 +1004,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 	struct _DUMA_Slot * emptySlots[2];
 	DUMA_ADDR           intAddr, userAddr, protAddr, endAddr;
 	size_t              internalSize;
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 	char				stacktrace[601];
 	char*				ptrStacktrace;
 #endif
@@ -1013,7 +1013,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 
 	DUMA_ASSERT( 0 != _duma_allocList );
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 	// When getting the stack trace memory will be allocated
 	// via DUMA.  In situations were additional slots must
 	// be allocated we must do this prior to getting a pointer
@@ -1337,7 +1337,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 		/* initialise no mans land of slot */
 		_duma_init_slack( fullSlot );
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 		if(!_DUMA_IN_DUMA && duma_init_state && DUMA_OUTPUT_STACKTRACE)
 		{
 			_DUMA_IN_DUMA = 1;
@@ -1548,7 +1548,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 		slot->filename      = 0;
 		slot->lineno        = 0;
 #endif
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 		if(slot->stacktrace)
 		{
 			slot->stacktrace = 0;
@@ -2084,7 +2084,7 @@ void  DUMA_delFrame(void)
 				slot->filename,
 				slot->lineno);
 
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 				if(DUMA_OUTPUT_STACKTRACE)
 				{
 					DUMA_Print("Stacktrace of allocation:\n%s\n",
@@ -2094,7 +2094,7 @@ void  DUMA_delFrame(void)
 				++nonFreed;
 			}
 		}
-	
+
 		if (nonFreed)
 			DUMA_Abort("DUMA_delFrame(): Found non free'd pointers.\n");
 
@@ -2123,7 +2123,7 @@ __attribute ((destructor))
 #endif
 _duma_exit(void)
 {
-#if defined(WIN32) && !defined(__CYGWIN__)
+#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 	// Cleanup memory owned by the stack library
 	// wouldn't do to leak memory :)
 	StackTraceCleanup();
