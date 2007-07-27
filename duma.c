@@ -543,39 +543,10 @@ void _duma_assert(const char * exprstr, const char * filename, int lineno)
 }
 
 
-/* Function: duma_init
- *
- * duma_init sets configuration settings.  Can sometimes cause problems
- * when called from _duma_init.
- *
- * duma_init is called from _duma_init unless DUMA_EXPLICIT_INIT
- * is defined at compile time.
- *
- * See Also: <_duma_init>
- */
-#ifndef DUMA_EXPLICIT_INIT
 static
-#endif
-void duma_init(void)
+void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
 {
-  char            * string;
-  void            * testAlloc;
-  DUMA_TLSVARS_T  * duma_tls;
-
-
-  /* avoid double call, when initialization already in progress */
-  if ( duma_init_state >= DUMAIS_IN_INIT && duma_init_state <= DUMAIS_OUT_INIT )
-    return;
-  else
-  {
-#if DUMA_DETOURS
-	  _duma_init();
-#endif
-
-	  duma_init_state = DUMAIS_IN_INIT;
-  }
-
-  duma_tls = GET_DUMA_TLSVARS();
+  const char * string;
 
   /*
    * Import the user's environment specification of the default
@@ -731,6 +702,46 @@ void duma_init(void)
 		DUMA_DISABLE_BANNER = (atoi(string) != 0);
 	if ( !DUMA_DISABLE_BANNER )
 		DUMA_Print(version);
+}
+
+
+
+/* Function: duma_init
+ *
+ * duma_init sets configuration settings.  Can sometimes cause problems
+ * when called from _duma_init.
+ *
+ * duma_init is called from _duma_init unless DUMA_EXPLICIT_INIT
+ * is defined at compile time.
+ *
+ * See Also: <_duma_init>
+ */
+#ifndef DUMA_EXPLICIT_INIT
+static
+#endif
+void duma_init(void)
+{
+  void            * testAlloc;
+  DUMA_TLSVARS_T  * duma_tls;
+
+
+  /* avoid double call, when initialization already in progress */
+  if ( duma_init_state >= DUMAIS_IN_INIT && duma_init_state <= DUMAIS_OUT_INIT )
+    return;
+  else
+  {
+#if DUMA_DETOURS
+	  _duma_init();
+#endif
+
+	  duma_init_state = DUMAIS_IN_INIT;
+  }
+
+  duma_tls = GET_DUMA_TLSVARS();
+
+  duma_getenvvars( duma_tls );
+
+
 
 
 #if ( !defined(DUMA_NO_LEAKDETECTION) && ( defined(DUMA_PREFER_ATEXIT) || !defined(DUMA_GNU_INIT_ATTR) ) )
