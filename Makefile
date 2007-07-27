@@ -86,6 +86,8 @@ CC=gcc
 CXX=g++
 AR=ar
 INSTALL=install
+RM=rm
+RMFORCE=rm -f
 
 # dynamic dependencies
 DUMA_DYN_DEPS = $(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
@@ -95,7 +97,12 @@ DUMA_DYN_DEPS = $(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
 
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
-    CURPATH=./
+    # call mingw32-make OSTYPE=msys
+    # from Windows command prompt
+    # having added the PATH for MINGW/bin
+    RM=del
+    RMFORCE=del /F
+    CURPATH=
     DUMA_DYN_DEPS=
     DUMASO=
     CFLAGS= -g -O0
@@ -201,14 +208,14 @@ install: libduma.a duma.3 $(DUMASO)
 	$(INSTALL) -m 755 duma.sh $(BIN_INSTALL_DIR)/duma
 	$(INSTALL) -m 644 libduma.a $(LIB_INSTALL_DIR)
 	$(INSTALL) -m 755 $(DUMASO) $(LIB_INSTALL_DIR)
-	- rm -f $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
+	- $(RMFORCE) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
 	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
-	- rm -f $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
+	- $(RMFORCE) $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
 	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
 	$(INSTALL) -m 644 duma.3 $(MAN_INSTALL_DIR)/duma.3
 
 clean:
-	- rm -f $(OBJECTS) $(SO_OBJECTS) createconf.o tstheap.o dumatest.o dumatestpp.o \
+	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) createconf.o tstheap.o dumatest.o dumatestpp.o \
 		tstheap_so.o dumatestpp_so.o testoperators.o \
 		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) createconf$(EXEPOSTFIX) \
 		libduma.a $(DUMASO) libduma.cat DUMA.shar \
@@ -224,39 +231,39 @@ DUMA.shar: $(PACKAGE_SOURCE)
 shar: DUMA.shar
 
 libduma.a: duma_config.h $(OBJECTS)
-	- rm -f libduma.a
+	- $(RMFORCE) libduma.a
 	$(AR) crv libduma.a $(OBJECTS)
 
 
-duma_config.h: createconf$(EXEPOSTFIX)
-	- $(CURPATH)createconf$(EXEPOSTFIX) >duma_config.h
+duma_config.h: createconf$(EXEPOSTFIX) createconf.o createconf.c
+	- $(CURPATH)createconf$(EXEPOSTFIX)
 
 createconf$(EXEPOSTFIX): createconf.o
-	- rm -f createconf$(EXEPOSTFIX)
+	- $(RMFORCE) createconf$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) $(DUMA_OPTIONS) createconf.o -o createconf$(EXEPOSTFIX)
 
 tstheap$(EXEPOSTFIX): libduma.a tstheap.o
-	- rm -f tstheap$(EXEPOSTFIX)
+	- $(RMFORCE) tstheap$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) tstheap.o libduma.a -o tstheap$(EXEPOSTFIX) $(LIBS)
 
 dumatest$(EXEPOSTFIX): libduma.a dumatest.o
-	- rm -f dumatest$(EXEPOSTFIX)
+	- $(RMFORCE) dumatest$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) dumatest.o libduma.a -o dumatest$(EXEPOSTFIX) $(LIBS)
 
 dumatestpp$(EXEPOSTFIX): libduma.a dumatestpp.o dumapp.h
-	- rm -f dumatestpp$(EXEPOSTFIX)
+	- $(RMFORCE) dumatestpp$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp$(EXEPOSTFIX) $(LIBS)
 
 testoperators$(EXEPOSTFIX): libduma.a testoperators.o dumapp.h
-	- rm -f testoperators$(EXEPOSTFIX)
+	- $(RMFORCE) testoperators$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators$(EXEPOSTFIX) $(LIBS)
 
 tstheap_so$(EXEPOSTFIX): tstheap_so.o
-	- rm -f tstheap_so$(EXEPOSTFIX)
+	- $(RMFORCE) tstheap_so$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) tstheap_so.o -o tstheap_so$(EXEPOSTFIX) $(LIBS)
 
 dumatestpp_so$(EXEPOSTFIX): dumatestpp_so.o
-	- rm -f dumatestpp_so$(EXEPOSTFIX)
+	- $(RMFORCE) dumatestpp_so$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) dumatestpp_so.o -o dumatestpp_so$(EXEPOSTFIX) $(LIBS)
 
 
