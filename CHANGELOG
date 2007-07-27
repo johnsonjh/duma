@@ -2,6 +2,12 @@
 CHANGELOG:
 ==========
 
+2.5.4
+  * support for win32 mingw when calling make with OSTYPE=msys
+      call "mingw32-make OSTYPE=msys" from Windows command prompt
+      having added the PATH for MINGW/bin
+  (2007-07-28, HA)
+
 2.5.3
   * added simple Makefiles for examples in subdir example_makes/ex*/
   * modified Makefile to avoid build of shared libs/executables specific to OS
