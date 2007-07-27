@@ -281,7 +281,10 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 {
 	FILE * f = fopen(filename, "w");
 	if (!f)
+  {
+    fprintf(stderr, "createconf: Error: could not open file '%s'\n", filename);
 		return;
+  }
 
 	fprintf(f, "/*\n");
 	fprintf(f, " * WARNING: DO NOT CHANGE THIS FILE!\n");
@@ -686,6 +689,19 @@ int main()
 	char filename[1024];
 
 	unsigned long pagesize = Page_Size();
+
+#if defined(__MINGW32__) || defined(__MINGW64__)
+  fprintf(stderr, "createconf: Platform is MINGW\n");
+#endif
+#if defined(__CYGWIN__)
+  fprintf(stderr, "createconf: Platform is CYGWIN\n");
+#endif
+#if defined(WIN32)
+  fprintf(stderr, "createconf: WIN32 is set\n");
+#endif
+#if defined(_MSC_VER)
+  fprintf(stderr, "createconf: Compiler is MS Visual C++ (_MSC_VER set)\n");
+#endif
 
 	iNumIntTypes = sizeof( sIntTypes ) / sizeof( sIntTypes[0] );
 
