@@ -5,9 +5,16 @@ I. Linux/Unix environments (including Cygwin and MinGW):
 
   Configure the options by editing the Makefile.
     Read carefully the description of options at top of the Makefile.
+    Take care for the special OS/OSTYPE depending sections.
     Especially if you are going to use the LD_PRELOAD mechanism.
 
   Call GNU make often called 'gmake' for building the library.
+  GNU make is called 'mingw32-make' for MinGW.
+
+  Add option 'OSTYPE=msys' when calling make for MinGW.
+  Add option 'OSTYPE=cygwin' when calling make for Cygwin.
+  Add option 'OS=osx' when calling make for MacOS X or Darwin.
+  Add option 'OS=freebsd' when calling make for FreeBSD.
 
   Get system user with 'su', if you are going to install into
     system directories
@@ -27,4 +34,5 @@ II. Windows 2000/XP, Visual Studio Environments:
 
 Hayati Ayguen
 
-15 September 2005
+15 September 2005,
+updated 31 July 2007
