@@ -7,6 +7,8 @@ CHANGELOG:
       call "mingw32-make OSTYPE=msys" from Windows command prompt
       having added the PATH for MINGW/bin
   (2007-07-28, HA)
+  * echo sigle dot '.' for windows commando shell
+  (2007-07-31, HA)
 
 2.5.3
   * added simple Makefiles for examples in subdir example_makes/ex*/
