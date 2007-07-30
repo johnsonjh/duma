@@ -304,8 +304,6 @@ static void Page_DenyAccess(void * address, size_t size)
 #endif
 }
 
-extern struct _DUMA_Slot;
-
 
 /* Function: Page_Delete
  *
