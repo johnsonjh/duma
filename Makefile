@@ -88,6 +88,8 @@ AR=ar
 INSTALL=install
 RM=rm
 RMFORCE=rm -f
+ECHO=echo
+ECHOLF=echo
 
 # dynamic dependencies
 DUMA_DYN_DEPS = $(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
@@ -100,8 +102,13 @@ ifeq ($(OS), Windows_NT)
     # call mingw32-make OSTYPE=msys
     # from Windows command prompt
     # having added the PATH for MINGW/bin
+    # using explicit initialization to avoid leak report
+    # from __w32_sharedptr_initialize() function
+    DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
     RM=del
-    RMFORCE=del /F
+    RMFORCE=del /F 2>nul
+    ECHO=echo
+    ECHOLF=echo .
     CURPATH=
     DUMA_DYN_DEPS=
     DUMASO=
@@ -190,19 +197,19 @@ OBJECTS = dumapp.o duma.o sem_inc.o print.o
 SO_OBJECTS = dumapp_so.o duma_so.o sem_inc_so.o print_so.o
 
 all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) $(DUMA_DYN_DEPS)
-	@ echo
-	@ echo "Testing DUMA (static library):"
+	@ $(ECHOLF)
+	@ $(ECHO) "Testing DUMA (static library):"
 	$(CURPATH)dumatest$(EXEPOSTFIX)
 	$(CURPATH)tstheap$(EXEPOSTFIX) 3072
 	$(CURPATH)testoperators$(EXEPOSTFIX)
-	@ echo
-	@ echo "DUMA static confidence test PASSED."
-	@ echo
-	@ echo "Testing DUMA (dynamic library)."
+	@ $(ECHOLF)
+	@ $(ECHO) "DUMA static confidence test PASSED."
+	@ $(ECHOLF)
+	@ $(ECHO) "Testing DUMA (dynamic library)."
 	(export LD_PRELOAD=./$(DUMASO); exec $(CURPATH)tstheap_so 3072)
-	@ echo
-	@ echo "DUMA dynamic confidence test PASSED."
-	@ echo
+	@ $(ECHOLF)
+	@ $(ECHO) "DUMA dynamic confidence test PASSED."
+	@ $(ECHOLF)
 
 install: libduma.a duma.3 $(DUMASO)
 	$(INSTALL) -m 755 duma.sh $(BIN_INSTALL_DIR)/duma
