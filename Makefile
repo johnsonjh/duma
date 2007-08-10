@@ -94,7 +94,6 @@ ECHOLF=echo
 # dynamic dependencies
 DUMA_DYN_DEPS = $(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
 
-
 # some OS specific:
 
 ifeq ($(OS), Windows_NT)
@@ -164,14 +163,28 @@ else
       LIBS=-lpthread
       EXEPOSTFIX=
     else
-      CURPATH=./
-      DUMASO=libduma.so.0.0
-      DUMASO_LINK1=libduma.so.0
-      DUMASO_LINK2=libduma.so
-      CFLAGS= -g -O0
-      CPPFLAGS= -g -O0
-      LIBS=-lpthread
-      EXEPOSTFIX=
+      ifeq ($(OS), solaris)
+        CURPATH=./
+        DUMA_DYN_DEPS=
+        DUMASO=
+        DUMASO_LINK1=
+        DUMASO_LINK2=
+        CFLAGS= -g -O0
+        CPPFLAGS= -g -O0
+        LDFLAGS+=-lgcc_s
+        LDOPTIONS+=-lgcc_s
+        LIBS=-Wl,-R/opt/sfw/lib -lpthread
+        EXEPOSTFIX=
+      else
+        CURPATH=./
+        DUMASO=libduma.so.0.0
+        DUMASO_LINK1=libduma.so.0
+        DUMASO_LINK2=libduma.so
+        CFLAGS= -g -O0
+        CPPFLAGS= -g -O0
+        LIBS=-lpthread
+        EXEPOSTFIX=
+      endif
     endif
   endif
 endif
