@@ -77,6 +77,8 @@ static const char * stringErrorReport(void)
                 , NULL
                );
   return (char*)lpMsgBuf; /* "Unknown error.\n"; */
+#elif defined(DUMA_NO_STRERROR)
+  return DUMA_StrError(errno);
 #else
   return strerror(errno);
 #endif

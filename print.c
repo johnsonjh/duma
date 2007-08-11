@@ -373,4 +373,27 @@ DUMA_Exit(const char * pattern, ...)
   _exit(-1);
 }
 
+
+static void
+DUMA_nonvsprintf(char* buffer, const char * pattern, ...)
+{
+  int len;
+  va_list  args;
+
+  va_start(args, pattern);
+  len = DUMA_sprintf(buffer, pattern, args);
+  va_end(args);
+  if (len <= 0) buffer[0]=0;
+}
+
+
+const char * DUMA_StrError(int duma_errno)
+{
+  static char acStrError[STRING_BUFFER_SIZE];
+
+  DUMA_nonvsprintf(acStrError, "System Error Number 'errno' from Standard C Library is %i\n", duma_errno);
+  return acStrError;
+}
+
+
 /* end */
