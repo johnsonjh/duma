@@ -1,7 +1,7 @@
 
 /*
  * DUMA - Red-Zone memory allocator.
- * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
@@ -41,7 +41,8 @@ extern "C" {
 void DUMA_Abort(const char * pattern, ...);
 void DUMA_Print(const char * pattern, ...);
 void DUMA_Exit(const char * pattern, ...);
-const char * DUMA_StrError(int errno);
+void DUMA_sprintf(char* buffer, const char * pattern, ...);
+const char * DUMA_strerror(int errno);
 
 #ifdef __cplusplus
 } /* extern "C" */
