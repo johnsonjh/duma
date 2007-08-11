@@ -37,6 +37,9 @@
 # add "-DDUMA_NO_HANG_MSG" (without quotes)
 #    set this if you want to suppress the extra messages around atexit().
 #
+# add "-DDUMA_NO_STRERROR" (without quotes)
+#    set this if you want to suppress calls to strerror() to avoid recursion
+#    on specific platforms.
 #
 ########################################
 #
@@ -57,6 +60,7 @@
 #    - DUMA_USE_FRAMENO
 #    - DUMA_OLD_NEW_MACRO
 #    - DUMA_OLD_DEL_MACRO
+#    - DUMA_NO_STRERROR
 #
 ########################################
 
@@ -164,13 +168,14 @@ else
       EXEPOSTFIX=
     else
       ifeq ($(OS), solaris)
+        DUMA_OPTIONS += -DDUMA_NO_STRERROR
         CURPATH=./
         DUMA_DYN_DEPS=
         DUMASO=
         DUMASO_LINK1=
         DUMASO_LINK2=
-        CFLAGS= -g -O0 -DDUMA_NO_STRERROR
-        CPPFLAGS= -g -O0 -DDUMA_NO_STRERROR
+        CFLAGS= -g -O0
+        CPPFLAGS= -g -O0
         LDFLAGS+=-lgcc_s
         LDOPTIONS+=-lgcc_s
         LIBS=-Wl,-R/opt/sfw/lib -lpthread
