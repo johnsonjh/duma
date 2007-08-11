@@ -4,7 +4,7 @@
 /*
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
- * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
@@ -78,7 +78,7 @@ static const char * stringErrorReport(void)
                );
   return (char*)lpMsgBuf; /* "Unknown error.\n"; */
 #elif defined(DUMA_NO_STRERROR)
-  return DUMA_StrError(errno);
+  return DUMA_strerror(errno);
 #else
   return strerror(errno);
 #endif
