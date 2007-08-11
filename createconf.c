@@ -385,6 +385,16 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 	fprintf(f, "#undef DUMA_OLD_DEL_MACRO\n");
 	fprintf(f, "#endif\n\n");
 
+#ifndef DUMA_NO_STRERROR
+	fprintf(f, "#ifdef DUMA_NO_STRERROR\n");
+	fprintf(f, "#undef DUMA_NO_STRERROR\n");
+	fprintf(f, "#endif\n\n");
+#else
+	fprintf(f, "#ifndef DUMA_NO_STRERROR\n");
+	fprintf(f, "#define DUMA_NO_STRERROR\n");
+	fprintf(f, "#endif\n\n");
+#endif
+
 #ifndef DUMA_SO_NO_HANG_MSG
 	fprintf(f, "#ifdef DUMA_NO_HANG_MSG\n");
 	fprintf(f, "#undef DUMA_NO_HANG_MSG\n");
@@ -617,6 +627,16 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 #else
 	fprintf(f, "#ifndef DUMA_OLD_DEL_MACRO\n");
 	fprintf(f, "#define DUMA_OLD_DEL_MACRO\n");
+	fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_NO_STRERROR
+	fprintf(f, "#ifdef DUMA_NO_STRERROR\n");
+	fprintf(f, "#undef DUMA_NO_STRERROR\n");
+	fprintf(f, "#endif\n\n");
+#else
+	fprintf(f, "#ifndef DUMA_NO_STRERROR\n");
+	fprintf(f, "#define DUMA_NO_STRERROR\n");
 	fprintf(f, "#endif\n\n");
 #endif
 
