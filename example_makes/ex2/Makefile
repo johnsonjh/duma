@@ -2,7 +2,11 @@
 DUMADIR=../..
 CPPFLAGS=-g -O0 -I$(DUMADIR)
 LFLAGS=$(DUMADIR)/libduma.a
-LIBS=-lpthread
+ifeq ($(OS), Windows_NT)
+  LIBS=
+else
+  LIBS=-lpthread
+endif
 
 CC=gcc
 CXX=g++
