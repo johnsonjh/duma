@@ -2,6 +2,15 @@
 CHANGELOG:
 ==========
 
+2.5.5
+  * support for Solaris (Solaris 10 with the GNU toolchain from Companion CD)
+  * fix for solaris: strerror() calls calloc() leading to recursion
+    added preprocessor option DUMA_NO_STRERROR
+  * internal redesign:
+    collected several global static variables to one structure
+    and several global non static variables to other structure
+    each with prepended and appended protection space
+
 2.5.4
   * support for win32 mingw when calling make with OSTYPE=msys
       call "mingw32-make OSTYPE=msys" from Windows command prompt

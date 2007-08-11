@@ -15,6 +15,7 @@ I. Linux/Unix environments (including Cygwin and MinGW):
   Add option 'OSTYPE=cygwin' when calling make for Cygwin.
   Add option 'OS=osx' when calling make for MacOS X or Darwin.
   Add option 'OS=freebsd' when calling make for FreeBSD.
+  Add option 'OS=solaris' when calling make for Solaris.
 
   Get system user with 'su', if you are going to install into
     system directories
@@ -31,8 +32,19 @@ II. Windows 2000/XP, Visual Studio Environments:
   Installation is not necessary. Just set INCLUDE and LIBS directories
   in your environment or project.
 
+III. Solaris Environment:
+
+  Add the location(s) of the GNU Toolchain (gmake, gcc, ar, ..) to the PATH:
+  On my Solaris 10 installation with the Companion CD it is:
+    /opt/sfw/bin and /opt/sfw/lib/bin
+
+  Also notice that the Makefile has to contain some special settings so that
+  the compiled executable can dynmically find and link to libstdc++. Have a
+  look at the solaris section in DUMA's Makefile.
+
 
 Hayati Ayguen
 
 15 September 2005,
 updated 31 July 2007
+updated 11 August 2007
