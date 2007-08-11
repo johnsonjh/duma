@@ -2,7 +2,7 @@
 /*
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
- * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
@@ -76,7 +76,7 @@
 
 static int	sprintNumber(char* obuffer, DUMA_ADDR number, DUMA_ADDR base);
 static int	sprintLong(char* obuffer, long number, long base);
-static int	DUMA_sprintf(char* buffer, const char *pattern, va_list args);
+static int	DUMA_vsprintf(char* buffer, const char *pattern, va_list args);
 
 
 /*
@@ -145,7 +145,7 @@ static int sprintLong(char* obuffer, long number, long base)
 }
 
 
-/* Function: DUMA_sprintf
+/* Function: DUMA_vsprintf
  *
  * internal function to print a formatted string into a buffer
  * int sprintf(char* buffer, const char *pattern, va_list args)
@@ -159,7 +159,7 @@ static int sprintLong(char* obuffer, long number, long base)
  *	 %s = string teminated with '\0'
  *	 %c = char
  */
-static int DUMA_sprintf(char* buffer, const char *pattern, va_list args)
+static int DUMA_vsprintf(char* buffer, const char *pattern, va_list args)
 {
   char	  c;
   static const char  bad_pattern[] = "\nDUMA: Bad pattern specifier %%%c in DUMA_Print().\n";
@@ -266,11 +266,11 @@ DUMA_Abort(const char * pattern, ...)
   char buffer[STRING_BUFFER_SIZE];
   int lena, lenb;
   va_list  args;
-  va_start(args, pattern);
 
+  va_start(args, pattern);
   strcpy(buffer, "\nDUMA Aborting: ");
   lena = strlen(buffer);
-  lenb = DUMA_sprintf(&buffer[lena], pattern, args);
+  lenb = DUMA_vsprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
   DUMA_Print("%s", buffer);
   va_end(args);
@@ -302,46 +302,36 @@ void
 DUMA_Print(const char * pattern, ...)
 {
   char buffer[STRING_BUFFER_SIZE];
-  int len;
-  int fd;
+  int len, fd;
   va_list  args;
+
   va_start(args, pattern);
-
-  len = DUMA_sprintf(buffer, pattern, args);
+  len = DUMA_vsprintf(buffer, pattern, args);
+  va_end(args);
 
 #ifdef WIN32
-	if(DUMA_OUTPUT_DEBUG)
-	{
-		OutputDebugString(buffer);
-	}
+  if(DUMA_OUTPUT_DEBUG)
+    OutputDebugString(buffer);
 #endif
 
-	if(DUMA_OUTPUT_STDOUT)
-	{
-		write(1, buffer, len);
-	}
+  if(DUMA_OUTPUT_STDOUT)
+    write(1, buffer, len);
 
-	if(DUMA_OUTPUT_STDERR)
-	{
-		write(2, buffer, len);
-	}
+  if(DUMA_OUTPUT_STDERR)
+    write(2, buffer, len);
 
-	if(DUMA_OUTPUT_FILE != NULL)
-	{
+  if(DUMA_OUTPUT_FILE != NULL)
+  {
 #ifdef WIN32
-		fd = _open(DUMA_OUTPUT_FILE, _O_APPEND|_O_CREAT|_O_WRONLY);
+    fd = _open(DUMA_OUTPUT_FILE, _O_APPEND|_O_CREAT|_O_WRONLY);
+    write(fd, buffer, len);
+    _close(fd);
 #else
-		fd = open(DUMA_OUTPUT_FILE, O_APPEND|O_CREAT|O_WRONLY);
-#endif
-		write(fd, buffer, len);
-#ifdef WIN32
-		_close(fd);
-#else
-                close(fd);
+    fd = open(DUMA_OUTPUT_FILE, O_APPEND|O_CREAT|O_WRONLY);
+    write(fd, buffer, len);
+    close(fd);
 #endif
 	}
-
-	va_end(args);
 }
 
 
@@ -357,11 +347,11 @@ DUMA_Exit(const char * pattern, ...)
   char buffer[STRING_BUFFER_SIZE];
   int lena, lenb;
   va_list  args;
-  va_start(args, pattern);
 
+  va_start(args, pattern);
   strcpy(buffer, "\nDUMA Exiting: ");
   lena = strlen(buffer);
-  lenb = DUMA_sprintf(&buffer[lena], pattern, args);
+  lenb = DUMA_vsprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
   DUMA_Print("%s", buffer);
   va_end(args);
@@ -374,24 +364,26 @@ DUMA_Exit(const char * pattern, ...)
 }
 
 
-static void
-DUMA_nonvsprintf(char* buffer, const char * pattern, ...)
+/* Function: DUMA_sprintf */
+void
+DUMA_sprintf(char* buffer, const char * pattern, ...)
 {
   int len;
   va_list  args;
 
   va_start(args, pattern);
-  len = DUMA_sprintf(buffer, pattern, args);
+  len = DUMA_vsprintf(buffer, pattern, args);
   va_end(args);
   if (len <= 0) buffer[0]=0;
 }
 
 
-const char * DUMA_StrError(int duma_errno)
+const char *
+DUMA_strerror(int duma_errno)
 {
   static char acStrError[STRING_BUFFER_SIZE];
 
-  DUMA_nonvsprintf(acStrError, "System Error Number 'errno' from Standard C Library is %i\n", duma_errno);
+  DUMA_sprintf(acStrError, "System Error Number 'errno' from Standard C Library is %i\n", duma_errno);
   return acStrError;
 }
 
