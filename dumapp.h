@@ -138,59 +138,59 @@
     #endif /* DUMA_OLD_NEW_MACRO */
 
     #ifdef DUMA_OLD_DEL_MACRO
-      /* always use DUMA_TLS.DelPtr/DUMA_DeleteFile/DUMA_DeleteLine
+      /* always use _duma_g.TLS.DelPtr/DUMA_DeleteFile/DUMA_DeleteLine
        * to allow best possible filename/line reports when
        * non-DUMA deallocations are called from destructors
        */
       /* non-throwing */
-      #define DEL_ELEM(PTR)           for( ++DUMA_TLS.DelPtr,                  \
-                                           DUMA_TLS.Magic = 1;                 \
-                                           DUMA_TLS.Magic;                     \
-                                           DUMA_TLS.Magic = 0,                 \
-                                           --DUMA_TLS.DelPtr                   \
+      #define DEL_ELEM(PTR)           for( ++_duma_g.TLS.DelPtr,               \
+                                           _duma_g.TLS.Magic = 1;              \
+                                           _duma_g.TLS.Magic;                  \
+                                           _duma_g.TLS.Magic = 0,              \
+                                           --_duma_g.TLS.DelPtr                \
                                          ) operator delete  (PTR, __FILE__, __LINE__)
 
-      #define DEL_ARRAY(PTR)          for( ++DUMA_TLS.DelPtr,                  \
-                                           DUMA_TLS.Magic = 1;                 \
-                                           DUMA_TLS.Magic;                     \
-                                           DUMA_TLS.Magic = 0,                 \
-                                           --DUMA_TLS.DelPtr                   \
+      #define DEL_ARRAY(PTR)          for( ++_duma_g.TLS.DelPtr,               \
+                                           _duma_g.TLS.Magic = 1;              \
+                                           _duma_g.TLS.Magic;                  \
+                                           _duma_g.TLS.Magic = 0,              \
+                                           --_duma_g.TLS.DelPtr                \
                                          ) operator delete[](PTR, __FILE__, __LINE__)
       /* explicitly non-throwing */
-      #define DEL_ELEM_NOTHROW(PTR)   for( ++DUMA_TLS.DelPtr,                  \
-                                           DUMA_TLS.Magic = 1;                 \
-                                           DUMA_TLS.Magic;                     \
-                                           DUMA_TLS.Magic = 0,                 \
-                                           --DUMA_TLS.DelPtr                   \
+      #define DEL_ELEM_NOTHROW(PTR)   for( ++_duma_g.TLS.DelPtr,               \
+                                           _duma_g.TLS.Magic = 1;              \
+                                           _duma_g.TLS.Magic;                  \
+                                           _duma_g.TLS.Magic = 0,              \
+                                           --_duma_g.TLS.DelPtr                \
                                          ) operator delete  (PTR, std::nothrow,__FILE__, __LINE__)
-      #define DEL_ARRAY_NOTHROW(PTR)  for( ++DUMA_TLS.DelPtr,                  \
-                                           DUMA_TLS.Magic = 1;                 \
-                                           DUMA_TLS.Magic;                     \
-                                           DUMA_TLS.Magic = 0,                 \
-                                           --DUMA_TLS.DelPtr                   \
+      #define DEL_ARRAY_NOTHROW(PTR)  for( ++_duma_g.TLS.DelPtr,               \
+                                           _duma_g.TLS.Magic = 1;              \
+                                           _duma_g.TLS.Magic;                  \
+                                           _duma_g.TLS.Magic = 0,              \
+                                           --_duma_g.TLS.DelPtr                \
                                          ) operator delete[](PTR, std::nothrow,__FILE__, __LINE__)
     #else
       #ifndef DUMA_NO_THREAD_SAFETY
         /* define a thread safe delete */
         #define delete                for( DUMA_GET_SEMAPHORE(),                         \
-                                           ++DUMA_TLS.DelPtr,                            \
-                                           DUMA_TLS.Magic = 1,                           \
-                                           DUMA_TLS.DelFile[DUMA_TLS.DelPtr] = __FILE__, \
-                                           DUMA_TLS.DelLine[DUMA_TLS.DelPtr] = __LINE__; \
-                                           DUMA_TLS.Magic;                               \
-                                           DUMA_TLS.Magic = 0,                           \
-                                           --DUMA_TLS.DelPtr,                            \
+                                           ++_duma_g.TLS.DelPtr,                         \
+                                           _duma_g.TLS.Magic = 1,                        \
+                                           _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__, \
+                                           _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__; \
+                                           _duma_g.TLS.Magic;                            \
+                                           _duma_g.TLS.Magic = 0,                        \
+                                           --_duma_g.TLS.DelPtr,                         \
                                            DUMA_RELEASE_SEMAPHORE()                      \
                                          ) delete
       #else
         /* also thread safe by using TLS variables */
-        #define delete                for( ++DUMA_TLS.DelPtr,                            \
-                                           DUMA_TLS.Magic = 1,                           \
-                                           DUMA_TLS.DelFile[DUMA_TLS.DelPtr] = __FILE__, \
-                                           DUMA_TLS.DelLine[DUMA_TLS.DelPtr] = __LINE__; \
-                                           DUMA_TLS.Magic;                               \
-                                           DUMA_TLS.Magic = 0,                           \
-                                           --DUMA_TLS.DelPtr                             \
+        #define delete                for( ++_duma_g.TLS.DelPtr,                         \
+                                           _duma_g.TLS.Magic = 1,                        \
+                                           _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__, \
+                                           _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__; \
+                                           _duma_g.TLS.Magic;                            \
+                                           _duma_g.TLS.Magic = 0,                        \
+                                           --_duma_g.TLS.DelPtr                          \
                                          ) delete
       #endif /* DUMA_NO_THREAD_SAFETY */
     #endif /* DUMA_OLD_DEL_MACRO */

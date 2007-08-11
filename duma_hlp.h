@@ -33,9 +33,9 @@
 static int
 reduceProtectedMemory( size_t reductionSizekB )
 {
-  struct _DUMA_Slot * slot            = _duma_allocList;
-  size_t            count           = slotCount;
-  size_t              alreadyReducekB = 0;
+  struct _DUMA_Slot * slot  = _duma_g.allocList;
+  size_t count              = _duma_s.slotCount;
+  size_t alreadyReducekB    = 0;
 
 #ifndef WIN32
   /* Windows VirtualFree(,,MEM_RELEASE) can only free whole allocations. not parts */
@@ -58,15 +58,15 @@ reduceProtectedMemory( size_t reductionSizekB )
 
       if ( alreadyReducekB >= reductionSizekB )
       {
-        sumProtectedMem -= alreadyReducekB;
-        sumAllocatedMem -= alreadyReducekB;
+        _duma_s.sumProtectedMem -= alreadyReducekB;
+        _duma_s.sumAllocatedMem -= alreadyReducekB;
         return 1;
       }
     }
 #endif
   /* 2- deallocate all page(s) with userAddress, empty whole slot */
-  slot  = _duma_allocList;
-  count = slotCount;
+  slot  = _duma_g.allocList;
+  count = _duma_s.slotCount;
   for ( ; count > 0  &&  alreadyReducekB < reductionSizekB; --count, ++slot )
     if ( DUMAST_BEGIN_PROTECTED == slot->state
 #if defined(WIN32)
@@ -93,8 +93,8 @@ reduceProtectedMemory( size_t reductionSizekB )
 
       if ( alreadyReducekB >= reductionSizekB )
       {
-        sumProtectedMem -= alreadyReducekB;
-        sumAllocatedMem -= alreadyReducekB;
+        _duma_s.sumProtectedMem -= alreadyReducekB;
+        _duma_s.sumAllocatedMem -= alreadyReducekB;
         return 1;
       }
     }
@@ -110,8 +110,8 @@ reduceProtectedMemory( size_t reductionSizekB )
 static struct _DUMA_Slot *
 slotForUserAddress(void * address)
 {
-  struct _DUMA_Slot * slot  = _duma_allocList;
-  size_t            count = slotCount;
+  struct _DUMA_Slot * slot  = _duma_g.allocList;
+  size_t            count = _duma_s.slotCount;
 
   for ( ; count > 0; --count, ++slot )
     if ( slot->userAddress == address )
@@ -127,8 +127,8 @@ slotForUserAddress(void * address)
 static struct _DUMA_Slot *
 nearestSlotForUserAddress(void * userAddress)
 {
-  struct _DUMA_Slot * slot  = _duma_allocList;
-  size_t            count = slotCount;
+  struct _DUMA_Slot * slot  = _duma_g.allocList;
+  size_t            count = _duma_s.slotCount;
 
   for ( ; count > 0; --count, ++slot )
     if (   (char*)slot->internalAddress <= (char*)userAddress
@@ -146,8 +146,8 @@ nearestSlotForUserAddress(void * userAddress)
 static struct _DUMA_Slot *
 slotForInternalAddrNextTo(void * address)
 {
-  struct _DUMA_Slot * slot  = _duma_allocList;
-  size_t            count = slotCount;
+  struct _DUMA_Slot * slot  = _duma_g.allocList;
+  size_t            count = _duma_s.slotCount;
 
   for ( ; count > 0; --count, ++slot )
     if ( slot->internalAddress == address )
@@ -165,8 +165,8 @@ slotForInternalAddrNextTo(void * address)
 static struct _DUMA_Slot *
 slotForInternalAddrPrevTo(void * address)
 {
-  struct _DUMA_Slot * slot  = _duma_allocList;
-  size_t            count = slotCount;
+  struct _DUMA_Slot * slot  = _duma_g.allocList;
+  size_t            count = _duma_s.slotCount;
 
   for ( ; count > 0; --count, ++slot )
     if ( (char*)slot->internalAddress + slot->internalSize == address )
@@ -184,10 +184,10 @@ void _duma_init_slack( struct _DUMA_Slot * slot )
 {
   char * accBegAddr, * accEndAddr;
   char * tmpBegAddr, * tmpEndAddr;
-  char   slackfill = (char)DUMA_SLACKFILL;
+  char   slackfill = (char)_duma_s.SLACKFILL;
 
 #ifdef DUMA_EXPLICIT_INIT
-  slot->slackfill = DUMA_SLACKFILL;
+  slot->slackfill = _duma_s.SLACKFILL;
 #endif
 
   /* calculate accessible non-protectable address area */
@@ -207,12 +207,12 @@ void _duma_init_slack( struct _DUMA_Slot * slot )
   tmpBegAddr = accBegAddr;
   tmpEndAddr = (char*)slot->userAddress;
   while (tmpBegAddr < tmpEndAddr)
-    *tmpBegAddr++ = (char)DUMA_SLACKFILL;
+    *tmpBegAddr++ = (char)_duma_s.SLACKFILL;
 
   tmpBegAddr = (char*)slot->userAddress + slot->userSize;
   tmpEndAddr = accEndAddr;
   while (tmpBegAddr < tmpEndAddr)
-    *tmpBegAddr++ = (char)DUMA_SLACKFILL;
+    *tmpBegAddr++ = (char)_duma_s.SLACKFILL;
 }
 
 
@@ -229,7 +229,7 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
 #ifdef DUMA_EXPLICIT_INIT
   slackfill = (char)slot->slackfill;
 #else
-  slackfill = (char)DUMA_SLACKFILL;
+  slackfill = (char)_duma_s.SLACKFILL;
 #endif
 
   /* calculate accessible non-protectable address area */

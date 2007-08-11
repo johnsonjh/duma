@@ -70,10 +70,6 @@
 	DUMA_EXTERN_C int DUMA_OUTPUT_STDERR;
 	DUMA_EXTERN_C char* DUMA_OUTPUT_FILE;
 	DUMA_EXTERN_C int DUMA_OUTPUT_STACKTRACE;
-	DUMA_EXTERN_C struct _DUMA_Slot * _duma_allocList;
-	#ifndef DUMA_NO_CPP_SUPPORT
-	DUMA_EXTERN_C void * _duma_cxx_null_addr;
-	#endif
 	#endif /* DUMA_EXTERNS_DECLARED */
 
 
@@ -125,25 +121,47 @@
   } DUMA_TLSVARS_T;
 #endif
 
-#ifdef DUMA_NO_THREAD_SAFETY
 
-#ifndef DUMA_TLS_DEFINED
-#define DUMA_TLS_DEFINED
-  DUMA_EXTERN_C DUMA_TLSVARS_T DUMA_TLS;
-#endif
+#ifndef DUMA_GLOBALS_DEFINED
+#define DUMA_GLOBALS_DEFINED
 
-  #define GET_DUMA_TLSVARS()  (&DUMA_TLS)
+  typedef struct
+  {
+    /* Protection Space A */
+    char  acSpaceA[2 * DUMA_PAGE_SIZE];
 
-#else
+    /* Variable: _duma_allocList
+     *
+     * _DUMA_allocList points to the array of slot structures used to manage the
+     * malloc arena.
+     */
+    struct _DUMA_Slot * allocList;
 
-#ifndef DUMA_TLS_DEFINED
-#define DUMA_TLS_DEFINED
-  DUMA_EXTERN_C DUMA_TLSVARS_T DUMA_TLS;
-#endif
+    /* Variable: _duma_cxx_null_addr
+     *
+     * _duma_cxx_null_addr is the address C++ new operator returns, when size is 0
+     * two pages get reserved and protected
+     */
+    void * cxx_null_addr;
 
-  #define GET_DUMA_TLSVARS()  (&DUMA_TLS)
 
-#endif
+    /* Variable */
+    DUMA_TLSVARS_T TLS;
+
+
+    /* Protection Space B */
+    char  acSpaceB[2 * DUMA_PAGE_SIZE];
+
+  } DUMA_GLOBALVARS_T;
+
+  DUMA_EXTERN_C DUMA_GLOBALVARS_T _duma_g;
+
+#endif /* DUMA_GLOBALS_DEFINED */
+
+
+
+#define GET_DUMA_TLSVARS()  (&_duma_g.TLS)
+
 
 #ifndef DUMA_SET_ALIGNMENT
   #define DUMA_SET_ALIGNMENT(V)      GET_DUMA_TLSVARS()->ALIGNMENT = (V)
