@@ -10,6 +10,7 @@ CHANGELOG:
     collected several global static variables to one structure
     and several global non static variables to other structure
     each with prepended and appended protection space
+  (2007-08-11, HA)
 
 2.5.4
   * support for win32 mingw when calling make with OSTYPE=msys
