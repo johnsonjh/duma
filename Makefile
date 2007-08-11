@@ -169,8 +169,8 @@ else
         DUMASO=
         DUMASO_LINK1=
         DUMASO_LINK2=
-        CFLAGS= -g -O0
-        CPPFLAGS= -g -O0
+        CFLAGS= -g -O0 -DDUMA_NO_STRERROR
+        CPPFLAGS= -g -O0 -DDUMA_NO_STRERROR
         LDFLAGS+=-lgcc_s
         LDOPTIONS+=-lgcc_s
         LIBS=-Wl,-R/opt/sfw/lib -lpthread
