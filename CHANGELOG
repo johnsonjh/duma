@@ -2,6 +2,10 @@
 CHANGELOG:
 ==========
 
+2.5.6
+  * modified example Makefiles for not linking to pthreads on Windows
+  (2007-08-12, HA)
+
 2.5.5
   * support for Solaris (Solaris 10 with the GNU toolchain from Companion CD)
   * fix for solaris: strerror() calls calloc() leading to recursion
@@ -17,7 +21,7 @@ CHANGELOG:
       call "mingw32-make OSTYPE=msys" from Windows command prompt
       having added the PATH for MINGW/bin
   (2007-07-28, HA)
-  * echo sigle dot '.' for windows commando shell
+  * echo single dot '.' for windows command shell
   (2007-07-31, HA)
 
 2.5.3
