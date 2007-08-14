@@ -10,6 +10,7 @@ CHANGELOG:
     check for this option before calling any non-existing operators
     with leak parameters
   * enhanced comments in Makefile for DUMA_SO_* and DUMA_LIB_* options
+  * changes in Makefile to build dynamic library on osx
   (2007-08-14, HA)
 
 2.5.5
