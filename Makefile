@@ -147,11 +147,11 @@ else
     # call: make OS=osx
     DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
     CURPATH=./
-    DUMA_DYN_DEPS=
+#    DUMA_DYN_DEPS=
     DUMASO=libduma.dylib
     DUMASO_LINK1=libduma.dylib
-    CFLAGS= -g -O0
-    CPPFLAGS= -g -O0
+    CFLAGS= -g -O0 -Wl,-multiply-defined,suppress
+    CPPFLAGS= -g -O0 -Wl,-multiply-defined,suppress
     LIBS=-lpthread
     EXEPOSTFIX=
   else
@@ -233,10 +233,14 @@ install: libduma.a duma.3 $(DUMASO)
 	$(INSTALL) -m 755 duma.sh $(BIN_INSTALL_DIR)/duma
 	$(INSTALL) -m 644 libduma.a $(LIB_INSTALL_DIR)
 	$(INSTALL) -m 755 $(DUMASO) $(LIB_INSTALL_DIR)
+ifdef DUMASO_LINK1
 	- $(RMFORCE) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
 	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
+endif
+ifdef DUMASO_LINK2
 	- $(RMFORCE) $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
 	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
+endif
 	$(INSTALL) -m 644 duma.3 $(MAN_INSTALL_DIR)/duma.3
 
 clean:
@@ -298,11 +302,10 @@ ifeq ($(OS), Windows_NT)
   # do nothing
 else
   ifeq ($(OS), osx)
-    # overthink!
-    # switch off dynamic libarary for now
-#$(DUMASO): duma_config.h $(SO_OBJECTS)
-#	$(CXX) -g -Wl -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
-#	$(CXX) -g -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+
+$(DUMASO): duma_config.h $(SO_OBJECTS)
+	$(CXX) -g -dynamiclib -Wl -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+	$(CXX) -g -dynamiclib -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
 
   else
 
