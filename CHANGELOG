@@ -11,6 +11,7 @@ CHANGELOG:
     with leak parameters
   * enhanced comments in Makefile for DUMA_SO_* and DUMA_LIB_* options
   * changes in Makefile to build dynamic library on osx
+  * added Debian Bug report logs - #241156 as testmt.c
   (2007-08-14, HA)
 
 2.5.5

@@ -150,8 +150,8 @@ else
 #    DUMA_DYN_DEPS=
     DUMASO=libduma.dylib
     DUMASO_LINK1=libduma.dylib
-    CFLAGS= -g -O0 -Wl,-multiply-defined,suppress
-    CPPFLAGS= -g -O0 -Wl,-multiply-defined,suppress
+    CFLAGS= -g -O0
+    CPPFLAGS= -g -O0
     LIBS=-lpthread
     EXEPOSTFIX=
   else
@@ -207,14 +207,14 @@ MAN_INSTALL_DIR= $(prefix)/share/man/man3
 PACKAGE_SOURCE= README CHANGES duma.3 Makefile \
 	duma.h dumapp.h sem_inc.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
-	dumatest.c tstheap.c dumatestpp.cpp testoperators.cpp \
+	dumatest.c tstheap.c testmt.c dumatestpp.cpp testoperators.cpp \
 	createconf.c
 
 OBJECTS = dumapp.o duma.o sem_inc.o print.o
 
 SO_OBJECTS = dumapp_so.o duma_so.o sem_inc_so.o print_so.o
 
-all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) $(DUMA_DYN_DEPS)
+all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) testmt$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) $(DUMA_DYN_DEPS)
 	@ $(ECHOLF)
 	@ $(ECHO) "Testing DUMA (static library):"
 	$(CURPATH)dumatest$(EXEPOSTFIX)
@@ -244,9 +244,10 @@ endif
 	$(INSTALL) -m 644 duma.3 $(MAN_INSTALL_DIR)/duma.3
 
 clean:
-	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) createconf.o tstheap.o dumatest.o dumatestpp.o \
+	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) createconf.o tstheap.o dumatest.o testmt.o dumatestpp.o \
 		tstheap_so.o dumatestpp_so.o testoperators.o \
 		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) createconf$(EXEPOSTFIX) \
+		testmt$(EXEPOSTFIX) \
 		libduma.a $(DUMASO) libduma.cat DUMA.shar \
 		duma_config.h
 
@@ -283,6 +284,10 @@ dumatestpp$(EXEPOSTFIX): libduma.a dumatestpp.o dumapp.h
 	- $(RMFORCE) dumatestpp$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp$(EXEPOSTFIX) $(LIBS)
 
+testmt$(EXEPOSTFIX): libduma.a testmt.o
+	- $(RMFORCE) testmt$(EXEPOSTFIX)
+	$(CC) $(CFLAGS) testmt.o libduma.a -o testmt$(EXEPOSTFIX) $(LIBS)
+
 testoperators$(EXEPOSTFIX): libduma.a testoperators.o dumapp.h
 	- $(RMFORCE) testoperators$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators$(EXEPOSTFIX) $(LIBS)
@@ -296,7 +301,7 @@ dumatestpp_so$(EXEPOSTFIX): dumatestpp_so.o
 	$(CXX) $(CPPFLAGS) dumatestpp_so.o -o dumatestpp_so$(EXEPOSTFIX) $(LIBS)
 
 
-$(OBJECTS) tstheap.o dumatest.o dumatestpp.o: duma.h
+$(OBJECTS) tstheap.o dumatest.o testmt.o dumatestpp.o: duma.h
 
 ifeq ($(OS), Windows_NT)
   # do nothing
@@ -380,6 +385,9 @@ tstheap.o:	tstheap.c duma.h duma_config.h
 
 testoperators.o:	testoperators.cpp duma.h dumapp.h duma_config.h
 	$(CXX) $(CPPFLAGS) -c testoperators.cpp -o $@
+
+testmt.o:	testmt.c duma.h duma_config.h
+	$(CC) $(CFLAGS) -c testmt.c -o $@
 
 
 #
