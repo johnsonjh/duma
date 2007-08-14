@@ -13,6 +13,6 @@ if [ "$1" = "" ]; then
 	exit
 fi
 
-# Set the environment to load eletric fence.
-(export LD_PRELOAD=libduma.so.0.0; exec $*)
+# Set the environment to (pre)load duma library.
+(export LD_PRELOAD=libduma.so.0.0; export DYLD_INSERT_LIBRARIES=libduma.dylib; exec $*)
 

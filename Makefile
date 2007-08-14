@@ -224,7 +224,7 @@ all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) testmt$(EXEPOSTFIX) du
 	@ $(ECHO) "DUMA static confidence test PASSED."
 	@ $(ECHOLF)
 	@ $(ECHO) "Testing DUMA (dynamic library)."
-	(export LD_PRELOAD=./$(DUMASO); exec $(CURPATH)tstheap_so 3072)
+	(export LD_PRELOAD=./$(DUMASO); export DYLD_INSERT_LIBRARIES=./$(DUMASO); exec $(CURPATH)tstheap_so 3072)
 	@ $(ECHOLF)
 	@ $(ECHO) "DUMA dynamic confidence test PASSED."
 	@ $(ECHOLF)
