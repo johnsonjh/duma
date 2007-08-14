@@ -45,6 +45,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quicktest", "quicktest\quic
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testoperators", "testoperators\testoperators.vcproj", "{9A57EF96-57A6-4E8A-902A-47014FEC068C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{31A93E3A-962A-4769-812A-45A3803B6127} = {31A93E3A-962A-4769-812A-45A3803B6127}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -147,6 +152,18 @@ Global
 		{51E21787-88AF-4FE4-880D-D3C4E79B8990}.Dll Release.Build.0 = Release|Win32
 		{51E21787-88AF-4FE4-880D-D3C4E79B8990}.Release.ActiveCfg = Release|Win32
 		{51E21787-88AF-4FE4-880D-D3C4E79B8990}.Release.Build.0 = Release|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Debug.ActiveCfg = Debug|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Debug.Build.0 = Debug|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Detours1.5.ActiveCfg = Debug|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Detours1.5.Build.0 = Debug|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Detours2.1.ActiveCfg = Debug|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Detours2.1.Build.0 = Debug|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Dll Debug.ActiveCfg = Debug|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Dll Debug.Build.0 = Debug|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Dll Release.ActiveCfg = Release|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Dll Release.Build.0 = Release|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Release.ActiveCfg = Release|Win32
+		{9A57EF96-57A6-4E8A-902A-47014FEC068C}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
