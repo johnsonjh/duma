@@ -16,16 +16,16 @@
 #    for using pthread semaphores
 #    elseway pthread mutexes get used
 #
-# add "-DDUMA_NO_CPP_SUPPORT" (without quotes)
+# add "-DDUMA_SO_NO_CPP_SUPPORT" or "-DDUMA_LIB_NO_CPP_SUPPORT" (without quotes)
 #    for not directing new/delete to malloc/free
 #
-# add "-DDUMA_NO_LEAKDETECTION" (without quotes)
+# add "-DDUMA_SO_NO_LEAKDETECTION" or "-DDUMA_LIB_NO_LEAKDETECTION" (without quotes)
 #    if you don't want support for leak detection
 #
 # add "-DDUMA_USE_FRAMENO" (without quotes)
 #    if you want to use DUMA_newFrame() and DUMA_delFrame()
 #
-# add "-DDUMA_PREFER_ATEXIT" (without quotes)
+# add "-DDUMA_SO_PREFER_ATEXIT" or "-DDUMA_LIB_PREFER_ATEXIT" (without quotes)
 #    if you prefer atexit() over GNU Compiler's function attribute "destructor"
 #
 # add "-DDUMA_OLD_NEW_MACRO" (without quotes)
@@ -34,7 +34,7 @@
 #    unfortunately you have to use DEL_ELEM/DEL_ARRAY further to utilize
 #    filename and linenumber of deallocation calls
 #
-# add "-DDUMA_NO_HANG_MSG" (without quotes)
+# add "-DDUMA_SO_NO_HANG_MSG" or "-DDUMA_LIB_NO_HANG_MSG" (without quotes)
 #    set this if you want to suppress the extra messages around atexit().
 #
 # add "-DDUMA_NO_STRERROR" (without quotes)
