@@ -5,6 +5,12 @@ CHANGELOG:
 2.5.6
   * modified example Makefiles for not linking to pthreads on Windows
   (2007-08-12, HA)
+  * added win32-msvc.net project file for testoperators.cpp
+  * bugfix: obey for option DUMA_NO_LEAKDETECTION:
+    check for this option before calling any non-existing operators
+    with leak parameters
+  * enhanced comments in Makefile for DUMA_SO_* and DUMA_LIB_* options
+  (2007-08-14, HA)
 
 2.5.5
   * support for Solaris (Solaris 10 with the GNU toolchain from Companion CD)
