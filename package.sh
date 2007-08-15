@@ -7,6 +7,6 @@ date >duma/VERSION
 echo DUMA $1 >>duma/VERSION
 echo "Actual version available from http://duma.sourceforge.net/" >>duma/VERSION
 mv duma duma_$1
-zip -r duma_$1.zip duma_$1
+zip -9 -r duma_$1.zip duma_$1
 tar zcf duma_$1.tar.gz duma_$1
 rm -Rf duma_$1
