@@ -65,14 +65,14 @@ CHANGELOG:
   (2007-07-03, HA)
 
 2.5
-	* Documentation updates.  Now using Natural Docs
-	* win32: Detours support for using DUMA with just binaries
-	* win32: Can compile a duma dll
-	* win32: DUMA can perform stacktraces of each allocation
-	* win32: Support for Visual Studio 2005
-	* win32: Support for output to debug console
-	* Support for output to a file
-	* Can control output via environmental variables
+  * Documentation updates.  Now using Natural Docs
+  * win32: Detours support for using DUMA with just binaries
+  * win32: Can compile a duma dll
+  * win32: DUMA can perform stacktraces of each allocation
+  * win32: Support for Visual Studio 2005
+  * win32: Support for output to debug console
+  * Support for output to a file
+  * Can control output via environmental variables
 
 
 2.4.28 fix/enhancement: reworked initialization for RequestID 1458083 on SF
@@ -364,14 +364,14 @@ CHANGELOG:
 
        added code for thread safety: only one thread at once is allowed to enter
        some internal functions. this can be deactivated using the EF_NO_THREAD_SAFETY
-	   preprocessor flag. there may be flaws concering threads, when using the c++ operators
-	   for leak detection: use the EF_NO_LEAKDETECTION preprocessor flag if you encounter problems!
-	   some files (page.c and print.c) have turned to header files,
-	   the needed functions are now declared static
-	   and are no more visible outside efence.c this way
-	   the NDEBUG preprocessor flag has been replaced by EF_NO_EFENCE, EF_NO_CPP_SUPPORT.
-	   so be careful not to include efence in your release builds!
-	   (2004-03-21, HA)
+       preprocessor flag. there may be flaws concering threads, when using the c++ operators
+       for leak detection: use the EF_NO_LEAKDETECTION preprocessor flag if you encounter problems!
+       some files (page.c and print.c) have turned to header files,
+       the needed functions are now declared static
+       and are no more visible outside efence.c this way
+       the NDEBUG preprocessor flag has been replaced by EF_NO_EFENCE, EF_NO_CPP_SUPPORT.
+       so be careful not to include efence in your release builds!
+       (2004-03-21, HA)
 
 2.4.9  added checks for no mans land (= space which cannot get protected from
          the MMU): this area gets filled with EF_FILL on allocation, and gets
@@ -403,7 +403,7 @@ CHANGELOG:
 
 2.4.5  modifications in print routines (EF_Print, EF_Abort, ..)
        added direct output to visual c++ debug output window.
-	   some additions to Makefile
+       some additions to Makefile
        (2002-11-17, HA)
 
 2.4.4  several modifications
@@ -429,8 +429,8 @@ CHANGELOG:
 2.4.2  added support for implicit and explicit leak checking:
          void EF_push(void) creates a new memory frame.
          void EF_pop(void)  checks for memory leaks allocated after EF_push().
-                            this function is called automatically onexit(),
-                            even without EF_push().
+       this function is called automatically onexit(),
+       even without EF_push().
        (2002-10-07, HA)
 
 2.4.1  Port to Windows (NT/2000/XP) by adding sections to following functions:
@@ -444,32 +444,32 @@ CHANGELOG:
 
 
 
-2.2.2	Oops. Shared library must be position-independent code.
+2.2.2  Oops. Shared library must be position-independent code.
 
 2.2.0
-	Merge in bug-fixes, multi-thread patch, shared library patch,
-	debian/ subdirectory used for building the Debian package
+  Merge in bug-fixes, multi-thread patch, shared library patch,
+  debian/ subdirectory used for building the Debian package
 
 2.0.1
-	Add work-arounds for kernel and library bugs under HP-UX.
-	HP has been notified and will repair these soon.
+  Add work-arounds for kernel and library bugs under HP-UX.
+  HP has been notified and will repair these soon.
 
 2.0.2
-	Add support for DEC Alpha. Add %a pattern for printing addresses, which
-	assumes they are passed in a void *.
+  Add support for DEC Alpha. Add %a pattern for printing addresses, which
+  assumes they are passed in a void *.
 
 2.0.3 30-Sep-1993
-	When realloc is passed a zero address, it should work the same
-	way as malloc(). Fix forward declaration of mprotect() in page.c to
-	use void *, not caddr_t, for addresses. IRIX 5.0.1 complained about that.
+  When realloc is passed a zero address, it should work the same
+  way as malloc(). Fix forward declaration of mprotect() in page.c to
+  use void *, not caddr_t, for addresses. IRIX 5.0.1 complained about that.
 
 2.0.4 29-May-1994
-	Don't attempt to allow access to a zero-sized page when
-	EF_ALLOW_MALLOC_0 is set. Attempt to un-map memory from
-	Page_Delete(). If that doesn't work, fall back by protecting the
-	page from all references. Un-mapping small segments of a mapping
-	used to crash my SGI IRIX 5.0 system. I assume that nobody is running
-	5.0 any longer.
+  Don't attempt to allow access to a zero-sized page when
+  EF_ALLOW_MALLOC_0 is set. Attempt to un-map memory from
+  Page_Delete(). If that doesn't work, fall back by protecting the
+  page from all references. Un-mapping small segments of a mapping
+  used to crash my SGI IRIX 5.0 system. I assume that nobody is running
+  5.0 any longer.
 
 2.0.5 20-January-1995
-	Port to Linux.
+  Port to Linux.

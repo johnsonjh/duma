@@ -481,7 +481,7 @@ COPYING-*       License files; reade carefully!
 README          this text file
 CHANGES         text file listing done CHANGES
 
-duma.h		      belongs to dumalib
+duma.h          belongs to dumalib
                 this header file should be included from within YOUR C source
 dumapp.h        belongs to dumalib
                 this header file should be included from within YOUR C++ source
