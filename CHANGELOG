@@ -2,6 +2,10 @@
 CHANGELOG:
 ==========
 
+2.5.7
+  * reformatting: converted tabs to spaces
+  (2007-08-15, HA)
+
 2.5.6
   * modified example Makefiles for not linking to pthreads on Windows
   (2007-08-12, HA)
