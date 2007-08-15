@@ -105,7 +105,7 @@ static void mprotectFailed(void)
  * VirtualAlloc on windows and mmap on unix.
  *
  * See Also: 
- *	<Page_Delete>
+ *  <Page_Delete>
  */
 static void *
 Page_Create(size_t size, int exitonfail, int printerror)
@@ -230,7 +230,7 @@ Page_Create(size_t size, int exitonfail, int printerror)
  * Allow memory access to allocated memory.
  *
  * See Also: 
- *	<Page_DenyAccess>
+ *  <Page_DenyAccess>
  */
 void Page_AllowAccess(void * address, size_t size)
 {
@@ -271,7 +271,7 @@ void Page_AllowAccess(void * address, size_t size)
  * Deny access to allocated memory region.
  *
  * See Also: 
- *	<Page_AllowAccess>
+ *  <Page_AllowAccess>
  */
 static void Page_DenyAccess(void * address, size_t size)
 {
@@ -313,56 +313,56 @@ static void Page_DenyAccess(void * address, size_t size)
  * the page is no longer in our slot list first!
  *
  * See Also:
- *	<Page_Create>
+ *  <Page_Create>
  */
 static void Page_Delete(void * address, size_t size)
 {
 #if defined(WIN32)
 
-	void * alloc_address  = address;
-	size_t alloc_size     = size;
-	SIZE_T retQuery;
-	MEMORY_BASIC_INFORMATION MemInfo;
-	BOOL ret;
+  void * alloc_address  = address;
+  size_t alloc_size     = size;
+  SIZE_T retQuery;
+  MEMORY_BASIC_INFORMATION MemInfo;
+  BOOL ret;
 
-	/* release physical memory commited to virtual address space */
-	while (size >0)
-	{
-		retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
+  /* release physical memory commited to virtual address space */
+  while (size >0)
+  {
+    retQuery = VirtualQuery(address, &MemInfo, sizeof(MemInfo));
 
-		if (retQuery < sizeof(MemInfo))
-			DUMA_Abort("VirtualQuery() failed\n");
+    if (retQuery < sizeof(MemInfo))
+      DUMA_Abort("VirtualQuery() failed\n");
 
-		if ( MemInfo.State == MEM_COMMIT )
-		{
-			ret = VirtualFree(
-				(LPVOID) MemInfo.BaseAddress /* base of committed pages */
-				, (DWORD) MemInfo.RegionSize   /* size of the region */
-				, (DWORD) MEM_DECOMMIT         /* type of free operation */
-				);
+    if ( MemInfo.State == MEM_COMMIT )
+    {
+      ret = VirtualFree(
+        (LPVOID) MemInfo.BaseAddress /* base of committed pages */
+        , (DWORD) MemInfo.RegionSize   /* size of the region */
+        , (DWORD) MEM_DECOMMIT         /* type of free operation */
+        );
 
-			if (0 == ret)
-				DUMA_Abort("VirtualFree(,,MEM_DECOMMIT) failed: %s", stringErrorReport());
-		}
+      if (0 == ret)
+        DUMA_Abort("VirtualFree(,,MEM_DECOMMIT) failed: %s", stringErrorReport());
+    }
 
-		address = ((char *)address) + MemInfo.RegionSize;
-		size -= MemInfo.RegionSize;
-	}
+    address = ((char *)address) + MemInfo.RegionSize;
+    size -= MemInfo.RegionSize;
+  }
 
-	/* release virtual address space */
-	ret = VirtualFree(
-		(LPVOID) alloc_address
-		, (DWORD) 0
-		, (DWORD) MEM_RELEASE
-		);
+  /* release virtual address space */
+  ret = VirtualFree(
+    (LPVOID) alloc_address
+    , (DWORD) 0
+    , (DWORD) MEM_RELEASE
+    );
 
-	if (0 == ret)
-		DUMA_Abort("VirtualFree(,,MEM_RELEASE) failed: %s", stringErrorReport());
+  if (0 == ret)
+    DUMA_Abort("VirtualFree(,,MEM_RELEASE) failed: %s", stringErrorReport());
 
 #else
 
-	if ( munmap((caddr_t)address, size) < 0 )
-		Page_DenyAccess(address, size);
+  if ( munmap((caddr_t)address, size) < 0 )
+    Page_DenyAccess(address, size);
 
 #endif
 }
@@ -380,12 +380,12 @@ Page_Size(void)
   GetSystemInfo( &SystemInfo );
   return (size_t)SystemInfo.dwPageSize;
 #elif defined(_SC_PAGESIZE)
-	return (size_t)sysconf(_SC_PAGESIZE);
+  return (size_t)sysconf(_SC_PAGESIZE);
 #elif defined(_SC_PAGE_SIZE)
-	return (size_t)sysconf(_SC_PAGE_SIZE);
+  return (size_t)sysconf(_SC_PAGE_SIZE);
 #else
-/* extern int	getpagesize(); */
-	return getpagesize();
+/* extern int getpagesize(); */
+  return getpagesize();
 #endif
 }
 

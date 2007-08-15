@@ -330,9 +330,6 @@
 				RelativePath="..\..\duma_hlp.h">
 			</File>
 			<File
-				RelativePath="..\..\dumaint.h">
-			</File>
-			<File
 				RelativePath="..\..\dumapp.h">
 			</File>
 			<File

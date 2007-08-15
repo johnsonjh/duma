@@ -43,34 +43,34 @@
 #include "duma_config.h"
 
 #ifdef __cplusplus
-	#define DUMA_EXTERN_C   extern "C"
+  #define DUMA_EXTERN_C   extern "C"
 #else
-	#define DUMA_EXTERN_C   extern
+  #define DUMA_EXTERN_C   extern
 #endif
 
 #ifdef DUMA_NO_DUMA
 
-	/* enable these macros even in release code, but do nothing */
-	#define DUMA_newFrame()             do { } while(0)
-	#define DUMA_delFrame()             do { } while(0)
+  /* enable these macros even in release code, but do nothing */
+  #define DUMA_newFrame()             do { } while(0)
+  #define DUMA_delFrame()             do { } while(0)
 
-	#define DUMA_ASSERT(EXPR)           do { } while(0)
+  #define DUMA_ASSERT(EXPR)           do { } while(0)
 
-	#define CA_DECLARE(NAME,SIZE)       do { } while(0)
-	#define CA_DEFINE(TYPE,NAME,SIZE)   TYPE NAME[SIZE]
-	#define CA_REF(NAME,INDEX)          NAME[INDEX]
+  #define CA_DECLARE(NAME,SIZE)       do { } while(0)
+  #define CA_DEFINE(TYPE,NAME,SIZE)   TYPE NAME[SIZE]
+  #define CA_REF(NAME,INDEX)          NAME[INDEX]
 
 #else /* ifndef DUMA_NO_DUMA */
 
-	#ifndef DUMA_EXTERNS_DECLARED
-	#define DUMA_EXTERNS_DECLARED
-	/* global DUMA variables */
-	DUMA_EXTERN_C int DUMA_OUTPUT_DEBUG;
-	DUMA_EXTERN_C int DUMA_OUTPUT_STDOUT;
-	DUMA_EXTERN_C int DUMA_OUTPUT_STDERR;
-	DUMA_EXTERN_C char* DUMA_OUTPUT_FILE;
-	DUMA_EXTERN_C int DUMA_OUTPUT_STACKTRACE;
-	#endif /* DUMA_EXTERNS_DECLARED */
+  #ifndef DUMA_EXTERNS_DECLARED
+  #define DUMA_EXTERNS_DECLARED
+  /* global DUMA variables */
+  DUMA_EXTERN_C int DUMA_OUTPUT_DEBUG;
+  DUMA_EXTERN_C int DUMA_OUTPUT_STDOUT;
+  DUMA_EXTERN_C int DUMA_OUTPUT_STDERR;
+  DUMA_EXTERN_C char* DUMA_OUTPUT_FILE;
+  DUMA_EXTERN_C int DUMA_OUTPUT_STACKTRACE;
+  #endif /* DUMA_EXTERNS_DECLARED */
 
 
 
@@ -174,40 +174,40 @@
 #endif
 
 
-	#ifndef DUMA_ENUMS_DECLARED
-	#define DUMA_ENUMS_DECLARED
+  #ifndef DUMA_ENUMS_DECLARED
+  #define DUMA_ENUMS_DECLARED
 
-	enum _DUMA_Allocator
-	{
-		EFA_INT_ALLOC
-	, EFA_INT_DEALLOC
-	, EFA_MALLOC
-	, EFA_CALLOC
-	, EFA_FREE
-	, EFA_MEMALIGN
+  enum _DUMA_Allocator
+  {
+    EFA_INT_ALLOC
+  , EFA_INT_DEALLOC
+  , EFA_MALLOC
+  , EFA_CALLOC
+  , EFA_FREE
+  , EFA_MEMALIGN
   , EFA_POSIX_MEMALIGN
-	, EFA_REALLOC
-	, EFA_VALLOC
-	, EFA_STRDUP
-	, EFA_NEW_ELEM
-	, EFA_DEL_ELEM
-	, EFA_NEW_ARRAY
-	, EFA_DEL_ARRAY
+  , EFA_REALLOC
+  , EFA_VALLOC
+  , EFA_STRDUP
+  , EFA_NEW_ELEM
+  , EFA_DEL_ELEM
+  , EFA_NEW_ARRAY
+  , EFA_DEL_ARRAY
 
-	/* use following enums when calling _duma_allocate()/_duma_deallocate()
-	* from user defined member operators
-	*/
-	, EFA_MEMBER_NEW_ELEM
-	, EFA_MEMBER_DEL_ELEM
-	, EFA_MEMBER_NEW_ARRAY
-	, EFA_MEMBER_DEL_ARRAY
-	};
+  /* use following enums when calling _duma_allocate()/_duma_deallocate()
+  * from user defined member operators
+  */
+  , EFA_MEMBER_NEW_ELEM
+  , EFA_MEMBER_DEL_ELEM
+  , EFA_MEMBER_NEW_ARRAY
+  , EFA_MEMBER_DEL_ARRAY
+  };
 
-	enum _DUMA_FailReturn
-	{
-		DUMA_FAIL_NULL
-	, DUMA_FAIL_ENV
-	};
+  enum _DUMA_FailReturn
+  {
+    DUMA_FAIL_NULL
+  , DUMA_FAIL_ENV
+  };
 
 #endif /* DUMA_ENUMS_DECLARED */
 

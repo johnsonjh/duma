@@ -1,4 +1,4 @@
-LIBRARY	dumadll
+LIBRARY dumadll
 
 EXPORTS
   duma_malloc

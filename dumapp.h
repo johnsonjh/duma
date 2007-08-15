@@ -24,7 +24,7 @@
  * you must include <new>  before including this file.
  */
 
-#ifndef	__cplusplus
+#ifndef __cplusplus
 /* avoid usage of C++ operator replacements in C code */
 #error compile with a C++ compiler, or define DUMA_NO_CPP_SUPPORT to remove this error
 #endif
@@ -197,6 +197,6 @@
 
   #endif /* end ifdef DUMA_NO_LEAKDETECTION */
 
-#endif /*	end ifdef DUMA_NO_CPP_SUPPORT */
+#endif /* end ifdef DUMA_NO_CPP_SUPPORT */
 
 #include "duma.h"
