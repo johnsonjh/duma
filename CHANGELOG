@@ -4,6 +4,8 @@ CHANGELOG:
 
 2.5.7
   * reformatting: converted tabs to spaces
+  * added test program testenv.c using global environ variable as
+    alternative to getenv()
   (2007-08-15, HA)
 
 2.5.6
