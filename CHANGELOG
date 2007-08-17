@@ -7,6 +7,8 @@ CHANGELOG:
   * added test program testenv.c using global environ variable as
     alternative to getenv()
   (2007-08-15, HA)
+  * added output of some configuration settings with banner
+  (2007-08-17, HA)
 
 2.5.6
   * modified example Makefiles for not linking to pthreads on Windows
