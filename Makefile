@@ -230,12 +230,14 @@ all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) testmt$(EXEPOSTFIX) du
 	$(CURPATH)testoperators$(EXEPOSTFIX)
 	@ $(ECHOLF)
 	@ $(ECHO) "DUMA static confidence test PASSED."
+ifdef DUMASO
 	@ $(ECHOLF)
 	@ $(ECHO) "Testing DUMA (dynamic library)."
 	(export LD_PRELOAD=./$(DUMASO); export DYLD_INSERT_LIBRARIES=./$(DUMASO); export DYLD_FORCE_FLAT_NAMESPACE=1; exec $(CURPATH)tstheap_so 3072)
 	@ $(ECHOLF)
 	@ $(ECHO) "DUMA dynamic confidence test PASSED."
 	@ $(ECHOLF)
+endif
 
 install: libduma.a duma.3 $(DUMASO)
 	$(INSTALL) -m 755 duma.sh $(BIN_INSTALL_DIR)/duma
