@@ -21,6 +21,12 @@ CHANGELOG:
     i suppose nobody is using it. but additionally it is not thread safe.
   * added option DUMA_PREFER_GETENV
      if you prefer standard C library getenv() over global char **environ
+  * added function duma_check(void*) and its macro DUMA_CHECK():
+      it checks the No Mans Land - especially the unprotected end - of
+      the memory block
+  * added function duma_checkAll() and its macro DUMA_CHECKALL():
+      it checks the No Mans Land - especially the unprotected end - of
+      all allocated memory blocks
   (2007-08-17, HA)
 
 2.5.6
