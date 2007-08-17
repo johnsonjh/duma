@@ -2,6 +2,12 @@
 CHANGELOG:
 ==========
 
+2.5.8
+  * fix: set DUMA_PREFER_GETENV for osx; it doesn't link with environ
+  * fix: MinGW wanted exact declaration as in definition for
+      function DUMA_strerror in print.h
+  * fix: workaround testmt.c to compile on Windows
+
 2.5.7
   * reformatting: converted tabs to spaces
   * added test program testenv.c using global environ variable as
