@@ -8,6 +8,18 @@
 /* $Id$ */
 /* gcc foo.c -pthread -lefence -g -ggdb -o foo */
 
+#if defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
+/* no pthread library on windows!
+ * so skip this test for now
+ */
+
+int main(int argc, char *argv[])
+{
+  return 0;
+}
+
+#else
+
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,4 +44,7 @@ int main(int argc, char *argv[])
     pthread_create(&id, NULL, poster, NULL);
 
   sleep(10000);
+  return 0;
 }
+
+#endif

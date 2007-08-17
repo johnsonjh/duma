@@ -2,6 +2,8 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
+- enhance testmt.c to run on Windows without pthread library
+
 - gain thread safety: get testmt.c work properly
 
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
