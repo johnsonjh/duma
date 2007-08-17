@@ -153,6 +153,7 @@ else
     # tested on darwin 8.0, which is the base for mac-osx
     # call: make OS=osx
     DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
+    DUMA_OPTIONS += -DDUMA_SO_PREFER_GETENV
 #    DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
     CURPATH=./
 #    DUMA_DYN_DEPS=
