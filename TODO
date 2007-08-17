@@ -2,27 +2,9 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
--implement/use TLS - Thread Local Storage for some variables
- f.e. file/line information per delete operator
-
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
   use defines specifying the target architecture
   use compiler attributes which specify the necessary alignment
-
--document 'J. "MUFTI" Scheurich' way of compiling/using DUMA's memory
- replacement functions only from own source files. Thus usage of DUMA
- for several system libraries is avoided.
-
--provide a function/macro, which tests the non-protectable side of an
- allocated memory block for illegal writes.
-
--use configuration file, which is read directly with system calls as
- replacement for the environment switches which use calls to the C library.
- this is to avoid hangs in the C library's getenv() function.
-
--get duma running/compiling on all platforms which are supported on
- sourceforge.net's compile farms. see
- http://sourceforge.net/docman/display_doc.php?docid=762&group_id=1
 
 -add autoconf/automake build process
 
@@ -36,13 +18,6 @@ TODO (listed from highest to lowest priority):
 -add feature to enable floating point exceptions
  by default C programs work with quiet NANs or similar values after an error
  this feature shall allow detecting of floating point division by zero, overflow, ..
-
--define new thread-safe macros,
- which don't have to use the global variable DUMA_PROTECT_BELOW:
- 1- NEW_PROTECT_BELOW: a 'new' replacement which protects the lower bound
- 2- NEW_PROTECT_ABOVE: a 'new' replacement which protects the upper bound
- 3- MALLOC_PROTECT_BELOW: a 'malloc' replacement which protects the lower bound
- 4- MALLOC_PROTECT_ABOVE: a 'malloc' replacement which protects the upper bound
 
 -test duma on several freely available/downloadable compilers:
   1- OpenWatcom C/C++ compiler from http://www.openwatcom.org/
@@ -70,15 +45,6 @@ TODO (listed from highest to lowest priority):
 
 -store __func__ additionally to __FILE__ and __LINE__
  depends on storing full filename (not just pointer) in slot
-
--use "-include" option of preprocessor, when having gcc
- see http://gcc.gnu.org/onlinedocs/gcc-2.95.3/gcc_2.html#SEC11
- see http://gcc.gnu.org/onlinedocs/gcc-3.0.4/gcc_3.html#SEC14
- see http://gcc.gnu.org/onlinedocs/gcc-4.0.1/gcc/Preprocessor-Options.html
-
--use "/FI" option of preprocessor, when having ms visual c++
- see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vccore
-                                                      /html/_core_.2f.fi.asp
 
 -modification of manual page duma.3
 
@@ -113,4 +79,63 @@ TODO (listed from highest to lowest priority):
     UL_GMEMLIM This returns the maximum amount of memory the process may use.
   On successful completion, the requested limit is returned. Otherwise, -1 is 
   returned and the limit is not changed.
+
+
+====================
+PRI LOW
+====================
+
+
+-get duma running/compiling on all platforms which are supported on
+ sourceforge.net's compile farms. see
+ http://sourceforge.net/docman/display_doc.php?docid=762&group_id=1
+ --> outdated: sourceforge's compile farm is no more available
+
+-use configuration file, which is read directly with system calls as
+ replacement for the environment switches which use calls to the C library.
+ this is to avoid hangs in the C library's getenv() function.
+ --> outdated: now using char **environ variable instead getenv()
+
+-document 'J. "MUFTI" Scheurich' way of compiling/using DUMA's memory
+ replacement functions only from own source files. Thus usage of DUMA
+ for several system libraries is avoided.
+ --> outdated with preprocessor option DUMA_NO_GLOBAL_MALLOC_FREE
+   and compiler options "-include" (gcc) and "/FI" (MS Visual C++)
+
+
+====================
+DONE
+====================
+
+-define new thread-safe macros,
+ which don't have to use the global variable DUMA_PROTECT_BELOW:
+ 1- NEW_PROTECT_BELOW: a 'new' replacement which protects the lower bound
+ 2- NEW_PROTECT_ABOVE: a 'new' replacement which protects the upper bound
+ 3- MALLOC_PROTECT_BELOW: a 'malloc' replacement which protects the lower bound
+ 4- MALLOC_PROTECT_ABOVE: a 'malloc' replacement which protects the upper bound
+ --> done other way: thread safe macro DUMA_SET_PROTECT_BELOW(V) saves setting in TLS
+
+-implement/use TLS - Thread Local Storage for some variables
+ f.e. file/line information per delete operator
+ --> done
+
+-use "-include" option of preprocessor, when having gcc
+ see http://gcc.gnu.org/onlinedocs/gcc-2.95.3/gcc_2.html#SEC11
+ see http://gcc.gnu.org/onlinedocs/gcc-3.0.4/gcc_3.html#SEC14
+ see http://gcc.gnu.org/onlinedocs/gcc-4.0.1/gcc/Preprocessor-Options.html
+ --> done: see example_makes/ex6/Makefile
+
+-use "/FI" option of preprocessor, when having ms visual c++
+ see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/vccore
+                                                      /html/_core_.2f.fi.asp
+ --> done: see win32-msvc.net/example6/example6.sln project settings
+
+-provide a function/macro, which tests the non-protectable side of an
+ allocated memory block for illegal writes.
+ --> done: duma_check(), duma_checkAll(), DUMA_CHECK() and DUMA_CHECKALL()
+
+-check and replace tabs in documents
+ done in version 2.5.7
+
+
 
