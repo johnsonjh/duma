@@ -92,7 +92,6 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
  *
  * Missing features are:
  *
- * - check for userSize == 0, return non-NULL in this case
  * - check if new_handler function hangs, return NULL or throw bad_alloc() in this case
  *    on UNIX systems alarm() may be usable
  *
@@ -102,6 +101,8 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
  * - alignment depends on user
  * - bad_alloc() exception will be thrown
  * - bad_alloc() is catched to return (void*)0
+ * - check for userSize == 0, return non-NULL in this case
+ *   implemented in new/delete operators below
  *
  */
 void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, bool dothrow
