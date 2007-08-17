@@ -116,6 +116,15 @@ static const char  version[] =
 #ifdef DUMA_NO_LEAKDETECTION
 ", NO_LEAKDETECTION"
 #endif
+#ifdef DUMA_EXPLICIT_INIT
+", EXPLICIT_INIT"
+#endif
+#ifdef DUMA_PREFER_ATEXIT
+", PREFER_ATEXIT"
+#endif
+#ifdef DUMA_PREFER_GETENV
+", PREFER_GETENV"
+#endif
 ")\n"
 "Copyright (C) 2006 Michael Eddington <meddington@gmail.com>\n"
 "Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
@@ -135,6 +144,13 @@ static const char unknown_file[] =
 #define DUMA_PARAMS_FL
 #define DUMA_PARAMS_UK
 #endif
+
+#ifndef DUMA_PREFER_GETENV
+#define DUMA_GETENV     duma_getenv
+#else
+#define DUMA_GETENV     getenv
+#endif
+
 
 /* Variable: MEMORY_CREATION_SIZE
  *
@@ -206,9 +222,6 @@ struct _DUMA_Slot
 #endif
 
 #ifndef DUMA_NO_LEAKDETECTION
-#ifdef DUMA_USE_FRAMENO
-  int               frame;
-#endif
   char            * filename;   /* filename of allocation */
   int               lineno;     /* linenumber of allocation */
 #endif
@@ -275,7 +288,6 @@ static struct _DUMA_GlobalStaticVars
   char  acSpaceA[2 * DUMA_PAGE_SIZE];
 
   int   DUMA_IN_DUMA;
-  int   frameno;
 
   /* Variable: DUMA_DISABLE_BANNER
    *
@@ -442,7 +454,6 @@ _duma_s =
    "Static Protection Space Front"   /* Protection Space A */
 
   , 0       /* int DUMA_IN_DUMA; */
-  , 0       /* static int    frameno = 0; */
 
   , 0       /* Variable: DISABLE_BANNER */
   , 0xAA    /* Variable: SLACKFILL */
@@ -587,6 +598,42 @@ void _duma_assert(const char * exprstr, const char * filename, int lineno)
 
 }
 
+#ifndef DUMA_PREFER_GETENV
+
+extern char **environ;
+
+/* Function: duma_getenv
+ *
+ * replacement for standard C library function
+ */
+static
+const char * duma_getenv( const char * varname )
+{
+  const char * ret = NULL;
+  int varno = 0;
+
+  if ( !varname )
+    return ret;
+
+  if ( varname[0] == '\0' )
+    return ret;
+
+  while ( environ[varno] )
+  {
+    const char * v = environ[varno++];
+    int idx = 0;
+
+    while ( varname[idx] != '\0' && v[idx] == varname[idx] )
+      ++idx;
+
+    if ( idx > 0 && varname[idx] == '\0' && v[idx] == '=' )
+      return v + (idx +1);
+  }
+  return ret;
+}
+
+#endif
+
 
 static
 void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
@@ -612,7 +659,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * there are other functions that break, too. Some in X Windows, one
    * in Sam Leffler's TIFF library, and doubtless many others.
    */
-  if ( (string = getenv("DUMA_ALIGNMENT")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_ALIGNMENT")) != 0 )
   {
     duma_tls->ALIGNMENT = (size_t)atoi(string);
     /* we could check for DUMA_MIN_ALIGNMENT. should we do so? */
@@ -624,7 +671,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * See if the user wants to protect the address space below a buffer,
    * rather than that above a buffer.
    */
-  if ( (string = getenv("DUMA_PROTECT_BELOW")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_PROTECT_BELOW")) != 0 )
     duma_tls->PROTECT_BELOW = (atoi(string) != 0);
 
   /*
@@ -634,7 +681,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * =0 do not protect free'd memory
    * =N protect memory up to N kB
    */
-  if ( (string = getenv("DUMA_PROTECT_FREE")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_PROTECT_FREE")) != 0 )
     _duma_s.PROTECT_FREE = atol(string);
 
   /*
@@ -644,31 +691,31 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * =-1 use as much memory as possible
    * =N limit total memory usage to N kB
    */
-  if ( (string = getenv("DUMA_MAX_ALLOC")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_MAX_ALLOC")) != 0 )
     _duma_s.MAX_ALLOC = atol(string);
 
   /*
    * See if the user wants to allow malloc(0).
    */
-  if ( (string = getenv("DUMA_ALLOW_MALLOC_0")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_ALLOW_MALLOC_0")) != 0 )
     _duma_s.ALLOW_MALLOC_0 = (atoi(string) != 0);
 
   /*
    * See if the user wants to exit on malloc() failure
    */
-  if ( (string = getenv("DUMA_MALLOC_FAILEXIT")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_MALLOC_FAILEXIT")) != 0 )
     _duma_s.MALLOC_FAILEXIT = (atoi(string) != 0);
 
   /*
    * See if the user wants to write access freed memory
    */
-  if ( (string = getenv("DUMA_FREE_ACCESS")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_FREE_ACCESS")) != 0 )
     _duma_s.FREE_ACCESS = (atoi(string) != 0);
 
   /*
    * Check if we should be filling new memory with a value.
    */
-  if ( (string = getenv("DUMA_FILL")) != 0)
+  if ( (string = DUMA_GETENV("DUMA_FILL")) != 0)
   {
     duma_tls->FILL = atoi(string);
     if ( -1 != duma_tls->FILL )
@@ -678,20 +725,20 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   /*
    * Check with which value the memories no mans land is filled
    */
-  if ( (string = getenv("DUMA_SLACKFILL")) != 0)
+  if ( (string = DUMA_GETENV("DUMA_SLACKFILL")) != 0)
     _duma_s.SLACKFILL = atoi(string);
   _duma_s.SLACKFILL &= 255;
 
   /*
    * See if the user wants to see allocations / frees
    */
-  if ( (string = getenv("DUMA_SHOW_ALLOC")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_SHOW_ALLOC")) != 0 )
     _duma_s.SHOW_ALLOC = (atoi(string) != 0);
 
   /*
    * See if the user wants to call atexit()
    */
-  if ( (string = getenv("DUMA_SUPPRESS_ATEXIT")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_SUPPRESS_ATEXIT")) != 0 )
     _duma_s.SUPPRESS_ATEXIT = (atoi(string) != 0);
 
   /*
@@ -699,7 +746,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * outputs a stacktrace of the allocation that is not free'd. Default is 0,
    * meaning that this option is disabled.
    */
-  if ( (string = getenv("DUMA_OUTPUT_STACKTRACE")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_OUTPUT_STACKTRACE")) != 0 )
     DUMA_OUTPUT_STACKTRACE = (atoi(string) != 0);
 
   /*
@@ -707,7 +754,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * outputs a stacktrace of the allocation that is not free'd. Default is 0,
    * meaning that this option is disabled.
    */
-  if ( (string = getenv("DUMA_OUTPUT_STACKTRACE_MAPFILE")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_OUTPUT_STACKTRACE_MAPFILE")) != 0 )
     DUMA_OUTPUT_STACKTRACE_MAPFILE = strdup(string);
 
   /* 
@@ -715,7 +762,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * output is printed to the win32 debugging console.  Default is 0,
    * meaning that output is not by default sent to the debugging console.
    */
-  if ( (string = getenv("DUMA_OUTPUT_DEBUG")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_OUTPUT_DEBUG")) != 0 )
     DUMA_OUTPUT_DEBUG = (atoi(string) != 0);
 
   /* 
@@ -723,7 +770,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * output is printed to STDOUT.  Default is 0,
    * meaning that output is not by default sent to STDOUT.
    */
-  if ( (string = getenv("DUMA_OUTPUT_STDOUT")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_OUTPUT_STDOUT")) != 0 )
     DUMA_OUTPUT_STDOUT = (atoi(string) != 0);
 
   /* 
@@ -731,7 +778,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * output is printed to STDERR.  Default is 1,
    * meaning that output is by default sent to STDERR.
    */
-  if ( (string = getenv("DUMA_OUTPUT_STDERR")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_OUTPUT_STDERR")) != 0 )
     DUMA_OUTPUT_STDERR = (atoi(string) != 0);
 
   /* 
@@ -739,11 +786,11 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    * output is printed to a specified file.  Default is NULL,
    * meaning that output is not by default sent to a file.
    */
-  if ( (string = getenv("DUMA_OUTPUT_FILE")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_OUTPUT_FILE")) != 0 )
     DUMA_OUTPUT_FILE = strdup(string);
 
   // Should we send banner?
-  if ( (string = getenv("DUMA_DISABLE_BANNER")) != 0 )
+  if ( (string = DUMA_GETENV("DUMA_DISABLE_BANNER")) != 0 )
     _duma_s.DISABLE_BANNER = (atoi(string) != 0);
   if ( !_duma_s.DISABLE_BANNER )
     DUMA_Print(version);
@@ -933,9 +980,6 @@ _duma_init(void)
   slot[0].allocator         = EFA_INT_ALLOC;
 #ifndef DUMA_NO_LEAKDETECTION
   slot[0].fileSource        = DUMAFS_ALLOCATION;
-#ifdef DUMA_USE_FRAMENO
-  slot[0].frame             = 0;
-#endif
   slot[0].filename          = __FILE__;
   slot[0].lineno            = __LINE__;
 #endif
@@ -950,9 +994,6 @@ _duma_init(void)
     slot[1].allocator       = EFA_INT_ALLOC;
   #ifndef DUMA_NO_LEAKDETECTION
     slot[1].fileSource      = DUMAFS_ALLOCATION;
-  #ifdef DUMA_USE_FRAMENO
-    slot[1].frame           = 0;
-  #endif
     slot[1].filename        = __FILE__;
     slot[1].lineno          = __LINE__;
   #endif
@@ -1382,9 +1423,6 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 
     #ifndef DUMA_NO_LEAKDETECTION
       fullSlot->fileSource  = DUMAFS_ALLOCATION;
-      #ifdef DUMA_USE_FRAMENO
-        fullSlot->frame     = frameno;
-      #endif
       fullSlot->filename    = (char*)filename;
       #ifdef DUMA_EXPLICIT_INIT
 
@@ -1606,9 +1644,6 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
     slot->allocator       = EFA_INT_ALLOC;
 #ifndef DUMA_NO_LEAKDETECTION
     slot->fileSource      = DUMAFS_EMPTY;
-#ifdef DUMA_USE_FRAMENO
-    slot->frame         = 0;
-#endif
     slot->filename      = 0;
     slot->lineno        = 0;
 #endif
@@ -2089,14 +2124,9 @@ char * strncat(char *dest, const char *src, size_t size)
 #ifndef DUMA_NO_LEAKDETECTION
 
 /* Function DUMA_newFrame
- *
- * Increments the frameno variable.  Not sure why we do this :)
  */
 void  DUMA_newFrame(void)
 {
-#ifdef DUMA_USE_FRAMENO
-  ++frameno;
-#endif
 }
 
 
@@ -2105,73 +2135,58 @@ void  DUMA_newFrame(void)
  * Will output DUMA message for all in use frames along with totals.
  * This method is called to when all memory should have been free'd by
  * the application to locate memory leaks.
- *
- * Note: No frames are deleted or modified by this function.
  */
 void  DUMA_delFrame(void)
 {
-  if (-1 != _duma_s.frameno)
+  struct _DUMA_Slot * slot  = _duma_g.allocList;
+  size_t        count   = _duma_s.slotCount;
+  int         nonFreed  = 0;
+
+  IF__DUMA_INIT_DONE
+    DUMA_GET_SEMAPHORE();
+
+  Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
+
+  for ( ; count > 0; --count, ++slot )
   {
-    struct _DUMA_Slot * slot  = _duma_g.allocList;
-    size_t        count   = _duma_s.slotCount;
-    int         nonFreed  = 0;
-
-    IF__DUMA_INIT_DONE
-      DUMA_GET_SEMAPHORE();
-
-    Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
-
-    for ( ; count > 0; --count, ++slot )
-    {
-      if ( DUMAST_IN_USE  == slot->state
-#ifdef DUMA_USE_FRAMENO
-        && _duma_s.frameno == slot->frame
-#endif
-        && EFA_INT_ALLOC  != slot->allocator
+    if ( DUMAST_IN_USE  == slot->state
+      && EFA_INT_ALLOC  != slot->allocator
 #ifdef DUMA_EXPLICIT_INIT
-        && -1 !=  slot->lineno
+      && -1 !=  slot->lineno
 #endif
-      )
-      {
+       )
+    {
 
-#ifdef DUMA_DLL_LIBRARY
-      DUMA_Print("\nDUMA: ptr=0x%a size=%d not freed\n",
-#elif DUMA_SO_LIBRARY
-      DUMA_Print("\nDUMA: ptr=0x%a size=%d not freed\n",
-#elif DUMA_DETOURS
-      DUMA_Print("\nDUMA: ptr=0x%a size=%d not freed\n",
+#if defined(DUMA_DLL_LIBRARY) || defined(DUMA_SO_LIBRARY) || defined(DUMA_DETOURS)
+      DUMA_Print("\nDUMA: ptr=0x%a size=%d type='%s'not freed\n"
+                , (DUMA_ADDR)slot->userAddress, (DUMA_SIZE)slot->userSize
+                , _duma_allocDesc[slot->allocator].name
+                );
 #else
-      DUMA_Print("\nDUMA: ptr=0x%a size=%d alloced from %s(%i) not freed\n",
+      DUMA_Print("\nDUMA: ptr=0x%a size=%d type='%s' alloced from %s(%i) not freed\n"
+                , (DUMA_ADDR)slot->userAddress, (DUMA_SIZE)slot->userSize
+                , _duma_allocDesc[slot->allocator].name
+                , slot->filename, slot->lineno
+                );
 #endif
-        (DUMA_ADDR)slot->userAddress,
-        (DUMA_SIZE)slot->userSize,
-        slot->filename,
-        slot->lineno);
-
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
-        if(DUMA_OUTPUT_STACKTRACE)
-        {
-          DUMA_Print("Stacktrace of allocation:\n%s\n",
-            slot->stacktrace);
-        }
+      if(DUMA_OUTPUT_STACKTRACE)
+        DUMA_Print("Stacktrace of allocation:\n%s\n", slot->stacktrace);
 #endif
-        ++nonFreed;
-      }
+      ++nonFreed;
     }
-
-    if (nonFreed)
-      DUMA_Abort("DUMA_delFrame(): Found non free'd pointers.\n");
-
-    Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
-
-    IF__DUMA_INIT_DONE
-    DUMA_RELEASE_SEMAPHORE();
-
-    --_duma_s.frameno;
   }
 
+  if (nonFreed)
+    DUMA_Abort("DUMA: Found non free'd pointers.\n");
+
+  Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
+
+  IF__DUMA_INIT_DONE
+  DUMA_RELEASE_SEMAPHORE();
+
   if (_duma_s.SHOW_ALLOC)
-    DUMA_Print("\nDUMA: DUMA_delFrame(): Processed %l allocations and %l deallocations in total.\n", _duma_s.numAllocs, _duma_s.numDeallocs);
+    DUMA_Print("\nDUMA: Processed %l allocations and %l deallocations in total.\n", _duma_s.numAllocs, _duma_s.numDeallocs);
 }
 
 
@@ -2193,9 +2208,7 @@ _duma_exit(void)
   StackTraceCleanup();
 #endif
 
-  /* DUMA_ASSERT(0); */
-  while (-1 != _duma_s.frameno)
-    DUMA_delFrame();
+  DUMA_delFrame();
 }
 
 

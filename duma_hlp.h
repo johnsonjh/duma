@@ -84,9 +84,6 @@ reduceProtectedMemory( size_t reductionSizekB )
       slot->allocator       = EFA_INT_ALLOC;
       #ifndef DUMA_NO_LEAKDETECTION
       slot->fileSource      = DUMAFS_EMPTY;
-      #ifdef DUMA_USE_FRAMENO
-        slot->frame         = 0;
-      #endif
         slot->filename      = 0;
         slot->lineno        = 0;
       #endif

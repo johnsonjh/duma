@@ -22,11 +22,11 @@
 # add "-DDUMA_SO_NO_LEAKDETECTION" or "-DDUMA_LIB_NO_LEAKDETECTION" (without quotes)
 #    if you don't want support for leak detection
 #
-# add "-DDUMA_USE_FRAMENO" (without quotes)
-#    if you want to use DUMA_newFrame() and DUMA_delFrame()
-#
 # add "-DDUMA_SO_PREFER_ATEXIT" or "-DDUMA_LIB_PREFER_ATEXIT" (without quotes)
 #    if you prefer atexit() over GNU Compiler's function attribute "destructor"
+#
+# add "-DDUMA_SO_PREFER_GETENV" or "-DDUMA_LIB_PREFER_GETENV" (without quotes)
+#    if you prefer standard C library getenv() over global char **environ
 #
 # add "-DDUMA_OLD_NEW_MACRO" (without quotes)
 #    if you want to use DUMA's old style NEW_ELEM() / NEW_ARRAY() macros.
@@ -47,17 +47,18 @@
 #    - DUMA_SO_NO_CPP_SUPPORT
 #    - DUMA_SO_NO_LEAKDETECTION
 #    - DUMA_SO_PREFER_ATEXIT
+#    - DUMA_SO_PREFER_GETENV
 #    - DUMA_SO_NO_HANG_MSG
 #
 #  preprocessor flags for building the static library:
 #    - DUMA_LIB_NO_CPP_SUPPORT
 #    - DUMA_LIB_NO_LEAKDETECTION
 #    - DUMA_LIB_PREFER_ATEXIT
+#    - DUMA_LIB_PREFER_GETENV
 #    - DUMA_LIB_NO_HANG_MSG
 #    - DUMA_NO_GLOBAL_MALLOC_FREE
 #    - DUMA_EXPLICIT_INIT
 #    - DUMA_NO_THREAD_SAFETY
-#    - DUMA_USE_FRAMENO
 #    - DUMA_OLD_NEW_MACRO
 #    - DUMA_OLD_DEL_MACRO
 #    - DUMA_NO_STRERROR
@@ -66,11 +67,17 @@
 
 # edit following line
 DUMA_OPTIONS =
+
+# no leak detection on any platform:
+# use static library for finding leaks - with information memory was allocated
+# i think leak-checking without further information is quite useless!
+# additionaly too many platforms/environments are broken.
+DUMA_OPTIONS += -DDUMA_SO_NO_LEAKDETECTION
+
 # some test cases:
-#DUMA_OPTIONS = -DDUMA_LIB_NO_LEAKDETECTION
-#DUMA_OPTIONS = -DDUMA_NO_THREAD_SAFETY
-#DUMA_OPTIONS = -DDUMA_NO_CPP_SUPPORT
-#DUMA_OPTIONS = -DDUMA_USE_FRAMENO
+#DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
+#DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
+#DUMA_OPTIONS += -DDUMA_NO_CPP_SUPPORT
 
 PIC= -fPIC
 DUMA_SO_OPTIONS = $(PIC) -DDUMA_SO_LIBRARY
@@ -146,7 +153,6 @@ else
     # tested on darwin 8.0, which is the base for mac-osx
     # call: make OS=osx
     DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
-    DUMA_OPTIONS += -DDUMA_SO_NO_LEAKDETECTION
 #    DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
     CURPATH=./
 #    DUMA_DYN_DEPS=

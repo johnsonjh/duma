@@ -363,10 +363,6 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, "#endif\n\n");
 #endif
 
-  fprintf(f, "#ifdef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#undef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#endif\n\n");
-
 #ifndef DUMA_SO_PREFER_ATEXIT
   fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
@@ -374,6 +370,16 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 #else
   fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_SO_PREFER_GETENV
+  fprintf(f, "#ifdef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#undef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#define DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
 #endif
 
@@ -438,10 +444,6 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, "#endif\n\n");
 #endif
 
-  fprintf(f, "#ifdef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#undef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#endif\n\n");
-
 #ifndef DUMA_SO_PREFER_ATEXIT
   fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
@@ -449,6 +451,16 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 #else
   fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_SO_PREFER_GETENV
+  fprintf(f, "#ifdef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#undef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#define DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
 #endif
 
@@ -503,10 +515,6 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, "#endif\n\n");
 #endif
 
-  fprintf(f, "#ifdef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#undef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#endif\n\n");
-
 #ifndef DUMA_SO_PREFER_ATEXIT
   fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
@@ -514,6 +522,16 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 #else
   fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_SO_PREFER_GETENV
+  fprintf(f, "#ifdef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#undef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#define DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
 #endif
 
@@ -590,16 +608,6 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, "#endif\n\n");
 #endif
 
-#ifndef DUMA_USE_FRAMENO
-  fprintf(f, "#ifdef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#undef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#endif\n\n");
-#else
-  fprintf(f, "#ifndef DUMA_USE_FRAMENO\n");
-  fprintf(f, "#define DUMA_USE_FRAMENO\n");
-  fprintf(f, "#endif\n\n");
-#endif
-
 #ifndef DUMA_LIB_PREFER_ATEXIT
   fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
@@ -607,6 +615,16 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 #else
   fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
+  fprintf(f, "#endif\n\n");
+#endif
+
+#ifndef DUMA_LIB_PREFER_GETENV
+  fprintf(f, "#ifdef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#undef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#endif\n\n");
+#else
+  fprintf(f, "#ifndef DUMA_PREFER_GETENV\n");
+  fprintf(f, "#define DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
 #endif
 

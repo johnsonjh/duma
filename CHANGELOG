@@ -8,6 +8,19 @@ CHANGELOG:
     alternative to getenv()
   (2007-08-15, HA)
   * added output of some configuration settings with banner
+  * switched off leak detection in shared library for any platform.
+    use the static library for finding leaks - with information where
+    the piece of memory got allocated. Meanwhile I think leak-checking
+    without further information is quite useless! Too many correct
+    programs don't free all memory, cause the system frees memory up at
+    program end. Thus, too many platforms/environments are reported
+    "broken" from DUMA.
+  * output allocator type (malloc, strdup, ..) with leak report for each
+    non freed memory block
+  * removed option DUMA_USE_FRAMENO and the frameno variable
+    i suppose nobody is using it. but additionally it is not thread safe.
+  * added option DUMA_PREFER_GETENV
+     if you prefer standard C library getenv() over global char **environ
   (2007-08-17, HA)
 
 2.5.6
