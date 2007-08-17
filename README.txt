@@ -246,7 +246,9 @@ To get the line in your sources, where an error occurs, go as following:
 1. Compile your program with debugging information
    and statically linked to DUMA.
 2. Start your program from debugger f.e. with 'gdb <program>'
-3. Run and wait for the segmentation fault
+3. Set program environment variables like 'set environment DUMA_PROTECT_BELOW 1'
+4. set your program arguments with 'set args ..'
+5. Run and wait for the segmentation fault
 
 alternatively
 
@@ -354,6 +356,15 @@ operator delete[](ptr, file,line);      // vector delete
 (end code)
 
 The default syntax without file/line info can be used, too.
+
+
+PREPACKAGED RPM FILES FOR REDHAT & CO:
+
+
+You can download prepackaged .rpm files for RedHat, Fedora Core and similar systems from
+http://dries.ulyssis.org/apt/packages/duma/info.html
+
+Dries Verachtert <dries@ulyssis.org> wrote the .spec file.
 
 
 COMPILATION NOTES FOR VISUAL C++:

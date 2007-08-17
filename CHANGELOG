@@ -8,6 +8,10 @@ CHANGELOG:
       function DUMA_strerror in print.h
   * fix: workaround testmt.c to compile on Windows
   * fix: call duma_init() ifdef DUMA_EXPLICIT_INIT in testoperators.cpp
+  * added notes on prepackaged .rpm files provided by
+    Dries Verachtert <dries@ulyssis.org> at
+    http://dries.ulyssis.org/apt/packages/duma/info.html
+    in README
   (2007-08-17, HA)
 
 2.5.7
