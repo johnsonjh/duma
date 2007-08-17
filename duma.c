@@ -171,8 +171,8 @@ enum _DUMA_SlotState
   , DUMAST_IN_USE           /* memory in use by allocator; see following enum AllocType */
   , DUMAST_ALL_PROTECTED    /* memory no more used by allocator; memory is not deallocated but protected */
   , DUMAST_BEGIN_PROTECTED  /* most memory deallocated, but not page covering userAddress:
-                           * slot holds userAddress, userSize and allocator.
-                           */
+                             * slot holds userAddress, userSize and allocator.
+                             */
 };
 
 enum _DUMA_Slot_FileSource
@@ -1663,6 +1663,100 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
       DUMA_RELEASE_SEMAPHORE();
   }
 }
+
+
+/* Function: duma_check
+ * 
+ * Check No Mans Land of a memory block.
+ *
+ */
+void duma_check(void * address)
+{
+  struct _DUMA_Slot   * slot;
+  long                internalSizekB;
+
+  if ( 0 == address )
+    return;
+
+  IF__DUMA_INIT_DONE
+    DUMA_GET_SEMAPHORE();
+
+  Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
+
+  if ( !(slot = slotForUserAddress(address)) )
+  {
+    if ( (slot = nearestSlotForUserAddress(address)) )
+    {
+#ifndef DUMA_NO_LEAKDETECTION
+      if ( DUMAFS_ALLOCATION == slot->fileSource )
+        DUMA_Abort("check(%a): address not from DUMA or already freed. Address may be corrupted from %a allocated from %s(%i)",
+          (DUMA_ADDR)address, (DUMA_ADDR)slot->userAddress, slot->filename, slot->lineno);
+      else if ( DUMAFS_DEALLOCATION == slot->fileSource )
+        DUMA_Abort("check(%a): address not from DUMA or already freed. Address may be corrupted from %a deallocated at %s(%i)",
+          (DUMA_ADDR)address, (DUMA_ADDR)slot->userAddress, slot->filename, slot->lineno);
+      else
+#endif
+        DUMA_Abort("check(%a): address not from DUMA or already freed. Address may be corrupted from %a.",
+          (DUMA_ADDR)address, (DUMA_ADDR)slot->userAddress);
+    }
+    else
+      DUMA_Abort("check(%a): address not from DUMA or already freed.", (DUMA_ADDR)address);
+  }
+
+  if ( DUMAST_ALL_PROTECTED == slot->state || DUMAST_BEGIN_PROTECTED == slot->state )
+  {
+#ifndef DUMA_NO_LEAKDETECTION
+    if ( DUMAFS_ALLOCATION == slot->fileSource )
+      DUMA_Abort("check(%a): memory already freed. allocated from %s(%i)",
+        (DUMA_ADDR)address, slot->filename, slot->lineno);
+    else if ( DUMAFS_DEALLOCATION == slot->fileSource )
+      DUMA_Abort("check(%a): memory already freed at %s(%i)",
+        (DUMA_ADDR)address, slot->filename, slot->lineno);
+    else
+#endif
+      DUMA_Abort("check(%a): memory already freed.", (DUMA_ADDR)address);
+  }
+
+  /* CHECK INTEGRITY OF NO MANS LAND */
+  _duma_check_slack( slot );
+
+
+  Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
+  IF__DUMA_INIT_DONE
+    DUMA_RELEASE_SEMAPHORE();
+}
+
+
+/* Function: duma_checkAll
+ * 
+ * Check No Mans Land of all memory blocks.
+ *
+ */
+void duma_checkAll()
+{
+  struct _DUMA_Slot   * slot;
+  size_t  count;
+
+  IF__DUMA_INIT_DONE
+    DUMA_GET_SEMAPHORE();
+
+  Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
+
+  slot  = _duma_g.allocList;
+  count = _duma_s.slotCount;
+
+  for ( ; count > 0; --count, ++slot )
+  {
+    /* CHECK INTEGRITY OF NO MANS LAND */
+    if ( DUMAST_IN_USE == slot->state )
+      _duma_check_slack( slot );
+  }
+
+  Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
+  IF__DUMA_INIT_DONE
+    DUMA_RELEASE_SEMAPHORE();
+}
+
 
 
 /*********************************************************/

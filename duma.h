@@ -56,6 +56,9 @@
 
   #define DUMA_ASSERT(EXPR)           do { } while(0)
 
+  #define DUMA_CHECK(BASEADR)         do { } while(0)
+  #define DUMA_CHECKALL()             do { } while(0)
+
   #define CA_DECLARE(NAME,SIZE)       do { } while(0)
   #define CA_DEFINE(TYPE,NAME,SIZE)   TYPE NAME[SIZE]
   #define CA_REF(NAME,INDEX)          NAME[INDEX]
@@ -218,6 +221,9 @@
   DUMA_EXTERN_C void _duma_init(void);
   DUMA_EXTERN_C void _duma_assert(const char * exprstr, const char * filename, int lineno);
 
+  DUMA_EXTERN_C void duma_check(void * address);
+  DUMA_EXTERN_C void duma_checkAll();
+
 #ifdef DUMA_EXPLICIT_INIT
 DUMA_EXTERN_C void   duma_init(void);
 #endif
@@ -283,6 +289,12 @@ DUMA_EXTERN_C void   duma_init(void);
 
 #ifndef DUMA_ASSERT
   #define DUMA_ASSERT(EXPR)    (  (EXPR) || ( _duma_assert(#EXPR, __FILE__, __LINE__), 0 )  )
+#endif
+#ifndef DUMA_CHECK
+  #define DUMA_CHECK(BASEADR)         duma_check(BASEADR)
+#endif
+#ifndef DUMA_CHECKALL
+  #define DUMA_CHECKALL()             duma_checkAll()
 #endif
 
 

@@ -181,6 +181,8 @@
 /* Following defines are kept:
  *
  * DUMA_ASSERT
+ * DUMA_CHECK
+ * DUMA_CHECKALL
  * DUMA_CDECL
  * DUMA_SIZE_T
  * DUMA_MAX_DEL_DEPTH
