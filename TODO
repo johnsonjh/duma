@@ -2,6 +2,8 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
+- gain thread safety: get testmt.c work properly
+
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
   use defines specifying the target architecture
   use compiler attributes which specify the necessary alignment
