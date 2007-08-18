@@ -1,35 +1,35 @@
 
 /*
-* DUMA - Red-Zone memory allocator.
-*
-* Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
-* Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
-* Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
-*
-* License: GNU GPL (GNU General Public License, see COPYING-GPL)
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*
-*
-* FILE CONTENTS:
-* --------------
-* This is a small tool to generate the "duma_config.h" configuration file.
-* Its purpose is to allow fixed size memory allocation on stack, which can
-* get protected calling page protection functions.
-* Also its nice for the user to be able to see the page size.
-*/
+ * DUMA - Red-Zone memory allocator.
+ *
+ * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
+ * Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
+ *
+ * License: GNU GPL (GNU General Public License, see COPYING-GPL)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ *
+ * FILE CONTENTS:
+ * --------------
+ * This is a small tool to generate the "duma_config.h" configuration file.
+ * Its purpose is to allow fixed size memory allocation on stack, which can
+ * get protected calling page protection functions.
+ * Also its nice for the user to be able to see the page size.
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -103,11 +103,11 @@ DataType_T;
 
 DataType_T  sIntTypes[] =
 {
-  { 0, sizeof(char)     , "char"      }
+    { 0, sizeof(char)     , "char"      }
   , { 1, sizeof(short int), "short int" }
   , { 2, sizeof(int)      , "int"       }
   , { 3, sizeof(long int) , "long int"  }
-  /* hier zusaetzliche compiler-spezifische datentypen hinzufuegen */
+  /* add additional compiler specific typer here */
 #ifdef _MSC_VER
   , { 4, sizeof(__int64), "__int64"     }
 #endif
