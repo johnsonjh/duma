@@ -71,6 +71,10 @@ of the global variables don't exist any more: they changed to thread local
 variables defined in structures. Instead you can call macro function to set
 some variables - but not from debugger!
 
+You can use the gdb command 'set environment variable value' to set shell
+environment variables only for the program you are going to debug. This is
+useful especially if you are using the shared DUMA library.
+
 DUMA_ALIGNMENT - This is an integer that specifies the alignment for any memory
   allocations that will be returned by malloc(), calloc(), and realloc().
   The value is specified in bytes, thus a value of 4 will cause memory to be
@@ -322,7 +326,8 @@ Have a look for
 /proc/sys/vm/max_map_count
 f.e. under
 http://www.redhat.com/docs/manuals/enterprise/RHEL-4-Manual/en-US/Reference_Guide/s3-proc-sys-vm.html
-You may have to increase this value to allow debugging with DUMA with a command like:
+You may have to increase this value to allow debugging with DUMA with a
+command like:
 "sudo sysctl -w vm.max_map_count=1000000"
 
 Don't leave libduma.a linked into production software! Use it only for
@@ -368,13 +373,13 @@ following syntax can be used:
 // const char * file  or  __FILE__ macro
 // int          line  or  __LINE__ macro
 
-ptr = new(file,line) type;              // scalar new throwing bad_alloc() on error
+ptr = new(file,line) type;          // scalar new throwing bad_alloc() on error
 ptr = new(std::nothrow,file,line) type; // scalar new returning 0 on error
-operator delete(ptr,file,line);         // scalar delete
+operator delete(ptr,file,line);     // scalar delete
 
-ptr = new(file,line) type[n];           // vector new throwing bad_alloc() on error
+ptr = new(file,line) type[n];       // vector new throwing bad_alloc() on error
 ptr = new(std::nothrow,file,line) type[n];  // vector new returning 0 on error
-operator delete[](ptr, file,line);      // vector delete
+operator delete[](ptr, file,line);  // vector delete
 (end code)
 
 The default syntax without file/line info can be used, too.
@@ -383,7 +388,8 @@ The default syntax without file/line info can be used, too.
 PREPACKAGED RPM FILES FOR REDHAT & CO:
 
 
-You can download prepackaged .rpm files for RedHat, Fedora Core and similar systems from
+You can download prepackaged .rpm files for RedHat, Fedora Core and similar
+systems from
 http://dries.ulyssis.org/apt/packages/duma/info.html
 
 Dries Verachtert <dries@ulyssis.org> wrote the .spec file.
@@ -419,7 +425,8 @@ Options in german language:
 4) Projekteinstellungen -> Linker -> Projekt Optionen
    "/FORCE:MULTIPLE" unten eingeben
 
-Now everything you have to do is to set a dependency to "duma" from your application.
+Now everything you have to do is to set a dependency to "duma" from your
+application.
 
 
 WARNINGS:
@@ -467,17 +474,54 @@ There are, without doubt, other bugs and porting issues. Please contact me via
 e-mail if you have any bug reports, ideas, etc.
 
 
-WHAT'S BETTER:
+OTHER ALTERNATIVE/ADDITIONAL DEBUGGING SOFTWARE/TOOLS:
 
 
-Purify
-does a much more thorough job than DUMA, and does not have the huge memory
-overhead.
+GCC
+option -Warray-bounds up from gcc 4.3
+options -fmudflap -fmudflapth -fmudflapir up from gcc 4.0
+See http://gcc.gnu.org/
+See http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
+
+IBM Stack Smashing Protector aka Pro Police
+it is a GCC (Gnu Compiler Collection) extension for protecting applications
+from stack-smashing attacks. Applications written in C will be protected by
+the method that automatically inserts protection code into an application at
+compilation time. The protection is realized by buffer overflow detection and
+the variable reordering feature to avoid the corruption of pointers. The basic
+idea of buffer overflow detection comes from StackGuard system.
+See http://www.trl.ibm.com/projects/security/ssp/
 
 Checkergcc
 a modified version of the GNU C Compiler that instruments all memory
 references, is available on Linux systems and where GCC is used. It performs
 some of the same tasks as Purify, but only on code that it has compiled.
+
+Valgrind
+Valgrind is an award-winning suite of tools for debugging and profiling Linux
+programs. With the tools that come with Valgrind, you can automatically detect
+many memory management and threading bugs, avoiding hours of frustrating
+bug-hunting, making your programs more stable. You can also perform detailed
+profiling, to speed up and reduce memory use of your programs.
+The Valgrind distribution currently includes four tools: a memory error
+detector, a cache (time) profiler, a call-graph profiler, and a heap (space)
+profiler. It runs on the following platforms: X86/Linux, AMD64/Linux,
+PPC32/Linux, PPC64/Linux.
+See http://valgrind.org/
+
+Purify
+does a much more thorough job than DUMA, and does not have the huge memory
+overhead.
+
+LibSafe
+protects Critical Elements of Stack.
+See http://www.research.avayalabs.com/
+
+DieHard
+helps buggy programs run correctly and protects them from a range of security
+vulnerabilities.
+See http://www.diehard-software.org/
+
 
 
 CONTACTING THE AUTHOR:
