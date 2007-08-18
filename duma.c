@@ -297,6 +297,14 @@ static struct _DUMA_GlobalStaticVars
    */
   int   DISABLE_BANNER;
 
+  /* Variable: DUMA_REPORT_ALL_LEAKS
+   *
+   * DUMA_REPORT_ALL_LEAKS is a global variable used to control whether DUMA should
+   * all leaks - even without source filename/line number. Default is 0, meaning that
+   * only leaks with source information will get reported.
+   */
+  int   REPORT_ALL_LEAKS;
+
   /* Variable: DUMA_SLACKFILL
    *
    * DUMA_SLACKFILL is set to 0-255. The slack / no mans land of all new allocated
@@ -456,6 +464,7 @@ _duma_s =
   , 0       /* int DUMA_IN_DUMA; */
 
   , 0       /* Variable: DISABLE_BANNER */
+  , 0       /* Variable: REPORT_ALL_LEAKS */
   , 0xAA    /* Variable: SLACKFILL */
   , -1L     /* Variable: PROTECT_FREE */
   , -1L     /* Variable: MAX_ALLOC */
@@ -674,6 +683,10 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   if ( (string = DUMA_GETENV("DUMA_PROTECT_BELOW")) != 0 )
     duma_tls->PROTECT_BELOW = (atoi(string) != 0);
 
+  /* Should we report all leaks? */
+  if ( (string = DUMA_GETENV("DUMA_REPORT_ALL_LEAKS")) != 0 )
+    _duma_s.REPORT_ALL_LEAKS = (atoi(string) != 0);
+
   /*
    * See if the user wants to protect memory that has been freed until
    * the program exits, rather than until it is re-allocated.
@@ -789,9 +802,10 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   if ( (string = DUMA_GETENV("DUMA_OUTPUT_FILE")) != 0 )
     DUMA_OUTPUT_FILE = strdup(string);
 
-  // Should we send banner?
+  /* Should we send banner? */
   if ( (string = DUMA_GETENV("DUMA_DISABLE_BANNER")) != 0 )
     _duma_s.DISABLE_BANNER = (atoi(string) != 0);
+
   if ( !_duma_s.DISABLE_BANNER )
     DUMA_Print(version);
 }
@@ -2233,8 +2247,10 @@ void  DUMA_newFrame(void)
 void  DUMA_delFrame(void)
 {
   struct _DUMA_Slot * slot  = _duma_g.allocList;
-  size_t        count   = _duma_s.slotCount;
-  int         nonFreed  = 0;
+  size_t        count     = _duma_s.slotCount;
+  int    nonFreedTotal    = 0;
+  int    nonFreedReported = 0;
+  int    iExtraLeaks;
 
   IF__DUMA_INIT_DONE
     DUMA_GET_SEMAPHORE();
@@ -2251,8 +2267,11 @@ void  DUMA_delFrame(void)
        )
     {
 
+      if ( _duma_s.REPORT_ALL_LEAKS || slot->lineno > 0 )
+      {
+
 #if defined(DUMA_DLL_LIBRARY) || defined(DUMA_SO_LIBRARY) || defined(DUMA_DETOURS)
-      DUMA_Print("\nDUMA: ptr=0x%a size=%d type='%s'not freed\n"
+      DUMA_Print("\nDUMA: ptr=0x%a size=%d type='%s' not freed\n"
                 , (DUMA_ADDR)slot->userAddress, (DUMA_SIZE)slot->userSize
                 , _duma_allocDesc[slot->allocator].name
                 );
@@ -2267,12 +2286,25 @@ void  DUMA_delFrame(void)
       if(DUMA_OUTPUT_STACKTRACE)
         DUMA_Print("Stacktrace of allocation:\n%s\n", slot->stacktrace);
 #endif
-      ++nonFreed;
+
+        ++nonFreedReported;
+      }
+
+      ++nonFreedTotal;
     }
   }
 
-  if (nonFreed)
-    DUMA_Abort("DUMA: Found non free'd pointers.\n");
+  iExtraLeaks = nonFreedTotal - nonFreedReported;
+
+  if ( nonFreedReported )
+    DUMA_Abort("DUMA: Reported %i leaks. There are %i extra leaks without information of allocation\n"
+              , nonFreedReported, iExtraLeaks
+              );
+  else if ( nonFreedReported < nonFreedTotal )
+    DUMA_Print("DUMA: Reported %i leaks. There are %i extra leaks without information of allocation\n"
+              , nonFreedReported, iExtraLeaks
+              );
+
 
   Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
 
