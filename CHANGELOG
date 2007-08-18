@@ -16,8 +16,9 @@ CHANGELOG:
   * added environment variable 'DUMA_REPORT_ALL_LEAKS' defaulting to 0.
   * added empty definitions for macro functions DUMA_SET_ALIGNMENT(),
     DUMA_SET_PROTECT_BELOW() and DUMA_SET_FILL()
-  * updated README on shell environment variable options and added some
+  * updated README on shell environment variable options, added some
     entries to section 'OTHER ALTERNATIVE/ADDITIONAL DEBUGGING SOFTWARE/TOOLS'
+    and added section 'COMPILATION NOTES FOR RELEASE/PRODUCTION'
   (2007-08-18, HA)
 
 2.5.7

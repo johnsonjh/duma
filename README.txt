@@ -331,7 +331,7 @@ command like:
 "sudo sysctl -w vm.max_map_count=1000000"
 
 Don't leave libduma.a linked into production software! Use it only for
-debugging.
+debugging. See section 'COMPILATION NOTES FOR RELEASE/PRODUCTION' below.
 
 
 MEMORY LEAK DETECTION:
@@ -427,6 +427,19 @@ Options in german language:
 
 Now everything you have to do is to set a dependency to "duma" from your
 application.
+
+
+COMPILATION NOTES FOR RELEASE/PRODUCTION:
+
+
+Set the preprocessor definition
+
+#define DUMA_NO_DUMA
+
+in your Makefiles to disable DUMA usage and don't link with DUMA library.
+With DUMA_NO_DUMA-definition all DUMA macro functions get defined but do
+nothing. This way you don't have to change your code for release compilation
+even when using special DUMA macros.
 
 
 WARNINGS:
