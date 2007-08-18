@@ -13,6 +13,9 @@ CHANGELOG:
     http://dries.ulyssis.org/apt/packages/duma/info.html
     in README
   (2007-08-17, HA)
+  * added environment variable 'DUMA_REPORT_ALL_LEAKS' defaulting to 0.
+  * updated README
+  (2007-08-18, HA)
 
 2.5.7
   * reformatting: converted tabs to spaces
