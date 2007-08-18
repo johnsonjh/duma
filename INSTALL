@@ -42,9 +42,17 @@ III. Solaris Environment:
   the compiled executable can dynmically find and link to libstdc++. Have a
   look at the solaris section in DUMA's Makefile.
 
+IV. FreeBSD Environment:
+
+  At least on my FreeBSD-6.2 installation i have to set the shell environment
+  variable with 'export DUMA_DISABLE_BANNER=1' before running any programs
+  linked with libduma.a. There seems to be an initialization problem with
+  the pthreads library.
+
 
 Hayati Ayguen
 
 15 September 2005,
 updated 31 July 2007
 updated 11 August 2007
+updated 18 August 2007
