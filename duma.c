@@ -1136,11 +1136,12 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   DUMA_ASSERT( 0 != _duma_g.allocList );
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
-  // When getting the stack trace memory will be allocated
-  // via DUMA.  In situations were additional slots must
-  // be allocated we must do this prior to getting a pointer
-  // to the new empty slot.  For this reason please leave
-  // this code at the top of this function.
+  /* When getting the stack trace memory will be allocated
+   * via DUMA.  In situations were additional slots must
+   * be allocated we must do this prior to getting a pointer
+   * to the new empty slot.  For this reason please leave
+   * this code at the top of this function.
+   */
   if(!_duma_s.DUMA_IN_DUMA && _duma_s.init_state && DUMA_OUTPUT_STACKTRACE)
   {
     _duma_s.DUMA_IN_DUMA = 1;
@@ -1507,7 +1508,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
   if ( 0 == _duma_g.allocList )
   {
 #ifdef DUMA_DETOURS
-    // Odd things happen with detours sometimes...
+    /* Odd things happen with detours sometimes... */
     DUMA_Print("DUMA_Warning: free() called before first malloc().");
     return;
 #else
@@ -1545,7 +1546,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
     else
     {
 #if DUMA_DETOURS
-      // For Detours we need to not dump out, we get one extra free up front for some reason.
+      /* For Detours we need to not dump out, we get one extra free up front for some reason. */
       DUMA_Print("DUMA_Warning: free(%a): address not from DUMA or already freed.", (DUMA_ADDR)address);
       return;
 #else
@@ -2329,8 +2330,8 @@ __attribute ((destructor))
 _duma_exit(void)
 {
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
-  // Cleanup memory owned by the stack library
-  // wouldn't do to leak memory :)
+  /* Cleanup memory owned by the stack library */
+  /* wouldn't do to leak memory :) */
   StackTraceCleanup();
 #endif
 
