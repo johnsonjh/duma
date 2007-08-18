@@ -42,7 +42,7 @@ You can also use dynamic linking. If you're using a Bourne shell, the statement
 'export LD_PRELOAD=libduma.so.0.0' will cause DUMA to be loaded to run all
 dynamic executables.
 
-The command 'duma <command>' runs a single command under DUMA.
+The command 'duma.sh <command>' runs a single command under DUMA.
 
 Some systems will require special arguments to the linker to assure that you
 are using the DUMA malloc() and not the one from your C library.
@@ -61,17 +61,22 @@ locate the erroneous statement, and repair it.
 GLOBAL AND ENVIRONMENT VARIABLES:
 
 
-DUMA has four configuration switches that can be enabled via
-the shell environment, or by setting the value of global integer variables
-using a debugger. These switches change what bugs DUMA will detect, so it's
-important that you know how to use them.
+DUMA has several configuration switches that can be enabled via
+the shell environment. These switches change what bugs DUMA will detect,
+so it's important that you know how to use them.
 
-DUMA_ALIGNMENT - This is an integer that specifies the alignment for any memory allocations that
-  will be returned by malloc(), calloc(), and realloc(). The value is specified
-  in bytes, thus a value of 4 will cause memory to be aligned to 32-bit
-  boundaries unless your system doesn't have a 8-bit characters.
-  DUMA_ALIGNMENT is set to the minimum required alignment specific to your
-  environment by default. The minimum required alignment is detected by
+In older versions of DUMA you could set the value of
+global integer variables (using a debugger). In actual DUMA versions most
+of the global variables don't exist any more: they changed to thread local
+variables defined in structures. Instead you can call macro function to set
+some variables - but not from debugger!
+
+DUMA_ALIGNMENT - This is an integer that specifies the alignment for any memory
+  allocations that will be returned by malloc(), calloc(), and realloc().
+  The value is specified in bytes, thus a value of 4 will cause memory to be
+  aligned to 32-bit boundaries unless your system doesn't have a 8-bit
+  characters. DUMA_ALIGNMENT is set to the minimum required alignment specific
+  to your environment by default. The minimum required alignment is detected by
   createconf and stored in the file duma_config.h.
   If your program requires that allocations be aligned to 64-bit boundaries
   you'll have to set this value to 8. This is the case when compiling with the
@@ -84,54 +89,70 @@ DUMA_ALIGNMENT - This is an integer that specifies the alignment for any memory 
   alignments - for example when allocating 3 bytes, they would be aligned to 2
   byte boundary. This allows better detection of overrun.
   For this reason, you will sometimes want to set DUMA_ALIGNMENT to 1 (no
-  alignment), so that you can detect overruns of less than your CPU's word size.
-  Be sure to read the section 'WORD-ALIGNMENT AND OVERRUN DETECTION' in this
-  manual page before you try this.
-  To change this value, set DUMA_ALIGNMENT in the shell environment to an integer
-  value, or assign to the global integer variable DUMA_ALIGNMENT using a
-  debugger.
-  You don't need to change this variable, if you just need bigger alignment for
+  alignment), so that you can detect overruns of less than your CPU's word
+  size. Be sure to read the section 'WORD-ALIGNMENT AND OVERRUN DETECTION' in
+  this manual page before you try this.
+  To change this value, set DUMA_ALIGNMENT in the shell environment to an
+  integer value, or call the macro function DUMA_SET_ALIGNMENT() from your
+  code.
+  You don't need to change this setting, if you just need bigger alignment for
   some special buffers. In this case you may use the function
   memalign(alignment, userSize).
 
-DUMA_PROTECT_BELOW - DUMA usually places an inaccessible page immediately after each memory
-  allocation, so that software that runs past the end of the allocation will be
-  detected. Setting DUMA_PROTECT_BELOW to 1 causes DUMA to place the inaccessible
-  page before the allocation in the address space, so that under-runs will be
-  detected instead of over-runs.
+DUMA_PROTECT_BELOW - DUMA usually places an inaccessible page immediately after
+  each memory allocation, so that software that runs past the end of the
+  allocation will be detected. Setting DUMA_PROTECT_BELOW to 1 causes DUMA to
+  place the inaccessible page before the allocation in the address space, so
+  that under-runs will be detected instead of over-runs.
   To change this value, set DUMA_PROTECT_BELOW in the shell environment to an
-  integer value, or assign to the global integer variable DUMA_PROTECT_BELOW
-  using a debugger.
+  integer value, or call the macro function DUMA_SET_PROTECT_BELOW() from your
+  code.
 
-DUMA_FILL - When set to a value between 0 and 255, every byte of allocated memory is
-  initialized to that value. This can help detect reads of uninitialized memory.
-  When set to -1, DUMA does not initialise memory on allocation. But some memory
-  is filled with zeroes (the operating system default on most systems) and some
-  memory will retain the values written to it during its last use.
+DUMA_REPORT_ALL_LEAKS - DUMA usually reports only memory leaks where the source
+  filename with line number of the allocating instruction is known. Setting this
+  variable to 1 in shell environment reports all memory leaks.
+  The default is 0 to avoid reporting of irrelevant memory leaks from
+  system/compiler environment: there are many standard libraries leaking memory,
+  which by default is no real problem as the system frees up all memory on
+  program exit.
+
+DUMA_FILL - When set to a value between 0 and 255, every byte of allocated
+  memory is initialized to that value. This can help detect reads of
+  uninitialized memory. When set to -1, DUMA does not initialise memory on
+  allocation. But some memory is filled with zeroes (the operating system
+  default on most systems) and some memory will retain the values written to
+  it during its last use.
   Per default DUMA will initialise all allocated bytes to 255 (=0xFF).
+  To change this value, set DUMA_FILL in the shell environment to an
+  integer value, or call the macro function DUMA_SET_FILL() from your
+  code.
 
-DUMA_SLACKFILL - As DUMA internally allocates memory in whole pages, there retains an unused and
-  unprotectable piece of memory: the slack or no mans land. Witch this
-  environment variable you can define the initialisation value for all bytes in
-  the slack. At deallocation of a memory block DUMA checks if any bytes of the
-  slack got modified. The default value is 170, which is 0xAA in hexadecimal and
-  10101010 in binary representation.
-
-DUMA_ALLOW_MALLOC_0 - Memory allocation of size zero is ANSI conform.  But often this is the result
-  of a software bug. For this reason DUMA may trap such calls to malloc() with
-  size zero. I leave this option disabled by default, but you are free to trap
-  these calls setting the DUMA_ALLOC_MALLOC_0 in the shell environment to an
+DUMA_SLACKFILL - As DUMA internally allocates memory in whole pages, there
+  retains an unused and unprotectable piece of memory: the slack or no mans
+  land. Per default DUMA will initialise this area to 170 (=0xAA), which
+  is 10101010 in binary representation.
+  To change this value, set DUMA_SLACKFILL in the shell environment to an
   integer value.
+  DUMA automatically checks this area, the no mans land, at deallocation.
+  You can manually induce a check with the macro function DUMA_CHECK() for
+  one memory block. With the macro function DUMA_CHECKALL() all memory blocks
+  get checked.
 
-DUMA_MALLOC_FAILEXIT - Many programs do not check for allocation failure. This often leads to delayed
-  errors, no more understandable. Setting this environment variable to a positive
-  integer, DUMA exits the program immediately when memory allocation fails. This
-  option is set by default.
+DUMA_ALLOW_MALLOC_0 - Memory allocation of size zero is ANSI conform.  But
+  often this is the result of a software bug. For this reason DUMA may trap
+  such calls to malloc() with size zero. I leave this option disabled by
+  default, but you are free to trap these calls setting the DUMA_ALLOC_MALLOC_0
+  in the shell environment to an integer value.
 
-DUMA_PROTECT_FREE - DUMA usually returns free memory to a pool from which it may be re-allocated.
-  If you suspect that a program may be touching free memory, set
-  DUMA_PROTECT_FREE to -1. This is the default and will cause DUMA not to
-  re-allocate any memory.
+DUMA_MALLOC_FAILEXIT - Many programs do not check for allocation failure. This
+  often leads to delayed errors, no more understandable. Set this variable to a
+  positive integer in the shell environment to exit the program immediately
+  when memory allocation fails. This option is set by default.
+
+DUMA_PROTECT_FREE - DUMA usually returns free memory to a pool from which it
+  may be re-allocated. If you suspect that a program may be touching free
+  memory, set DUMA_PROTECT_FREE shell environment to -1. This is the default
+  and will cause DUMA not to re-allocate any memory.
   For programs with many allocations and deallocations this may lead to the
   consumption of the full address space and thus to the failure of malloc().
   To avoid such failures you may limit the amount of protected deallocated
@@ -139,52 +160,55 @@ DUMA_PROTECT_FREE - DUMA usually returns free memory to a pool from which it may
   will be the limit for such protected free memory.
   A value of 0 will disable protection of freed memory.
 
-DUMA_MAX_ALLOC - This environment variable limits the total memory print of a program. This is
-  another way to indirectly limit the sum of freed protected memory (see
-  DUMA_PROTECT_FREE). Per default there is no limit (=-1). A positive value is
-  interpreted in kB, which stands for the sum of allocated and freed protected
-  memory.
+DUMA_MAX_ALLOC - This shell environment variable limits the total memory print
+  of a program. This is another way to indirectly limit the sum of freed
+  protected memory (see DUMA_PROTECT_FREE). By default there is no limit (=-1).
+  A positive value is interpreted in kB, which stands for the sum of allocated
+  and freed protected memory.
 
-DUMA_FREE_ACCESS - This is a debugging enhancer to catch deallocation of a memory blocks using
-  watch expressions. DUMA does a write access to the first byte, which may lead
-  a debugger to stop on a watch expression. You have to enable this explicitly
-  by setting the environment variable to non zero. Default is disabled.
+DUMA_FREE_ACCESS - This is a debugging enhancer to catch deallocation of a
+  memory block using watch expressions. DUMA does a write access to the first
+  byte, which may lead a debugger to stop on a watch expression. You have to
+  enable this by setting the shell environment variable to non zero.
+  Default is disabled.
 
-DUMA_SHOW_ALLOC - Set this environment variable to non-zero to let DUMA print all allocations and
-  deallocations to the console. Although this generates a lot of messages, this
-  option can be useful to detect inefficient code containing many allocations /
-  deallocations. This feature is switched off per default.
+DUMA_SHOW_ALLOC - Set this shell environment variable to non-zero to let DUMA
+  print all allocations and deallocations to the console. Although this
+  generates a lot of messages, this option can be useful to detect inefficient
+  code containing many (de)allocations. This is switched off by default.
 
-DUMA_SUPPRESS_ATEXIT - Set this environment variable to non-zero when DUMA should skip the
-  installation of its exit handler. The exit handler is called at the end of the
-  main program and checks for memory leaks, so the handler's installation should
-  *usually* not be suppressed. One reason for doing so regardless are some buggy
-  environments, where calls to the C library's atexit()-function hangs.
+DUMA_SUPPRESS_ATEXIT - Set this shell environment variable to non-zero when
+  DUMA should skip the installation of its exit handler. The exit handler is
+  called at the end of the main program and checks for memory leaks, so the
+  handler's installation should *usually* not be suppressed. One reason for
+  doing so regardless are some buggy environments, where calls to the standard
+  C library's atexit()-function hangs.
 
-DUMA_FREE_WIPES - This option is replaced. As freed memory is protected by DUMA until it gets
-  reused, it is unnecessary to wipe its contents.
+DUMA_DISABLE_BANNER - Set this shell environment variable to non-zero to
+  suppress the usual startup message on console. Default is 0.
 
-DUMA_DISABLE_BANNER - When set to 1 display of usual startup message on console is suppressed.
-  Default is 0.
+DUMA_OUTPUT_DEBUG - Set this shell environment variable to non-zero to output
+  all DUMA messages to the debugging console. This option is only available
+  on Windows and is off by default.
 
-DUMA_OUTPUT_DEBUG - [win32] Used to control if DUMA output is printed to the win32 debugging console.  
-  Output is not by default sent to the debugging console, set to 1 to enable.
+DUMA_OUTPUT_STDOUT - Set this shell environment variable to non-zero to output
+  all DUMA messages to STDOUT. This option is off by default.
 
-DUMA_OUTPUT_STDOUT - Used to control if DUMA output is printed to STDOUT.
-  Output is not by default sent to STDOUT, set to 1 to enable.
+DUMA_OUTPUT_STDERR - Set this shell environment variable to non-zero to output
+  all DUMA messages to STDERR. This option is on by default.
 
-DUMA_OUTPUT_STDERR - Used to control if DUMA output is printed to STDERR.
-  Output is by default sent to STDERR, set to 0 to disable.
+DUMA_OUTPUT_FILE - Set this shell environment variable to a filename where all
+  DUMA messages should be written to. This option is off by default.
 
-DUMA_OUTPUT_FILE - Used to control if DUMA output is printed to a specified file.  
-  Set this to the file output should goto.
+DUMA_OUTPUT_STACKTRACE - Set this shell environment variable to non-zero to
+  output a stacktrace of the allocation that is not free'd. This option is
+  available only on Windows and is off by default. This option also requires a map
+  file generated by the linker.
 
-DUMA_OUTPUT_STACKTRACE - [win32] Used to control if DUMA outputs a stacktrace of the allocation that 
-  is not free'd.  WIN32 only! Option is disabled by default, set to 1 to enable.
-  Also requires a map file generated by the linker.
+DUMA_OUTPUT_STACKTRACE_MAPFILE - Set this shell environment variable to the map
+  file, when it isn't found. This is very usefull when using detours version of
+  DUMA. This option is available only on Windows.
 
-DUMA_OUTPUT_STACKTRACE_MAPFILE - [win32] When the map file isn't found you can set it using this. Also very
-  usefull when using detours version of duma.
 
 
 WORD-ALIGNMENT AND OVERRUN DETECTION:
@@ -310,11 +334,9 @@ MEMORY LEAK DETECTION:
 
 All memory allocation is protocoled from DUMA together with the filename and
 linenumber of the calling function. The atexit() function checks if each
-allocated memory block was freed. With EF_newFrame() and EF_delFrame you can
-create a new memory frame. Embracing a smaller (than the whole program) unit
-with these functions, you can check if the leak is in that smaller unit. To
-disable leak detection add the preprocessor definition 'DUMA_NO_LEAKDETECTION'
-to DUMA_OPTIONS in Makefile.
+allocated memory block was freed. To disable leak detection add the preprocessor
+definition 'DUMA_SO_NO_LEAKDETECTION' or 'DUMA_LIB_NO_LEAKDETECTION' to
+DUMA_OPTIONS in Makefile.
 
 
 C++ MEMORY OPERATORS AND LEAK DETECTION:
