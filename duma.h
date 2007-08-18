@@ -54,6 +54,10 @@
   #define DUMA_newFrame()             do { } while(0)
   #define DUMA_delFrame()             do { } while(0)
 
+  #define DUMA_SET_ALIGNMENT(V)       do { } while(0)
+  #define DUMA_SET_PROTECT_BELOW(V)   do { } while(0)
+  #define DUMA_SET_FILL(V)            do { } while(0)
+
   #define DUMA_ASSERT(EXPR)           do { } while(0)
 
   #define DUMA_CHECK(BASEADR)         do { } while(0)
