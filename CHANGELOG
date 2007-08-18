@@ -14,7 +14,10 @@ CHANGELOG:
     in README
   (2007-08-17, HA)
   * added environment variable 'DUMA_REPORT_ALL_LEAKS' defaulting to 0.
-  * updated README
+  * added empty definitions for macro functions DUMA_SET_ALIGNMENT(),
+    DUMA_SET_PROTECT_BELOW() and DUMA_SET_FILL()
+  * updated README on shell environment variable options and added some
+    entries to section 'OTHER ALTERNATIVE/ADDITIONAL DEBUGGING SOFTWARE/TOOLS'
   (2007-08-18, HA)
 
 2.5.7
