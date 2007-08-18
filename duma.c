@@ -2298,11 +2298,11 @@ void  DUMA_delFrame(void)
   iExtraLeaks = nonFreedTotal - nonFreedReported;
 
   if ( nonFreedReported )
-    DUMA_Abort("DUMA: Reported %i leaks. There are %i extra leaks without information of allocation\n"
+    DUMA_Abort("DUMA: Reported %i leaks. There are %i extra leaks without allocation information\n"
               , nonFreedReported, iExtraLeaks
               );
   else if ( nonFreedReported < nonFreedTotal )
-    DUMA_Print("DUMA: Reported %i leaks. There are %i extra leaks without information of allocation\n"
+    DUMA_Print("DUMA: Reported %i leaks. There are %i extra leaks without allocation information\n"
               , nonFreedReported, iExtraLeaks
               );
 
