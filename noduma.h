@@ -36,6 +36,18 @@
 #undef DUMA_delFrame
 #endif
 
+#ifdef DUMA_SET_ALIGNMENT
+#undef DUMA_SET_ALIGNMENT
+#endif
+
+#ifdef DUMA_SET_PROTECT_BELOW
+#undef DUMA_SET_PROTECT_BELOW
+#endif
+
+#ifdef DUMA_SET_FILL
+#undef DUMA_SET_FILL
+#endif
+
 
 /* remove previous wrappers to standard C functions */
 
