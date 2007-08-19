@@ -339,9 +339,13 @@ MEMORY LEAK DETECTION:
 
 All memory allocation is protocoled from DUMA together with the filename and
 linenumber of the calling function. The atexit() function checks if each
-allocated memory block was freed. To disable leak detection add the preprocessor
-definition 'DUMA_SO_NO_LEAKDETECTION' or 'DUMA_LIB_NO_LEAKDETECTION' to
-DUMA_OPTIONS in Makefile.
+allocated memory block was freed. To disable leak detection add the
+preprocessor definition 'DUMA_SO_NO_LEAKDETECTION' or
+'DUMA_LIB_NO_LEAKDETECTION' to DUMA_OPTIONS in Makefile.
+If a leak is reported without source filename and line number but is
+reproducible with the same pointer, set a conditional breakpoint on the
+function 'void * duma_alloc_return( void * address)'
+f.e. with gdb command 'break duma_alloc_return if address==0x123'
 
 
 C++ MEMORY OPERATORS AND LEAK DETECTION:
