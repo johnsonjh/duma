@@ -1095,6 +1095,17 @@ static void allocateMoreSlots(void)
   #endif
 }
 
+
+/* Function: duma_alloc_return
+ *
+ * set your conditional breakpoint here to catch a specific allocation
+ */
+void * duma_alloc_return( void * address )
+{
+  return address;
+}
+
+
 /* Function: _duma_allocate
  * 
  * This is the memory allocator. When asked to allocate a buffer, allocate
@@ -1489,7 +1500,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   if ( ((char*)userAddr) && fillByte != -1 )
     memset( (char*)userAddr, fillByte, userSize);
 
-  return (char*)userAddr;
+  return duma_alloc_return( (char*)userAddr );
 }
 
 

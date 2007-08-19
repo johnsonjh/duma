@@ -20,6 +20,10 @@ CHANGELOG:
     entries to section 'OTHER ALTERNATIVE/ADDITIONAL DEBUGGING SOFTWARE/TOOLS'
     and added section 'COMPILATION NOTES FOR RELEASE/PRODUCTION'
   (2007-08-18, HA)
+  * added single line function 'duma_alloc_return()'. all memory allocated
+    from DUMA is returned through this function. This allows you to set a
+    conditional breakpoint on this function to catch a specific allocation
+  (2007-08-19, HA)
 
 2.5.7
   * reformatting: converted tabs to spaces

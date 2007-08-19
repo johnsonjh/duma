@@ -228,6 +228,8 @@
   DUMA_EXTERN_C void duma_check(void * address);
   DUMA_EXTERN_C void duma_checkAll();
 
+  DUMA_EXTERN_C void * duma_alloc_return( void * address );
+
 #ifdef DUMA_EXPLICIT_INIT
 DUMA_EXTERN_C void   duma_init(void);
 #endif
