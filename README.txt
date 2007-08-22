@@ -526,6 +526,14 @@ profiler. It runs on the following platforms: X86/Linux, AMD64/Linux,
 PPC32/Linux, PPC64/Linux.
 See http://valgrind.org/
 
+MPATROL
+The mpatrol library is a powerful debugging tool that attempts to diagnose
+run-time errors that are caused by the wrong use of dynamically allocated
+memory. It acts as a malloc() debugger for debugging dynamic memory
+allocations, although it can also trace and profile calls to malloc()
+and free() too.
+See http://www.cbmamiga.demon.co.uk/mpatrol/
+
 Purify
 does a much more thorough job than DUMA, and does not have the huge memory
 overhead.
