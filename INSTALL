@@ -15,6 +15,7 @@ I. Linux/Unix environments (including Cygwin and MinGW):
   Add option 'OSTYPE=cygwin' when calling make for Cygwin.
   Add option 'OS=osx' when calling make for MacOS X or Darwin.
   Add option 'OS=freebsd' when calling make for FreeBSD.
+  Add option 'OS=netbsd' when calling make for NetBSD.
   Add option 'OS=solaris' when calling make for Solaris.
 
   Get system user with 'su', if you are going to install into
@@ -49,6 +50,11 @@ IV. FreeBSD Environment:
   linked with libduma.a. There seems to be an initialization problem with
   the pthreads library.
 
+V. NetBSD Environment:
+
+  At least on my NetBSD-3.1 installation i always get exactly one memory leak.
+
+
 
 Hayati Ayguen
 
@@ -56,3 +62,4 @@ Hayati Ayguen
 updated 31 July 2007
 updated 11 August 2007
 updated 18 August 2007
+updated 28 August 2007
