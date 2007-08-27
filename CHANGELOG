@@ -2,6 +2,15 @@
 CHANGELOG:
 ==========
 
+2.5.9
+  * added link to mpatrol in README
+  * added shell environment variable 'DUMA_SKIPCOUNT_INIT'
+  (2007-08-22, HA)
+  * added section for NetBSD in Makefile
+    there is always 1 memory leak on NetBSD-3.1
+      .. but the functionality works
+  (2007-08-28, HA)
+
 2.5.8
   * fix: set DUMA_PREFER_GETENV for osx; it doesn't link with environ
   * fix: MinGW wanted exact declaration as in definition for
