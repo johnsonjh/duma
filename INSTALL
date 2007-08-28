@@ -52,8 +52,8 @@ IV. FreeBSD Environment:
 
 V. NetBSD Environment:
 
-  At least on my NetBSD-3.1 installation i always get exactly one memory leak.
-
+  At least on my NetBSD-3.1 (HOSTTYPE=i386; OSTYPE=netbsdelf) installation
+  i always get exactly one memory leak. I've not tested to install.
 
 
 Hayati Ayguen
