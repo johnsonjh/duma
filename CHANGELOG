@@ -17,6 +17,8 @@ CHANGELOG:
   (2007-09-02, HA)
   * bugfix for _duma_strncpy(): no more call to strlen()
       bug was reported from kamallneet <kamalneet@gmail.com>
+  * applied patch from  Eddy Pronk <epronk at users.sourceforge.net>
+      submitted to sourceforge with title "libduma.so on Solaris"
   (2007-11-13, HA)
 
 2.5.8

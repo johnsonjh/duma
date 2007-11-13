@@ -112,6 +112,9 @@ DUMA_PROTECT_BELOW - DUMA usually places an inaccessible page immediately after
   integer value, or call the macro function DUMA_SET_PROTECT_BELOW() from your
   code.
 
+DUMA_SKIPCOUNT_INIT - 
+  
+
 DUMA_REPORT_ALL_LEAKS - DUMA usually reports only memory leaks where the source
   filename with line number of the allocating instruction is known. Setting this
   variable to 1 in shell environment reports all memory leaks.
