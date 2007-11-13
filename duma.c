@@ -94,7 +94,7 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 #endif
 
 static const char  version[] =
-"DUMA 2.5.8 ("
+"DUMA 2.5.9 ("
 #ifdef DUMA_SO_LIBRARY
 "shared library"
 #elif DUMA_DLL_LIBRARY
@@ -223,7 +223,11 @@ struct _DUMA_Slot
 
 #ifndef DUMA_NO_LEAKDETECTION
   char            * filename;   /* filename of allocation */
-  int               lineno;     /* linenumber of allocation */
+  int               lineno;     /* linenumber of allocation
+                                 * -1 == memory was allocated before duma_init()
+                                 *  0 == no leak information present
+                                 * >0 == leak information present
+                                 */
 #endif
 
 /* Feature currently only works on win32 */
@@ -296,6 +300,14 @@ static struct _DUMA_GlobalStaticVars
    * gets printed.
    */
   int   DISABLE_BANNER;
+
+  /* Variable: DUMA_SKIPCOUNT_INIT
+   *
+   * DUMA_SKIPCOUNT_INIT control after how many DUMA allocations the full internal
+   * initialization is done. Default is 0.
+   */
+  int   SKIPCOUNT_INIT;
+
 
   /* Variable: DUMA_REPORT_ALL_LEAKS
    *
@@ -464,6 +476,7 @@ _duma_s =
   , 0       /* int DUMA_IN_DUMA; */
 
   , 0       /* Variable: DISABLE_BANNER */
+  , 0       /* Variable: SKIPCOUNT_INIT */
   , 0       /* Variable: REPORT_ALL_LEAKS */
   , 0xAA    /* Variable: SLACKFILL */
   , -1L     /* Variable: PROTECT_FREE */
@@ -801,6 +814,10 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    */
   if ( (string = DUMA_GETENV("DUMA_OUTPUT_FILE")) != 0 )
     DUMA_OUTPUT_FILE = strdup(string);
+
+  /* Get Value for DUMA_SKIPCOUNT_INIT */
+  if ( (string = DUMA_GETENV("DUMA_SKIPCOUNT_INIT")) != 0 )
+    _duma_s.SKIPCOUNT_INIT = (atoi(string) != 0);
 
   /* Should we send banner? */
   if ( (string = DUMA_GETENV("DUMA_DISABLE_BANNER")) != 0 )
@@ -2063,13 +2080,10 @@ char * _duma_strncpy(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL
     DUMA_Abort("strncpy(%a, %a, %d): memory regions overlap.",
       (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size);
 
-  /* calculate number of characters to copy from src to dest */
-  srcsize = strlen(src) + 1;
-  if ( srcsize > size )
-    srcsize = size;
-
-  /* copy src to dest */
-  for (i=0; i<srcsize; ++i)
+  /* copy src to dest - up to size or zero terminator
+   *   whatever happens first
+   */
+  for (i =0; i < size && src[i]; ++i)
     dest[i] = src[i];
 
   /* fill rest with '\0' character */
