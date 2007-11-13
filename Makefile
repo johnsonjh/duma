@@ -190,9 +190,9 @@ else
           DUMA_OPTIONS += -DDUMA_NO_STRERROR
           CURPATH=./
           DUMA_DYN_DEPS=
-          DUMASO=
-          DUMASO_LINK1=
-          DUMASO_LINK2=
+          DUMASO=libduma.so.0.0
+          DUMASO_LINK1=libduma.so.0
+          DUMASO_LINK2=libduma.so
           CFLAGS= -g -O0
           CPPFLAGS= -g -O0
           LDFLAGS+=-lgcc_s
@@ -246,7 +246,11 @@ all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) testmt$(EXEPOSTFIX) du
 ifdef DUMASO
 	@ $(ECHOLF)
 	@ $(ECHO) "Testing DUMA (dynamic library)."
+ifeq ($(OS), solaris)
+	(LD_PRELOAD=./$(DUMASO) DYLD_INSERT_LIBRARIES=./$(DUMASO) DYLD_FORCE_FLAT_NAMESPACE=1 exec $(CURPATH)tstheap_so 3072)
+else
 	(export LD_PRELOAD=./$(DUMASO); export DYLD_INSERT_LIBRARIES=./$(DUMASO); export DYLD_FORCE_FLAT_NAMESPACE=1; exec $(CURPATH)tstheap_so 3072)
+endif
 	@ $(ECHOLF)
 	@ $(ECHO) "DUMA dynamic confidence test PASSED."
 	@ $(ECHOLF)
