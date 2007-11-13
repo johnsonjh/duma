@@ -10,6 +10,14 @@ CHANGELOG:
     there is always 1 memory leak on NetBSD-3.1
       .. but the functionality works
   (2007-08-28, HA)
+  * tested on powerpc-apple-darwin8.0.0 inside of PearPC 0.4 (Windows):
+    compiles and passes all confidence tests. trying to debug example1
+    from within gdb crashes whole PearPC; running without gdb creates
+    a core dump one can analyse afterwards with gdb.
+  (2007-09-02, HA)
+  * bugfix for _duma_strncpy(): no more call to strlen()
+      bug was reported from kamallneet <kamalneet@gmail.com>
+  (2007-11-13, HA)
 
 2.5.8
   * fix: set DUMA_PREFER_GETENV for osx; it doesn't link with environ
