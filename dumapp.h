@@ -24,6 +24,10 @@
  * you must include <new>  before including this file.
  */
 
+/* explicitly no "#ifndef _DUMAPP_H_" to allow mutliple inclusions
+ * within single source file with inclusion of noduma.h in between
+ */
+
 #ifndef __cplusplus
 /* avoid usage of C++ operator replacements in C code */
 #error compile with a C++ compiler, or define DUMA_NO_CPP_SUPPORT to remove this error

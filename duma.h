@@ -25,6 +25,10 @@
  * header file for inclusion from YOUR application code
  */
 
+/* explicitly no "#ifndef _DUMA_H_" to allow mutliple inclusions
+ * within single source file with inclusion of noduma.h in between
+ */
+
 #include <stdlib.h>
 
 /*
