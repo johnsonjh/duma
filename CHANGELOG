@@ -20,6 +20,9 @@ CHANGELOG:
   * applied patch from  Eddy Pronk <epronk at users.sourceforge.net>
       submitted to sourceforge with title "libduma.so on Solaris"
   (2007-11-13, HA)
+  * added minor error check in print.c about DUMA_OUTPUT_FILE
+  * some comments in duma.h and dumapp.h
+  (2007-12-23, HA)
 
 2.5.8
   * fix: set DUMA_PREFER_GETENV for osx; it doesn't link with environ
