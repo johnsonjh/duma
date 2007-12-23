@@ -324,13 +324,18 @@ DUMA_Print(const char * pattern, ...)
   {
 #ifdef WIN32
     fd = _open(DUMA_OUTPUT_FILE, _O_APPEND|_O_CREAT|_O_WRONLY);
-    write(fd, buffer, len);
-    _close(fd);
 #else
     fd = open(DUMA_OUTPUT_FILE, O_APPEND|O_CREAT|O_WRONLY);
-    write(fd, buffer, len);
-    close(fd);
 #endif
+    if ( fd >= 0 )
+    {
+      write(fd, buffer, len);
+#ifdef WIN32
+      _close(fd);
+#else
+      close(fd);
+#endif
+    }
   }
 }
 
