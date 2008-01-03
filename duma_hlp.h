@@ -250,10 +250,10 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
     if ( (char)slackfill != *tmpBegAddr++ )
     {
       #ifndef DUMA_NO_LEAKDETECTION
-        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land, size=%d alloced from %s(%i)",
+        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land below userSpace, size=%d alloced from %s(%i)",
           (DUMA_ADDR)slot->userAddress, (DUMA_SIZE)slot->userSize, slot->filename, slot->lineno);
       #else
-        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land", (DUMA_ADDR)slot->userAddress);
+        DUMA_Abort("ptr=%a: free() detected overwrite of ptrs no mans land below userSpace", (DUMA_ADDR)slot->userAddress);
       #endif
     }
   }
@@ -265,10 +265,10 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
     if ( (char)slackfill != *tmpBegAddr++ )
     {
       #ifndef DUMA_NO_LEAKDETECTION
-        DUMA_Abort("free() detected overwrite of no mans land: ptr=%a, size=%d\nalloced from %s(%i)",
+        DUMA_Abort("free() detected overwrite of no mans land above userSpace: ptr=%a, size=%d\nalloced from %s(%i)",
           (DUMA_ADDR)slot->userAddress, (DUMA_SIZE)slot->userSize, slot->filename, slot->lineno);
       #else
-        DUMA_Abort("free() detected overwrite of no mans land: ptr=%a", (DUMA_ADDR)slot->userAddress);
+        DUMA_Abort("free() detected overwrite of no mans land above userSpace: ptr=%a", (DUMA_ADDR)slot->userAddress);
       #endif
     }
   }
