@@ -94,7 +94,7 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 #endif
 
 static const char  version[] =
-"DUMA 2.5.9 ("
+"DUMA 2.5.10 ("
 #ifdef DUMA_SO_LIBRARY
 "shared library"
 #elif DUMA_DLL_LIBRARY
@@ -127,7 +127,7 @@ static const char  version[] =
 #endif
 ")\n"
 "Copyright (C) 2006 Michael Eddington <meddington@gmail.com>\n"
-"Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
+"Copyright (C) 2002-2008 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n\n";
 
 
