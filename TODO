@@ -2,6 +2,9 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
+- add environment variable to autmatically check no man's land
+  at each n'th allocation/deallocation. n=0 for no automatic checks
+
 - enhance testmt.c to run on Windows without pthread library
 
 - gain thread safety: get testmt.c work properly
