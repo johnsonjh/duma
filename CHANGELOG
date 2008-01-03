@@ -2,6 +2,11 @@
 CHANGELOG:
 ==========
 
+2.5.10
+  * added hint where no man's land was overwritten:
+    below or above userSpace
+  (2008-01-03, HA)
+
 2.5.9
   * added link to mpatrol in README
   * added shell environment variable 'DUMA_SKIPCOUNT_INIT'
