@@ -259,7 +259,9 @@ endif
 install: libduma.a duma.3 $(DUMASO)
 	$(INSTALL) -m 755 duma.sh $(BIN_INSTALL_DIR)/duma
 	$(INSTALL) -m 644 libduma.a $(LIB_INSTALL_DIR)
+ifdef DUMASO
 	$(INSTALL) -m 755 $(DUMASO) $(LIB_INSTALL_DIR)
+endif
 ifdef DUMASO_LINK1
 	- $(RMFORCE) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
 	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
