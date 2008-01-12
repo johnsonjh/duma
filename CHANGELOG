@@ -3,6 +3,9 @@ CHANGELOG:
 ==========
 
 2.5.10
+  * bugfix for Makefile target install, when DUMASO is empty
+      bug was reported from Louis Strous
+  (2008-01-09, HA)
   * added hint where no man's land was overwritten:
     below or above userSpace
   (2008-01-03, HA)
