@@ -3,6 +3,12 @@ CHANGELOG:
 ==========
 
 2.5.10
+  * added html comparison charts/text and C source code examples from
+      http://www.cs.utexas.edu/~jpmartin/memCheckers.html
+      into subdir comparisons
+      with kind permission of Jean-Philippe Martin
+  * added Makefile for each C source file
+  (2008-01-14, HA)
   * bugfix for Makefile target install, when DUMASO is empty
       bug was reported from Louis Strous
   (2008-01-09, HA)
