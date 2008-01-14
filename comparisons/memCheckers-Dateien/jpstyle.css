@@ -1,0 +1,15 @@
+
+
+a.local { color:blue; text-decoration:none }
+a.local:hover { text-decoration:underline }
+a.title { color:black; text-decoration:none }
+a.title:hover { text-decoration:underline }
+a.fold { text-decoration:none }
+a.fold:hover { text-decoration:underline }
+SPAN.definition { font-style:italic }
+h1 { font-size:x-large }
+h2 { font-size:large }
+/*
+  body { background-color:"#D0D0D0"; color:black; background-image:url("images/stone.gif")  }
+*/
+
