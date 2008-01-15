@@ -3,6 +3,10 @@ CHANGELOG:
 ==========
 
 2.5.10
+  * added small test program to demonstrate crashing on multithreaded
+      programs from
+      http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=67838
+  (2008-01-15, HA)
   * added html comparison charts/text and C source code examples from
       http://www.cs.utexas.edu/~jpmartin/memCheckers.html
       into subdir comparisons
