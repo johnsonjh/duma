@@ -23,8 +23,9 @@ int main(int argc, char *argv[])
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "duma.h"
 
-int iKillThreads = 0;
+volatile int iKillThreads = 0;
 
 void* poster(void* arg)
 {
