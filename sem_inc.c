@@ -103,7 +103,7 @@ static void lock()
 {
   if (pthread_mutex_trylock(&mutex))
   {
-    if ( mutexpid==getpid() )
+    if ( mutexpid==pthread_self() )
     {
       ++locknr;
       return;
@@ -113,7 +113,7 @@ static void lock()
       pthread_mutex_lock(&mutex);
     }
   } 
-  mutexpid=getpid();
+  mutexpid=pthread_self();
   locknr=1;
 }
 

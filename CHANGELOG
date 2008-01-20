@@ -2,6 +2,12 @@
 CHANGELOG:
 ==========
 
+2.5.11
+  * bugfix on thread safety in sem_inc.c
+      thanks to Andrew Kornev writing the right hint as bugreport:
+      "[ 1875926 ] non-thread safe lock() implementation"
+  (2008-01-20, HA)
+
 2.5.10
   * added small test program to demonstrate crashing on multithreaded
       programs from
