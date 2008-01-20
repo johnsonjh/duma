@@ -24,10 +24,12 @@ int main(int argc, char *argv[])
 #include <stdio.h>
 #include <stdlib.h>
 
+int iKillThreads = 0;
+
 void* poster(void* arg)
 {
   char* foo = NULL;
-  for(;;)
+  for( ; !iKillThreads; )
   {
     foo = (char*) malloc(4096);
     if (foo)
@@ -37,13 +39,30 @@ void* poster(void* arg)
 
 int main(int argc, char *argv[])
 {
-  int i;
-  pthread_t id;
+  int iSleepTime = 60;  /* in seconds; default = 10 sec */
+  pthread_t ida;
+  pthread_t idb;
 
-  for(i =0; i <2; i++)
-    pthread_create(&id, NULL, poster, NULL);
+  if ( argc >= 2 )
+  {
+    iSleepTime = atoi(argv[1]);
+    if ( iSleepTime <= 0 )
+      iSleepTime = 10;
+  }
 
-  sleep(10000);
+  pthread_create(&ida, NULL, poster, NULL);
+  pthread_create(&idb, NULL, poster, NULL);
+
+  fprintf(stdout, "running 2 threads for %d secs ..", iSleepTime);
+  fflush(stdout);
+  sleep(iSleepTime);
+  fprintf(stdout, "..done\n");
+  iKillThreads = 1;
+  fprintf(stdout, "wating threads to end ..");
+  fflush(stdout);
+  pthread_join(ida, NULL);
+  pthread_join(idb, NULL);
+  fprintf(stdout, "..done\n");
   return 0;
 }
 
