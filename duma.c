@@ -841,8 +841,12 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
     _duma_s.SKIPCOUNT_INIT = (atoi(string) != 0);
 
   /* Get Value for DUMA_CHECK_FREQ */
-  if ( (string = DUMA_GETENV("DUMA_CHECK_FREQ")) >= 0 )
-    _duma_s.CHECK_FREQ = (atoi(string) != 0);
+  if ( (string = DUMA_GETENV("DUMA_CHECK_FREQ")) != 0 )
+  {
+    int tmp = atoi(string);
+    if ( tmp > 0 )
+    _duma_s.CHECK_FREQ = tmp;
+  }
 
   /* Should we send banner? */
   if ( (string = DUMA_GETENV("DUMA_DISABLE_BANNER")) != 0 )
