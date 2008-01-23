@@ -291,6 +291,8 @@ main(int argc, char * * argv)
 {
   static const struct diagnostic *  diag = diagnostics;
   int testno;
+  char * dynmemA;
+  char * dynmemB;
 
 #ifdef DUMA_EXPLICIT_INIT
   duma_init();
@@ -330,6 +332,23 @@ main(int argc, char * * argv)
   /* avoid memory leak */
   if (allocation)
     freeMemory();
+
+#if 0
+  /* test for DUMA_CHECK_FREQ */
+  printf("0\n");
+  protectAbove();
+  printf("1\n");
+  dynmemA = (char*)malloc( 10 * sizeof(char) );
+  printf("2\n");
+  dynmemA[-1 ] = 0;
+  printf("3\n");
+  dynmemB = (char*)malloc( 11 * sizeof(char) );
+  printf("4\n");
+  free( dynmemB );
+  printf("5\n");
+  free( dynmemA );
+  printf("6\n");
+#endif
 
   return 0;
 }
