@@ -274,4 +274,21 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
   }
 }
 
+
+/* Function: _duma_check_all_slacks
+ *
+ * Checks the integrity of all no mans land
+ */
+static void
+_duma_check_all_slacks( void )
+{
+  struct _DUMA_Slot * slot  = _duma_g.allocList;
+  size_t            count = _duma_s.slotCount;
+
+  for ( ; count > 0; --count, ++slot )
+  {
+    _duma_check_slack( slot );
+  }
+}
+
 // end

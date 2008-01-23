@@ -94,7 +94,7 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 #endif
 
 static const char  version[] =
-"DUMA 2.5.11 ("
+"DUMA 2.5.12 ("
 #ifdef DUMA_SO_LIBRARY
 "shared library"
 #elif DUMA_DLL_LIBRARY
@@ -303,10 +303,22 @@ static struct _DUMA_GlobalStaticVars
 
   /* Variable: DUMA_SKIPCOUNT_INIT
    *
-   * DUMA_SKIPCOUNT_INIT control after how many DUMA allocations the full internal
+   * DUMA_SKIPCOUNT_INIT controls after how many DUMA allocations the full internal
    * initialization is done. Default is 0.
    */
   int   SKIPCOUNT_INIT;
+
+
+  /* Variable: CHECK_FREQ
+   *
+   * DUMA_CHECK_FREQ controls the frequency to check all memory blocks no man's land.
+   * The frequency counter is incremented at each memory allocation and deallocation.
+   * Whenever the counter reaches the value of DUMA_CHECK_FREQ the check is performed.
+   * 0 means no checks. 1 means to check always. Be careful with this value, it may
+   * get very time consuming.
+   * Default is 0.
+   */
+  int   CHECK_FREQ;
 
 
   /* Variable: DUMA_REPORT_ALL_LEAKS
@@ -455,6 +467,13 @@ static struct _DUMA_GlobalStaticVars
    */
   long    numAllocs;
 
+
+  /* Variable checkFreqCounter
+   *
+   * number of (de)allocations since last checks
+   */
+  int     checkFreqCounter;
+
   /* Variable: duma_init_state
    *
    * internal variable: state of initialization
@@ -477,6 +496,7 @@ _duma_s =
 
   , 0       /* Variable: DISABLE_BANNER */
   , 0       /* Variable: SKIPCOUNT_INIT */
+  , 0       /* Variable: CHECK_FREQ */
   , 0       /* Variable: REPORT_ALL_LEAKS */
   , 0xAA    /* Variable: SLACKFILL */
   , -1L     /* Variable: PROTECT_FREE */
@@ -496,6 +516,7 @@ _duma_s =
   , 0L      /* Variable: sumProtectedMem */
   , 0L      /* Variable: numDeallocs */
   , 0L      /* Variable: numAllocs */
+  , 0       /* Variable: checkFreqCounter */
   , DUMAIS_UNINITIALIZED  /* Variable: duma_init_done */
   , (void *)0 /* Variable: cxx_null_block */
 
@@ -818,6 +839,10 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   /* Get Value for DUMA_SKIPCOUNT_INIT */
   if ( (string = DUMA_GETENV("DUMA_SKIPCOUNT_INIT")) != 0 )
     _duma_s.SKIPCOUNT_INIT = (atoi(string) != 0);
+
+  /* Get Value for DUMA_CHECK_FREQ */
+  if ( (string = DUMA_GETENV("DUMA_CHECK_FREQ")) >= 0 )
+    _duma_s.CHECK_FREQ = (atoi(string) != 0);
 
   /* Should we send banner? */
   if ( (string = DUMA_GETENV("DUMA_DISABLE_BANNER")) != 0 )
@@ -1272,6 +1297,15 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
   }
 
+  if ( _duma_s.CHECK_FREQ > 0 )
+  {
+    if ( (++ _duma_s.checkFreqCounter) == _duma_s.CHECK_FREQ )
+    {
+      _duma_check_all_slacks();
+      _duma_s.checkFreqCounter = 0;
+    }
+  }
+
   /*
    * If I'm running out of empty slots, create some more before
    * I don't have enough slots left to make an allocation.
@@ -1553,6 +1587,15 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
       DUMA_GET_SEMAPHORE();
 
     Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
+  }
+
+  if ( _duma_s.CHECK_FREQ > 0 )
+  {
+    if ( (++ _duma_s.checkFreqCounter) == _duma_s.CHECK_FREQ )
+    {
+      _duma_check_all_slacks();
+      _duma_s.checkFreqCounter = 0;
+    }
   }
 
   if ( !(slot = slotForUserAddress(address)) )

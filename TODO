@@ -2,9 +2,6 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
-- add environment variable to autmatically check no man's land
-  at each n'th allocation/deallocation. n=0 for no automatic checks
-
 - enhance testmt.c to run on Windows without pthread library
 
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
@@ -144,4 +141,10 @@ DONE
 
 - gain thread safety: get testmt.c work properly
  done in version 2.5.11
+
+- add environment variable DUMA_CHECK_FREQ to autmatically check
+  no man's land at each n'th allocation/deallocation.
+  n=0 for no automatic checks
+
+ done for version 2.5.12
 
