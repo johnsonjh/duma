@@ -287,7 +287,8 @@ _duma_check_all_slacks( void )
 
   for ( ; count > 0; --count, ++slot )
   {
-    _duma_check_slack( slot );
+    if ( DUMAST_IN_USE == slot->state )
+      _duma_check_slack( slot );
   }
 }
 
