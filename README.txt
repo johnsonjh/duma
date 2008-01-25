@@ -112,8 +112,11 @@ DUMA_PROTECT_BELOW - DUMA usually places an inaccessible page immediately after
   integer value, or call the macro function DUMA_SET_PROTECT_BELOW() from your
   code.
 
-DUMA_SKIPCOUNT_INIT - 
-  
+DUMA_SKIPCOUNT_INIT - DUMA usually does its initialization with the first
+  memory allocation. On some systems this may collide with initialization of
+  pthreads or other libaries and produce a hang. To get DUMA work even in these
+  situations you can control (with this environment variable) after how many
+  allocations the full internal initialization of DUMA is done. Default is 0.
 
 DUMA_REPORT_ALL_LEAKS - DUMA usually reports only memory leaks where the source
   filename with line number of the allocating instruction is known. Setting this
@@ -144,6 +147,14 @@ DUMA_SLACKFILL - As DUMA internally allocates memory in whole pages, there
   You can manually induce a check with the macro function DUMA_CHECK() for
   one memory block. With the macro function DUMA_CHECKALL() all memory blocks
   get checked.
+
+DUMA_CHECK_FREQ - First see DUMA_SLACKFILL abover for definition of no mans
+  land. Checking the integrity of the no mans land costs performance. This is
+  why this is usually done only at deallocation of a memory block. Set this
+  variable to let DUMA check all memory blocks no mans land every <value>.th
+  allocation or deallocation. Set this variable to 1, to let DUMA check at
+  each allocation and deallocation.
+  Per default the value 0 is used, which means to check only at deallocation.
 
 DUMA_ALLOW_MALLOC_0 - Memory allocation of size zero is ANSI conform.  But
   often this is the result of a software bug. For this reason DUMA may trap

@@ -1824,29 +1824,17 @@ void duma_check(void * address)
  */
 void duma_checkAll()
 {
-  struct _DUMA_Slot   * slot;
-  size_t  count;
-
   IF__DUMA_INIT_DONE
     DUMA_GET_SEMAPHORE();
 
   Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
 
-  slot  = _duma_g.allocList;
-  count = _duma_s.slotCount;
-
-  for ( ; count > 0; --count, ++slot )
-  {
-    /* CHECK INTEGRITY OF NO MANS LAND */
-    if ( DUMAST_IN_USE == slot->state )
-      _duma_check_slack( slot );
-  }
+  _duma_check_all_slacks();
 
   Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
   IF__DUMA_INIT_DONE
     DUMA_RELEASE_SEMAPHORE();
 }
-
 
 
 /*********************************************************/

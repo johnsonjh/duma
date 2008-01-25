@@ -4,9 +4,12 @@ CHANGELOG:
 
 2.5.12
   * enhancement: added environment variable 'DUMA_CHECK_FREQ' to autmatically
-      check no man's land at each n'th allocation/deallocation (n=0 for no
-      automatic checks)
+      check all memories no man's land at each n'th allocation/deallocation.
+      n=0 to deactivate automatic checks.
   (2008-01-24, HA)
+  * updated README.txt for environment variables DUMA_CHECK_FREQ and
+      DUMA_SKIPCOUNT_INIT.
+  (2008-01-25, HA)
 
 2.5.11
   * bugfix on thread safety in sem_inc.c

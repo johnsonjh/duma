@@ -287,6 +287,7 @@ _duma_check_all_slacks( void )
 
   for ( ; count > 0; --count, ++slot )
   {
+    /* CHECK INTEGRITY OF NO MANS LAND */
     if ( DUMAST_IN_USE == slot->state )
       _duma_check_slack( slot );
   }
