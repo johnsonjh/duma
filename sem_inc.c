@@ -29,7 +29,14 @@
 
 #ifndef DUMA_NO_THREAD_SAFETY
 
-#ifndef WIN32
+#if (!defined(WIN32) || defined(__CYGWIN__))
+/* || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)) */
+#define DUMA_USE_PTHREADS 1
+#else
+#define DUMA_USE_PTHREADS 0
+#endif
+
+#if DUMA_USE_PTHREADS
   #include <pthread.h>
   #include <semaphore.h>
 #else
@@ -53,7 +60,7 @@
  */
 
 
-#ifndef WIN32
+#if DUMA_USE_PTHREADS
 
   #define DUMA_thread_self()  pthread_self()
 
@@ -90,14 +97,14 @@
 
 
 static int semInInit = 0;
-#if !defined(WIN32) && !defined(DUMA_SEMAPHORES)
+#if DUMA_USE_PTHREADS && !defined(DUMA_SEMAPHORES)
 static int semInited = 1;
 #else
 static int semInited = 0;
 #endif
 static int semDepth  = 0;
 
-#ifndef WIN32
+#if DUMA_USE_PTHREADS
 #ifndef DUMA_SEMAPHORES
 static void lock()
 {
@@ -134,7 +141,7 @@ static void unlock()
 void
 DUMA_init_sem(void)
 {
-#ifdef WIN32
+#if !DUMA_USE_PTHREADS
   SEM_NAME_TYPE   semLocalName[32];
   SEM_NAME_TYPE   acPID[16];
   DWORD pid;
@@ -147,7 +154,7 @@ DUMA_init_sem(void)
     return;
   semInInit = 1;
 
-#ifndef WIN32
+#if DUMA_USE_PTHREADS
 #ifndef DUMA_SEMAPHORES
   pthread_mutex_init(&mutex, NULL);
   semInited = 1;
@@ -193,7 +200,7 @@ void DUMA_get_sem(void)
   if (semInInit)      return;             /* avoid recursion */
   if (!semInited)     DUMA_init_sem();    /* initialize if necessary */
 
-#ifndef WIN32
+#if DUMA_USE_PTHREADS
 #ifndef DUMA_SEMAPHORES
   lock();
 #else
@@ -226,7 +233,7 @@ void DUMA_rel_sem(void)
 
   if (!(--semDepth))              /* decrement semDepth - popping one stack level */
   {
-#ifndef WIN32
+#if DUMA_USE_PTHREADS
 #ifndef DUMA_SEMAPHORES
     unlock();
 #else

@@ -8,8 +8,10 @@
 /* $Id$ */
 /* gcc foo.c -pthread -lefence -g -ggdb -o foo */
 
-#if defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)
+#if (defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__))
+/* (defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)) */
 /* no pthread library on windows!
+ * but on cygwin
  * so skip this test for now
  */
 
@@ -54,11 +56,12 @@ int main(int argc, char *argv[])
       iSleepTime = 10;
   }
 
+  fprintf(stdout, "running 2 threads for %d secs ..", iSleepTime);
+  fflush(stdout);
+
   pthread_create(&ida, NULL, poster, NULL);
   pthread_create(&idb, NULL, poster, NULL);
 
-  fprintf(stdout, "running 2 threads for %d secs ..", iSleepTime);
-  fflush(stdout);
   sleep(iSleepTime);
   fprintf(stdout, "..done\n");
   iKillThreads = 1;
