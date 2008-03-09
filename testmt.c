@@ -15,6 +15,7 @@
 
 int main(int argc, char *argv[])
 {
+  printf("Test not implemented for Win32, Cygwin and Mingw\n");
   return 0;
 }
 
