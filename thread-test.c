@@ -37,42 +37,41 @@
 static pthread_mutex_t mutex;
 static volatile int threads_left = 2;
 
-static void*
-thread_func(void *arg)
+
+static void* thread_func(void *arg)
 {
   int i = 2000;
   char *name = (char*)arg;
 
   while (--i)
+  {
+    if (pthread_mutex_lock(&mutex))
     {
-      if (pthread_mutex_lock(&mutex))
-        {
-          fprintf(stderr, "error: %s failed to lock mutex.\n", name);
-          exit(1);
-        }
-      printf ("%s : %d\n", name, i);
-      if (pthread_mutex_unlock(&mutex))
-        {
-          fprintf(stderr, "error: %s failed to lock mutex.\n", name);
-          exit(1);
-        }
-
-      {
-        /* Try to trigger efence error */
-        FILE *fp = fopen("/etc/resolv.conf", "r");
-        if (NULL != fp)
-          {
-            char buf[1024];
-            fread(buf, sizeof(buf), 1, fp);
-            fclose(fp);
-          }
-      }
+      fprintf(stderr, "error: %s failed to lock mutex.\n", name);
+      exit(1);
+    }
+    printf ("%s : %d\n", name, i);
+    if (pthread_mutex_unlock(&mutex))
+    {
+      fprintf(stderr, "error: %s failed to unlock mutex.\n", name);
+      exit(1);
     }
 
+    {
+      /* Try to trigger efence error */
+      FILE *fp = fopen("/etc/resolv.conf", "r");
+      if (NULL != fp)
+      {
+        char buf[1024];
+        fread(buf, sizeof(buf), 1, fp);
+        fclose(fp);
+      }
+    }
+  }
   --threads_left;
-
   return NULL;
 }
+
 
 static void*
 idle_func(void* arg)
@@ -83,26 +82,24 @@ idle_func(void* arg)
   return NULL;
 }
 
-int
-main(int argc,
-     char **argv)
-{
 
+int main(int argc, char **argv)
+{
   pthread_t hello_thread, goodbye_thread;
 
   pthread_mutex_init(&mutex, NULL);
 
   if (pthread_create(&hello_thread, NULL, thread_func, (void*)"hello"))
-    {
-      fprintf(stderr, "Failed to create hello thread\n");
-      exit(1);
-    }
+  {
+    fprintf(stderr, "Failed to create hello thread\n");
+    exit(1);
+  }
 
   if (pthread_create(&goodbye_thread, NULL, thread_func, (void*)"goodbye"))
-    {
-      fprintf(stderr, "Failed to create hello thread\n");
-      exit(1);
-    }
+  {
+    fprintf(stderr, "Failed to create hello thread\n");
+    exit(1);
+  }
 
   idle_func(NULL);
 
