@@ -47,13 +47,13 @@ thread_func(void *arg)
     {
       if (pthread_mutex_lock(&mutex))
         {
-          fprintf(stderr, "error: $s failed to lock mutex.\n", name);
+          fprintf(stderr, "error: %s failed to lock mutex.\n", name);
           exit(1);
         }
       printf ("%s : %d\n", name, i);
       if (pthread_mutex_unlock(&mutex))
         {
-          fprintf(stderr, "error: $s failed to lock mutex.\n", name);
+          fprintf(stderr, "error: %s failed to lock mutex.\n", name);
           exit(1);
         }
 

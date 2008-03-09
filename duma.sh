@@ -14,5 +14,4 @@ if [ "$1" = "" ]; then
 fi
 
 # Set the environment to (pre)load duma library.
-(export LD_PRELOAD=libduma.so.0.0; export DYLD_INSERT_LIBRARIES=libduma.dylib; export DYLD_FORCE_FLAT_NAMESPACE=1; exec $*)
-
+(export LD_PRELOAD=libduma.so.0.0.0; export DYLD_INSERT_LIBRARIES=libduma.dylib; export DYLD_FORCE_FLAT_NAMESPACE=1; exec $*)

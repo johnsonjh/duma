@@ -2,6 +2,31 @@
 CHANGELOG:
 ==========
 
+2.5.13
+  * applied PATCH(es) from Philip Mucci <mucci@cs.utk.edu>
+      from the company SiCortex www.sicortex.com :
+    - Fix for pthread_self() and hang of testoperators test case on 64 bit
+      linux platforms (x86_64 and MIPS64)
+    - Added -Wall to Makefile
+    - Properly versioned symbolic library to have the version triple 0.0.0
+    - Removed control-M's from the sources. Please do not ship unix sources
+      with control-M's (stop editing on Windows)
+    - Make sure ranlib is run on the static library,
+      various platforms require this
+    - Add -DPIC for shared library builds
+    - Added install targets for headers (INC_INSTALL_DIR)
+    - Added install targets for documentation (DOC_INSTALL_DIR)
+    - Added separate 'make test' target
+    - Added proper install target that also refers to
+      GNU standard DESTDIR usage.
+    - Added 'distclean clobber' targets to remove configuration
+    - Added 'reconfig' target to regenerate duma_config.h
+    - Changed makefile flow to recursively run if duma_config.h doesn't exist
+    - Fixed return value error in testmt.c
+    - Fixed args in thread-test.c
+  * updated Makefile: updated PACKAGE_SOURCE and added target dos2unix
+  (2008-03-09, HA)
+
 2.5.12
   * enhancement: added environment variable 'DUMA_CHECK_FREQ' to autmatically
       check all memories no man's land at each n'th allocation/deallocation.

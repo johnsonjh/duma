@@ -59,7 +59,7 @@
 
 #ifndef DUMA_SEMAPHORES
   static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-  static pid_t mutexpid=0;
+  static pthread_t mutexpid=0;
   static int locknr=0;
 #else
   static sem_t      DUMA_sem = { 0 };

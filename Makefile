@@ -79,7 +79,7 @@ DUMA_OPTIONS += -DDUMA_SO_NO_LEAKDETECTION
 #DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
 #DUMA_OPTIONS += -DDUMA_NO_CPP_SUPPORT
 
-PIC= -fPIC
+PIC= -fPIC -DPIC
 DUMA_SO_OPTIONS = $(PIC) -DDUMA_SO_LIBRARY
 
 # for FreeBSD 5.4
@@ -96,6 +96,7 @@ DUMA_SO_OPTIONS = $(PIC) -DDUMA_SO_LIBRARY
 CC=gcc
 CXX=g++
 AR=ar
+RANLIB=ranlib
 INSTALL=install
 RM=rm
 RMFORCE=rm -f
@@ -178,7 +179,7 @@ else
     else
       ifeq ($(OS), netbsd)
           CURPATH=./
-          DUMASO=libduma.so.0.0
+	  DUMASO=libduma.so.0.0.0
           DUMASO_LINK1=libduma.so.0
           DUMASO_LINK2=libduma.so
           CFLAGS= -g -O0
@@ -190,7 +191,7 @@ else
           DUMA_OPTIONS += -DDUMA_NO_STRERROR
           CURPATH=./
           DUMA_DYN_DEPS=
-          DUMASO=libduma.so.0.0
+          DUMASO=libduma.so.0.0.0
           DUMASO_LINK1=libduma.so.0
           DUMASO_LINK2=libduma.so
           CFLAGS= -g -O0
@@ -202,11 +203,11 @@ else
         else
           # default is Linux or other full Unix
           CURPATH=./
-          DUMASO=libduma.so.0.0
+          DUMASO=libduma.so.0.0.0
           DUMASO_LINK1=libduma.so.0
           DUMASO_LINK2=libduma.so
-          CFLAGS= -g -O0
-          CPPFLAGS= -g -O0
+          CFLAGS= -g -O0 -Wall
+          CPPFLAGS= -g -O0 -Wall
           LIBS=-lpthread
           EXEPOSTFIX=
         endif
@@ -219,13 +220,13 @@ endif
 ############################################################
 
 prefix=/usr
-BIN_INSTALL_DIR= $(prefix)/bin
-LIB_INSTALL_DIR= $(prefix)/lib
-MAN_INSTALL_DIR= $(prefix)/share/man/man3
+BIN_INSTALL_DIR=$(prefix)/bin
+LIB_INSTALL_DIR=$(prefix)/lib
+MAN_INSTALL_DIR=$(prefix)/share/man/man3
+INC_INSTALL_DIR=$(prefix)/include
+DOC_INSTALL_DIR=$(prefix)/share/doc/duma
 
-
-
-PACKAGE_SOURCE= README CHANGES duma.3 Makefile \
+PACKAGE_SOURCE= README.txt CHANGELOG COPYING-GPL COPYING-LGPL duma.3 Makefile \
 	duma.h dumapp.h sem_inc.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
 	dumatest.c tstheap.c thread-test.c testmt.c dumatestpp.cpp testoperators.cpp \
@@ -236,6 +237,8 @@ OBJECTS = dumapp.o duma.o sem_inc.o print.o
 SO_OBJECTS = dumapp_so.o duma_so.o sem_inc_so.o print_so.o
 
 all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) $(DUMA_DYN_DEPS)
+
+test:
 	@ $(ECHOLF)
 	@ $(ECHO) "Testing DUMA (static library):"
 	$(CURPATH)dumatest$(EXEPOSTFIX)
@@ -257,28 +260,37 @@ endif
 endif
 
 install: libduma.a duma.3 $(DUMASO)
-	$(INSTALL) -m 755 duma.sh $(BIN_INSTALL_DIR)/duma
-	$(INSTALL) -m 644 libduma.a $(LIB_INSTALL_DIR)
+	- mkdir -p $(DESTDIR)$(DOC_INSTALL_DIR)
+	$(INSTALL) -m 644 README.txt $(DESTDIR)$(DOC_INSTALL_DIR)
+	- mkdir -p $(DESTDIR)$(INC_INSTALL_DIR)
+	$(INSTALL) -m 644 noduma.h duma.h dumapp.h duma_config.h $(DESTDIR)$(INC_INSTALL_DIR)
+	- mkdir -p $(DESTDIR)$(BIN_INSTALL_DIR)
+	$(INSTALL) -m 755 duma.sh $(DESTDIR)$(BIN_INSTALL_DIR)/duma
+	- mkdir -p $(DESTDIR)$(LIB_INSTALL_DIR)
+	$(INSTALL) -m 644 libduma.a $(DESTDIR)$(LIB_INSTALL_DIR)
 ifdef DUMASO
-	$(INSTALL) -m 755 $(DUMASO) $(LIB_INSTALL_DIR)
+	$(INSTALL) -m 755 $(DUMASO) $(DESTDIR)$(LIB_INSTALL_DIR)
 endif
 ifdef DUMASO_LINK1
-	- $(RMFORCE) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
-	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
+	- $(RMFORCE) $(DESTDIR)$(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
+	ln -s $(DUMASO) $(DESTDIR)$(LIB_INSTALL_DIR)/$(DUMASO_LINK1)
 endif
 ifdef DUMASO_LINK2
-	- $(RMFORCE) $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
-	ln -s $(DUMASO) $(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
+	- $(RMFORCE) $(DESTDIR)$(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
+	ln -s $(DUMASO) $(DESTDIR)$(LIB_INSTALL_DIR)/$(DUMASO_LINK2)
 endif
-	$(INSTALL) -m 644 duma.3 $(MAN_INSTALL_DIR)/duma.3
+	- mkdir -p $(DESTDIR)$(MAN_INSTALL_DIR)
+	$(INSTALL) -m 644 duma.3 $(DESTDIR)$(MAN_INSTALL_DIR)/duma.3
 
 clean:
-	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) createconf.o tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o \
+	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o \
 		tstheap_so.o dumatestpp_so.o testoperators.o \
-		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) createconf$(EXEPOSTFIX) \
+		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
 		thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) \
-		libduma.a $(DUMASO) libduma.cat DUMA.shar \
-		duma_config.h
+		libduma.a $(DUMASO) libduma.cat DUMA.shar 
+
+distclean clobber: clean
+	- $(RMFORCE) duma_config.h createconf.o createconf$(EXEPOSTFIX)
 
 roff:
 	nroff -man < duma.3 > duma.cat
@@ -292,10 +304,16 @@ shar: DUMA.shar
 libduma.a: duma_config.h $(OBJECTS)
 	- $(RMFORCE) libduma.a
 	$(AR) crv libduma.a $(OBJECTS)
+	$(RANLIB) libduma.a
 
+duma_config.h: 
+	$(MAKE) reconfig
 
-duma_config.h: createconf$(EXEPOSTFIX) createconf.o createconf.c
+reconfig: createconf$(EXEPOSTFIX) createconf.o createconf.c
 	- $(CURPATH)createconf$(EXEPOSTFIX)
+
+dos2unix:
+	@ dos2unix --d2u $(PACKAGE_SOURCE)
 
 createconf$(EXEPOSTFIX): createconf.o
 	- $(RMFORCE) createconf$(EXEPOSTFIX)
@@ -349,7 +367,7 @@ $(DUMASO): duma_config.h $(SO_OBJECTS)
 
 $(DUMASO): duma_config.h $(SO_OBJECTS)
 	$(CXX) -g -shared -Wl,-soname,$(DUMASO) -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
-	$(CXX) -g -shared -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+#	$(CXX) -g -shared -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
 
   endif
 

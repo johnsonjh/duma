@@ -23,6 +23,7 @@ int main(int argc, char *argv[])
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "duma.h"
 
 volatile int iKillThreads = 0;
@@ -36,6 +37,7 @@ void* poster(void* arg)
     if (foo)
       free(foo);
   }
+  return(NULL);
 }
 
 int main(int argc, char *argv[])
