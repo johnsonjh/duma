@@ -66,7 +66,7 @@
 
 #ifndef DUMA_SEMAPHORES
   static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-  static pthread_t mutexpid=0;
+  static pthread_t mutextid=0;
   static int locknr=0;
 #else
   static sem_t      DUMA_sem = { 0 };
@@ -110,7 +110,7 @@ static void lock()
 {
   if (pthread_mutex_trylock(&mutex))
   {
-    if ( mutexpid==pthread_self() )
+    if ( mutextid==pthread_self() )
     {
       ++locknr;
       return;
@@ -120,7 +120,7 @@ static void lock()
       pthread_mutex_lock(&mutex);
     }
   } 
-  mutexpid=pthread_self();
+  mutextid=pthread_self();
   locknr=1;
 }
 
@@ -129,7 +129,7 @@ static void unlock()
   --locknr;
   if (!locknr)
   {
-    mutexpid=0;
+    mutextid=0;
     pthread_mutex_unlock(&mutex);
   }
 }
