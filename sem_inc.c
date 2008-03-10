@@ -29,14 +29,15 @@
 
 #ifndef DUMA_NO_THREAD_SAFETY
 
-#if (!defined(WIN32) || defined(__CYGWIN__))
+/* check for pthread library */
 /* || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)) */
-#define DUMA_USE_PTHREADS 1
+#if (!defined(WIN32) || defined(__CYGWIN__))
+#define HAVE_PTHREADS 1
 #else
-#define DUMA_USE_PTHREADS 0
+#define HAVE_PTHREADS 0
 #endif
 
-#if DUMA_USE_PTHREADS
+#if HAVE_PTHREADS
   #include <pthread.h>
   #include <semaphore.h>
 #else
@@ -60,7 +61,7 @@
  */
 
 
-#if DUMA_USE_PTHREADS
+#if HAVE_PTHREADS
 
   #define DUMA_thread_self()  pthread_self()
 
@@ -97,14 +98,14 @@
 
 
 static int semInInit = 0;
-#if DUMA_USE_PTHREADS && !defined(DUMA_SEMAPHORES)
+#if HAVE_PTHREADS && !defined(DUMA_SEMAPHORES)
 static int semInited = 1;
 #else
 static int semInited = 0;
 #endif
 static int semDepth  = 0;
 
-#if DUMA_USE_PTHREADS
+#if HAVE_PTHREADS
 #ifndef DUMA_SEMAPHORES
 static void lock()
 {
@@ -141,7 +142,7 @@ static void unlock()
 void
 DUMA_init_sem(void)
 {
-#if !DUMA_USE_PTHREADS
+#if !HAVE_PTHREADS
   SEM_NAME_TYPE   semLocalName[32];
   SEM_NAME_TYPE   acPID[16];
   DWORD pid;
@@ -154,7 +155,7 @@ DUMA_init_sem(void)
     return;
   semInInit = 1;
 
-#if DUMA_USE_PTHREADS
+#if HAVE_PTHREADS
 #ifndef DUMA_SEMAPHORES
   pthread_mutex_init(&mutex, NULL);
   semInited = 1;
@@ -200,7 +201,7 @@ void DUMA_get_sem(void)
   if (semInInit)      return;             /* avoid recursion */
   if (!semInited)     DUMA_init_sem();    /* initialize if necessary */
 
-#if DUMA_USE_PTHREADS
+#if HAVE_PTHREADS
 #ifndef DUMA_SEMAPHORES
   lock();
 #else
@@ -233,7 +234,7 @@ void DUMA_rel_sem(void)
 
   if (!(--semDepth))              /* decrement semDepth - popping one stack level */
   {
-#if DUMA_USE_PTHREADS
+#if HAVE_PTHREADS
 #ifndef DUMA_SEMAPHORES
     unlock();
 #else
