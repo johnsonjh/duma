@@ -28,10 +28,20 @@
  * #5  0x40027f51 in pthread_start_thread_event () from /lib/libpthread.so.0
  */
 
+/* check for pthread library */
+#if (!defined(WIN32) || defined(__CYGWIN__))
+#define HAVE_PTHREADS 1
+#else
+#define HAVE_PTHREADS 0
+#endif
+
+
 #include <stdlib.h>
 #include <stdio.h>
-#include <pthread.h>
 
+#if HAVE_PTHREADS
+
+#include <pthread.h>
 #include "duma.h"
 
 static pthread_mutex_t mutex;
@@ -109,3 +119,12 @@ int main(int argc, char **argv)
   return 0;
 }
 
+#else
+
+int main(int argc, char **argv)
+{
+  printf("Test not implemented for Win32 and Mingw\n");
+  return 0;
+}
+
+#endif
