@@ -1,0 +1,46 @@
+# This is a suggested ~/.gdbinit
+# originally from Ray Dassen for efence, now modified for duma.
+# it enables you to use DUMA from within gdb,
+# without using DUMA for gdb itself
+# without having to recompile or relink the binary.
+# See the gdb docs for more information.
+
+define duma
+        set environment DUMA_ALLOW_MALLOC_0 1
+        set environment LD_PRELOAD /usr/lib/libduma.so.0.0.0
+        echo Enabled DUMA\n
+end
+document duma
+Enable memory allocation debugging through DUMA (duma(3)).
+        See also noduma, underduma and overduma.
+end
+
+
+define noduma
+        unset environment LD_PRELOAD
+        echo Disabled DUMA\n
+end
+document noduma
+Disable memory allocation debugging through DUMA (duma(3)).
+end
+
+
+define overduma
+        set environment DUMA_PROTECT_BELOW 0
+        echo set DUMA to detect overflows\n
+end
+document overduma
+Set DUMA to detect buffer overflow errors (duma(3)).
+        See also duma, noduma and underduma.
+end
+
+
+define underduma
+        set environment DUMA_PROTECT_BELOW 1
+        echo set DUMA to detect underflows\n
+end
+document underduma
+Set DUMA to detect buffer underflow errors (duma(3)).
+        See also duma, noduma and overduma.
+end
+
