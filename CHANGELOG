@@ -5,6 +5,7 @@ CHANGELOG:
 2.5.14
   * added suggested ~/.gdbinit as gdbinit.rc
   * added hint in mprotectFailed()
+  * removed (gcc) compiler warnings
   (2008-03-12, HA)
 
 2.5.13
