@@ -94,7 +94,7 @@ static void mprotectFailed(void)
 #if defined(WIN32)
   DUMA_Abort("VirtualProtect() failed: %s", stringErrorReport());
 #else
-  DUMA_Abort("mprotect() failed: %s", stringErrorReport());
+  DUMA_Abort("mprotect() failed: %s.\nCheck README section 'MEMORY USAGE AND EXECUTION SPEED'\n  if your (Linux) system may limit the number of different page mappings per process", stringErrorReport());
 #endif
 }
 
