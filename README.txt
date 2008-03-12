@@ -315,6 +315,11 @@ INSTRUCTIONS FOR DEBUGGING YOUR PROGRAM:
 6. Quit the debugger.
 7. Read the restrictions in the section on
 
+alternatively
+
+read and install gdbinit.rc as ~/.gdbinit
+if you are using a GNU gdb based debugger
+
 
 WORD-ALIGNMENT AND OVERRUN DETECTION:
 
