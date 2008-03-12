@@ -2,6 +2,11 @@
 CHANGELOG:
 ==========
 
+2.5.14
+  * added suggested ~/.gdbinit as gdbinit.rc
+  * added hint in mprotectFailed()
+  (2008-03-12, HA)
+
 2.5.13
   * applied PATCH(es) from Philip Mucci <mucci@cs.utk.edu>
       from the company SiCortex www.sicortex.com :

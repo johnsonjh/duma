@@ -94,7 +94,7 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 #endif
 
 static const char  version[] =
-"DUMA 2.5.13 ("
+"DUMA 2.5.14 test ("
 #ifdef DUMA_SO_LIBRARY
 "shared library"
 #elif DUMA_DLL_LIBRARY

@@ -454,4 +454,5 @@ testmt.o:	testmt.c duma.h duma_config.h
 #	$(CXX) $(CPPFLAGS) -c $< -o $@
 #
 
+.PHONY: test install clean distclean dos2unix
 
