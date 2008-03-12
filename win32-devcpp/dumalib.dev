@@ -103,7 +103,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit8]
-FileName=..\sem_inc.h
+FileName=..\duma_sem.h
 CompileCpp=0
 Folder=EFence
 Compile=1

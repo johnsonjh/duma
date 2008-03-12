@@ -124,7 +124,7 @@
   #ifndef DUMA_NO_LEAKDETECTION /* && !defined(DUMA_CPP_OPERATORS_DECLARED) */
 
     #ifndef DUMA_NO_THREAD_SAFETY
-      #include "sem_inc.h"
+      #include "duma_sem.h"
     #endif
 
     /* define macros as wrapper for our special operators */

@@ -339,7 +339,7 @@
 				RelativePath="..\..\print.h">
 			</File>
 			<File
-				RelativePath="..\..\sem_inc.h">
+				RelativePath="..\..\duma_sem.h">
 			</File>
 		</Filter>
 		<Filter

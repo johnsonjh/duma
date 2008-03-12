@@ -158,7 +158,7 @@ SOURCE=..\..\print.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\sem_inc.h
+SOURCE=..\..\duma_sem.h
 # End Source File
 # End Group
 # Begin Source File

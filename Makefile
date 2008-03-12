@@ -226,8 +226,8 @@ MAN_INSTALL_DIR=$(prefix)/share/man/man3
 INC_INSTALL_DIR=$(prefix)/include
 DOC_INSTALL_DIR=$(prefix)/share/doc/duma
 
-PACKAGE_SOURCE= README.txt CHANGELOG COPYING-GPL COPYING-LGPL duma.3 Makefile \
-	duma.h dumapp.h sem_inc.h paging.h print.h duma_hlp.h noduma.h \
+PACKAGE_SOURCE= README.txt CHANGELOG COPYING-GPL COPYING-LGPL duma.3 Makefile gdbinit.rc \
+	duma.h dumapp.h duma_sem.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
 	dumatest.c tstheap.c thread-test.c testmt.c dumatestpp.cpp testoperators.cpp \
 	createconf.c
@@ -263,7 +263,7 @@ install: libduma.a duma.3 $(DUMASO)
 	- mkdir -p $(DESTDIR)$(DOC_INSTALL_DIR)
 	$(INSTALL) -m 644 README.txt $(DESTDIR)$(DOC_INSTALL_DIR)
 	- mkdir -p $(DESTDIR)$(INC_INSTALL_DIR)
-	$(INSTALL) -m 644 noduma.h duma.h dumapp.h duma_config.h $(DESTDIR)$(INC_INSTALL_DIR)
+	$(INSTALL) -m 644 noduma.h duma.h dumapp.h duma_sem.h duma_config.h $(DESTDIR)$(INC_INSTALL_DIR)
 	- mkdir -p $(DESTDIR)$(BIN_INSTALL_DIR)
 	$(INSTALL) -m 755 duma.sh $(DESTDIR)$(BIN_INSTALL_DIR)/duma
 	- mkdir -p $(DESTDIR)$(LIB_INSTALL_DIR)
@@ -327,7 +327,7 @@ dumatest$(EXEPOSTFIX): libduma.a dumatest.o
 	- $(RMFORCE) dumatest$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) dumatest.o libduma.a -o dumatest$(EXEPOSTFIX) $(LIBS)
 
-dumatestpp$(EXEPOSTFIX): libduma.a dumatestpp.o dumapp.h
+dumatestpp$(EXEPOSTFIX): libduma.a dumatestpp.o duma_sem.h dumapp.h
 	- $(RMFORCE) dumatestpp$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a -o dumatestpp$(EXEPOSTFIX) $(LIBS)
 
@@ -339,7 +339,7 @@ testmt$(EXEPOSTFIX): libduma.a testmt.o
 	- $(RMFORCE) testmt$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) testmt.o libduma.a -o testmt$(EXEPOSTFIX) $(LIBS)
 
-testoperators$(EXEPOSTFIX): libduma.a testoperators.o dumapp.h
+testoperators$(EXEPOSTFIX): libduma.a testoperators.o duma_sem.h dumapp.h
 	- $(RMFORCE) testoperators$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators$(EXEPOSTFIX) $(LIBS)
 
@@ -385,13 +385,13 @@ createconf.o:
 # define rules how to build objects for shared library
 #
 
-dumapp_so.o:	dumapp.cpp duma.h dumapp.h
+dumapp_so.o:	dumapp.cpp duma.h duma_sem.h dumapp.h
 	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
 
 duma_so.o:	duma.c duma.h duma_config.h
 	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
 
-sem_inc_so.o:	sem_inc.c sem_inc.h
+sem_inc_so.o:	sem_inc.c duma_sem.h
 	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
 
 print_so.o:	print.c print.h
@@ -408,13 +408,13 @@ dumatestpp_so.o:
 # define rules how to build objects for static library
 #
 
-dumapp.o:	dumapp.cpp duma.h dumapp.h
+dumapp.o:	dumapp.cpp duma.h duma_sem.h dumapp.h
 	$(CXX) $(CPPFLAGS) -c dumapp.cpp -o $@
 
 duma.o:	duma.c duma.h duma_config.h
 	$(CC) $(CFLAGS) -c duma.c -o $@
 
-sem_inc.o:	sem_inc.c sem_inc.h
+sem_inc.o:	sem_inc.c duma_sem.h
 	$(CC) $(CFLAGS) -c sem_inc.c -o $@
 
 print.o:	print.c print.h
@@ -428,13 +428,13 @@ print.o:	print.c print.h
 dumatest.o:	dumatest.c duma.h duma_config.h
 	$(CC) $(CFLAGS) -c dumatest.c -o $@
 
-dumatestpp.o:	dumatestpp.cpp duma.h dumapp.h duma_config.h
+dumatestpp.o:	dumatestpp.cpp duma.h duma_sem.h dumapp.h duma_config.h
 	$(CXX) $(CPPFLAGS) -c dumatestpp.cpp -o $@
 
 tstheap.o:	tstheap.c duma.h duma_config.h
 	$(CC) $(CFLAGS) -c tstheap.c -o $@
 
-testoperators.o:	testoperators.cpp duma.h dumapp.h duma_config.h
+testoperators.o:	testoperators.cpp duma.h duma_sem.h dumapp.h duma_config.h
 	$(CXX) $(CPPFLAGS) -c testoperators.cpp -o $@
 
 thread-test.o:	thread-test.c duma.h duma_config.h

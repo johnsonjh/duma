@@ -24,7 +24,7 @@
  */
 
 #include "duma_config.h"
-#include "sem_inc.h"
+#include "duma_sem.h"
 #include "print.h"
 
 #ifndef DUMA_NO_THREAD_SAFETY

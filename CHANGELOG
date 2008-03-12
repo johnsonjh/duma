@@ -6,6 +6,7 @@ CHANGELOG:
   * added suggested ~/.gdbinit as gdbinit.rc
   * added hint in mprotectFailed()
   * removed (gcc) compiler warnings
+  * rename of sem_inc.h to duma_sem.h, cause needed by dumapp.h
   (2008-03-12, HA)
 
 2.5.13

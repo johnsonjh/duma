@@ -86,7 +86,7 @@
 #include "duma.h"
 #include "noduma.h"
 #include "print.h"
-#include "sem_inc.h"
+#include "duma_sem.h"
 #include "paging.h"
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
@@ -2107,7 +2107,6 @@ char * _duma_strcpy(char *dest, const char *src  DUMA_PARAMLIST_FL)
  */
 char * _duma_strncpy(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL)
 {
-  size_t srcsize;
   unsigned i;
 
   if ( size > 0  &&  src < dest  &&  dest < src + size )
