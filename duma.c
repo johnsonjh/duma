@@ -1763,7 +1763,6 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 void duma_check(void * address)
 {
   struct _DUMA_Slot   * slot;
-  long                internalSizekB;
 
   if ( 0 == address )
     return;

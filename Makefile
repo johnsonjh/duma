@@ -179,7 +179,7 @@ else
     else
       ifeq ($(OS), netbsd)
           CURPATH=./
-	  DUMASO=libduma.so.0.0.0
+          DUMASO=libduma.so.0.0.0
           DUMASO_LINK1=libduma.so.0
           DUMASO_LINK2=libduma.so
           CFLAGS= -g -O0
@@ -287,7 +287,7 @@ clean:
 		tstheap_so.o dumatestpp_so.o testoperators.o \
 		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
 		thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) \
-		libduma.a $(DUMASO) libduma.cat DUMA.shar 
+		libduma.a $(DUMASO) libduma.cat DUMA.shar
 
 distclean clobber: clean
 	- $(RMFORCE) duma_config.h createconf.o createconf$(EXEPOSTFIX)

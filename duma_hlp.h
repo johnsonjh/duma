@@ -136,6 +136,9 @@ nearestSlotForUserAddress(void * userAddress)
 }
 
 
+#if 0
+/* next to functions not needed so far .. */
+
 /* Function: slotForInternalAddrNextTo
  *
  * Find the slot structure for an internal address.
@@ -171,6 +174,8 @@ slotForInternalAddrPrevTo(void * address)
   return 0;
 }
 
+#endif
+
 
 /* Function: _duma_init_slack
  *
@@ -181,7 +186,6 @@ void _duma_init_slack( struct _DUMA_Slot * slot )
 {
   char * accBegAddr, * accEndAddr;
   char * tmpBegAddr, * tmpEndAddr;
-  char   slackfill = (char)_duma_s.SLACKFILL;
 
 #ifdef DUMA_EXPLICIT_INIT
   slot->slackfill = _duma_s.SLACKFILL;
