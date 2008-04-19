@@ -8,6 +8,11 @@ CHANGELOG:
   * removed (gcc) compiler warnings
   * rename of sem_inc.h to duma_sem.h, cause needed by dumapp.h
   (2008-03-12, HA)
+  * added environment switch DUMA_MALLOC_0_STRATEGY
+    return special protected piece of memory for malloc(0)
+  * update of README for Microsoft's pageheap.exe,
+    a built in heap debugging tool
+  (2008-04-20, HA)
 
 2.5.13
   * applied PATCH(es) from Philip Mucci <mucci@cs.utk.edu>
