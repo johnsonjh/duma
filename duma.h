@@ -148,12 +148,12 @@
      */
     struct _DUMA_Slot * allocList;
 
-    /* Variable: _duma_cxx_null_addr
+    /* Variable: _duma_null_addr
      *
-     * _duma_cxx_null_addr is the address C++ new operator returns, when size is 0
+     * _duma_null_addr is the address malloc() or C++ operator new returns, when size is 0
      * two pages get reserved and protected
      */
-    void * cxx_null_addr;
+    void * null_addr;
 
 
     /* Variable */
