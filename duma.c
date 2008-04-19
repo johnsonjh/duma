@@ -1230,15 +1230,28 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   /* initialize return value */
   userAddr = 0;
 
+  /* count and show allocation, if requested */
+  _duma_s.numAllocs++;
+  if (_duma_s.SHOW_ALLOC)
+  {
+    #ifndef DUMA_NO_LEAKDETECTION
+      DUMA_Print("\nDUMA: Allocating %d bytes at %s(%i).", (DUMA_SIZE)userSize, filename, lineno);
+    #else
+      DUMA_Print("\nDUMA: Allocating %d bytes.", (DUMA_SIZE)userSize);
+    #endif
+    if ( 0 == userSize )
+      DUMA_Print(" This is ANSI conform but probably a bug. See DUMA_ALLOW_MALLOC_0.");
+  }
+
   /* check userSize */
   if ( 0 == userSize )
   {
     if ( !_duma_s.ALLOW_MALLOC_0 )
     {
       #ifndef DUMA_NO_LEAKDETECTION
-        DUMA_Abort("Allocating 0 bytes, probably a bug: %s(%i)", filename, lineno);
+        DUMA_Abort("Allocating 0 bytes, probably a bug at %s(%i). See DUMA_ALLOW_MALLOC_0.", filename, lineno);
       #else
-        DUMA_Abort("Allocating 0 bytes, probably a bug.");
+        DUMA_Abort("Allocating 0 bytes, probably a bug. See DUMA_ALLOW_MALLOC_0.");
       #endif
     }
     else
@@ -1270,17 +1283,6 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       DUMA_Abort("Alignment (=%d) is not a power of 2 requested from %s(%i)", (DUMA_SIZE)alignment, filename, lineno);
     #else
       DUMA_Abort("Alignment (=%d) is not a power of 2", (DUMA_SIZE)alignment);
-    #endif
-  }
-
-  /* count and show allocation, if requested */
-  _duma_s.numAllocs++;
-  if (_duma_s.SHOW_ALLOC)
-  {
-    #ifndef DUMA_NO_LEAKDETECTION
-      DUMA_Print("\nDUMA: Allocating %d bytes at %s(%i).", (DUMA_SIZE)userSize, filename, lineno);
-    #else
-      DUMA_Print("\nDUMA: Allocating %d bytes.", (DUMA_SIZE)userSize);
     #endif
   }
 
