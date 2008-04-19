@@ -94,7 +94,7 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 #endif
 
 static const char  version[] =
-"DUMA 2.5.14 test ("
+"DUMA 2.5.14 ("
 #ifdef DUMA_SO_LIBRARY
 "shared library"
 #elif DUMA_DLL_LIBRARY
@@ -371,6 +371,14 @@ static struct _DUMA_GlobalStaticVars
    */
   int   ALLOW_MALLOC_0;
 
+  /* Variable: DUMA_MALLOC_0_STRATEGY
+   *
+   * DUMA_MALLOC_0_STRATEGY how DUMA should behave on malloc(0).
+   * 0 will return a NULL pointer, which can be passed to free().
+   * 1 will return a unique pointer, which can be passed to free()
+   */
+  int   MALLOC_0_STRATEGY;
+
   /* Variable: DUMA_MALLOC_FAILEXIT
    *
    * DUMA_MALLOC_FAILEXIT controls the behaviour of DUMA when
@@ -480,8 +488,8 @@ static struct _DUMA_GlobalStaticVars
    */
   enum _DUMA_InitState  init_state;
 
-  /* memory block for new with size 0 */
-  void *  cxx_null_block;
+  /* memory block for malloc() or new with size 0 */
+  void *  null_block;
 
   /* Protection Space B */
   char  acSpaceB[2 * DUMA_PAGE_SIZE];
@@ -502,6 +510,7 @@ _duma_s =
   , -1L     /* Variable: PROTECT_FREE */
   , -1L     /* Variable: MAX_ALLOC */
   , 1       /* Variable: ALLOW_MALLOC_0 */
+  , 0       /* Variavle: MALLOC_0_STRATEGY */
   , 1       /* Variable: MALLOC_FAILEXIT */
   , 0       /* Variable: FREE_ACCESS */
   , 0       /* Variable: SHOW_ALLOC */
@@ -518,7 +527,7 @@ _duma_s =
   , 0L      /* Variable: numAllocs */
   , 0       /* Variable: checkFreqCounter */
   , DUMAIS_UNINITIALIZED  /* Variable: duma_init_done */
-  , (void *)0 /* Variable: cxx_null_block */
+  , (void *)0 /* Variable: null_block */
 
   , "Static Protection Space Back"   /* Protection Space B */
 };
@@ -530,7 +539,7 @@ DUMA_GLOBALVARS_T _duma_g =
    "Global Protection Space Front"   /* Protection Space A */
 
   , (void*)0    /* Variable: allocList */
-  , (void*)0    /* Variable: cxx_null_addr */
+  , (void*)0    /* Variable: null_addr */
 
   , {   DUMA_MIN_ALIGNMENT
       , 0     /* PROTECT_BELOW */
@@ -746,6 +755,12 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    */
   if ( (string = DUMA_GETENV("DUMA_ALLOW_MALLOC_0")) != 0 )
     _duma_s.ALLOW_MALLOC_0 = (atoi(string) != 0);
+
+  /*
+   * See what strategy the user wants for malloc(0).
+   */
+  if ( (string = DUMA_GETENV("MALLOC_0_STRATEGY")) != 0 )
+    _duma_s.MALLOC_0_STRATEGY = atoi(string);
 
   /*
    * See if the user wants to exit on malloc() failure
@@ -988,15 +1003,13 @@ _duma_init(void)
   if ( _duma_s.init_state >= DUMAIS_OUT_CONSTRUCTOR )
     goto duma_constructor_relsem;
 
-#ifndef DUMA_NO_CPP_SUPPORT
   /*
-   * Allocate special memory for C++ new operator, when size is 0
+   * Allocate special memory for malloc() or C++ operator new, when size is 0
    */
-  _duma_s.cxx_null_block = Page_Create(2*DUMA_PAGE_SIZE, 1/*=exitonfail*/, 1/*=printerror*/);
+  _duma_s.null_block = Page_Create(2*DUMA_PAGE_SIZE, 1/*=exitonfail*/, 1/*=printerror*/);
 
-  Page_DenyAccess(_duma_s.cxx_null_block, 2*DUMA_PAGE_SIZE);
-    _duma_g.cxx_null_addr  = (void*)( (DUMA_ADDR)_duma_s.cxx_null_block + DUMA_PAGE_SIZE );
-#endif
+  Page_DenyAccess(_duma_s.null_block, 2*DUMA_PAGE_SIZE);
+    _duma_g.null_addr  = (void*)( (DUMA_ADDR)_duma_s.null_block + DUMA_PAGE_SIZE );
 
   /*
    * Figure out how many Slot structures to allocate at one time.
@@ -1229,7 +1242,11 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       #endif
     }
     else
+    {
+      if ( _duma_s.MALLOC_0_STRATEGY )
+        userAddr = _duma_g.null_addr;
       return (void*)userAddr;
+    }
   }
 
   /* check alignment */
@@ -1582,7 +1599,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 #endif
   }
 
-  if ( 0 == address )
+  if ( 0 == address || _duma_g.null_addr == address )
     return;
 
   if ( protectAllocList )
