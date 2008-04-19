@@ -162,6 +162,10 @@ DUMA_ALLOW_MALLOC_0 - Memory allocation of size zero is ANSI conform.  But
   default, but you are free to trap these calls setting the DUMA_ALLOC_MALLOC_0
   in the shell environment to an integer value.
 
+DUMA_MALLOC_0_STRATEGY - ANSI allows two stategies for size zero. Set this
+  variable to zero to let DUMA return a NULL pointer. Otherwise a unique pointer
+  to a protected piece of memory is returned, which can be passed to free().
+
 DUMA_MALLOC_FAILEXIT - Many programs do not check for allocation failure. This
   often leads to delayed errors, no more understandable. Set this variable to a
   positive integer in the shell environment to exit the program immediately
@@ -544,6 +548,18 @@ detector, a cache (time) profiler, a call-graph profiler, and a heap (space)
 profiler. It runs on the following platforms: X86/Linux, AMD64/Linux,
 PPC32/Linux, PPC64/Linux.
 See http://valgrind.org/
+
+Pageheap.exe
+Another alternative to using duma on Windows (XP, 2000, Server 2003) is to use
+the built in heap debugging provided by Microsoft. It's not as feature rich as
+duma, but for complex projects were duma is causing issues it will work with less
+hassle (it sits in the heap manager itself).
+You can control it using the global flags (gflags) utility that comes with windbg.
+You can enable it by saying: gflags.exe /p /full /enable MyProgram.exe
+And do unaligned by saying:  gflags.exe /p /full /unaligned /enable MyProgram.exe
+gflags will set specific registry keys to enable the pageheap debugging on the
+executable. You can disable it using the "/disable" flag.
+See http://support.microsoft.com/kb/286470
 
 MPATROL
 The mpatrol library is a powerful debugging tool that attempts to diagnose
