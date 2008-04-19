@@ -12,6 +12,7 @@ CHANGELOG:
     return special protected piece of memory for malloc(0)
   * update of README for Microsoft's pageheap.exe,
     a built in heap debugging tool
+  * moved SHOW_ALLOC printouts before other tests
   (2008-04-20, HA)
 
 2.5.13
