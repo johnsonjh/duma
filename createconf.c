@@ -277,7 +277,7 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 
 
 
-void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int sizeIdx, int alignment)
+void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int sizeIdx, int alignment, int malloc0strategy)
 {
   FILE * f = fopen(filename, "w");
   if (!f)
@@ -711,6 +711,16 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   else
     fprintf(f, "/* No datatype for DUMA_SIZE found! */\n");
 
+
+  fprintf(f, "\n");
+  fprintf(f, "/*\n");
+  fprintf(f, " * Default behaviour on malloc(0).\n");
+  fprintf(f, " *   0 - return NULL pointer.\n");
+  fprintf(f, " *   1 - return same non NULL pointer.\n");
+  fprintf(f, " *   2 - return different non NULL pointers.\n");
+  fprintf(f, " */\n");
+  fprintf(f, "#define DUMA_DEFAULT_MALLOC_0_STRATEGY %d\n", malloc0strategy);
+
   fprintf(f, "\n");
   fprintf(f, "#endif /* _DUMA_CONFIG_H_ */\n");
 
@@ -723,6 +733,7 @@ int main()
   int iNumIntTypes, iIt;
   int addrIdx, sizeIdx;
   int alignment, max_sizeof;
+  int malloc0strategy;
   char  buffer[1024];
   char filename[1024];
 
@@ -779,6 +790,18 @@ int main()
   if ( max_sizeof < sizeof(long double) )
     max_sizeof = sizeof(long double);
 
+  /* test for behaviour on malloc(0) */
+  {
+    char * pcNullPtrA = (char*)malloc(0);
+    char * pcNullPtrB = (char*)malloc(0);
+    if ( !pcNullPtrA )
+      malloc0strategy = 0;
+    else if ( pcNullPtrA == pcNullPtrB )
+      malloc0strategy = 1;
+    else
+      malloc0strategy = 2;
+  }
+
 #ifdef _MSC_VER
   {
     /* fix output path when started form Visual C++ IDE */
@@ -806,7 +829,7 @@ int main()
     /* do the alignment access tests */
     testAlignment(addrIdx, buffer, alignment, max_sizeof);
     /* write whole config file. next test may crash ! */
-    writeFile(filename, pagesize, addrIdx, sizeIdx, alignment);
+    writeFile(filename, pagesize, addrIdx, sizeIdx, alignment, malloc0strategy);
     /* try next lower alignment */
     alignment >>= 1;
   }
