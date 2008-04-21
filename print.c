@@ -46,6 +46,10 @@
 #ifndef __CYGWIN__
   /* already defined in cygwin headers */
   typedef LPVOID caddr_t;
+#else
+  /* use these for cygwin */
+  #include <unistd.h>
+  #include <fcntl.h>
 #endif
 #endif
 
@@ -322,7 +326,7 @@ DUMA_Print(const char * pattern, ...)
 
   if(DUMA_OUTPUT_FILE != NULL)
   {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     fd = _open(DUMA_OUTPUT_FILE, _O_APPEND|_O_CREAT|_O_WRONLY);
 #else
     fd = open(DUMA_OUTPUT_FILE, O_APPEND|O_CREAT|O_WRONLY);
@@ -330,7 +334,7 @@ DUMA_Print(const char * pattern, ...)
     if ( fd >= 0 )
     {
       write(fd, buffer, len);
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
       _close(fd);
 #else
       close(fd);

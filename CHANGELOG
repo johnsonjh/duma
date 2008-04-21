@@ -17,6 +17,9 @@ CHANGELOG:
       return a special protected piece of memory for malloc(0)
   * Moved malloc/SHOW_ALLOC printouts before all abort checks
   (2008-04-20, Philip Mucci, HA)
+  * remove some warnings for "-Wall -Wextra" especially for cygwin
+  * detailed some messages when source filename and lineno were available
+  (2008-04-21, HA)
 
 2.5.13
   * applied PATCH(es) from Philip Mucci <mucci@cs.utk.edu>

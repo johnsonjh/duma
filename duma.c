@@ -250,7 +250,7 @@ enum _DUMA_AllocType
   , DUMAAT_MEMBER_NEW_ARRAY
 };
 
-const static struct _DUMA_AllocDesc
+static const struct _DUMA_AllocDesc
 {
   char                * name;
   enum _DUMA_AllocType    type;
@@ -1257,7 +1257,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     else
     {
       if ( _duma_s.MALLOC_0_STRATEGY )
-        userAddr = _duma_g.null_addr;
+        userAddr = (DUMA_ADDR)_duma_g.null_addr;
       return (void*)userAddr;
     }
   }
@@ -1386,7 +1386,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       * free and allocated portions later.
       */
     size_t  chunkSize;
-    size_t    chunkSizekB;
+    long    chunkSizekB;
 
     #if defined(WIN32)
       chunkSize = internalSize;
@@ -1399,7 +1399,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       chunkSize = ( chunkSize + DUMA_PAGE_SIZE -1 ) & ~( DUMA_PAGE_SIZE -1 );
     #endif
 
-    chunkSizekB = (chunkSize+1023) >>10;
+    chunkSizekB = (long)( (chunkSize+1023) >>10 );
 
 
     /* Use up one of the empty slots to make the full slot. */
@@ -1415,7 +1415,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     emptySlots[0] = emptySlots[1];
 
     /* reduce protected memory when we would exceed _duma_s.MAX_ALLOC */
-    if ( _duma_s.MAX_ALLOC > 0  &&  _duma_s.sumAllocatedMem + chunkSizekB > _duma_s.MAX_ALLOC )
+    if ( _duma_s.MAX_ALLOC > 0L  &&  _duma_s.sumAllocatedMem + chunkSizekB > _duma_s.MAX_ALLOC )
       reduceProtectedMemory( chunkSizekB );
 
     fullSlot->internalAddress = Page_Create( chunkSize, 0/*= exitonfail*/, 0/*= printerror*/ );
@@ -2081,8 +2081,15 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
   unsigned i;
 
   if ( (s < d  &&  d < s + size) || (d < s  &&  s < d + size) )
-    DUMA_Abort("memcpy(%a, %a, %d): memory regions overlap.",
-      (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size);
+  {
+#ifndef DUMA_NO_LEAKDETECTION
+    DUMA_Abort("memcpy(%a, %a, %d): memory regions overlap at %s(%i)."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size, filename, lineno );
+#else
+    DUMA_Abort("memcpy(%a, %a, %d): memory regions overlap."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size );
+#endif
+  }
 
   for (i=0; i<size; ++i)
     d[i] = s[i];
@@ -2106,7 +2113,15 @@ char * _duma_strcpy(char *dest, const char *src  DUMA_PARAMLIST_FL)
   size_t size = strlen(src) +1;
 
   if ( src < dest  &&  dest < src + size )
-    DUMA_Abort("strcpy(%a, %a): memory regions overlap.", (DUMA_ADDR)dest, (DUMA_ADDR)src);
+  {
+#ifndef DUMA_NO_LEAKDETECTION
+    DUMA_Abort("strcpy(%a, %a): memory regions overlap at %s(%i)."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src, filename, lineno );
+#else
+    DUMA_Abort("strcpy(%a, %a): memory regions overlap."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src );
+#endif
+  }
 
   for (i=0; i<size; ++i)
     dest[i] = src[i];
@@ -2129,8 +2144,15 @@ char * _duma_strncpy(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL
   unsigned i;
 
   if ( size > 0  &&  src < dest  &&  dest < src + size )
-    DUMA_Abort("strncpy(%a, %a, %d): memory regions overlap.",
-      (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size);
+  {
+#ifndef DUMA_NO_LEAKDETECTION
+    DUMA_Abort("strncpy(%a, %a, %d): memory regions overlap at %s(%i)."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size, filename, lineno );
+#else
+    DUMA_Abort("strncpy(%a, %a, %d): memory regions overlap."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size );
+#endif
+  }
 
   /* copy src to dest - up to size or zero terminator
    *   whatever happens first
@@ -2162,7 +2184,15 @@ char * _duma_strcat(char *dest, const char *src  DUMA_PARAMLIST_FL)
   size_t srcsize = strlen(src) + 1;
 
   if ( src < dest +destlen  &&  dest + destlen < src + srcsize )
-    DUMA_Abort("strcat(%a, %a): memory regions overlap.", (DUMA_ADDR)dest, (DUMA_ADDR)src);
+  {
+#ifndef DUMA_NO_LEAKDETECTION
+    DUMA_Abort("strcat(%a, %a): memory regions overlap at %s(%i)."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src, filename, lineno );
+#else
+    DUMA_Abort("strcat(%a, %a): memory regions overlap."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src );
+#endif
+  }
 
   for (i=0; i<srcsize; ++i)
     dest[destlen+i] = src[i];
@@ -2197,8 +2227,15 @@ char * _duma_strncat(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL
 
   /* CHECK: Verify memory regions do not overlap */
   if ( src < (dest + destlen) && (dest + destlen) < (src + srclen + 1) )
-    DUMA_Abort("strncat(%a, %a, %d): memory regions overlap.",
-      (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size);
+  {
+#ifndef DUMA_NO_LEAKDETECTION
+    DUMA_Abort("strncat(%a, %a, %d): memory regions overlap at %s(%i)."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size, filename, lineno );
+#else
+    DUMA_Abort("strncat(%a, %a, %d): memory regions overlap."
+      , (DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size );
+#endif
+  }
 
   /* copy up to size characters from src to dest */
   for (i=0; i<srclen; ++i)

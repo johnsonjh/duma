@@ -53,7 +53,9 @@
  */
 /* extern C_LINKAGE int mprotect(void * addr, size_t len, int prot); */
 
+#if !defined(WIN32)
 static caddr_t  startAddr = (caddr_t) 0;
+#endif
 
 /* Function: stringErrorReport
  *
@@ -320,7 +322,6 @@ static void Page_Delete(void * address, size_t size)
 #if defined(WIN32)
 
   void * alloc_address  = address;
-  size_t alloc_size     = size;
   SIZE_T retQuery;
   MEMORY_BASIC_INFORMATION MemInfo;
   BOOL ret;
