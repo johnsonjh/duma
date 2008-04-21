@@ -86,6 +86,8 @@ static void* thread_func(void *arg)
 static void*
 idle_func(void* arg)
 {
+  (void)arg;
+
   while (threads_left) ;
 
   /* NOTREACHED */

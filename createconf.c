@@ -783,11 +783,11 @@ int main()
     if ( max_sizeof < sIntTypes[iIt].size )
       max_sizeof = sIntTypes[iIt].size;
   }
-  if ( max_sizeof < sizeof(float) )
+  if ( max_sizeof < (int)sizeof(float) )
     max_sizeof = sizeof(float);
-  if ( max_sizeof < sizeof(double) )
+  if ( max_sizeof < (int)sizeof(double) )
     max_sizeof = sizeof(double);
-  if ( max_sizeof < sizeof(long double) )
+  if ( max_sizeof < (int)sizeof(long double) )
     max_sizeof = sizeof(long double);
 
   /* test for behaviour on malloc(0) */
