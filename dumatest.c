@@ -52,7 +52,12 @@ struct diagnostic
   const char  * explanation;        /* explanation of that test */
 };
 
+
+#if !defined(WIN32) || defined(__CYGWIN__)
+static sigjmp_buf  env;
+#else
 static jmp_buf  env;
+#endif
 
 /*
  * There is still too little standardization of the arguments and return
