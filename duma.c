@@ -90,6 +90,7 @@
 #include "paging.h"
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
+DUMA_EXTERN_C void StackTraceCleanup();
 DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilename);
 #endif
 
@@ -363,6 +364,7 @@ static struct _DUMA_GlobalStaticVars
    */
   long  MAX_ALLOC;
 
+#if 0
   /* Variable: DUMA_ALLOW_MALLOC_0
    *
    * DUMA_ALLOW_MALLOC_0 is set if DUMA is to allow malloc(0). I
@@ -370,12 +372,17 @@ static struct _DUMA_GlobalStaticVars
    * But you should know the allocation with size 0 is ANSI conform.
    */
   int   ALLOW_MALLOC_0;
+#endif
 
   /* Variable: DUMA_MALLOC_0_STRATEGY
    *
    * DUMA_MALLOC_0_STRATEGY how DUMA should behave on malloc(0).
-   * 0 will return a NULL pointer, which can be passed to free().
-   * 1 will return a unique pointer, which can be passed to free()
+   *   0 - like having former ALLOW_MALLOC_0 = 0  ==> abort program with segfault
+   *   1 - return NULL pointer
+   *   2 - return always the same pointer to some protected page
+   *   3 - return unique protected page (=default)
+   * ATTENTION: only 1 and 3 are ANSI conform. But value 1 will break most programs,
+   *   cause value 3 is the usual one, the system libraries implement
    */
   int   MALLOC_0_STRATEGY;
 
@@ -509,8 +516,10 @@ _duma_s =
   , 0xAA    /* Variable: SLACKFILL */
   , -1L     /* Variable: PROTECT_FREE */
   , -1L     /* Variable: MAX_ALLOC */
+#if 0
   , 1       /* Variable: ALLOW_MALLOC_0 */
-  , 0       /* Variavle: MALLOC_0_STRATEGY */
+#endif
+  , 3       /* Variable: MALLOC_0_STRATEGY; see above */
   , 1       /* Variable: MALLOC_FAILEXIT */
   , 0       /* Variable: FREE_ACCESS */
   , 0       /* Variable: SHOW_ALLOC */
@@ -750,17 +759,23 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   if ( (string = DUMA_GETENV("DUMA_MAX_ALLOC")) != 0 )
     _duma_s.MAX_ALLOC = atol(string);
 
+#if 0
   /*
    * See if the user wants to allow malloc(0).
    */
   if ( (string = DUMA_GETENV("DUMA_ALLOW_MALLOC_0")) != 0 )
     _duma_s.ALLOW_MALLOC_0 = (atoi(string) != 0);
+#endif
 
   /*
    * See what strategy the user wants for malloc(0).
    */
   if ( (string = DUMA_GETENV("MALLOC_0_STRATEGY")) != 0 )
-    _duma_s.MALLOC_0_STRATEGY = atoi(string);
+  {
+    int tmp = atoi(string);
+    if ( tmp >= 0 && tmp <= 3 )
+      _duma_s.MALLOC_0_STRATEGY = tmp;
+  }
 
   /*
    * See if the user wants to exit on malloc() failure
@@ -819,7 +834,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   if ( (string = DUMA_GETENV("DUMA_OUTPUT_STACKTRACE_MAPFILE")) != 0 )
     DUMA_OUTPUT_STACKTRACE_MAPFILE = strdup(string);
 
-  /* 
+  /*
    * DUMA_OUTPUT_DEBUG is a global variable used to control if DUMA
    * output is printed to the win32 debugging console.  Default is 0,
    * meaning that output is not by default sent to the debugging console.
@@ -827,7 +842,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   if ( (string = DUMA_GETENV("DUMA_OUTPUT_DEBUG")) != 0 )
     DUMA_OUTPUT_DEBUG = (atoi(string) != 0);
 
-  /* 
+  /*
    * DUMA_OUTPUT_STDOUT is a global variable used to control if DUMA
    * output is printed to STDOUT.  Default is 0,
    * meaning that output is not by default sent to STDOUT.
@@ -835,7 +850,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   if ( (string = DUMA_GETENV("DUMA_OUTPUT_STDOUT")) != 0 )
     DUMA_OUTPUT_STDOUT = (atoi(string) != 0);
 
-  /* 
+  /*
    * DUMA_OUTPUT_STDERR is a global variable used to control if DUMA
    * output is printed to STDERR.  Default is 1,
    * meaning that output is by default sent to STDERR.
@@ -843,7 +858,7 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   if ( (string = DUMA_GETENV("DUMA_OUTPUT_STDERR")) != 0 )
     DUMA_OUTPUT_STDERR = (atoi(string) != 0);
 
-  /* 
+  /*
    * DUMA_OUTPUT_FILE is a global variable used to control if DUMA
    * output is printed to a specified file.  Default is NULL,
    * meaning that output is not by default sent to a file.
@@ -1246,6 +1261,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   /* check userSize */
   if ( 0 == userSize )
   {
+#if 0
     if ( !_duma_s.ALLOW_MALLOC_0 )
     {
       #ifndef DUMA_NO_LEAKDETECTION
@@ -1260,44 +1276,73 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
         userAddr = (DUMA_ADDR)_duma_g.null_addr;
       return (void*)userAddr;
     }
-  }
-
-  /* check alignment */
-  if ( ! alignment )
-  {
-    DUMA_SIZE a = (DUMA_SIZE)duma_tls->ALIGNMENT;
-    DUMA_SIZE s = (DUMA_SIZE)userSize;
-
-    if ( s < a )
+#else
+    switch ( _duma_s.MALLOC_0_STRATEGY )
     {
-      /* to next lower power of 2 */
-      for (a = s; a & (a-1); a &= a-1)  ;
+      case 0: /* like having former ALLOW_MALLOC_0 = 0  ==> abort program with segfault */
+        #ifndef DUMA_NO_LEAKDETECTION
+          DUMA_Abort("Allocating 0 bytes, probably a bug at %s(%i). See DUMA_ALLOW_MALLOC_0.", filename, lineno);
+        #else
+          DUMA_Abort("Allocating 0 bytes, probably a bug. See DUMA_ALLOW_MALLOC_0.");
+        #endif
+        return (void*)userAddr;
+        break;
+      case 1: /* return NULL pointer */
+        return (void*)userAddr;
+        break;
+      case 2: /* return always the same pointer to some protected page */
+      default:
+        userAddr = (DUMA_ADDR)_duma_g.null_addr;
+        return (void*)userAddr;
+        break;
+      case 3: /* return unique protected page */
+        /* continue allocation! */
+        break;
+    } /* end switch () */
+
+    /* only case 3 */
+    internalSize = DUMA_PAGE_SIZE;
+#endif
+  }
+  else /* if ( userSize ) */
+  {
+    /* check alignment */
+    if ( ! alignment )
+    {
+      DUMA_SIZE a = (DUMA_SIZE)duma_tls->ALIGNMENT;
+      DUMA_SIZE s = (DUMA_SIZE)userSize;
+
+      if ( s < a )
+      {
+        /* to next lower power of 2 */
+        for (a = s; a & (a-1); a &= a-1)  ;
+      }
+
+      alignment = (size_t)a; /* this is new alignment */
     }
 
-    alignment = (size_t)a; /* this is new alignment */
-  }
+    if ( (int)alignment != ((int)alignment & -(int)alignment) )
+    {
+      #ifndef DUMA_NO_LEAKDETECTION
+        DUMA_Abort("Alignment (=%d) is not a power of 2 requested from %s(%i)", (DUMA_SIZE)alignment, filename, lineno);
+      #else
+        DUMA_Abort("Alignment (=%d) is not a power of 2", (DUMA_SIZE)alignment);
+      #endif
+    }
 
-  if ( (int)alignment != ((int)alignment & -(int)alignment) )
-  {
-    #ifndef DUMA_NO_LEAKDETECTION
-      DUMA_Abort("Alignment (=%d) is not a power of 2 requested from %s(%i)", (DUMA_SIZE)alignment, filename, lineno);
-    #else
-      DUMA_Abort("Alignment (=%d) is not a power of 2", (DUMA_SIZE)alignment);
-    #endif
-  }
+    /*
+     * If protectBelow is set, all addresses returned by malloc()
+     * and company will be page-aligned.
+     *
+     * The internal size of the buffer is rounded up to the next alignment and page-size
+     * boundary, and then we add another page's worth of memory for the dead page.
+     */
+    /* a bit tricky but no modulo and no if () */
+    internalSize = ( (userSize + DUMA_PAGE_SIZE -1) & ~(DUMA_PAGE_SIZE -1) ) + DUMA_PAGE_SIZE;
 
-  /*
-   * If protectBelow is set, all addresses returned by malloc()
-   * and company will be page-aligned.
-   *
-   * The internal size of the buffer is rounded up to the next alignment and page-size
-   * boundary, and then we add another page's worth of memory for the dead page.
-   */
-  /* a bit tricky but no modulo and no if () */
-  internalSize = ( (userSize + DUMA_PAGE_SIZE -1) & ~(DUMA_PAGE_SIZE -1) ) + DUMA_PAGE_SIZE;
-
-  if ( alignment > DUMA_PAGE_SIZE )
-    internalSize += alignment - DUMA_PAGE_SIZE;
+    if ( alignment > DUMA_PAGE_SIZE )
+      internalSize += alignment - DUMA_PAGE_SIZE;
+  } /* end if ( userSize ) */
 
   /*
    * These will hold the addresses of two empty Slot structures, that
@@ -1471,6 +1516,27 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     }
 #endif
 
+#if 0
+#else
+    if ( 0 == userSize )
+    {
+      /*
+       * we need just a single page
+       * may deny any access to it
+       *
+       */
+
+      /* Figure out what address to give the user: mid of protected page */
+      intAddr  = (DUMA_ADDR)fullSlot->internalAddress;
+      endAddr  = intAddr + internalSize;
+      userAddr = intAddr  + (DUMA_PAGE_SIZE >> 1);
+      protAddr = intAddr;
+
+      /* Set up the "dead" page(s). */
+      Page_DenyAccess( (char*)protAddr, endAddr - protAddr );
+    }
+    else
+#endif
     if ( !protectBelow )
     {
       /*
@@ -1571,7 +1637,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   }
 
   /* Fill the memory if it was specified to do so. */
-  if ( ((char*)userAddr) && fillByte != -1 )
+  if ( ((char*)userAddr) && fillByte != -1 && userSize )
     memset( (char*)userAddr, fillByte, userSize);
 
   return duma_alloc_return( (char*)userAddr );
