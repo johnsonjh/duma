@@ -715,9 +715,6 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, "\n");
   fprintf(f, "/*\n");
   fprintf(f, " * Default behaviour on malloc(0).\n");
-  fprintf(f, " *   0 - return NULL pointer.\n");
-  fprintf(f, " *   1 - return same non NULL pointer.\n");
-  fprintf(f, " *   2 - return different non NULL pointers.\n");
   fprintf(f, " */\n");
   fprintf(f, "#define DUMA_DEFAULT_MALLOC_0_STRATEGY %d\n", malloc0strategy);
 
@@ -728,12 +725,23 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
 }
 
 
+
+#ifdef __cplusplus
+  #define DUMA_EXTERN_C   extern "C"
+#else
+  #define DUMA_EXTERN_C   extern
+#endif
+
+DUMA_EXTERN_C
+int get_new0strategy(void);
+
+
 int main()
 {
   int iNumIntTypes, iIt;
   int addrIdx, sizeIdx;
   int alignment, max_sizeof;
-  int malloc0strategy;
+  int malloc0strategy, new0strategy;
   char  buffer[1024];
   char filename[1024];
 
@@ -795,12 +803,16 @@ int main()
     char * pcNullPtrA = (char*)malloc(0);
     char * pcNullPtrB = (char*)malloc(0);
     if ( !pcNullPtrA )
-      malloc0strategy = 0;
-    else if ( pcNullPtrA == pcNullPtrB )
       malloc0strategy = 1;
-    else
+    else if ( pcNullPtrA == pcNullPtrB )
       malloc0strategy = 2;
+    else
+      malloc0strategy = 3;
   }
+
+#if 0
+  new0strategy = get_new0strategy();
+#endif
 
 #ifdef _MSC_VER
   {
