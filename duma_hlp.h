@@ -191,6 +191,10 @@ void _duma_init_slack( struct _DUMA_Slot * slot )
   slot->slackfill = _duma_s.SLACKFILL;
 #endif
 
+  /* nothing to do for zero userSize */
+  if ( !slot->userSize )
+    return;
+
   /* calculate accessible non-protectable address area */
   if ( (char*)slot->protAddress < (char*)slot->userAddress )
   {
@@ -232,6 +236,10 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
 #else
   slackfill = (char)_duma_s.SLACKFILL;
 #endif
+
+  /* nothing to do for zero userSize */
+  if ( !slot->userSize )
+    return;
 
   /* calculate accessible non-protectable address area */
   if ( (char*)slot->protAddress < (char*)slot->userAddress )
@@ -292,7 +300,7 @@ _duma_check_all_slacks( void )
   for ( ; count > 0; --count, ++slot )
   {
     /* CHECK INTEGRITY OF NO MANS LAND */
-    if ( DUMAST_IN_USE == slot->state )
+    if ( DUMAST_IN_USE == slot->state  && slot->userSize )
       _duma_check_slack( slot );
   }
 }
