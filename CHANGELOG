@@ -20,6 +20,10 @@ CHANGELOG:
   * remove some warnings for "-Wall -Wextra" especially for cygwin
   * detailed some messages when source filename and lineno were available
   (2008-04-21, HA)
+  * removed environment variable "DUMA_ALLOW_MALLOC_0"
+    DUMA_MALLOC_0_STRATEGY = 0 is equivalent to previous
+    DUMA_ALLOW_MALLOC_0=0. default is 3.
+  (2008-04-22, HA)
 
 2.5.13
   * applied PATCH(es) from Philip Mucci <mucci@cs.utk.edu>
