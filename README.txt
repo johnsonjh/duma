@@ -162,9 +162,15 @@ DUMA_ALLOW_MALLOC_0 - Memory allocation of size zero is ANSI conform.  But
   default, but you are free to trap these calls setting the DUMA_ALLOC_MALLOC_0
   in the shell environment to an integer value.
 
-DUMA_MALLOC_0_STRATEGY - ANSI allows two stategies for size zero. Set this
-  variable to zero to let DUMA return a NULL pointer. Otherwise a unique pointer
-  to a protected piece of memory is returned, which can be passed to free().
+DUMA_MALLOC_0_STRATEGY - This environment variable controls DUMA's behaviour
+  on malloc(0):
+    0 - like having former ALLOW_MALLOC_0 = 0  ==> abort program with segfault
+    1 - return NULL pointer
+    2 - return always the same pointer to some protected page
+    3 - return mid address of a unique protected page (=default)
+  ATTENTION: only 1 and 3 are ANSI conform. But value 1 will break most
+  programs, cause value 3 strategy most system libraries use/implement.
+  All returned pointers can be passed to free().
 
 DUMA_MALLOC_FAILEXIT - Many programs do not check for allocation failure. This
   often leads to delayed errors, no more understandable. Set this variable to a
