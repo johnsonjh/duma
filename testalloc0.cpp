@@ -14,11 +14,11 @@ int get_new0strategy(void)
   piNullPtrB = (int*) operator new(0);
 
   if ( !piNullPtrA )
-    op_new_0_strategy = 0;
-  else if ( piNullPtrA == piNullPtrB )
     op_new_0_strategy = 1;
-  else
+  else if ( piNullPtrA == piNullPtrB )
     op_new_0_strategy = 2;
+  else
+    op_new_0_strategy = 3;
 
   delete piNullPtrA;
   delete piNullPtrB;
@@ -37,11 +37,11 @@ int get_newVec0strategy(void)
   piNullPtrB = new int[0];
 
   if ( !piNullPtrA )
-    op_new_0_strategy = 0;
-  else if ( piNullPtrA == piNullPtrB )
     op_new_0_strategy = 1;
-  else
+  else if ( piNullPtrA == piNullPtrB )
     op_new_0_strategy = 2;
+  else
+    op_new_0_strategy = 3;
 
   delete []piNullPtrA;
   delete []piNullPtrB;
@@ -59,11 +59,11 @@ int get_malloc0strategy(void)
   piNullPtrB = (int*)malloc(0);
 
   if ( !piNullPtrA )
-    op_new_0_strategy = 0;
-  else if ( piNullPtrA == piNullPtrB )
     op_new_0_strategy = 1;
-  else
+  else if ( piNullPtrA == piNullPtrB )
     op_new_0_strategy = 2;
+  else
+    op_new_0_strategy = 3;
 
   free(piNullPtrA);
   free(piNullPtrB);
