@@ -251,31 +251,38 @@ enum _DUMA_AllocType
   , DUMAAT_MEMBER_NEW_ARRAY
 };
 
+enum _DUMA_AllocStandard
+{
+    DUMAAS_C
+  , DUMAAS_CPP
+};
+
 static const struct _DUMA_AllocDesc
 {
   char                * name;
-  enum _DUMA_AllocType    type;
+  enum _DUMA_AllocType  type;
+  enum _DUMA_AllocStd   std;
 }
 _duma_allocDesc[] =
 {
-    { "duma allocate()"       , DUMAAT_INTERNAL  }
-  , { "duma deallocate()"     , DUMAAT_INTERNAL  }
-  , { "malloc()"              , DUMAAT_MALLOC    }
-  , { "calloc()"              , DUMAAT_MALLOC    }
-  , { "free()"                , DUMAAT_MALLOC    }
-  , { "memalign()"            , DUMAAT_MALLOC    }
-  , { "posix_memalign()"      , DUMAAT_MALLOC    }
-  , { "realloc()"             , DUMAAT_MALLOC    }
-  , { "valloc()"              , DUMAAT_MALLOC    }
-  , { "strdup()"              , DUMAAT_MALLOC    }
-  , { "scalar new"            , DUMAAT_NEW_ELEM  }
-  , { "scalar delete"         , DUMAAT_NEW_ELEM  }
-  , { "vector new[]"          , DUMAAT_NEW_ARRAY }
-  , { "vector delete[]"       , DUMAAT_NEW_ARRAY }
-  , { "member scalar new"     , DUMAAT_MEMBER_NEW_ELEM  }
-  , { "member scalar delete"  , DUMAAT_MEMBER_NEW_ELEM  }
-  , { "member vector new[]"   , DUMAAT_MEMBER_NEW_ARRAY }
-  , { "member vector delete[]", DUMAAT_MEMBER_NEW_ARRAY }
+    { "duma allocate()"       , DUMAAT_INTERNAL        , DUMAAS_C   }
+  , { "duma deallocate()"     , DUMAAT_INTERNAL        , DUMAAS_C   }
+  , { "malloc()"              , DUMAAT_MALLOC          , DUMAAS_C   }
+  , { "calloc()"              , DUMAAT_MALLOC          , DUMAAS_C   }
+  , { "free()"                , DUMAAT_MALLOC          , DUMAAS_C   }
+  , { "memalign()"            , DUMAAT_MALLOC          , DUMAAS_C   }
+  , { "posix_memalign()"      , DUMAAT_MALLOC          , DUMAAS_C   }
+  , { "realloc()"             , DUMAAT_MALLOC          , DUMAAS_C   }
+  , { "valloc()"              , DUMAAT_MALLOC          , DUMAAS_C   }
+  , { "strdup()"              , DUMAAT_MALLOC          , DUMAAS_C   }
+  , { "scalar new"            , DUMAAT_NEW_ELEM        , DUMAAS_CPP }
+  , { "scalar delete"         , DUMAAT_NEW_ELEM        , DUMAAS_CPP }
+  , { "vector new[]"          , DUMAAT_NEW_ARRAY       , DUMAAS_CPP }
+  , { "vector delete[]"       , DUMAAT_NEW_ARRAY       , DUMAAS_CPP }
+  , { "member scalar new"     , DUMAAT_MEMBER_NEW_ELEM , DUMAAS_CPP }
+  , { "member scalar delete"  , DUMAAT_MEMBER_NEW_ELEM , DUMAAS_CPP }
+  , { "member vector new[]"   , DUMAAT_MEMBER_NEW_ARRAY, DUMAAS_CPP }
+  , { "member vector delete[]", DUMAAT_MEMBER_NEW_ARRAY, DUMAAS_CPP }
 };
 
 #ifdef DUMA_EXPLICIT_INIT
@@ -385,6 +392,17 @@ static struct _DUMA_GlobalStaticVars
    *   cause value 3 is the usual one, the system libraries implement
    */
   int   MALLOC_0_STRATEGY;
+
+  /* Variable: DUMA_NEW_0_STRATEGY
+   *
+   * DUMA_NEW_0_STRATEGY how DUMA should behave on C++ operator new or new[]
+   *   with size 0
+   *   2 - return always the same pointer to some protected page
+   *   3 - return unique protected page (=default)
+   * ATTENTION: only 3 is standard conform. Value 2 may break some but will
+   * work for most programs. With value 2 you may reduce the memory consumption.
+   */
+  int   NEW_0_STRATEGY;
 
   /* Variable: DUMA_MALLOC_FAILEXIT
    *
@@ -520,6 +538,7 @@ _duma_s =
   , 1       /* Variable: ALLOW_MALLOC_0 */
 #endif
   , 3       /* Variable: MALLOC_0_STRATEGY; see above */
+  , 3       /* Variable: NEW_0_STRATEGY; see above */
   , 1       /* Variable: MALLOC_FAILEXIT */
   , 0       /* Variable: FREE_ACCESS */
   , 0       /* Variable: SHOW_ALLOC */
@@ -775,6 +794,16 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
     int tmp = atoi(string);
     if ( tmp >= 0 && tmp <= 3 )
       _duma_s.MALLOC_0_STRATEGY = tmp;
+  }
+
+  /*
+   * See what strategy the user wants for C++ operator new with size zero.
+   */
+  if ( (string = DUMA_GETENV("NEW_0_STRATEGY")) != 0 )
+  {
+    int tmp = atoi(string);
+    if ( tmp >= 2 && tmp <= 3 )
+      _duma_s.NEW_0_STRATEGY = tmp;
   }
 
   /*
@@ -1211,12 +1240,24 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   struct _DUMA_Slot * emptySlots[2];
   DUMA_ADDR           intAddr, userAddr, protAddr, endAddr;
   size_t              internalSize;
+  int                 allocationStrategy;
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
   char        stacktrace[601];
   char*       ptrStacktrace;
 #endif
   DUMA_TLSVARS_T    * duma_tls = GET_DUMA_TLSVARS();
 
+  /* check allocation strategy to use */
+  switch ( _duma_allocDesc[allocator].std )
+  {
+    default:
+    case DUMAAS_C:
+      allocationStrategy = _duma_s.MALLOC_0_STRATEGY;
+      break;
+    case DUMAAS_CPP:
+      allocationStrategy = _duma_s.NEW_0_STRATEGY;
+      break;
+  }
 
   DUMA_ASSERT( 0 != _duma_g.allocList );
 
@@ -1272,12 +1313,12 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     }
     else
     {
-      if ( _duma_s.MALLOC_0_STRATEGY )
+      if ( allocationStrategy )
         userAddr = (DUMA_ADDR)_duma_g.null_addr;
       return (void*)userAddr;
     }
 #else
-    switch ( _duma_s.MALLOC_0_STRATEGY )
+    switch ( allocationStrategy )
     {
       case 0: /* like having former ALLOW_MALLOC_0 = 0  ==> abort program with segfault */
         #ifndef DUMA_NO_LEAKDETECTION
