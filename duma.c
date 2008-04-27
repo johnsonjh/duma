@@ -251,7 +251,7 @@ enum _DUMA_AllocType
   , DUMAAT_MEMBER_NEW_ARRAY
 };
 
-enum _DUMA_AllocStandard
+enum _DUMA_AllocStd
 {
     DUMAAS_C
   , DUMAAS_CPP
