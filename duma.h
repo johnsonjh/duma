@@ -206,8 +206,8 @@
   , EFA_DEL_ARRAY
 
   /* use following enums when calling _duma_allocate()/_duma_deallocate()
-  * from user defined member operators
-  */
+   * from user defined member operators
+   */
   , EFA_MEMBER_NEW_ELEM
   , EFA_MEMBER_DEL_ELEM
   , EFA_MEMBER_NEW_ARRAY
