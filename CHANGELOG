@@ -24,6 +24,12 @@ CHANGELOG:
     DUMA_MALLOC_0_STRATEGY = 0 is equivalent to previous
     DUMA_ALLOW_MALLOC_0=0. default is 3.
   (2008-04-22, HA)
+  * return unique pointer for C++ operator new
+    for DUMA_MALLOC_0_STRATEGY == 3. now it should be really standard conform
+  (2008-04-26, HA)
+  * Fix for C++ operator new with size zero
+    added environment switch DUMA_NEW_0_STRATEGY
+  (2008-04-27, HA)
 
 2.5.13
   * applied PATCH(es) from Philip Mucci <mucci@cs.utk.edu>
