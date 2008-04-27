@@ -172,6 +172,13 @@ DUMA_MALLOC_0_STRATEGY - This environment variable controls DUMA's behaviour
   programs, cause value 3 strategy most system libraries use/implement.
   All returned pointers can be passed to free().
 
+DUMA_NEW_0_STRATEGY - This environment variable controls DUMA's behaviour
+  on C++ operator new with size zero:
+    2 - return always the same pointer to some protected page
+    3 - return mid address of a unique protected page (=default)
+  ATTENTION: only 3 is standard conform. Value 2 may break some but will
+  work for most programs. With value 2 you may reduce the memory consumption.
+
 DUMA_MALLOC_FAILEXIT - Many programs do not check for allocation failure. This
   often leads to delayed errors, no more understandable. Set this variable to a
   positive integer in the shell environment to exit the program immediately
