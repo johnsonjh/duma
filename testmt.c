@@ -34,6 +34,7 @@ volatile int iKillThreads = 0;
 void* poster(void* arg)
 {
   char* foo = NULL;
+  (void)arg;
   for( ; !iKillThreads; )
   {
     foo = (char*) malloc(4096);
