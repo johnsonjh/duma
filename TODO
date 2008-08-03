@@ -2,8 +2,6 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
-- enhance testmt.c to run on Windows without pthread library
-
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
   use defines specifying the target architecture
   use compiler attributes which specify the necessary alignment
@@ -148,3 +146,5 @@ DONE
 
  done for version 2.5.12
 
+- enhance testmt.c to run on Windows without pthread library
+ done for version 2.5.15
