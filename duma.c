@@ -1142,7 +1142,8 @@ _duma_init(void)
   /*************************/
   if ( _duma_s.init_state < DUMAIS_OUT_INIT )
     duma_init();
-#else
+#elif 0
+  /* this output produces other problems !!! */
   DUMA_Print("\nDUMA: This platform needs an explicit call of duma_init() (DUMA_EXPLICIT_INIT).");
   DUMA_Print("\n  Take care that duma_init() is called early in main()!\n\n");
 #endif
