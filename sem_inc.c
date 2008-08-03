@@ -202,7 +202,7 @@ DUMA_init_sem(void)
 
   semHandle = CreateSemaphore( &semSecAttr      /* pointer to security attributes */
                                , 1              /* initial count */
-                               , 10             /* maximum count */
+                               , 1              /* maximum count */
                                , semLocalName   /* pointer to semaphore-object name */
                              );
   semInited = 1;
