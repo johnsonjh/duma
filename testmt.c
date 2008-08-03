@@ -20,6 +20,7 @@
 
 #include <pthread.h>
 #include <unistd.h>
+#include <errno.h>
 
 #define HAVE_PTHREADS
 
@@ -28,11 +29,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "duma.h"
 
 
 volatile int iKillThreads = 0;
 
+#define MAX_NUM_THREADS   32
+
+volatile int aiCounter[MAX_NUM_THREADS];
 
 /* thread function
  * permanently allocate, initialize and deallocate in a loop
@@ -44,7 +49,19 @@ DWORD WINAPI poster( LPVOID arg )
 #endif
 {
   char* foo = NULL;
-  (void)arg;
+  int iThreadNo = *((int*)arg);
+
+#if 0
+  /* sleep a bit, that other threads can get started
+   * before producing high load
+   */
+#ifdef  HAVE_PTHREADS
+  sleep(1);  /* wait 1 sec  */
+#else
+  Sleep(1000);
+#endif
+#endif
+
   for( ; !iKillThreads; )
   {
     foo = (char*)malloc(4096);
@@ -53,7 +70,12 @@ DWORD WINAPI poster( LPVOID arg )
       memset(foo, 0, 4096);
       free(foo);
     }
+    ++ aiCounter[iThreadNo];
   }
+
+#ifdef  HAVE_PTHREADS
+  pthread_exit(NULL);
+#endif
   return 0;
 }
 
@@ -71,8 +93,13 @@ int main(int argc, char *argv[])
 #else
   HANDLE    tId[MAX_NUM_THREADS];
 #endif
+  int tArg[MAX_NUM_THREADS];
+
 
 #ifdef DUMA_EXPLICIT_INIT
+  /* necessary on some platforms!
+   * like on Win32-Cygwin
+   */
   duma_init();
 #endif
 
@@ -94,9 +121,34 @@ int main(int argc, char *argv[])
   fprintf(stdout, "running %d threads for %d secs ..", iNumThreads, iSleepTime);
   fflush(stdout);
 
-#ifdef  HAVE_PTHREADS
   for ( i = 0; i < iNumThreads; ++i )
-    pthread_create(&tId[i], NULL, poster, NULL);
+  {
+    tArg[i] = i;
+    aiCounter[i] = 0;
+  }
+
+#ifdef  HAVE_PTHREADS
+  fprintf(stdout, "creating threads with pthread library .. \n");
+  fflush(stdout);
+  
+  for ( i = 0; i < iNumThreads; ++i )
+  {
+    pthread_t *pt = &tId[i];
+    int r = pthread_create( pt, NULL, poster, &tArg[i] );
+    if ( r )
+    {
+      fprintf(stderr, "\nerror in pthread_create() for thread %d: ", i);
+      switch(r)
+      {
+        case EAGAIN:  fprintf(stderr, "EAGAIN");   break;
+        case EINVAL:  fprintf(stderr, "EINVAL");   break;
+        case EPERM:   fprintf(stderr, "EPERM");    break;
+        default:      fprintf(stderr, "unexpected!"); break;
+      }
+    }
+  }
+  fprintf(stdout, ".. creating done\n");
+  fflush(stdout);
 
   /* sleep(iSleepTime); */
   for ( i = 0; i < iSleepTime; ++i )
@@ -106,11 +158,14 @@ int main(int argc, char *argv[])
     fflush(stdout);
   }
 #else
+  fprintf(stdout, "creating threads with Win32 API calls\n");
+  fflush(stdout);
+
   for ( i = 0; i < iNumThreads; ++i )
     tId[i] = CreateThread( NULL    /* default security attributes */
                     , 0       /* use default stack size */
                     , poster  /* thread function name */
-                    , NULL    /* argument to thread function */
+                    , &tArg[i]/* argument to thread function */
                     , 0       /* use default creation flags */
                     , NULL    /* returns the thread identifier */
                     );
@@ -130,7 +185,21 @@ int main(int argc, char *argv[])
 
 #ifdef  HAVE_PTHREADS
   for ( i = 0; i < iNumThreads; ++i )
-    pthread_join(tId[i], NULL);
+  {
+    pthread_t *pt = &tId[i];
+    int r = pthread_join( *pt, NULL );
+    if ( r )
+    {
+      fprintf(stderr, "\nerror in pthread_join for thread %d: ", i);
+      switch(r)
+      {
+        case EINVAL:  fprintf(stderr, "EINVAL");   break;
+        case ESRCH:   fprintf(stderr, "ESRCH");    break;
+        case EDEADLK: fprintf(stderr, "EDEADLK");  break;
+        default:      fprintf(stderr, "unexpected!"); break;
+      }
+    }
+  }
 #else
   // Wait until all threads have terminated.
   WaitForMultipleObjects( iNumThreads, tId, TRUE, INFINITE);
@@ -138,6 +207,12 @@ int main(int argc, char *argv[])
     CloseHandle(tId[i]);
 #endif
   fprintf(stdout, "..done\n");
+
+  fprintf(stdout, "state:\n");
+  for ( i = 0; i < iNumThreads; ++i )
+    fprintf(stdout, "Thread %d did %d (de)allocations\n", i, aiCounter[i]);
+  fflush(stdout);
+
   return 0;
 }
 
