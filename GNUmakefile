@@ -136,8 +136,8 @@ ifeq ($(OS), Windows_NT)
     CURPATH=./
     DUMA_DYN_DEPS=
     DUMASO=
-    CFLAGS=-g -O0 -DWIN32
-    CPPFLAGS=-g -O0 -DWIN32
+    CFLAGS=-g -O0 -DWIN32 -Wall -Wextra
+    CPPFLAGS=-g -O0 -DWIN32 -Wall -Wextra
     LIBS=
     EXEPOSTFIX=.exe
   endif
