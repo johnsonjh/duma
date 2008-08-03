@@ -162,6 +162,7 @@ int main(int argc, char *argv[])
   fflush(stdout);
 
   for ( i = 0; i < iNumThreads; ++i )
+  {
     tId[i] = CreateThread( NULL    /* default security attributes */
                     , 0       /* use default stack size */
                     , poster  /* thread function name */
@@ -169,6 +170,9 @@ int main(int argc, char *argv[])
                     , 0       /* use default creation flags */
                     , NULL    /* returns the thread identifier */
                     );
+    if ( NULL == tId[i] )
+      fprintf(stderr, "\nerror in CreateThread() for thread %d: ", i);
+  }
   /* Sleep(iSleepTime*1000); */
   for ( i =0; i < iSleepTime; ++i )
   {
@@ -190,7 +194,7 @@ int main(int argc, char *argv[])
     int r = pthread_join( *pt, NULL );
     if ( r )
     {
-      fprintf(stderr, "\nerror in pthread_join for thread %d: ", i);
+      fprintf(stderr, "\nerror in pthread_join() for thread %d: ", i);
       switch(r)
       {
         case EINVAL:  fprintf(stderr, "EINVAL");   break;
