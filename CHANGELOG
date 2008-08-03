@@ -9,6 +9,10 @@ CHANGELOG:
     http://code.google.com/p/electric-fence-win32/
   * added Windows Threading to testmt.c
     added win32-msvc.net project file
+  * use of WIN32_SEMAPHORES on Win32-Cygwin in sem_inc.c
+      - the locking mechanism for multi-threading,
+      with this configuration testmt.c works either
+      with pthreads and with the Win32 API
   (2008-08-03, HA)
 
 2.5.14
