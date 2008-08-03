@@ -595,6 +595,10 @@ helps buggy programs run correctly and protects them from a range of security
 vulnerabilities.
 See http://www.diehard-software.org/
 
+electric-fence-win32
+another Win32 port of Electric Fence.
+See http://code.google.com/p/electric-fence-win32/
+
 
 
 CONTACTING THE AUTHOR:
