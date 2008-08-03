@@ -2,6 +2,10 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
+-add additional target/compiler switches in GNUmakefile to build with
+ 1- native Solaris compiler / linker
+ 2- Microsoft compiler cl / link
+
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
   use defines specifying the target architecture
   use compiler attributes which specify the necessary alignment
