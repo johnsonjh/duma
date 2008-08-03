@@ -10,6 +10,9 @@ fi
 
 if (test "$1" = ""); then
   echo "usage: $0 2_5_13|HEAD [upload] [htdocs]"
+  echo "  '2_5_14|HEAD'  is the BRANCH to check out"
+  echo "  'upload'       uploads all necessary files to sf.net for a file release"
+  echo "  'htdocs'       uploads html documents to sf.net"
   exit 0;
 elif (test "$1" = "HEAD"); then
   VER=`date -u +%Y%m%d_%H%M%S`
