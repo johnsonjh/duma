@@ -30,8 +30,11 @@
 #ifndef DUMA_NO_THREAD_SAFETY
 
 /* check for pthread library */
+/* use WIN32_SEMAPHORES on Win32-Cygwin,
+ * with this configuration testmt.c works either with pthreads and with the Win32 API
+ */
 /* || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)) */
-#if (!defined(WIN32) || defined(__CYGWIN__))
+#if (!defined(WIN32))
 #define HAVE_PTHREADS         1
 #define USE_WIN32_SEMAPHORES  0
 #define USE_WIN32_CRIT_SECT   0
