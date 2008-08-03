@@ -2,6 +2,15 @@
 CHANGELOG:
 ==========
 
+2.5.15
+  * added alternative locking implementation in sem_inc.c
+    using critical sections.
+    code from Peter Harris, see
+    http://code.google.com/p/electric-fence-win32/
+  * added Windows Threading to testmt.c
+    added win32-msvc.net project file
+  (2008-08-03, HA)
+
 2.5.14
   * added suggested ~/.gdbinit as gdbinit.rc
   * added hint in mprotectFailed()
