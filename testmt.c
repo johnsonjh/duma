@@ -72,6 +72,10 @@ int main(int argc, char *argv[])
   HANDLE    tId[MAX_NUM_THREADS];
 #endif
 
+#ifdef DUMA_EXPLICIT_INIT
+  duma_init();
+#endif
+
   if ( argc > 1 )
   {
     i = atoi(argv[1]);
