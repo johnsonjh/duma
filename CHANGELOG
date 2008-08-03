@@ -13,6 +13,7 @@ CHANGELOG:
       - the locking mechanism for multi-threading,
       with this configuration testmt.c works either
       with pthreads and with the Win32 API
+  * CreateSemaphore() now used with maximum count = initial count = 1
   (2008-08-03, HA)
 
 2.5.14
