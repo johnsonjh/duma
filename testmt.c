@@ -12,7 +12,10 @@
 
 
 /* (defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)) */
-#if ( defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__) )
+/* remove "|| defined(__CYGWIN__)" in following line
+ * to test with pthread library on Win32-Cygwin
+ */
+#if ( defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__) )
 
 #include <windows.h>
 
