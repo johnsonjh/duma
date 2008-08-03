@@ -351,6 +351,9 @@
 			<File
 				RelativePath="..\..\createconf.c">
 			</File>
+			<File
+				RelativePath="..\..\createconf_new.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Headerdateien"
