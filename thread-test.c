@@ -99,6 +99,9 @@ int main(int argc, char **argv)
 {
   pthread_t hello_thread, goodbye_thread;
 
+  (void)argc;
+  (void)argv;
+
   pthread_mutex_init(&mutex, NULL);
 
   if (pthread_create(&hello_thread, NULL, thread_func, (void*)"hello"))
@@ -125,8 +128,12 @@ int main(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+  (void)argc;
+  (void)argv;
+
   printf("Test not implemented for Win32 and Mingw\n");
   return 0;
 }
 
 #endif
+

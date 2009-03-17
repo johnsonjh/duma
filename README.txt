@@ -629,7 +629,8 @@ Projects:
 dumalib         DUMA library. this library should be linked with YOUR program
 dumatest        first small test program
 tstheap         second small test program
-File:
+
+Files:
 ------
 COPYING-*       License files; reade carefully!
 README          this text file

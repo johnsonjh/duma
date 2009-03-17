@@ -30,8 +30,10 @@ I. Linux/Unix environments (including Cygwin and MinGW):
 
 II. Windows 2000/XP, Visual Studio Environments:
 
-  Installation is not necessary. Just set INCLUDE and LIBS directories
+  Compile and run 'createconf', that generates the file duma_config.h.
+  Compile 'dumalib' and set the directories 'INCLUDE' and 'LIBS'
   in your environment or project.
+
 
 III. Solaris Environment:
 
@@ -43,6 +45,7 @@ III. Solaris Environment:
   the compiled executable can dynmically find and link to libstdc++. Have a
   look at the solaris section in DUMA's Makefile.
 
+
 IV. FreeBSD Environment:
 
   At least on my FreeBSD-6.2 installation i have to set the shell environment
@@ -50,10 +53,12 @@ IV. FreeBSD Environment:
   linked with libduma.a. There seems to be an initialization problem with
   the pthreads library.
 
+
 V. NetBSD Environment:
 
   At least on my NetBSD-3.1 (HOSTTYPE=i386; OSTYPE=netbsdelf) installation
   i always get exactly one memory leak. I've not tested to install.
+
 
 
 Hayati Ayguen
@@ -63,3 +68,4 @@ updated 31 July 2007
 updated 11 August 2007
 updated 18 August 2007
 updated 28 August 2007
+updated 17 March 2009

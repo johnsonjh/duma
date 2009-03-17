@@ -72,6 +72,7 @@ private:
 void * optest::operator new( DUMA_SIZE_T s )
 throw(std::bad_alloc)
 {
+  (void)s;
   return ::new optest;
 }
 
@@ -79,6 +80,7 @@ throw(std::bad_alloc)
 void * optest::operator new( DUMA_SIZE_T s, const std::nothrow_t & n )
 throw()
 {
+  (void)s;
   return ::new(n) optest;
 }
 
@@ -129,12 +131,14 @@ throw()
 void * optest::operator new( DUMA_SIZE_T s, const char * f, int l )
 throw( std::bad_alloc )
 {
+  (void)s;
   return ::new(f,l) optest;
 }
 
 void * optest::operator new( DUMA_SIZE_T s, const std::nothrow_t & n, const char * f, int l )
 throw()
 {
+  (void)s;
   return ::new(n,f,l) optest;
 }
 
@@ -244,6 +248,9 @@ void rich_test()
 
 int main( int argc, char *argv[] )
 {
+  (void)argc;
+  (void)argv;
+
 #ifdef DUMA_EXPLICIT_INIT
   duma_init();
 #endif

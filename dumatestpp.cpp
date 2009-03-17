@@ -56,6 +56,9 @@ public:
 
 int main( int argc, char ** argv )
 {
+  (void)argc;
+  (void)argv;
+
 #if 0
   int * x = 0;
   int ret;

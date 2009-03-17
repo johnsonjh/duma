@@ -71,7 +71,7 @@ segmentationFaultHandler(
 #endif
 )
 {
-
+  (void)signalNumber;
 #if !defined(WIN32) || defined(__CYGWIN__)
   siglongjmp(env, 1);
 #else
@@ -296,6 +296,9 @@ main(int argc, char * * argv)
 {
   static const struct diagnostic *  diag = diagnostics;
   int testno;
+
+  (void)argc;
+  (void)argv;
 
 #ifdef DUMA_EXPLICIT_INIT
   duma_init();
