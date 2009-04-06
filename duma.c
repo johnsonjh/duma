@@ -2,7 +2,7 @@
 /* 
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
- * Copyright (C) 2002-2008 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2009 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
@@ -1135,7 +1135,7 @@ _duma_init(void)
   /***********************/
 
   if ( !inRecursion )
-    DUMA_RELEASE_SEMAPHORE();
+    DUMA_RELEASE_SEMAPHORE(0);
 
 #ifndef DUMA_EXPLICIT_INIT
   duma_constructor_callinit:
@@ -1678,7 +1678,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
 
     IF__DUMA_INIT_DONE
-      DUMA_RELEASE_SEMAPHORE();
+      DUMA_RELEASE_SEMAPHORE(0);
   }
 
   /* Fill the memory if it was specified to do so. */
@@ -1880,7 +1880,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
   {
     Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
     IF__DUMA_INIT_DONE
-      DUMA_RELEASE_SEMAPHORE();
+      DUMA_RELEASE_SEMAPHORE(0);
   }
 }
 
@@ -1942,7 +1942,7 @@ void duma_check(void * address)
 
   Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
   IF__DUMA_INIT_DONE
-    DUMA_RELEASE_SEMAPHORE();
+    DUMA_RELEASE_SEMAPHORE(0);
 }
 
 
@@ -1962,7 +1962,7 @@ void duma_checkAll()
 
   Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
   IF__DUMA_INIT_DONE
-    DUMA_RELEASE_SEMAPHORE();
+    DUMA_RELEASE_SEMAPHORE(0);
 }
 
 
@@ -2119,7 +2119,7 @@ void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
   Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
 
   IF__DUMA_INIT_DONE
-  DUMA_RELEASE_SEMAPHORE();
+  DUMA_RELEASE_SEMAPHORE(0);
 
   return ptr;
 }
@@ -2311,6 +2311,20 @@ char * _duma_strcat(char *dest, const char *src  DUMA_PARAMLIST_FL)
   return dest;
 }
 
+
+/* Function: _duma_strncat
+ *
+ * like strlen() but maximum return value is size
+ */
+int _duma_strnlen(const char *src, size_t size)
+{
+  int len;
+  for ( len =0; len < size && src[len]; ++len )
+    ;
+  return len;
+}
+
+
 /* Function: _duma_strncat
  * 
  * A version of strncat that provides extra checks based on
@@ -2331,10 +2345,7 @@ char * _duma_strncat(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL
 
   /* calculate number of characters to copy from src to dest */
   destlen = strlen(dest);
-  srclen  = strlen(src);
-
-  if ( srclen > size )
-    srclen = size;
+  srclen  = _duma_strnlen(src, size);
 
   /* CHECK: Verify memory regions do not overlap */
   if ( src < (dest + destlen) && (dest + destlen) < (src + srclen + 1) )
@@ -2535,7 +2546,7 @@ void  DUMA_delFrame(void)
   Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
 
   IF__DUMA_INIT_DONE
-  DUMA_RELEASE_SEMAPHORE();
+  DUMA_RELEASE_SEMAPHORE(0);
 
   if (_duma_s.SHOW_ALLOC)
     DUMA_Print("\nDUMA: Processed %l allocations and %l deallocations in total.\n", _duma_s.numAllocs, _duma_s.numDeallocs);
