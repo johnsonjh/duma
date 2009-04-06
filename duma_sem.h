@@ -34,7 +34,7 @@ extern "C" {
 
 void DUMA_init_sem(void);
 void DUMA_get_sem(void);
-void DUMA_rel_sem(void);
+int  DUMA_rel_sem(int retval);
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -43,14 +43,16 @@ void DUMA_rel_sem(void);
 
 #define DUMA_INIT_SEMAPHORE()     DUMA_init_sem()
 #define DUMA_GET_SEMAPHORE()      DUMA_get_sem()
-#define DUMA_RELEASE_SEMAPHORE()  DUMA_rel_sem()
+#define DUMA_RELEASE_SEMAPHORE(x) DUMA_rel_sem(x)
 
 #else  /* DUMA_NO_THREAD_SAFETY */
 
 #define DUMA_INIT_SEMAPHORE()     do { } while (0)
 #define DUMA_GET_SEMAPHORE()      do { } while (0)
-#define DUMA_RELEASE_SEMAPHORE()  do { } while (0)
+#define DUMA_RELEASE_SEMAPHORE(x) do { } while (0)
 
 #endif /* DUMA_NO_THREAD_SAFETY */
 
 #endif /* DUMA_SEM_INC_H */
+
+

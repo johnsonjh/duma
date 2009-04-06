@@ -246,9 +246,9 @@ void DUMA_get_sem(void)
 }
 
 
-void DUMA_rel_sem(void)
+int DUMA_rel_sem(int retval)
 {
-  if (semInInit)      return;             /* avoid recursion */
+  if (semInInit)      return retval;  /* avoid recursion */
   if (!semInited)     DUMA_Abort("\nSemaphore isn't initialised");
 
 #ifdef DUMA_SEMAPHORES
@@ -259,9 +259,8 @@ void DUMA_rel_sem(void)
   if (semDepth <= 0)  DUMA_Abort("\nSemaphore isn't locked");
 #endif
 
+  --semDepth;              /* decrement semDepth - popping one stack level */
 #if HAVE_PTHREADS
-  if (!(--semDepth))              /* decrement semDepth - popping one stack level */
-  {
   #ifndef DUMA_SEMAPHORES
     unlock();
   #else
@@ -269,17 +268,14 @@ void DUMA_rel_sem(void)
     if (sem_post(&DUMA_sem) < 0)
       DUMA_Abort("Failed to post the semaphore.");
   #endif
-  }
 #elif USE_WIN32_SEMAPHORES
-  if (!(--semDepth))              /* decrement semDepth - popping one stack level */
-  {
-    semThread = 0;                    /* zero this before actually free'ing the semaphore. */
-    if (0 == ReleaseSemaphore(semHandle, 1 /* amount to add to current count */, NULL) )
-      DUMA_Abort("Failed to post the semaphore.");
-  }
+  semThread = 0;                    /* zero this before actually free'ing the semaphore. */
+  if (0 == ReleaseSemaphore(semHandle, 1 /* amount to add to current count */, NULL) )
+    DUMA_Abort("Failed to post the semaphore.");
 #elif USE_WIN32_CRIT_SECT
   LeaveCriticalSection(&critsect);
 #endif
+  return retval;
 }
 
 #else
