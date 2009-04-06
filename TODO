@@ -2,9 +2,15 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
+-memccpy(), bcopy() + test for all overloaded string functions
+
 -add additional target/compiler switches in GNUmakefile to build with
  1- native Solaris compiler / linker
  2- Microsoft compiler cl / link
+
+-integrate modifications of
+http://tutorial.gsse.at/dynamicmemory/
+http://tutorial.gsse.at/uploads/media/duma_iue.tgz
 
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
   use defines specifying the target architecture
