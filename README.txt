@@ -600,6 +600,18 @@ another Win32 port of Electric Fence.
 See http://code.google.com/p/electric-fence-win32/
 
 
+FURTHER READING:
+
+Hunting Memory Bugs
+http://www.edm2.com/0508/membug.html
+
+An OS/2 Allocator for the STL
+http://www.edm2.com/0508/stl.html
+
+Wikipedia
+http://en.wikipedia.org/wiki/Memory_debugger
+
+
 
 CONTACTING THE AUTHOR:
 
