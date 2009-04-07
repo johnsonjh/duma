@@ -15,6 +15,11 @@ CHANGELOG:
       with pthreads and with the Win32 API
   * CreateSemaphore() now used with maximum count = initial count = 1
   (2008-08-03, HA)
+  * removed usage of strlen() in strncpy()
+  (2009-03-19, HA)
+  * PATCH from Andre Landwehr <andrel@cybernoia.de>
+    fixes race condition when using preprocessor macro 'delete'
+  (2009-04-07, HA)
 
 2.5.14
   * added suggested ~/.gdbinit as gdbinit.rc
