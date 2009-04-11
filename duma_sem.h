@@ -28,28 +28,27 @@
 
 #ifndef DUMA_NO_THREAD_SAFETY
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+  #ifdef __cplusplus
+  extern "C" {
+  #endif
 
-void DUMA_init_sem(void);
-void DUMA_get_sem(void);
-int  DUMA_rel_sem(int retval);
+  void DUMA_init_sem(void);
+  void DUMA_get_sem(void);
+  int  DUMA_rel_sem(int retval);
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+  #ifdef __cplusplus
+  } /* extern "C" */
+  #endif
 
-
-#define DUMA_INIT_SEMAPHORE()     DUMA_init_sem()
-#define DUMA_GET_SEMAPHORE()      DUMA_get_sem()
-#define DUMA_RELEASE_SEMAPHORE(x) DUMA_rel_sem(x)
+  #define DUMA_INIT_SEMAPHORE()     DUMA_init_sem()
+  #define DUMA_GET_SEMAPHORE()      DUMA_get_sem()
+  #define DUMA_RELEASE_SEMAPHORE(x) DUMA_rel_sem(x)
 
 #else  /* DUMA_NO_THREAD_SAFETY */
 
-#define DUMA_INIT_SEMAPHORE()     do { } while (0)
-#define DUMA_GET_SEMAPHORE()      do { } while (0)
-#define DUMA_RELEASE_SEMAPHORE(x) do { } while (0)
+  #define DUMA_INIT_SEMAPHORE()     do { } while (0)
+  #define DUMA_GET_SEMAPHORE()      do { } while (0)
+  #define DUMA_RELEASE_SEMAPHORE(x) do { } while (0)
 
 #endif /* DUMA_NO_THREAD_SAFETY */
 
