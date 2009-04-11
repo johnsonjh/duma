@@ -179,9 +179,10 @@
         #define delete                for( DUMA_GET_SEMAPHORE(),                         \
                                            DUMA_GET_SEMAPHORE(),                         \
                                            ++_duma_g.TLS.DelPtr,                         \
-                                           _duma_g.TLS.Magic = 1,                        \
-                                           _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__, \
-                                           _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__; \
+                                           DUMA_ASSERT(_duma_g.TLS.DelPtr < DUMA_MAX_DEL_DEPTH), \
+                                           _duma_g.TLS.Magic = 1,                                \
+                                           _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__,   \
+                                           _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__;   \
                                            DUMA_RELEASE_SEMAPHORE(_duma_g.TLS.Magic);    \
                                            _duma_g.TLS.Magic = 0,                        \
                                            --_duma_g.TLS.DelPtr                          \
@@ -189,9 +190,10 @@
       #else
         /* also thread safe by using TLS variables */
         #define delete                for( ++_duma_g.TLS.DelPtr,                         \
-                                           _duma_g.TLS.Magic = 1,                        \
-                                           _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__, \
-                                           _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__; \
+                                           DUMA_ASSERT(_duma_g.TLS.DelPtr < DUMA_MAX_DEL_DEPTH), \
+                                           _duma_g.TLS.Magic = 1,                                \
+                                           _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__,   \
+                                           _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__;   \
                                            _duma_g.TLS.Magic;                            \
                                            _duma_g.TLS.Magic = 0,                        \
                                            --_duma_g.TLS.DelPtr                          \
