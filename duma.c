@@ -2210,6 +2210,19 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
 }
 
 
+/* Function: _duma_strnlen
+ *
+ * like strlen() but maximum return value is size
+ */
+size_t _duma_strnlen(const char *src, size_t size)
+{
+  size_t len;
+  for ( len =0; len < size && src[len]; ++len )
+    ;
+  return len;
+}
+
+
 /* Function: _duma_strcpy
  *
  * A version of strcpy that provides extra checks based on
@@ -2221,7 +2234,7 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
  */
 char * _duma_strcpy(char *dest, const char *src  DUMA_PARAMLIST_FL)
 {
-  unsigned i;
+  size_t i;
   size_t size = strlen(src) +1;
 
   if ( src < dest  &&  dest < src + size )
@@ -2253,9 +2266,14 @@ char * _duma_strcpy(char *dest, const char *src  DUMA_PARAMLIST_FL)
  */
 char * _duma_strncpy(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL)
 {
-  unsigned i;
+  size_t i, srclen;
 
-  if ( size > 0  &&  src < dest  &&  dest < src + size )
+  srclen  = _duma_strnlen(src, size);
+
+  if ( size > 0  &&
+      (  ( src < dest  &&  dest < src  + srclen )
+       ||( dest < src  &&  src  < dest + size   )
+     ))
   {
 #ifndef DUMA_NO_LEAKDETECTION
     DUMA_Abort("strncpy(%a, %a, %d): memory regions overlap at %s(%i)."
@@ -2310,19 +2328,6 @@ char * _duma_strcat(char *dest, const char *src  DUMA_PARAMLIST_FL)
     dest[destlen+i] = src[i];
 
   return dest;
-}
-
-
-/* Function: _duma_strncat
- *
- * like strlen() but maximum return value is size
- */
-size_t _duma_strnlen(const char *src, size_t size)
-{
-  size_t len;
-  for ( len =0; len < size && src[len]; ++len )
-    ;
-  return len;
 }
 
 

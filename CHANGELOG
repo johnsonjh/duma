@@ -20,6 +20,9 @@ CHANGELOG:
   * PATCH from Andre Landwehr <andrel@cybernoia.de>
     fixes race condition when using preprocessor macro 'delete'
   (2009-04-07, HA)
+  * bugfix in strncpy()
+    Roman Jokl reported the bug: error check was too rigorous
+  (2009-04-11, HA)
 
 2.5.14
   * added suggested ~/.gdbinit as gdbinit.rc
