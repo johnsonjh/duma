@@ -1,5 +1,5 @@
 
-/* 
+/*
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
  * Copyright (C) 2002-2009 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
@@ -65,6 +65,7 @@
   #include <unistd.h>
   #include <fcntl.h>
   #include <sys/mman.h>
+  #include <sys/types.h>
 #else
   #define WIN32_LEAN_AND_MEAN 1
   #include <windows.h>
@@ -432,11 +433,11 @@ static struct _DUMA_GlobalStaticVars
 
   /* Variable: DUMA_SUPPRESS_ATEXIT
    *
-   * DUMA_SUPPRESS_ATEXIT is set if DUMA is to suppress the installation of 
+   * DUMA_SUPPRESS_ATEXIT is set if DUMA is to suppress the installation of
    * an exit handler, called at the exit of the main program. This handler allows for
    * the detection of memory areas that have not been freed correctly before
-   * program exit, so the handler's installation should *normally* not be 
-   * suppressed. One reason for doing so regardless are some buggy environments, 
+   * program exit, so the handler's installation should *normally* not be
+   * suppressed. One reason for doing so regardless are some buggy environments,
    * where calls to the atexit()-function hang.
    */
   int   SUPPRESS_ATEXIT;
@@ -632,7 +633,7 @@ int DUMA_OUTPUT_STACKTRACE = 0;
 
 /* Variable: DUMA_OUTPUT_STACKTRACE_MAPFILE
  *
- * DUMA_OUTPUT_STACKTRACE_MAPFILE is a global variable used to control 
+ * DUMA_OUTPUT_STACKTRACE_MAPFILE is a global variable used to control
  * what mapfile is used for stack traces.  This is needed when using
  * detours and duma.  Default is NULL, indicating the system will try
  * and guess.
@@ -970,7 +971,7 @@ void duma_init(void)
     #else
                  "DUMA: If this hangs, change the library load/init order with DUMA_EXPLICIT_INIT or LD_PRELOAD.\n");
     #endif
-    else 
+    else
       DUMA_Print("\nDUMA: Skipping registering with atexit(). Set DUMA_SUPPRESS_ATEXIT to 0 to register.\n");
   #endif /* DUMA_NO_HANG_MSG */
 
@@ -1214,7 +1215,7 @@ void * duma_alloc_return( void * address )
 
 
 /* Function: _duma_allocate
- * 
+ *
  * This is the memory allocator. When asked to allocate a buffer, allocate
  * it in such a way that the end of the buffer is followed by an inaccessable
  * memory page. If software overruns that buffer, it will touch the bad page
@@ -1230,8 +1231,8 @@ void * duma_alloc_return( void * address )
  * functions on Sun systems, which do word references to the string memory
  * and may refer to memory up to three bytes beyond the end of the string.
  * For this reason, I take the alignment requests to memalign() and valloc()
- * seriously, and 
- * 
+ * seriously, and
+ *
  * DUMA wastes lots of memory.
  *
  * See Also: <_duma_deallocate>
@@ -1594,7 +1595,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       /* Figure out what address to give the user. */
       intAddr  = (DUMA_ADDR)fullSlot->internalAddress;
       endAddr  = intAddr + internalSize;
-      userAddr = ( intAddr  + internalSize - DUMA_PAGE_SIZE - userSize ) & ~(alignment -1); 
+      userAddr = ( intAddr  + internalSize - DUMA_PAGE_SIZE - userSize ) & ~(alignment -1);
       protAddr = ( userAddr + userSize     + DUMA_PAGE_SIZE -1)     & ~(DUMA_PAGE_SIZE -1);
 
       /* DUMA_ASSERT(intAddr <= userAddr && intAddr < protAddr ); */
@@ -1690,7 +1691,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 
 
 /* Function: _duma_deallocate
- * 
+ *
  * Deallocate allocated memory after running some checks, then open
  * slot for use.  Uses Page_Delete to free the underlying memory.
  *
@@ -1886,7 +1887,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 
 
 /* Function: duma_check
- * 
+ *
  * Check No Mans Land of a memory block.
  *
  */
@@ -1947,7 +1948,7 @@ void duma_check(void * address)
 
 
 /* Function: duma_checkAll
- * 
+ *
  * Check No Mans Land of all memory blocks.
  *
  */
@@ -1969,7 +1970,7 @@ void duma_checkAll()
 /*********************************************************/
 
 /* Function: _duma_malloc
- * 
+ *
  * A version of malloc.
  */
 void * _duma_malloc(size_t size  DUMA_PARAMLIST_FL)
@@ -1981,14 +1982,14 @@ void * _duma_malloc(size_t size  DUMA_PARAMLIST_FL)
 
   duma_tls = GET_DUMA_TLSVARS();
 
-  return _duma_allocate(0, size, duma_tls->PROTECT_BELOW, 
-    duma_tls->FILL, 1 /*=protectAllocList*/, EFA_MALLOC, 
+  return _duma_allocate(0, size, duma_tls->PROTECT_BELOW,
+    duma_tls->FILL, 1 /*=protectAllocList*/, EFA_MALLOC,
     DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
 
 
 /* Function: _duma_calloc
- * 
+ *
  * A version of calloc.
  */
 void * _duma_calloc(size_t nelem, size_t elsize  DUMA_PARAMLIST_FL)
@@ -2000,15 +2001,15 @@ void * _duma_calloc(size_t nelem, size_t elsize  DUMA_PARAMLIST_FL)
 
   duma_tls = GET_DUMA_TLSVARS();
 
-  return _duma_allocate(0, nelem * elsize, 
-    duma_tls->PROTECT_BELOW, 0 /*=fillByte*/, 
-    1 /*=protectAllocList*/, EFA_CALLOC, 
+  return _duma_allocate(0, nelem * elsize,
+    duma_tls->PROTECT_BELOW, 0 /*=fillByte*/,
+    1 /*=protectAllocList*/, EFA_CALLOC,
     DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
 
 
 /* Function: _duma_free
- * 
+ *
  * A version of free.
  */
 void   _duma_free(void * baseAdr  DUMA_PARAMLIST_FL)
@@ -2021,7 +2022,7 @@ void   _duma_free(void * baseAdr  DUMA_PARAMLIST_FL)
 
 
 /* Function: _duma_memalign
- * 
+ *
  * A version of memalign.
  */
 void * _duma_memalign(size_t alignment, size_t size  DUMA_PARAMLIST_FL)
@@ -2033,14 +2034,14 @@ void * _duma_memalign(size_t alignment, size_t size  DUMA_PARAMLIST_FL)
 
   duma_tls = GET_DUMA_TLSVARS();
 
-  return _duma_allocate(alignment, size, duma_tls->PROTECT_BELOW, 
-    duma_tls->FILL, 1 /*=protectAllocList*/, EFA_MEMALIGN, 
+  return _duma_allocate(alignment, size, duma_tls->PROTECT_BELOW,
+    duma_tls->FILL, 1 /*=protectAllocList*/, EFA_MEMALIGN,
     DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
 
 
 /* Function: _duma_posix_memalign
- * 
+ *
  * A version of posix_memalign.
  */
 int    _duma_posix_memalign(void **memptr, size_t alignment, size_t size  DUMA_PARAMLIST_FL)
@@ -2056,8 +2057,8 @@ int    _duma_posix_memalign(void **memptr, size_t alignment, size_t size  DUMA_P
 
   duma_tls = GET_DUMA_TLSVARS();
 
-  retptr = _duma_allocate(alignment, size, duma_tls->PROTECT_BELOW, 
-    duma_tls->FILL, 1 /*=protectAllocList*/, EFA_POSIX_MEMALIGN, 
+  retptr = _duma_allocate(alignment, size, duma_tls->PROTECT_BELOW,
+    duma_tls->FILL, 1 /*=protectAllocList*/, EFA_POSIX_MEMALIGN,
     DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 
   if ( retptr )
@@ -2074,7 +2075,7 @@ int    _duma_posix_memalign(void **memptr, size_t alignment, size_t size  DUMA_P
 
 
 /* Function: _duma_realloc
- * 
+ *
  * A version of realloc that provides extra checks based on
  * information we know about HEAP.
  */
@@ -2093,8 +2094,8 @@ void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
 
   Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
 
-  ptr = _duma_allocate(0, newSize, duma_tls->PROTECT_BELOW, 
-    -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC, 
+  ptr = _duma_allocate(0, newSize, duma_tls->PROTECT_BELOW,
+    -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC,
     DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 
   if( ptr && oldBuffer )
@@ -2102,7 +2103,7 @@ void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
     struct _DUMA_Slot * slot = slotForUserAddress(oldBuffer);
 
     if ( slot == 0 )
-      DUMA_Abort("realloc(%a, %d): address not from malloc().", 
+      DUMA_Abort("realloc(%a, %d): address not from malloc().",
       (DUMA_ADDR)oldBuffer, (DUMA_SIZE)newSize);
 
     if ( newSize > slot->userSize )
@@ -2126,7 +2127,7 @@ void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
 
 
 /* Function: _duma_valloc
- * 
+ *
  * A version of valloc.
  */
 void * _duma_valloc(size_t size  DUMA_PARAMLIST_FL)
@@ -2138,14 +2139,14 @@ void * _duma_valloc(size_t size  DUMA_PARAMLIST_FL)
 
   duma_tls = GET_DUMA_TLSVARS();
 
-  return _duma_allocate(DUMA_PAGE_SIZE, size, duma_tls->PROTECT_BELOW, 
-    duma_tls->FILL, 1 /*=protectAllocList*/, EFA_VALLOC, 
+  return _duma_allocate(DUMA_PAGE_SIZE, size, duma_tls->PROTECT_BELOW,
+    duma_tls->FILL, 1 /*=protectAllocList*/, EFA_VALLOC,
     DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
 
 
 /* Function: _duma_strdup
- * 
+ *
  * A version of strdup.
  */
 char * _duma_strdup(const char * str  DUMA_PARAMLIST_FL)
@@ -2164,8 +2165,8 @@ char * _duma_strdup(const char * str  DUMA_PARAMLIST_FL)
   while (str[size])
     ++size;
 
-  dup = _duma_allocate(0, size +1, duma_tls->PROTECT_BELOW, 
-    -1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP, 
+  dup = _duma_allocate(0, size +1, duma_tls->PROTECT_BELOW,
+    -1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP,
     DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 
   if (dup)                    /* if successful */
@@ -2177,7 +2178,7 @@ char * _duma_strdup(const char * str  DUMA_PARAMLIST_FL)
 
 
 /* Function: _duma_memcpy
- * 
+ *
  * A version of memcpy that provides extra checks based on
  * information we know about HEAP.
  *
@@ -2210,7 +2211,7 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
 
 
 /* Function: _duma_strcpy
- * 
+ *
  * A version of strcpy that provides extra checks based on
  * information we know about HEAP.
  *
@@ -2242,7 +2243,7 @@ char * _duma_strcpy(char *dest, const char *src  DUMA_PARAMLIST_FL)
 
 
 /* Function: _duma_strncpy
- * 
+ *
  * A version of strncpy that provides extra checks based on
  * information we know about HEAP.
  *
@@ -2280,7 +2281,7 @@ char * _duma_strncpy(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL
 
 
 /* Function: _duma_strcat
- * 
+ *
  * A version of strcat that provides extra checks based on
  * information we know about HEAP.
  *
@@ -2316,9 +2317,9 @@ char * _duma_strcat(char *dest, const char *src  DUMA_PARAMLIST_FL)
  *
  * like strlen() but maximum return value is size
  */
-int _duma_strnlen(const char *src, size_t size)
+size_t _duma_strnlen(const char *src, size_t size)
 {
-  int len;
+  size_t len;
   for ( len =0; len < size && src[len]; ++len )
     ;
   return len;
@@ -2326,7 +2327,7 @@ int _duma_strnlen(const char *src, size_t size)
 
 
 /* Function: _duma_strncat
- * 
+ *
  * A version of strncat that provides extra checks based on
  * information we know about HEAP.
  *
