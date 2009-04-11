@@ -732,8 +732,6 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   #define DUMA_EXTERN_C   extern
 #endif
 
-DUMA_EXTERN_C
-int get_new0strategy(void);
 
 
 int main()
@@ -741,7 +739,7 @@ int main()
   int iNumIntTypes, iIt;
   int addrIdx, sizeIdx;
   int alignment, max_sizeof;
-  int malloc0strategy, new0strategy;
+  int malloc0strategy;
   char  buffer[1024];
   char filename[1024];
 
@@ -809,10 +807,6 @@ int main()
     else
       malloc0strategy = 3;
   }
-
-#if 0
-  new0strategy = get_new0strategy();
-#endif
 
 #ifdef _MSC_VER
   {
