@@ -48,5 +48,4 @@ const char * DUMA_strerror(int duma_errno);
 } /* extern "C" */
 #endif
 
-  
 #endif /* DUMA_PRINT_H */
