@@ -35,53 +35,19 @@ if (test "$SF_USER" = "" ); then
   echo invalid SF_USER $SF_USER
 fi
 
-cat >ftp_upload.pl <<EOF
-#!/usr/bin/perl
-use Net::FTP;
-
-if ( @ARGV <= 0 ) {
-  print "no file argument given!\n";
-  exit 10;
-}
-
-my \$file = "@ARGV[0]";
-my \$host = 'upload.sourceforge.net';
-my \$user = 'anonymous';
-my \$password = 'anonymous';
-my \$dir = '/incoming';
-
-# Neues Net::FTP-Objekt
-my \$ftp = Net::FTP->new(\$host,
-                        Timeout => 360,
-                        Debug   => 0
-                       );
-unless (defined \$ftp) {
-	print "\$@\n";
-	die "Can't create Net::FTP-Object\n";
-}
-
-\$ftp->login(\$user,\$password) || die "Can't login \$!";
-\$ftp->cwd(\$dir) || die "Can't change working directory \$dir \$!";
-\$ftp->type(I);
-\$remote_file_name = \$ftp->put(\$file) || die "Can't put \$file \$!";
-\$ftp->quit();
-EOF
-
 if ((test "$2" = "upload") || (test "$3" = "upload")); then
-  chmod a+x ftp_upload.pl
   echo uploading file duma_$VER.zip
-  ./ftp_upload.pl duma_$VER.zip
+  scp duma_$VER.zip    $SF_USER@frs.sourceforge.net:uploads
   echo uploading file duma_$VER.tar.gz
-  ./ftp_upload.pl duma_$VER.tar.gz
+  scp duma_$VER.tar.gz $SF_USER@frs.sourceforge.net:uploads
 fi
 
 if ((test "$2" = "htdocs") || (test "$3" = "htdocs")); then
   echo updating sourceforge htdocs
-  scp duma_$VER/README.txt $SF_USER@shell.sourceforge.net:/home/groups/d/du/duma/htdocs/README.txt
-  scp duma_$VER/INSTALL    $SF_USER@shell.sourceforge.net:/home/groups/d/du/duma/htdocs/INSTALL
-  scp duma_$VER/CHANGELOG  $SF_USER@shell.sourceforge.net:/home/groups/d/du/duma/htdocs/CHANGELOG
-  scp duma_$VER/TODO       $SF_USER@shell.sourceforge.net:/home/groups/d/du/duma/htdocs/TODO
+  scp duma_$VER/README.txt $SF_USER,duma@frs.sourceforge.net:/home/groups/d/du/duma/htdocs/README.txt
+  scp duma_$VER/INSTALL    $SF_USER,duma@frs.sourceforge.net:/home/groups/d/du/duma/htdocs/INSTALL
+  scp duma_$VER/CHANGELOG  $SF_USER,duma@frs.sourceforge.net:/home/groups/d/du/duma/htdocs/CHANGELOG
+  scp duma_$VER/TODO       $SF_USER,duma@frs.sourceforge.net:/home/groups/d/du/duma/htdocs/TODO
 fi
 
-rm -f ./ftp_upload.pl
 rm -Rf duma_$VER
