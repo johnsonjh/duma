@@ -21,7 +21,7 @@
 # obj/                  <-- compiled objects
 #
 # src/                  <-- sources go in here
-# src/duma/             <-- duma sources go in here
+# src/libduma/          <-- duma sources go in here
 #### src/dumadetours/      <-- dumadetours sources go in here. --- not necessary
 # src/test/             <-- test programs ???
 
@@ -36,6 +36,7 @@ mkdir contrib
 mv gdbinit.rc    contrib/
 mv duma.sh       contrib/
 mv builddocs.bat contrib/
+mv mkclean.bat   contrib/
 mv debian        contrib/
 
 mkdir doc
@@ -54,7 +55,24 @@ mv duma.h        include/duma/
 mv dumapp.h      include/duma/
 mv duma_sem.h    include/duma/
 mv duma_config.h include/duma/
-mkdir include/dumadetours
+# mkdir include/dumadetours
+
+mkdir lib
+mkdir obj
+
+mkdir src
+mkdir src/libduma
+mv duma.c     src/libduma/
+mv duma_hlp.h src/libduma/
+mv paging.h   src/libduma/
+mv print.h    src/libduma/
+mv print.c    src/libduma/
+mv sem_inc.c  src/libduma/
+mv dumapp.cpp src/libduma/
+
+
+mkdir src/conf
+mv createconf.c src/conf/
 
 
 
