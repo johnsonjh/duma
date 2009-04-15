@@ -2,6 +2,8 @@
 TODO (listed from highest to lowest priority):
 ==============================================
 
+-prevent inclusion of duma_sem.h from outside duma headers
+
 -memccpy(), bcopy() + test for all overloaded string functions
 
 -add additional target/compiler switches in GNUmakefile to build with
