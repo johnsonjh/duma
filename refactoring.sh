@@ -30,9 +30,8 @@
 
 # test/                 <-- tests go in here
 
-# win32/                <-- all those win32* folders go in here
-# prj/                  <-- alternative - but more general to win32/:
-#                           win32-*, codeblocks, later: eclipse?
+# prj/                  <-- project files
+#                           win32-*, codeblocks, later: eclipse
 #
 
 mkdir contrib
@@ -77,17 +76,13 @@ mv dumapp.cpp src/libduma/
 mkdir src/conf
 mv createconf.c src/conf/
 
+mv stacktrace src/
+
 mkdir examples
 mkdir examples/cpp
 mv example*cpp examples/cpp/
 
-if /bin/false ; then
-  # move all win32-* folders to win32/
-  mkdir win32
-  mv win32-* win32/
-else
-  mkdir prj
-  mv win32-* prj/
-  mv codeblocks prj/
-fi
+mkdir prj
+mv win32-* prj/
+mv codeblocks prj/
 
