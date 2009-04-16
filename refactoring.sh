@@ -24,6 +24,9 @@
 # src/libduma/          <-- duma sources go in here
 #### src/dumadetours/      <-- dumadetours sources go in here. --- not necessary
 # src/test/             <-- test programs ???
+# examples/             <-- example code
+# examples/cpp          <-- C++ examples
+# examples/C            <-- C examples (TODO ?)
 
 # test/                 <-- tests go in here
 
@@ -74,7 +77,9 @@ mv dumapp.cpp src/libduma/
 mkdir src/conf
 mv createconf.c src/conf/
 
-
+mkdir examples
+mkdir examples/cpp
+mv example*cpp examples/cpp/
 
 if /bin/false ; then
   # move all win32-* folders to win32/
