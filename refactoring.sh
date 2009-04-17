@@ -23,12 +23,11 @@
 # src/                  <-- sources go in here
 # src/libduma/          <-- duma sources go in here
 #### src/dumadetours/      <-- dumadetours sources go in here. --- not necessary
-# src/test/             <-- test programs ???
+# test/                 <-- test programs used to check the integrity of duma
+#                           go in here
 # examples/             <-- example code
 # examples/cpp          <-- C++ examples
 # examples/C            <-- C examples (TODO ?)
-
-# test/                 <-- tests go in here
 
 # prj/                  <-- project files
 #                           win32-*, codeblocks, later: eclipse
