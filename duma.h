@@ -251,6 +251,7 @@
       DUMA_EXTERN_C void * _duma_valloc(size_t size, const char * filename, int lineno);
       DUMA_EXTERN_C char * _duma_strdup(const char *str, const char * filename, int lineno);
       DUMA_EXTERN_C void * _duma_memcpy(void *dest, const void *src, size_t size, const char * filename, int lineno);
+      DUMA_EXTERN_C void * _duma_memmove(void *dest, const void *src, size_t size);
       DUMA_EXTERN_C char * _duma_strcpy(char *dest, const char *src, const char * filename, int lineno);
       DUMA_EXTERN_C char * _duma_strncpy(char *dest, const char *src, size_t size, const char * filename, int lineno);
       DUMA_EXTERN_C char * _duma_strcat(char *dest, const char *src, const char * filename, int lineno);
@@ -269,6 +270,7 @@
       DUMA_EXTERN_C void * _duma_valloc(size_t size);
       DUMA_EXTERN_C char * _duma_strdup(const char *str);
       DUMA_EXTERN_C void * _duma_memcpy(void *dest, const void *src, size_t size);
+      DUMA_EXTERN_C void * _duma_memmove(void *dest, const void *src, size_t size);
       DUMA_EXTERN_C char * _duma_strcpy(char *dest, const char *src);
       DUMA_EXTERN_C char * _duma_strncpy(char *dest, const char *src, size_t size);
       DUMA_EXTERN_C char * _duma_strcat(char *dest, const char *src);
@@ -289,6 +291,7 @@
       #define valloc(SIZE)                _duma_valloc(SIZE, __FILE__, __LINE__)
       #define strdup(STR)                 _duma_strdup(STR, __FILE__, __LINE__)
       #define memcpy(DEST, SRC, SIZE)     _duma_memcpy(DEST, SRC, SIZE, __FILE__, __LINE__)
+      #define memmove(DEST, SRC, SIZE)    _duma_memmove(DEST, SRC, SIZE)
       #define strcpy(DEST, SRC)           _duma_strcpy(DEST, SRC, __FILE__, __LINE__)
       #define strncpy(DEST, SRC, SIZE)    _duma_strncpy(DEST, SRC, SIZE, __FILE__, __LINE__)
       #define strcat(DEST, SRC)           _duma_strcat(DEST, SRC, __FILE__, __LINE__)

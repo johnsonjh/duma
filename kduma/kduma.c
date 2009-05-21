@@ -1111,6 +1111,33 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
 }
 
 
+/* Function: _duma_memmove
+ * 
+ * An implementation of memmove is provied by Duma to prevent some optimized
+ * memmove implementations from calling memcpy and generate false positive overlap
+ * errors.
+ */
+void * _duma_memmove(void *dest, const void *src, size_t size)
+{
+  char       * d = (char *)dest;
+  const char * s = (const char *)src;
+ 
+  if (d < s) {
+		const char *end = src + size;
+    while (s < end) {
+      *d++ = *s++;
+    }
+  } else {
+    d += size;
+    s += size;
+    while (s > (const char*)src) {
+      *--d = *--s;
+    }
+  }
+  return dest;
+}
+
+
 /* Function: _duma_strcpy
  * 
  * A version of strcpy that provides extra checks based on

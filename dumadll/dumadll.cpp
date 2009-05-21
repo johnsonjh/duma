@@ -58,6 +58,12 @@ void * duma_memcpy(void *dest, const void *src, size_t size)
 }
 
 
+void * duma_memmove(void *dest, const void *src, size_t size)
+{
+  return _duma_memmove(dest, src, size);
+}
+
+
 char * duma_strcpy(char *dest, const char *src)
 {
   return _duma_strcpy(dest, src  DUMA_PARAMS_UK);

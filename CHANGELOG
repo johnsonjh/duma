@@ -2,6 +2,12 @@
 CHANGELOG:
 ==========
 
+2.5.16
+  * added memmove() implementation based on memove() from klibc.
+    code from Andris Zeila, see
+    http://sourceforge.net/tracker/?func=detail&aid=2792252&group_id=149725&atid=775376
+  (2009-05-21, HA)
+
 2.5.15
   * added alternative locking implementation in sem_inc.c
     using critical sections.

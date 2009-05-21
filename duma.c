@@ -96,7 +96,7 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 #endif
 
 static const char  version[] =
-"DUMA 2.5.15 ("
+"DUMA 2.5.16 ("
 #ifdef DUMA_SO_LIBRARY
 "shared library"
 #elif DUMA_DLL_LIBRARY
@@ -129,7 +129,7 @@ static const char  version[] =
 #endif
 ")\n"
 "Copyright (C) 2006 Michael Eddington <meddington@gmail.com>\n"
-"Copyright (C) 2002-2008 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
+"Copyright (C) 2002-2009 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n\n";
 
 
@@ -205,14 +205,6 @@ struct _DUMA_Slot
   size_t            internalSize;
   size_t            userSize;
 
-#if 0
-  /* just for checking compiler warnings / errors */
-  enum _DUMA_SlotState        state;
-  enum _DUMA_Allocator        allocator;
-  #ifndef DUMA_NO_LEAKDETECTION
-  enum _DUMA_Slot_FileSource  fileSource;
-  #endif
-#else
   /* save (some) space in production */
   unsigned short    state       :16;
   #ifdef DUMA_NO_LEAKDETECTION
@@ -221,7 +213,6 @@ struct _DUMA_Slot
   unsigned short    allocator   :8;
   unsigned short    fileSource  :8;
   #endif
-#endif
 
 #ifndef DUMA_NO_LEAKDETECTION
   char            * filename;   /* filename of allocation */
@@ -371,16 +362,6 @@ static struct _DUMA_GlobalStaticVars
    * this value in kB, the protected memory is freed/deleted.
    */
   long  MAX_ALLOC;
-
-#if 0
-  /* Variable: DUMA_ALLOW_MALLOC_0
-   *
-   * DUMA_ALLOW_MALLOC_0 is set if DUMA is to allow malloc(0). I
-   * trap malloc(0) by default because it is a common source of bugs.
-   * But you should know the allocation with size 0 is ANSI conform.
-   */
-  int   ALLOW_MALLOC_0;
-#endif
 
   /* Variable: DUMA_MALLOC_0_STRATEGY
    *
@@ -535,9 +516,6 @@ _duma_s =
   , 0xAA    /* Variable: SLACKFILL */
   , -1L     /* Variable: PROTECT_FREE */
   , -1L     /* Variable: MAX_ALLOC */
-#if 0
-  , 1       /* Variable: ALLOW_MALLOC_0 */
-#endif
   , 3       /* Variable: MALLOC_0_STRATEGY; see above */
   , 3       /* Variable: NEW_0_STRATEGY; see above */
   , 1       /* Variable: MALLOC_FAILEXIT */
@@ -778,14 +756,6 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
    */
   if ( (string = DUMA_GETENV("DUMA_MAX_ALLOC")) != 0 )
     _duma_s.MAX_ALLOC = atol(string);
-
-#if 0
-  /*
-   * See if the user wants to allow malloc(0).
-   */
-  if ( (string = DUMA_GETENV("DUMA_ALLOW_MALLOC_0")) != 0 )
-    _duma_s.ALLOW_MALLOC_0 = (atoi(string) != 0);
-#endif
 
   /*
    * See what strategy the user wants for malloc(0).
@@ -1307,22 +1277,6 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
   /* check userSize */
   if ( 0 == userSize )
   {
-#if 0
-    if ( !_duma_s.ALLOW_MALLOC_0 )
-    {
-      #ifndef DUMA_NO_LEAKDETECTION
-        DUMA_Abort("Allocating 0 bytes, probably a bug at %s(%i). See DUMA_ALLOW_MALLOC_0.", filename, lineno);
-      #else
-        DUMA_Abort("Allocating 0 bytes, probably a bug. See DUMA_ALLOW_MALLOC_0.");
-      #endif
-    }
-    else
-    {
-      if ( allocationStrategy )
-        userAddr = (DUMA_ADDR)_duma_g.null_addr;
-      return (void*)userAddr;
-    }
-#else
     switch ( allocationStrategy )
     {
       case 0: /* like having former ALLOW_MALLOC_0 = 0  ==> abort program with segfault */
@@ -1348,7 +1302,6 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
 
     /* only case 3 */
     internalSize = DUMA_PAGE_SIZE;
-#endif
   }
   else /* if ( userSize ) */
   {
@@ -1562,8 +1515,6 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     }
 #endif
 
-#if 0
-#else
     if ( 0 == userSize )
     {
       /*
@@ -1581,9 +1532,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
       /* Set up the "dead" page(s). */
       Page_DenyAccess( (char*)protAddr, endAddr - protAddr );
     }
-    else
-#endif
-    if ( !protectBelow )
+    else if ( !protectBelow )
     {
       /*
        * Arrange the buffer so that it is followed by an inaccessable
@@ -2210,6 +2159,34 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
 }
 
 
+/* Function: _duma_memmove
+ * 
+ * An implementation of memmove is provied by Duma to prevent some optimized
+ * memmove implementations from calling memcpy and generate false positive overlap
+ * errors.
+ */
+void * _duma_memmove(void *dest, const void *src, size_t size)
+{
+  char       * d = (char *)dest;
+  const char * s = (const char *)src;
+
+  if (d < s)
+  {
+    const char *end = src + size;
+    while (s < end)
+      *d++ = *s++;
+  }
+  else
+  {
+    d += size;
+    s += size;
+    while ( s > (const char*)src )
+      *--d = *--s;
+  }
+  return dest;
+}
+
+
 /* Function: _duma_strnlen
  *
  * like strlen() but maximum return value is size
@@ -2387,7 +2364,7 @@ char * _duma_strncat(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL
 
 #ifdef _MSC_VER
 /* define these functions as non-intrinsic */
-#pragma function( memcpy, strcpy, strcat )
+#pragma function( memcpy, strcpy, strcat, memmove )
 #endif
 
 
@@ -2442,6 +2419,12 @@ char * strdup(const char * str)
 void * memcpy(void *dest, const void *src, size_t size)
 {
   return _duma_memcpy(dest, src, size  DUMA_PARAMS_UK);
+}
+
+
+void * memmove(void *dest, const void *src, size_t size)
+{
+  return _duma_memmove(dest, src, size);
 }
 
 

@@ -87,6 +87,10 @@
 #undef memcpy
 #endif
 
+#ifdef memmove
+#undef memmove
+#endif
+
 #ifdef strcpy
 #undef strcpy
 #endif

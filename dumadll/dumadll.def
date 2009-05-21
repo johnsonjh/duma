@@ -9,6 +9,7 @@ EXPORTS
   duma_valloc
   duma_strdup
   duma_memcpy
+  duma_memmove
   duma_strcpy
   duma_strncpy
   duma_strcat

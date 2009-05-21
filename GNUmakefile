@@ -497,6 +497,11 @@ testoperators$(EXEPOSTFIX): libduma.a testoperators.o duma_sem.h dumapp.h
 	- $(RMFORCE) testoperators$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators$(EXEPOSTFIX) $(LIBS)
 
+testmemlimit$(EXEPOSTFIX): libduma.a dumatest.o
+	- $(RMFORCE) testmemlimit$(EXEPOSTFIX)
+	$(CC) $(CFLAGS) testmemlimit.o libduma.a -o testmemlimit$(EXEPOSTFIX) $(LIBS)
+
+
 tstheap_so$(EXEPOSTFIX): tstheap_so.o
 	- $(RMFORCE) tstheap_so$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) tstheap_so.o -o tstheap_so$(EXEPOSTFIX) $(LIBS)
@@ -504,6 +509,10 @@ tstheap_so$(EXEPOSTFIX): tstheap_so.o
 dumatestpp_so$(EXEPOSTFIX): dumatestpp_so.o
 	- $(RMFORCE) dumatestpp_so$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) dumatestpp_so.o -o dumatestpp_so$(EXEPOSTFIX) $(LIBS)
+
+testmemlimit_so$(EXEPOSTFIX): testmemlimit_so.o
+	- $(RMFORCE) testmemlimit_so$(EXEPOSTFIX)
+	$(CC) $(CFLAGS) testmemlimit_so.o -o testmemlimit_so$(EXEPOSTFIX) $(LIBS)
 
 
 $(OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o: duma.h
@@ -557,6 +566,10 @@ tstheap_so.o:
 
 dumatestpp_so.o:
 	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumatestpp.cpp -o $@
+
+testmemlimit_so.o:
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c testmemlimit.c -o $@
+
 
 #
 # define rules how to build objects for static library
