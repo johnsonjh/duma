@@ -7,6 +7,10 @@ CHANGELOG:
     code from Andris Zeila, see
     http://sourceforge.net/tracker/?func=detail&aid=2792252&group_id=149725&atid=775376
   (2009-05-21, HA)
+  * fixed "Broken build in Msys and C++ tests fail":
+    fixed USE_WIN32_CRIT_SECT implementation in sem_inc.c, mingw now uses this one
+    added make section for OSTYPE=msys-sh, which uses mingw32-gcc/g++ and rm
+  (2009-05-23, HA)
 
 2.5.15
   * added alternative locking implementation in sem_inc.c
