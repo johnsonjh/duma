@@ -38,6 +38,10 @@
 #define HAVE_PTHREADS         1
 #define USE_WIN32_SEMAPHORES  0
 #define USE_WIN32_CRIT_SECT   0
+#elif (defined(__MINGW32__) || defined(__MINGW64__))
+#define HAVE_PTHREADS         0
+#define USE_WIN32_SEMAPHORES  0
+#define USE_WIN32_CRIT_SECT   1
 #else
 #define HAVE_PTHREADS         0
 #define USE_WIN32_SEMAPHORES  1
@@ -119,6 +123,7 @@ static int semInited = 0;
 static int semDepth  = 0;
 #elif USE_WIN32_CRIT_SECT
 static int semInited = 0;
+static int semDepth  = 0;  /* not really used, but avoids more ifdefs below */
 #endif
 
 #if HAVE_PTHREADS
