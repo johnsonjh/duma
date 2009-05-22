@@ -129,9 +129,31 @@ ifeq ($(OS), Windows_NT)
     LIBS=
     EXEPOSTFIX=.exe
   endif
+  ifeq ($(OSTYPE), msys-sh)
+    # call mingw32-make OSTYPE=msyssh
+    # from MSYS shell
+    # having added the PATH for MINGW/bin
+    # using explicit initialization to avoid leak report
+    # from __w32_sharedptr_initialize() function
+    BSWITCH=102
+    DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+    CC=mingw32-gcc
+    CXX=mingw32-g++
+    RM=rm
+    RMFORCE=rm -f
+    ECHO=echo
+    ECHOLF=echo
+    CURPATH=./
+    DUMA_DYN_DEPS=
+    DUMASO=
+    CFLAGS=-g -O0
+    CPPFLAGS=-g -O0
+    LIBS=
+    EXEPOSTFIX=.exe
+  endif
   ifeq ($(OSTYPE), cygwin)
     # call make OSTYPE=cygwin
-    BSWITCH=102
+    BSWITCH=103
     DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
     CURPATH=./
     DUMA_DYN_DEPS=

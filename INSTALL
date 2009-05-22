@@ -11,7 +11,8 @@ I. Linux/Unix environments (including Cygwin and MinGW):
   Call GNU make often called 'gmake' for building the library.
   GNU make is called 'mingw32-make' for MinGW.
 
-  Add option 'OSTYPE=msys' when calling make for MinGW.
+  Add option 'OSTYPE=msys' when calling make for MinGW from command prompt
+  Add option 'OSTYPE=msys-sh' when calling make for MinGW from shell prompt
   Add option 'OSTYPE=cygwin' when calling make for Cygwin.
   Add option 'OS=osx' when calling make for MacOS X or Darwin.
   Add option 'OS=freebsd' when calling make for FreeBSD.
