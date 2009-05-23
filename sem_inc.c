@@ -33,19 +33,18 @@
 /* use WIN32_SEMAPHORES on Win32-Cygwin,
  * with this configuration testmt.c works either with pthreads and with the Win32 API
  */
-/* || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__MINGW64__)) */
 #if (!defined(WIN32))
 #define HAVE_PTHREADS         1
 #define USE_WIN32_SEMAPHORES  0
 #define USE_WIN32_CRIT_SECT   0
-#elif (defined(__MINGW32__) || defined(__MINGW64__))
+#elif ( defined(__MINGW32__) || defined(__MINGW64__) || defined(__CYGWIN__) || defined(__CYGWIN32__) || defined(__CYGWIN64__) )
 #define HAVE_PTHREADS         0
 #define USE_WIN32_SEMAPHORES  0
 #define USE_WIN32_CRIT_SECT   1
 #else
 #define HAVE_PTHREADS         0
-#define USE_WIN32_SEMAPHORES  1
-#define USE_WIN32_CRIT_SECT   0
+#define USE_WIN32_SEMAPHORES  0
+#define USE_WIN32_CRIT_SECT   1
 #endif
 
 #if HAVE_PTHREADS

@@ -10,6 +10,7 @@ CHANGELOG:
   * fixed "Broken build in Msys and C++ tests fail":
     fixed USE_WIN32_CRIT_SECT implementation in sem_inc.c, mingw now uses this one
     added make section for OSTYPE=msys-sh, which uses mingw32-gcc/g++ and rm
+  * use USE_WIN32_CRIT_SECT implementation also for cygwin, fixes testoperator
   (2009-05-23, HA)
 
 2.5.15
