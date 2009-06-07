@@ -13,6 +13,7 @@ CHANGELOG:
   * use USE_WIN32_CRIT_SECT implementation also for cygwin, fixes testoperator
   (2009-05-23, HA)
   * remove CVS subdirectories from packaging
+  * removed debian subdirectory from CVS
   (2009-06-07, HA)
 
 2.5.15
