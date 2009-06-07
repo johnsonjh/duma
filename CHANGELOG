@@ -12,6 +12,8 @@ CHANGELOG:
     added make section for OSTYPE=msys-sh, which uses mingw32-gcc/g++ and rm
   * use USE_WIN32_CRIT_SECT implementation also for cygwin, fixes testoperator
   (2009-05-23, HA)
+  * remove CVS subdirectories from packaging
+  (2009-06-07, HA)
 
 2.5.15
   * added alternative locking implementation in sem_inc.c

@@ -28,8 +28,8 @@ date -u -R >duma/VERSION
 echo DUMA $VER $REV >>duma/VERSION
 echo "Actual version available from http://duma.sourceforge.net/" >>duma/VERSION
 mv duma duma_$VER
-zip -9 -r duma_$VER.zip duma_$VER
-tar zcf duma_$VER.tar.gz duma_$VER
+zip -9 -r duma_$VER.zip duma_$VER -x 'CVS*'
+tar zcf duma_$VER.tar.gz --exclude 'CVS*' duma_$VER
 
 if (test "$SF_USER" = "" ); then
   echo invalid SF_USER $SF_USER
@@ -51,3 +51,5 @@ if ((test "$2" = "htdocs") || (test "$3" = "htdocs")); then
 fi
 
 rm -Rf duma_$VER
+
+
