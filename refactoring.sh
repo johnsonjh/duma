@@ -38,7 +38,6 @@ mv gdbinit.rc    contrib/
 mv duma.sh       contrib/
 mv builddocs.bat contrib/
 mv mkclean.bat   contrib/
-mv debian        contrib/
 
 mkdir doc
 mv README.txt doc/
@@ -84,4 +83,3 @@ mv example*cpp examples/cpp/
 mkdir prj
 mv win32-* prj/
 mv codeblocks prj/
-
