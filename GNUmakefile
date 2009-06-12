@@ -265,17 +265,22 @@ endif
 
 ############################################################
 
+ifndef prefix
+  ifdef DESTDIR
+    prefix=$(DESTDIR)
+  else
+    prefix=/usr
+  endif
+  $(info using default prefix [$(prefix)])
+endif
+
+
 MAN_INSTALL_DIR=$(prefix)/share/man/man3
 DOC_INSTALL_DIR=$(prefix)/share/doc/duma
 
 ifndef srcdir
   srcdir=.
   $(info using default srcdir [$(srcdir)])
-endif
-
-ifndef prefix
-  prefix=/usr
-  $(info using default prefix [$(prefix)])
 endif
 
 ifndef exec_prefix
