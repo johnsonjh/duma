@@ -15,6 +15,12 @@ CHANGELOG:
   * remove CVS subdirectories from packaging
   * removed debian subdirectory from CVS
   (2009-06-07, HA)
+  * fixed "Wrong LD_PRELOAD path in duma.sh". see
+    https://sourceforge.net/tracker/?func=detail&aid=2800139&group_id=149725&atid=775376
+  * fixed "GNUmakefile is missing DESTDIR" not using submitted patch:
+    https://sourceforge.net/tracker/?func=detail&aid=2800137&group_id=149725&atid=775376
+  (2009-06-12, HA)
+
 
 2.5.15
   * added alternative locking implementation in sem_inc.c
