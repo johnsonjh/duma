@@ -261,13 +261,13 @@ endif
 
 ############################################################
 
-MAN_INSTALL_DIR=$(prefix)/share/man/man3
-DOC_INSTALL_DIR=$(prefix)/share/doc/duma
-
 ifndef prefix
   prefix=/usr
   $(info using default prefix [$(prefix)])
 endif
+
+MAN_INSTALL_DIR=$(prefix)/share/man/man3
+DOC_INSTALL_DIR=$(prefix)/share/doc/duma
 
 ifndef srcdir
   srcdir=.
