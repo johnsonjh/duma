@@ -1,7 +1,7 @@
 
 /*
  * DUMA - Red-Zone memory allocator.
- * Copyright (C) 2002-2005 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2009 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * License: GNU LGPL (GNU Lesser General Public License, see COPYING-GPL)
  *
  * This library is free software; you can redistribute it and/or
@@ -136,47 +136,6 @@ nearestSlotForUserAddress(void * userAddress)
 }
 
 
-#if 0
-/* next to functions not needed so far .. */
-
-/* Function: slotForInternalAddrNextTo
- *
- * Find the slot structure for an internal address.
- */
-static struct _DUMA_Slot *
-slotForInternalAddrNextTo(void * address)
-{
-  struct _DUMA_Slot * slot  = _duma_g.allocList;
-  size_t            count = _duma_s.slotCount;
-
-  for ( ; count > 0; --count, ++slot )
-    if ( slot->internalAddress == address )
-      return slot;
-  return 0;
-}
-
-
-/* Function: slotForInternalAddrPrevTo
- *
- * Given the internal address of a buffer, find the buffer immediately
- * before that buffer in the address space. This is used by free() to
- * coalesce two free buffers into one.
- */
-static struct _DUMA_Slot *
-slotForInternalAddrPrevTo(void * address)
-{
-  struct _DUMA_Slot * slot  = _duma_g.allocList;
-  size_t            count = _duma_s.slotCount;
-
-  for ( ; count > 0; --count, ++slot )
-    if ( (char*)slot->internalAddress + slot->internalSize == address )
-      return slot;
-  return 0;
-}
-
-#endif
-
-
 /* Function: _duma_init_slack
  *
  * Initialise the no mans land, for a given slot
@@ -305,4 +264,4 @@ _duma_check_all_slacks( void )
   }
 }
 
-// end
+
