@@ -1,7 +1,7 @@
 
 /*
  * DUMA - Red-Zone memory allocator.
- * Copyright (C) 2002-2008 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2009 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
@@ -96,7 +96,7 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
  *    on UNIX systems alarm() may be usable
  *
  * Following features are implemented:
- * 
+ *
  * - loop is done
  * - alignment depends on user
  * - bad_alloc() exception will be thrown
@@ -208,7 +208,7 @@ throw()
 }
 
 
-/* Function: operator new
+/* Function: operator delete
  *
  * Single object form, no debug information
  * (13) = ( c ) ; FSW
@@ -225,7 +225,7 @@ throw()
 }
 
 
-/* Function: operator new
+/* Function: operator delete
  *
  * Single object form, no debug information
  * (14) = (d) ; FSN
@@ -263,7 +263,7 @@ throw(std::bad_alloc)
 /* Function: operator new[]
  *
  * Array object form, no debug information
- * (22) = (b) ; AAN 
+ * (22) = (b) ; AAN
  */
 void * DUMA_CDECL operator new[]( DUMA_SIZE_T size, const std::nothrow_t & )
 throw()
@@ -272,10 +272,10 @@ throw()
 }
 
 
-/* Function: operator new[]
+/* Function: operator delete[]
  *
  * Array object form, no debug information
- * (23) = (c) ; FAW 
+ * (23) = (c) ; FAW
  */
 void   DUMA_CDECL operator delete[]( void * ptr )
 throw()
@@ -289,7 +289,7 @@ throw()
 }
 
 
-/* Function: operator new[]
+/* Function: operator delete[]
  *
  * Array object form, no debug information
  * (24) = (d) ; FAN
@@ -318,7 +318,7 @@ throw()
 /* Function: operator new
  *
  * Single object form with debug information
- * (31) = (a) ; ASW 
+ * (31) = (a) ; ASW
  */
 void * DUMA_CDECL operator new( DUMA_SIZE_T size, const char *filename, int lineno )
 throw( std::bad_alloc )
@@ -329,7 +329,7 @@ throw( std::bad_alloc )
 /* Function: operator new
  *
  * Single object form with debug information
- * (32) = (b) ; ASN 
+ * (32) = (b) ; ASN
  */
 void * DUMA_CDECL operator new( DUMA_SIZE_T size, const std::nothrow_t &, const char *filename, int lineno )
 throw()
@@ -338,10 +338,10 @@ throw()
 }
 
 
-/* Function: operator new
+/* Function: operator delete
  *
  * Single object form with debug information
- * (33) = (c) ; FSW 
+ * (33) = (c) ; FSW
  */
 void   DUMA_CDECL operator delete( void *ptr, const char *filename, int lineno )
 throw()
@@ -350,10 +350,10 @@ throw()
 }
 
 
-/* Function: operator new
+/* Function: operator delete
  *
  * Single object form with debug information
- * (34) = (d) ; FSN 
+ * (34) = (d) ; FSN
  */
 void   DUMA_CDECL operator delete( void *ptr, const std::nothrow_t &, const char *filename, int lineno )
 throw()
@@ -371,7 +371,7 @@ throw()
 /* Function: operator new[]
  *
  * Array object form with debug information
- * (41) = (a) ; AAW 
+ * (41) = (a) ; AAW
  */
 void * DUMA_CDECL operator new[]( DUMA_SIZE_T size, const char *filename, int lineno )
 throw( std::bad_alloc )
@@ -383,7 +383,7 @@ throw( std::bad_alloc )
 /* Function: operator new[]
  *
  * Array object form with debug information
- * (42) = (b) ; AAN 
+ * (42) = (b) ; AAN
  */
 void * DUMA_CDECL operator new[]( DUMA_SIZE_T size, const std::nothrow_t &, const char *filename, int lineno )
 throw()
@@ -392,10 +392,10 @@ throw()
 }
 
 
-/* Function: operator new[]
+/* Function: operator delete[]
  *
  * Array object form with debug information
- * (43) = (c) ; FAW 
+ * (43) = (c) ; FAW
  */
 void   DUMA_CDECL operator delete[]( void *ptr, const char *filename, int lineno )
 throw()
@@ -404,10 +404,10 @@ throw()
 }
 
 
-/* Function: operator new[]
+/* Function: operator delete[]
  *
  * Array object form with debug information
- * (44) = (d) ; FAN 
+ * (44) = (d) ; FAN
  */
 void   DUMA_CDECL operator delete[]( void *ptr, const std::nothrow_t &, const char *filename, int lineno )
 throw()
