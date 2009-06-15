@@ -12,10 +12,6 @@
 # add "-DDUMA_NO_THREAD_SAFETY" (without quotes)
 #    for not supporting multi-threading
 #
-# add "-DDUMA_SEMAPHORES" (without quotes)
-#    for using pthread semaphores
-#    elseway pthread mutexes get used
-#
 # add "-DDUMA_SO_NO_CPP_SUPPORT" or "-DDUMA_LIB_NO_CPP_SUPPORT" (without quotes)
 #    for not directing new/delete to malloc/free
 #
@@ -265,18 +261,13 @@ endif
 
 ############################################################
 
-ifndef prefix
-  ifdef DESTDIR
-    prefix=$(DESTDIR)
-  else
-    prefix=/usr
-  endif
-  $(info using default prefix [$(prefix)])
-endif
-
-
 MAN_INSTALL_DIR=$(prefix)/share/man/man3
 DOC_INSTALL_DIR=$(prefix)/share/doc/duma
+
+ifndef prefix
+  prefix=/usr
+  $(info using default prefix [$(prefix)])
+endif
 
 ifndef srcdir
   srcdir=.
@@ -413,49 +404,49 @@ endif
 # commands; copy any auxiliary files that the executable uses into the
 # directories where it will look for them.
 install: libduma.a duma.3 $(DUMASO)
-	- mkdir -p $(DOC_INSTALL_DIR)
-	$(INSTALL) -m 644 README.txt $(DOC_INSTALL_DIR)
-	- mkdir -p $(includedir)
-	$(INSTALL) -m 644 noduma.h duma.h dumapp.h duma_sem.h duma_config.h $(includedir)
-	- mkdir -p $(bindir)
-	$(INSTALL) -m 755 duma.sh $(bindir)/duma
-	- mkdir -p $(libdir)
-	$(INSTALL) -m 644 libduma.a $(libdir)
+	- mkdir -p $(DESTDIR)$(DOC_INSTALL_DIR)
+	$(INSTALL) -m 644 README.txt $(DESTDIR)$(DOC_INSTALL_DIR)
+	- mkdir -p $(DESTDIR)$(includedir)
+	$(INSTALL) -m 644 noduma.h duma.h dumapp.h duma_sem.h duma_config.h $(DESTDIR)$(includedir)
+	- mkdir -p $(DESTDIR)$(bindir)
+	$(INSTALL) -m 755 duma.sh $(DESTDIR)$(bindir)/duma
+	- mkdir -p $(DESTDIR)$(libdir)
+	$(INSTALL) -m 644 libduma.a $(DESTDIR)$(libdir)
 ifdef DUMASO
-	$(INSTALL) -m 755 $(DUMASO) $(libdir)
+	$(INSTALL) -m 755 $(DUMASO) $(DESTDIR)$(libdir)
 endif
 ifdef DUMASO_LINK1
-	- $(RMFORCE) $(libdir)/$(DUMASO_LINK1)
-	ln -s $(DUMASO) $(libdir)/$(DUMASO_LINK1)
+	- $(RMFORCE) $(DESTDIR)$(libdir)/$(DUMASO_LINK1)
+	ln -s $(DUMASO) $(DESTDIR)$(libdir)/$(DUMASO_LINK1)
 endif
 ifdef DUMASO_LINK2
-	- $(RMFORCE) $(libdir)/$(DUMASO_LINK2)
-	ln -s $(DUMASO) $(libdir)/$(DUMASO_LINK2)
+	- $(RMFORCE) $(DESTDIR)$(libdir)/$(DUMASO_LINK2)
+	ln -s $(DUMASO) $(DESTDIR)$(libdir)/$(DUMASO_LINK2)
 endif
-	- mkdir -p $(MAN_INSTALL_DIR)
-	$(INSTALL) -m 644 duma.3 $(MAN_INSTALL_DIR)/duma.3
+	- mkdir -p $(DESTDIR)$(MAN_INSTALL_DIR)
+	$(INSTALL) -m 644 duma.3 $(DESTDIR)/$(MAN_INSTALL_DIR)/duma.3
 
 
 # Delete all the installed files that the `install' target would create
 uninstall:
-	- $(RMFORCE) $(DOC_INSTALL_DIR)/README.txt
-	- $(RMFORCE) $(includedir)/noduma.h
-	- $(RMFORCE) $(includedir)/duma.h
-	- $(RMFORCE) $(includedir)/dumapp.h
-	- $(RMFORCE) $(includedir)/duma_sem.h
-	- $(RMFORCE) $(includedir)/duma_config.h
-	- $(RMFORCE) $(bindir)/duma
-	- $(RMFORCE) $(libdir)/libduma.a
+	- $(RMFORCE) $(DESTDIR)$(DOC_INSTALL_DIR)/README.txt
+	- $(RMFORCE) $(DESTDIR)$(includedir)/noduma.h
+	- $(RMFORCE) $(DESTDIR)$(includedir)/duma.h
+	- $(RMFORCE) $(DESTDIR)$(includedir)/dumapp.h
+	- $(RMFORCE) $(DESTDIR)$(includedir)/duma_sem.h
+	- $(RMFORCE) $(DESTDIR)$(includedir)/duma_config.h
+	- $(RMFORCE) $(DESTDIR)$(bindir)/duma
+	- $(RMFORCE) $(DESTDIR)$(libdir)/libduma.a
 ifdef DUMASO
-	- $(RMFORCE) $(libdir)/$(DUMASO)
+	- $(RMFORCE) $(DESTDIR)$(libdir)/$(DUMASO)
 endif
 ifdef DUMASO_LINK1
-	- $(RMFORCE) $(libdir)/$(DUMASO_LINK1)
+	- $(RMFORCE) $(DESTDIR)$(libdir)/$(DUMASO_LINK1)
 endif
 ifdef DUMASO_LINK2
-	- $(RMFORCE) $(libdir)/$(DUMASO_LINK2)
+	- $(RMFORCE) $(DESTDIR)$(libdir)/$(DUMASO_LINK2)
 endif
-	- $(RMFORCE) $(MAN_INSTALL_DIR)/duma.3
+	- $(RMFORCE) $(DESTDIR)$(MAN_INSTALL_DIR)/duma.3
 
 
 # Delete all files that are normally created by running make.
