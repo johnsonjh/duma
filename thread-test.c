@@ -112,7 +112,7 @@ int main(int argc, char **argv)
 
   if (pthread_create(&goodbye_thread, NULL, thread_func, (void*)"goodbye"))
   {
-    fprintf(stderr, "Failed to create hello thread\n");
+    fprintf(stderr, "Failed to create goodbye thread\n");
     exit(1);
   }
 

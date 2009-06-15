@@ -69,7 +69,7 @@ static const char * stringErrorReport(void)
   LPVOID lpMsgBuf;
 
   LastError = GetLastError();
-  FormatMessage( 
+  FormatMessage(
                   FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS
                 , NULL
                 , LastError
@@ -96,7 +96,7 @@ static void mprotectFailed(void)
 #if defined(WIN32)
   DUMA_Abort("VirtualProtect() failed: %s", stringErrorReport());
 #else
-  DUMA_Abort("mprotect() failed: %s.\nCheck README section 'MEMORY USAGE AND EXECUTION SPEED'\n  if your (Linux) system may limit the number of different page mappings per process", stringErrorReport());
+  DUMA_Abort("mprotect() failed: %s.\nCheck README section 'MEMORY USAGE AND EXECUTION SPEED'\n  your (Linux) system may limit the number of different page mappings per process", stringErrorReport());
 #endif
 }
 
@@ -106,7 +106,7 @@ static void mprotectFailed(void)
  * Create memory.  Allocates actual memory. Uses
  * VirtualAlloc on windows and mmap on unix.
  *
- * See Also: 
+ * See Also:
  *  <Page_Delete>
  */
 static void *
@@ -231,7 +231,7 @@ Page_Create(size_t size, int exitonfail, int printerror)
  *
  * Allow memory access to allocated memory.
  *
- * See Also: 
+ * See Also:
  *  <Page_DenyAccess>
  */
 void Page_AllowAccess(void * address, size_t size)
@@ -272,7 +272,7 @@ void Page_AllowAccess(void * address, size_t size)
  *
  * Deny access to allocated memory region.
  *
- * See Also: 
+ * See Also:
  *  <Page_AllowAccess>
  */
 static void Page_DenyAccess(void * address, size_t size)
