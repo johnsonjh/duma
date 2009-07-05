@@ -402,12 +402,12 @@ endif
 
 # Print filenames unknown to cvs
 printuk:
-	cvs status 2>/dev/null |grep '^? '
+	@cvs status 2>/dev/null |grep '^? '
 
 
 # Print filenames known to cvs and not "up-to-date"
 printmod:
-	cvs status 2>/dev/null |grep 'Status:' |grep -v 'Up-to-date'
+	@cvs status 2>/dev/null |grep 'Status:' |grep -v 'Up-to-date'
 
 
 # Copy the executable file into a directory that users typically search for
