@@ -400,6 +400,16 @@ endif
 	@echo PACKAGE_SOURCE  [$(PACKAGE_SOURCE)]
 
 
+# Print filenames unknown to cvs
+printuk:
+	cvs status 2>/dev/null |grep '^? '
+
+
+# Print filenames known to cvs and not "up-to-date"
+printmod:
+	cvs status 2>/dev/null |grep 'Status:' |grep -v 'Up-to-date'
+
+
 # Copy the executable file into a directory that users typically search for
 # commands; copy any auxiliary files that the executable uses into the
 # directories where it will look for them.
@@ -639,5 +649,5 @@ testmt.o:	testmt.c duma.h duma_config.h
 #	$(CXX) $(CPPFLAGS) -c $< -o $@
 #
 
-.PHONY: check test installcheck install uninstall clean distclean realclean clobber dos2unix printvars
+.PHONY: check test installcheck install uninstall clean distclean realclean clobber dos2unix printvars printuk printmod
 
