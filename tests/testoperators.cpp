@@ -29,8 +29,8 @@
 
 #include <new>
 
-#include "dumapp.h"
-#include "noduma.h"
+#include "../dumapp.h"
+#include "../noduma.h"
 
 
 class optest
@@ -187,7 +187,7 @@ throw()
 void pure_test()
 {
 /* how to call the operators without any DUMA macros defined */
-#include "noduma.h"
+#include "../noduma.h"
 
   optest * s, * v;
 
@@ -211,20 +211,20 @@ void pure_test()
 void rich_test()
 {
 /* how to call the operators with having DUMA macros defined */
-#include "dumapp.h"
+#include "../dumapp.h"
 
   optest * s, * v;
 
   s = new optest;
   delete s;
 
-#include "noduma.h"
+#include "../noduma.h"
   #ifndef DUMA_NO_LEAKDETECTION
     s = new(std::nothrow,__FILE__,__LINE__) optest;
   #else
     s = new(std::nothrow) optest;
   #endif
-#include "dumapp.h"
+#include "../dumapp.h"
   delete s;
 
 
@@ -234,13 +234,13 @@ void rich_test()
   v = new optest[10];
   delete []v;
 
-#include "noduma.h"
+#include "../noduma.h"
   #ifndef DUMA_NO_LEAKDETECTION
     v = new(std::nothrow,__FILE__,__LINE__) optest[10];
   #else
     v = new(std::nothrow) optest[10];
   #endif
-#include "dumapp.h"
+#include "../dumapp.h"
   delete []v;
 }
 

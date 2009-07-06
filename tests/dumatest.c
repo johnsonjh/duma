@@ -37,7 +37,7 @@
 #include <setjmp.h>
 #include <signal.h>
 
-#include "duma.h"
+#include "../duma.h"
 
 
 #ifndef  PAGE_PROTECTION_VIOLATED_SIGNAL

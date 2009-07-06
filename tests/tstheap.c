@@ -5,7 +5,7 @@
 #include <memory.h>
 
 #ifndef DUMA_SO_LIBRARY
-#include "duma.h"
+#include "../duma.h"
 #endif
 
 /*

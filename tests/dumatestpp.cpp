@@ -5,7 +5,7 @@
 #include <fstream>
 
 #ifndef DUMA_SO_LIBRARY
-#include "dumapp.h"
+#include "../dumapp.h"
 #endif
 
 

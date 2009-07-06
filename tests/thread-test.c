@@ -42,7 +42,7 @@
 #if HAVE_PTHREADS
 
 #include <pthread.h>
-#include "duma.h"
+#include "../duma.h"
 
 static pthread_mutex_t mutex;
 static volatile int threads_left = 2;
