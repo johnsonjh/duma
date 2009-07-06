@@ -308,7 +308,7 @@ endif
 PACKAGE_SOURCE=README.txt CHANGELOG COPYING-GPL COPYING-LGPL duma.3 Makefile gdbinit.rc \
 	duma.h dumapp.h duma_sem.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
-	dumatest.c tstheap.c thread-test.c testmt.c dumatestpp.cpp testoperators.cpp \
+	tests/dumatest.c tests/tstheap.c tests/thread-test.c tests/testmt.c tests/dumatestpp.cpp tests/testoperators.cpp \
 	createconf.c
 
 OBJECTS=dumapp.o duma.o sem_inc.o print.o
@@ -402,12 +402,12 @@ endif
 
 # Print filenames unknown to cvs
 printuk:
-	@cvs status 2>/dev/null |grep '^? '
+	- cvs status 2>/dev/null |grep '^? '
 
 
 # Print filenames known to cvs and not "up-to-date"
 printmod:
-	@cvs status 2>/dev/null |grep 'Status:' |grep -v 'Up-to-date'
+	- cvs status 2>/dev/null |grep 'Status:' |grep -v 'Up-to-date'
 
 
 # Copy the executable file into a directory that users typically search for
@@ -525,7 +525,7 @@ testoperators$(EXEPOSTFIX): libduma.a testoperators.o duma_sem.h dumapp.h
 	- $(RMFORCE) testoperators$(EXEPOSTFIX)
 	$(CXX) $(CPPFLAGS) testoperators.o libduma.a -o testoperators$(EXEPOSTFIX) $(LIBS)
 
-testmemlimit$(EXEPOSTFIX): libduma.a dumatest.o
+testmemlimit$(EXEPOSTFIX): libduma.a testmemlimit.o
 	- $(RMFORCE) testmemlimit$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) testmemlimit.o libduma.a -o testmemlimit$(EXEPOSTFIX) $(LIBS)
 
@@ -590,13 +590,13 @@ print_so.o:	print.c print.h
 
 # DUMA_SO_OPTIONS needed cause duma.h is included explicitly
 tstheap_so.o:
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c tstheap.c -o $@
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c tests/tstheap.c -o $@
 
 dumatestpp_so.o:
-	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumatestpp.cpp -o $@
+	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c tests/dumatestpp.cpp -o $@
 
 testmemlimit_so.o:
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c testmemlimit.c -o $@
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c tests/testmemlimit.c -o $@
 
 
 #
@@ -620,23 +620,23 @@ print.o:	print.c print.h
 # define rules how to build the test objects
 #
 
-dumatest.o:	dumatest.c duma.h duma_config.h
-	$(CC) $(CFLAGS) -c dumatest.c -o $@
+dumatest.o:	tests/dumatest.c duma.h duma_config.h
+	$(CC) $(CFLAGS) -c tests/dumatest.c -o $@
 
-dumatestpp.o:	dumatestpp.cpp duma.h duma_sem.h dumapp.h duma_config.h
-	$(CXX) $(CPPFLAGS) -c dumatestpp.cpp -o $@
+dumatestpp.o:	tests/dumatestpp.cpp duma.h duma_sem.h dumapp.h duma_config.h
+	$(CXX) $(CPPFLAGS) -c tests/dumatestpp.cpp -o $@
 
-tstheap.o:	tstheap.c duma.h duma_config.h
-	$(CC) $(CFLAGS) -c tstheap.c -o $@
+tstheap.o:	tests/tstheap.c duma.h duma_config.h
+	$(CC) $(CFLAGS) -c tests/tstheap.c -o $@
 
-testoperators.o:	testoperators.cpp duma.h duma_sem.h dumapp.h duma_config.h
-	$(CXX) $(CPPFLAGS) -c testoperators.cpp -o $@
+testoperators.o:	tests/testoperators.cpp duma.h duma_sem.h dumapp.h duma_config.h
+	$(CXX) $(CPPFLAGS) -c tests/testoperators.cpp -o $@
 
-thread-test.o:	thread-test.c duma.h duma_config.h
-	$(CC) $(CFLAGS) -c thread-test.c -o $@
+thread-test.o:	tests/thread-test.c duma.h duma_config.h
+	$(CC) $(CFLAGS) -c tests/thread-test.c -o $@
 
-testmt.o:	testmt.c duma.h duma_config.h
-	$(CC) $(CFLAGS) -c testmt.c -o $@
+testmt.o:	tests/testmt.c duma.h duma_config.h
+	$(CC) $(CFLAGS) -c tests/testmt.c -o $@
 
 
 #
