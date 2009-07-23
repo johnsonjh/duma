@@ -423,6 +423,13 @@ static struct _DUMA_GlobalStaticVars
    */
   int   SUPPRESS_ATEXIT;
 
+  /* Variable: DUMA_MEMCPY_OVERLAP
+   *
+   * DUMA_MEMCPY_OVERLAP is set if the platform memcpy implementation allows copying
+   * overlapping regions when source > destination.    
+   */
+  int   MEMCPY_OVERLAP;
+
 
   /* Variable: _duma_allocListSize
    *
@@ -522,6 +529,7 @@ _duma_s =
   , 0       /* Variable: FREE_ACCESS */
   , 0       /* Variable: SHOW_ALLOC */
   , 0       /* Variable: SUPPRESS_ATEXIT */
+  , 0       /* Variable: MEMCPY_OVERLAP */
 
   , 0       /* Variable: allocListSize */
   , 0       /* Variable: slotCount */
@@ -818,6 +826,12 @@ void duma_getenvvars( DUMA_TLSVARS_T * duma_tls )
   if ( (string = DUMA_GETENV("DUMA_SUPPRESS_ATEXIT")) != 0 )
     _duma_s.SUPPRESS_ATEXIT = (atoi(string) != 0);
 
+  /*
+   * See if user allows memcpy region overlapping
+   */
+  if ( (string = DUMA_GETENV("DUMA_MEMCPY_OVERLAP")) != 0 )
+    _duma_s.MEMCPY_OVERLAP = (atoi(string) != 0);
+  
   /*
    * DUMA_OUTPUT_STACKTRACE is a global variable used to control if DUMA
    * outputs a stacktrace of the allocation that is not free'd. Default is 0,
@@ -2141,7 +2155,7 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
   const char * s = (const char *)src;
   unsigned i;
 
-  if ( (s < d  &&  d < s + size) || (d < s  &&  s < d + size) )
+  if ( (s < d  &&  d < s + size) || (d < s  &&  s < d + size && !_duma_s.MEMCPY_OVERLAP ) )
   {
 #ifndef DUMA_NO_LEAKDETECTION
     DUMA_Abort("memcpy(%a, %a, %d): memory regions overlap at %s(%i)."

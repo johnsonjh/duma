@@ -215,6 +215,12 @@ initialized to that value. This can help detect reads of uninitialized memory.
 When set to -1, some memory is filled with zeroes
 (the operating system default on most systems) and some memory will retain
 the values written to it during its last use.
+.TP
+DUMA_MEMCPY_OVERLAP
+Setting this variable to 1 will make DUMA to ignore memcpy region overlapping when
+the destination address is less than source address. It was added as a workaround
+for ARM port where memmove implementation calls memcpy if the overlapping 
+destination is safe and produces in false aborts.
 .SH WORD-ALIGNMENT AND OVERRUN DETECTION
 There is a conflict between the alignment restrictions that malloc() operates
 under and the debugging strategy used by DUMA. When detecting

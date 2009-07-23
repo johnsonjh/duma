@@ -244,6 +244,9 @@ DUMA_OUTPUT_STACKTRACE_MAPFILE - Set this shell environment variable to the map
   file, when it isn't found. This is very usefull when using detours version of
   DUMA. This option is available only on Windows.
 
+DUMA_MEMCPY_OVERLAP - Set this shell environment variable to allow overlapping 
+  of memcpy regions if the destination address is less than source address. 
+  (workaround for ARM port memmove/memcpy implementation).
 
 
 WORD-ALIGNMENT AND OVERRUN DETECTION:

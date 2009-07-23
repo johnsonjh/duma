@@ -1100,7 +1100,7 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
 	const char * s = (const char *)src;
 	unsigned i;
 
-	if ( (s < d  &&  d < s + size) || (d < s  &&  s < d + size) )
+	if ( (s < d  &&  d < s + size) || (d < s  &&  s < d + size && !_duma_s.MEMCPY_OVERLAP) )
 		DUMA_Abort("memcpy(%a, %a, %d): memory regions overlap.",
 			(DUMA_ADDR)dest, (DUMA_ADDR)src, (DUMA_SIZE)size);
 
