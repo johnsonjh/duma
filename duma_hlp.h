@@ -200,6 +200,9 @@ void _duma_check_slack( struct _DUMA_Slot * slot )
   if ( !slot->userSize )
     return;
 
+  if ( !slot->internalAddress )
+    return;
+
   /* calculate accessible non-protectable address area */
   if ( (char*)slot->protAddress < (char*)slot->userAddress )
   {
