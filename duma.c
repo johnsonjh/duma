@@ -55,6 +55,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 #include <memory.h>
 #include <string.h>
 #include <signal.h>
@@ -1476,7 +1477,18 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     if ( _duma_s.MAX_ALLOC > 0L  &&  _duma_s.sumAllocatedMem + chunkSizekB > _duma_s.MAX_ALLOC )
       reduceProtectedMemory( chunkSizekB );
 
-    fullSlot->internalAddress = Page_Create( chunkSize, 0/*= exitonfail*/, 0/*= printerror*/ );
+    #ifndef SIZE_MAX
+    #define SIZE_MAX ((size_t)(-1))
+    #endif
+    size_t numChunks = SIZE_MAX;
+    if( userSize > (SIZE_MAX) - (chunkSize - 1) )
+      fullSlot->internalAddress = 0;
+    else
+    {
+      numChunks = ( userSize <= 0 ) ? 1 : ( userSize + (chunkSize - 1) )/chunkSize;
+      DUMA_ASSERT( numChunks >= 1 );
+      fullSlot->internalAddress = Page_Create( chunkSize*numChunks, 0/*= exitonfail*/, 0/*= printerror*/ );
+    }
 
     if ( 0 == fullSlot->internalAddress  &&  0L != _duma_s.PROTECT_FREE )
     {
@@ -1486,19 +1498,19 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
         /* reduce as much protected memory as we need - or at least try so */
         reduce_more = reduceProtectedMemory( (chunkSize+1023) >>10 );
         /* simply try again */
-        fullSlot->internalAddress = Page_Create( chunkSize, 0/*= exitonfail*/, 0/*= printerror*/ );
+        fullSlot->internalAddress = Page_Create( chunkSize*numChunks, 0/*= exitonfail*/, 0/*= printerror*/ );
       }
       while ( reduce_more && 0 == fullSlot->internalAddress );
 
       if ( 0 == fullSlot->internalAddress  &&  DUMA_FAIL_ENV == fail )
-        fullSlot->internalAddress = Page_Create( chunkSize, _duma_s.MALLOC_FAILEXIT, 1/*= printerror*/ );
+        fullSlot->internalAddress = Page_Create( chunkSize*numChunks, _duma_s.MALLOC_FAILEXIT, 1/*= printerror*/ );
     }
 
     if ( fullSlot->internalAddress )
     {
-      _duma_s.sumAllocatedMem       += ( (chunkSize +1023) >>10 );
-      _duma_s.sumTotalAllocatedMem  += ( (chunkSize +1023) >>10 );
-      fullSlot->internalSize  = chunkSize;
+      _duma_s.sumAllocatedMem       += ( (chunkSize +1023) >>10 )*numChunks;
+      _duma_s.sumTotalAllocatedMem  += ( (chunkSize +1023) >>10 )*numChunks;
+      fullSlot->internalSize  = chunkSize*numChunks;
       fullSlot->state         = DUMAST_FREE;
       --_duma_s.unUsedSlots;
     }
@@ -2056,28 +2068,43 @@ void * _duma_realloc(void * oldBuffer, size_t newSize  DUMA_PARAMLIST_FL)
   DUMA_GET_SEMAPHORE();
 
   Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
-
-  ptr = _duma_allocate(0, newSize, duma_tls->PROTECT_BELOW,
-    -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC,
-    DUMA_FAIL_ENV  DUMA_PARAMS_FL);
-
-  if( ptr && oldBuffer )
+  
+  if( !oldBuffer )
   {
-    struct _DUMA_Slot * slot = slotForUserAddress(oldBuffer);
-
-    if ( slot == 0 )
-      DUMA_Abort("realloc(%a, %d): address not from malloc().",
-      (DUMA_ADDR)oldBuffer, (DUMA_SIZE)newSize);
-
-    if ( newSize > slot->userSize )
-    {
-      memcpy( ptr, oldBuffer, slot->userSize );
-      memset( (char*)ptr + slot->userSize, 0, newSize - slot->userSize );
-    }
-    else if ( newSize > 0 )
-      memcpy(ptr, oldBuffer, newSize);
-
+    ptr = _duma_allocate(0, newSize, duma_tls->PROTECT_BELOW,
+      duma_tls->FILL, 0 /*=protectAllocList*/, EFA_REALLOC,
+      DUMA_FAIL_ENV  DUMA_PARAMS_FL);
+  }
+  else if( newSize <= 0 )
+  {
     _duma_deallocate(oldBuffer, 0 /*=protectAllocList*/, EFA_REALLOC  DUMA_PARAMS_FL);
+    ptr = NULL;
+  }
+  else
+  {
+    ptr = _duma_allocate(0, newSize, duma_tls->PROTECT_BELOW,
+      -1 /*=fillByte*/, 0 /*=protectAllocList*/, EFA_REALLOC,
+      DUMA_FAIL_ENV  DUMA_PARAMS_FL);
+
+    DUMA_ASSERT( oldBuffer );
+    if( ptr )
+    {
+      struct _DUMA_Slot * slot = slotForUserAddress(oldBuffer);
+
+      if ( slot == 0 )
+        DUMA_Abort("realloc(%a, %d): address not from malloc().",
+        (DUMA_ADDR)oldBuffer, (DUMA_SIZE)newSize);
+
+      if ( newSize > slot->userSize )
+      {
+        memcpy( ptr, oldBuffer, slot->userSize );
+        memset( (char*)ptr + slot->userSize, 0, newSize - slot->userSize );
+      }
+      else if ( newSize > 0 )
+        memcpy(ptr, oldBuffer, newSize);
+
+      _duma_deallocate(oldBuffer, 0 /*=protectAllocList*/, EFA_REALLOC  DUMA_PARAMS_FL);
+    }
   }
 
   Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
@@ -2537,7 +2564,7 @@ void  DUMA_delFrame(void)
   iExtraLeaks = nonFreedTotal - nonFreedReported;
 
   if ( nonFreedReported )
-    DUMA_Abort("DUMA: Reported %i leaks. There are %i extra leaks without allocation information\n"
+    DUMA_Print("DUMA: Reported %i leaks. There are %i extra leaks without allocation information\n"
               , nonFreedReported, iExtraLeaks
               );
   else if ( nonFreedReported < nonFreedTotal )
