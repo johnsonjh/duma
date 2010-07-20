@@ -1855,6 +1855,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
       LocalFree(slot->stacktrace);
     }
 #endif
+    ++_duma_s.unUsedSlots;
   }
 
   if ( protectAllocList )
