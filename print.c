@@ -43,15 +43,15 @@
   #include <winbase.h>
   #include <fcntl.h>
   #include <io.h>
+#endif
 
-#ifndef __CYGWIN__
-  /* already defined in cygwin headers */
-  typedef LPVOID caddr_t;
-#else
-  /* use these for cygwin */
+#if(defined(__MINGW32__) || defined(__MINGW64__) || defined(__CYGWIN__))
+  /* use these for mingw */
   #include <unistd.h>
   #include <fcntl.h>
-#endif
+#else
+  /* already defined in cygwin headers */
+  typedef LPVOID caddr_t;
 #endif
 
 #ifdef _MSC_VER
