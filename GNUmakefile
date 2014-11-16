@@ -89,10 +89,6 @@ DUMA_SO_OPTIONS=$(PIC) -DDUMA_SO_LIBRARY
 # also define 'WIN32'
 
 # some defaults:
-CC=gcc
-CXX=g++
-AR=ar
-RANLIB=ranlib
 INSTALL=install
 RM=rm
 RMFORCE=rm -f
@@ -499,7 +495,7 @@ dos2unix:
 
 createconf$(EXEPOSTFIX): createconf.o
 	- $(RMFORCE) createconf$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) createconf.o -o createconf$(EXEPOSTFIX)
+	$(CC_FOR_BUILD) $(HOST_CFLAGS) $(DUMA_OPTIONS) createconf.o -o createconf$(EXEPOSTFIX)
 
 tstheap$(EXEPOSTFIX): libduma.a tstheap.o
 	- $(RMFORCE) tstheap$(EXEPOSTFIX)
@@ -569,7 +565,7 @@ endif
 # define rules how to build objects for createconf
 #
 createconf.o:
-	$(CC) $(CFLAGS) $(DUMA_OPTIONS) -c createconf.c -o $@
+	$(CC_FOR_BUILD) $(HOST_CFLAGS) $(DUMA_OPTIONS) -c createconf.c -o $@
 
 
 #
