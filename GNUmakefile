@@ -312,7 +312,7 @@ OBJECTS=dumapp.o duma.o sem_inc.o print.o
 SO_OBJECTS=dumapp_so.o duma_so.o sem_inc_so.o print_so.o
 
 # Make all the top-level targets the makefile knows about.
-all:	libduma.a tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) $(DUMA_DYN_DEPS)
+all:	libduma.a $(DUMA_DYN_DEPS)
 
 # Perform self tests on the program this makefile builds.
 check test:
