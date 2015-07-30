@@ -1037,6 +1037,10 @@ _duma_init(void)
    * Allocate special memory for malloc() or C++ operator new, when size is 0
    */
   _duma_s.null_block = Page_Create(2*DUMA_PAGE_SIZE, 1/*=exitonfail*/, 1/*=printerror*/);
+  if ( NULL == _duma_s.null_block)
+  {
+    DUMA_Abort (" MMAP failed for null block creation in init \n");
+  }
 
   Page_DenyAccess(_duma_s.null_block, 2*DUMA_PAGE_SIZE);
     _duma_g.null_addr  = (void*)( (DUMA_ADDR)_duma_s.null_block + DUMA_PAGE_SIZE );
@@ -1265,7 +1269,8 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, int f
     printStackTrace(stacktrace, sizeof(stacktrace), DUMA_OUTPUT_STACKTRACE_MAPFILE);
     internalSize = strlen(stacktrace) * sizeof(char) + 1;
     ptrStacktrace = (char*) LocalAlloc(NULL, internalSize);
-    strcpy(ptrStacktrace, stacktrace);
+    if ( NULL != ptrStacktrace )
+        strcpy(ptrStacktrace, stacktrace);
     memset(stacktrace, 0, 600);
 
     _duma_s.DUMA_IN_DUMA = 0;
