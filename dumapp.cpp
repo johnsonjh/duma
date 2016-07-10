@@ -190,7 +190,9 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
  * (11) = (a) ; ASW
  */
 void * DUMA_CDECL operator new( DUMA_SIZE_T size )
+#ifdef DUMA_EXCEPTION_SPECS
 throw(std::bad_alloc)
+#endif
 {
   return duma_new_operator(size, EFA_NEW_ELEM, true  DUMA_PARAMS_UK);
 }
@@ -254,7 +256,9 @@ throw()
  * (21) = (a) ; AAW
  */
 void * DUMA_CDECL operator new[]( DUMA_SIZE_T size )
+#ifdef DUMA_EXCEPTION_SPECS
 throw(std::bad_alloc)
+#endif
 {
   return duma_new_operator(size, EFA_NEW_ARRAY, true  DUMA_PARAMS_UK);
 }

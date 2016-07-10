@@ -35,6 +35,10 @@
 
 #include "duma.h"
 
+#if __cplusplus < 201103L
+  #define DUMA_EXCEPTION_SPECS 1
+#endif
+
 /* remove previous macro definitions */
 #include "noduma.h"
 
