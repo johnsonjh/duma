@@ -68,6 +68,11 @@
   #endif
 #endif
 
+#if __cplusplus <= 199711L
+#define NEW_THROW_SPEC throw(std::bad_alloc)
+#else
+#define NEW_THROW_SPEC
+#endif
 
 #ifndef DUMA_NO_CPP_SUPPORT
 
@@ -85,7 +90,7 @@
     /* (12) = (b) ; ASN */
     /* (13) = (c) ; FSW */
     /* (14) = (d) ; FSN */
-    void * DUMA_CDECL operator new(DUMA_SIZE_T) throw(std::bad_alloc);
+    void * DUMA_CDECL operator new(DUMA_SIZE_T) NEW_THROW_SPEC;
     void * DUMA_CDECL operator new(DUMA_SIZE_T, const std::nothrow_t &) throw();
     void   DUMA_CDECL operator delete(void *) throw();
     void   DUMA_CDECL operator delete(void *, const std::nothrow_t &)   throw();
@@ -95,7 +100,7 @@
     /* (22) = (b) ; AAN */
     /* (23) = (c) ; FAW */
     /* (24) = (d) ; FAN */
-    void * DUMA_CDECL operator new[](DUMA_SIZE_T) throw(std::bad_alloc);
+    void * DUMA_CDECL operator new[](DUMA_SIZE_T) NEW_THROW_SPEC;
     void * DUMA_CDECL operator new[](DUMA_SIZE_T, const std::nothrow_t &) throw();
     void   DUMA_CDECL operator delete[](void *) throw();
     void   DUMA_CDECL operator delete[](void *, const std::nothrow_t &)   throw();
@@ -107,7 +112,7 @@
       /* (32) = (b) ; ASN */
       /* (33) = (c) ; FSW */
       /* (34) = (d) ; FSN */
-      void * DUMA_CDECL operator new(DUMA_SIZE_T, const char *, int) throw(std::bad_alloc);
+      void * DUMA_CDECL operator new(DUMA_SIZE_T, const char *, int) NEW_THROW_SPEC;
       void * DUMA_CDECL operator new(DUMA_SIZE_T, const std::nothrow_t &, const char *, int) throw();
       void   DUMA_CDECL operator delete(void *, const char *, int) throw();
       void   DUMA_CDECL operator delete(void *, const std::nothrow_t &, const char *, int) throw();
@@ -117,7 +122,7 @@
       /* (42) = (b) ; AAN */
       /* (43) = (c) ; FAW */
       /* (44) = (d) ; FAN */
-      void * DUMA_CDECL operator new[](DUMA_SIZE_T, const char *, int) throw(std::bad_alloc);
+      void * DUMA_CDECL operator new[](DUMA_SIZE_T, const char *, int) NEW_THROW_SPEC;
       void * DUMA_CDECL operator new[](DUMA_SIZE_T, const std::nothrow_t &, const char *, int) throw();
       void   DUMA_CDECL operator delete[](void *, const char *, int) throw();
       void   DUMA_CDECL operator delete[](void *, const std::nothrow_t &, const char *, int) throw();

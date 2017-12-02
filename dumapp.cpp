@@ -189,10 +189,7 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
  * Single object form, no debug information
  * (11) = (a) ; ASW
  */
-void * DUMA_CDECL operator new( DUMA_SIZE_T size )
-#ifdef DUMA_EXCEPTION_SPECS
-throw(std::bad_alloc)
-#endif
+void * DUMA_CDECL operator new( DUMA_SIZE_T size ) NEW_THROW_SPEC
 {
   return duma_new_operator(size, EFA_NEW_ELEM, true  DUMA_PARAMS_UK);
 }
@@ -255,10 +252,7 @@ throw()
  * Array object form, no debug information
  * (21) = (a) ; AAW
  */
-void * DUMA_CDECL operator new[]( DUMA_SIZE_T size )
-#ifdef DUMA_EXCEPTION_SPECS
-throw(std::bad_alloc)
-#endif
+void * DUMA_CDECL operator new[]( DUMA_SIZE_T size ) NEW_THROW_SPEC
 {
   return duma_new_operator(size, EFA_NEW_ARRAY, true  DUMA_PARAMS_UK);
 }
@@ -324,8 +318,7 @@ throw()
  * Single object form with debug information
  * (31) = (a) ; ASW
  */
-void * DUMA_CDECL operator new( DUMA_SIZE_T size, const char *filename, int lineno )
-throw( std::bad_alloc )
+void * DUMA_CDECL operator new( DUMA_SIZE_T size, const char *filename, int lineno ) NEW_THROW_SPEC
 {
   return duma_new_operator(size, EFA_NEW_ELEM, true  DUMA_PARAMS_FILELINE);
 }
@@ -377,8 +370,7 @@ throw()
  * Array object form with debug information
  * (41) = (a) ; AAW
  */
-void * DUMA_CDECL operator new[]( DUMA_SIZE_T size, const char *filename, int lineno )
-throw( std::bad_alloc )
+void * DUMA_CDECL operator new[]( DUMA_SIZE_T size, const char *filename, int lineno ) NEW_THROW_SPEC
 {
   return duma_new_operator(size, EFA_NEW_ARRAY, true  DUMA_PARAMS_FILELINE);
 }
