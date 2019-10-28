@@ -327,9 +327,9 @@ DUMA_Print(const char * pattern, ...)
   if(DUMA_OUTPUT_FILE != NULL)
   {
 #if defined(WIN32) && !defined(__CYGWIN__)
-    fd = _open(DUMA_OUTPUT_FILE, _O_APPEND|_O_CREAT|_O_WRONLY);
+    fd = _open(DUMA_OUTPUT_FILE, _O_APPEND|_O_CREAT|_O_WRONLY, 0600);
 #else
-    fd =  open(DUMA_OUTPUT_FILE,  O_APPEND| O_CREAT| O_WRONLY);
+    fd = open(DUMA_OUTPUT_FILE, O_APPEND|O_CREAT|O_WRONLY, 0600);
 #endif
     if ( fd >= 0 )
     {
