@@ -1,10 +1,20 @@
 
-TODO (listed from highest to lowest priority):
-==============================================
+TODO items (listed by general priority):
+========================================
+
+-Linux symbol support
+
+-Win32 use dbghelp for symbol support
+
+-Win64 support
+
+-In-kernel suppor-In-kernel support
 
 -prevent inclusion of duma_sem.h from outside duma headers
 
 -memccpy(), bcopy() + test for all overloaded string functions
+
+-Interface to cause verification walk
 
 -add additional target/compiler switches in GNUmakefile to build with
  1- native Solaris compiler / linker
