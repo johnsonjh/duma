@@ -2,6 +2,29 @@
 CHANGELOG:
 ==========
 
+(unreleased)
+  * Added LICENSE: Merged COPYING-GPL and COPYING-LGPL.
+    (2020-08-25, JJ)
+  * Updated TODO with items from 2009-12-30 by Daniel Trebbien.
+    (2020-08-25, JJ)
+  * Updated TODO with items from 2008-05-23 by Michael Eddington.
+    (2020-08-25, JJ)
+  * No longer build test programs (for now) to unbreak static builds.
+    (2020-08-24, JJ)
+  * Applied various update patches from the Buildroot Project.
+    (2020-10-28, JJ)
+  * Applied a patch from Swati Kumari for additional NULL checks.
+    (2015-07-30, JJ)
+  * Applied a patch for bug ID #3035145 from Reinhard Katzmann.
+    (2010-07-26, JJ)
+  * Applied a patch for bug ID #2923784 from Daniel Trebbien.
+    (2009-12-30, JJ)
+  * Applied a patch for bug ID #2923779 from Daniel Trebbien.
+    (2009-12-30, JJ)
+  * Applied a patch for bug ID #2831348 from an Anonymous SourceForge user.
+    (2009-07-23, JJ)
+
+
 2.5.16
   * added memmove() implementation based on memove() from klibc.
     code from Andris Zeila, see
