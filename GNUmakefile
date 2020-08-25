@@ -396,14 +396,14 @@ endif
 	@echo PACKAGE_SOURCE  [$(PACKAGE_SOURCE)]
 
 
-# Print filenames unknown to cvs
+# Print filenames unknown to git
 printuk:
-	- cvs status 2>/dev/null |grep '^? '
+	- git status -s --untracked-files=all 2>/dev/null | grep '^? '
 
 
-# Print filenames known to cvs and not "up-to-date"
+# Print filenames known to git but not "up-to-date" (modified)
 printmod:
-	- cvs status 2>/dev/null |grep 'Status:' |grep -v 'Up-to-date'
+	- git status -s 2>/dev/null |grep '^\ \?M '
 
 
 # Copy the executable file into a directory that users typically search for
