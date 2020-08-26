@@ -1,0 +1,40 @@
+duma (2.5.16~beta1-1) unstable; urgency=medium
+ 
+  * Removed all patches as they should be unnecessary.
+  * Changed upstream.
+
+ -- Jeffrey H. Johnson <jeff@gridfinity.com>  Wed, 26 Aug 2020 04:54:05 +0300
+
+
+duma (2.5.15-2) unstable; urgency=medium
+
+  * QA upload.
+  * Set Maintainer to Debian QA Group.  (See: #565925)
+  * Switch to source format 3.0 (quilt).  (Closes: #497947, #516370, #533554)
+  * Switch from cdbs to dh.
+  * Switch to debhelper-compat (= 12).  (Closes: #589715)
+  * Fix some lintian issues.
+  * dumapp.{cpp,h}: Apply patch from Buildroot (thanks, Yann E. MORIN!) to fix
+    FTBFS with C++14.  (Closes: #811887)
+  * Move git repository to salsa.d.o.
+
+ -- Andreas Beckmann <anbe@debian.org>  Sun, 16 Jun 2019 11:47:57 +0200
+
+duma (2.5.15-1) unstable; urgency=low
+
+  * New upstream release (Closes: #531169)
+  * Bump standard version
+
+ -- Julien Danjou <acid@debian.org>  Thu, 04 Jun 2009 14:12:00 +0200
+
+duma (2.5.14-2) unstable; urgency=low
+
+  * Fix typo in long description (Closes: #486736)
+
+ -- Julien Danjou <acid@debian.org>  Wed, 18 Jun 2008 00:09:42 +0200
+
+duma (2.5.14-1) unstable; urgency=low
+
+  * Initial release (Closes: #484473)
+
+ -- Julien Danjou <acid@debian.org>  Thu, 12 Jun 2008 11:23:57 +0200
