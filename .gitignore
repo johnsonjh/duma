@@ -79,6 +79,7 @@ dkms.conf
 **/CVS/*
 .cvsignore
 */.cvsignore
+*,v
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -176,6 +177,11 @@ tags
 *.ncb
 *.opt
 *.plg
-createconf
-eftest
-tstheap
+
+# Ignore .rej from patch
+*.rej
+
+# No longer ignoring the following (2020-08-25)
+#createconf
+#eftest
+#tstheap
