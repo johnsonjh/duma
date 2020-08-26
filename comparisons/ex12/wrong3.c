@@ -19,4 +19,5 @@ int main() {
   // valgrind reports 8, but that's ok
   printf("There should be 2 errors in this run\n");
   return 0;
+
 }

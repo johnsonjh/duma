@@ -16,17 +16,17 @@ class test
 public:
   test()
   {
-    x = 0;
+	x = 0;
   }
 
   test(int m)
   {
-    x = m;
+	x = m;
   }
 
   ~test()
   {
-    x = 0;
+	x = 0;
   }
 
   int x;
@@ -37,17 +37,17 @@ class testtest
 public:
   testtest()
   {
-    y = new test;     //NEW_ELEM( test );   //new test();
+	y = new test;     //NEW_ELEM( test );   //new test();
   }
 
   testtest(int m)
   {
-    y = new test(m);  //NEW_ELEM( test(m) );  //new test(m);
+	y = new test(m);  //NEW_ELEM( test(m) );  //new test(m);
   }
 
   ~testtest()
   {
-    delete y;
+	delete y;
   }
 
   test *y;
@@ -64,7 +64,7 @@ int main( int argc, char ** argv )
   int ret;
   ret = posix_memalign(&x, 2048, sizeof(int) );
   if ( !ret )
-    *x = 1;
+	*x = 1;
   free(x);
 #elif 0
 #include "noduma.h"
@@ -82,7 +82,7 @@ int main( int argc, char ** argv )
   CA_DEFINE(int,acTest,20);
 
   for (i=0; i<100; ++i)
-    CA_REF(acTest,i) = i;
+	CA_REF(acTest,i) = i;
 #elif 0
   /* this test should not fail */
   int *y, *z;
@@ -150,4 +150,3 @@ int main( int argc, char ** argv )
   return 0;
 
 }
-

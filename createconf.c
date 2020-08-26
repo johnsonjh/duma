@@ -103,7 +103,7 @@ DataType_T;
 
 DataType_T  sIntTypes[] =
 {
-    { 0, sizeof(char)     , "char"      }
+	{ 0, sizeof(char)     , "char"      }
   , { 1, sizeof(short int), "short int" }
   , { 2, sizeof(int)      , "int"       }
   , { 3, sizeof(long int) , "long int"  }
@@ -126,152 +126,152 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
   {
   case 0:
 #define TYPE unsigned char
-    for(offset=0; offset < max_sizeof; ++offset)
-    {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if ( addr % alignment == 0 )
-      {
-        *( (unsigned char *)     addr ) = 0;
-        *( (unsigned short int*) addr ) = 0;
-        *( (unsigned int *)      addr ) = 0;
-        *( (unsigned long int *) addr ) = 0L;
-        *( (float *)             addr ) = 0.0F;
-        *( (double *)            addr ) = 0.0;
-        *( (long double *)       addr ) = 0.0;
+	for(offset=0; offset < max_sizeof; ++offset)
+	{
+	  TYPE addr = (TYPE)(buffer) + offset;
+	  if ( addr % alignment == 0 )
+	  {
+		*( (unsigned char *)     addr ) = 0;
+		*( (unsigned short int*) addr ) = 0;
+		*( (unsigned int *)      addr ) = 0;
+		*( (unsigned long int *) addr ) = 0L;
+		*( (float *)             addr ) = 0.0F;
+		*( (double *)            addr ) = 0.0;
+		*( (long double *)       addr ) = 0.0;
 #ifdef _MSC_VER
-        *( (unsigned __int64 *) addr ) = 0L;
+		*( (unsigned __int64 *) addr ) = 0L;
 #endif
 #ifdef __GNUC__
-        *( (unsigned long long int *) addr ) = 0L;
+		*( (unsigned long long int *) addr ) = 0L;
 #endif
-      }
-    }
-    break;
+	  }
+	}
+	break;
   case 1:
 #undef TYPE
 #define TYPE unsigned short int
-    for(offset=0; offset < max_sizeof; ++offset)
-    {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if ( addr % alignment == 0 )
-      {
-        *( (unsigned char *)     addr ) = 0;
-        *( (unsigned short int*) addr ) = 0;
-        *( (unsigned int *)      addr ) = 0;
-        *( (unsigned long int *) addr ) = 0L;
-        *( (float *)             addr ) = 0.0F;
-        *( (double *)            addr ) = 0.0;
-        *( (long double *)       addr ) = 0.0;
+	for(offset=0; offset < max_sizeof; ++offset)
+	{
+	  TYPE addr = (TYPE)(buffer) + offset;
+	  if ( addr % alignment == 0 )
+	  {
+		*( (unsigned char *)     addr ) = 0;
+		*( (unsigned short int*) addr ) = 0;
+		*( (unsigned int *)      addr ) = 0;
+		*( (unsigned long int *) addr ) = 0L;
+		*( (float *)             addr ) = 0.0F;
+		*( (double *)            addr ) = 0.0;
+		*( (long double *)       addr ) = 0.0;
 #ifdef _MSC_VER
-        *( (unsigned __int64 *) addr ) = 0L;
+		*( (unsigned __int64 *) addr ) = 0L;
 #endif
 #ifdef __GNUC__
-        *( (unsigned long long int *) addr ) = 0L;
+		*( (unsigned long long int *) addr ) = 0L;
 #endif
-      }
-    }
-    break;
+	  }
+	}
+	break;
   case 2:
 #undef TYPE
 #define TYPE unsigned int
-    for(offset=0; offset < max_sizeof; ++offset)
-    {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if ( addr % alignment == 0 )
-      {
-        *( (unsigned char *)     addr ) = 0;
-        *( (unsigned short int*) addr ) = 0;
-        *( (unsigned int *)      addr ) = 0;
-        *( (unsigned long int *) addr ) = 0L;
-        *( (float *)             addr ) = 0.0F;
-        *( (double *)            addr ) = 0.0;
-        *( (long double *)       addr ) = 0.0;
+	for(offset=0; offset < max_sizeof; ++offset)
+	{
+	  TYPE addr = (TYPE)(buffer) + offset;
+	  if ( addr % alignment == 0 )
+	  {
+		*( (unsigned char *)     addr ) = 0;
+		*( (unsigned short int*) addr ) = 0;
+		*( (unsigned int *)      addr ) = 0;
+		*( (unsigned long int *) addr ) = 0L;
+		*( (float *)             addr ) = 0.0F;
+		*( (double *)            addr ) = 0.0;
+		*( (long double *)       addr ) = 0.0;
 #ifdef _MSC_VER
-        *( (unsigned __int64 *) addr ) = 0L;
+		*( (unsigned __int64 *) addr ) = 0L;
 #endif
 #ifdef __GNUC__
-        *( (unsigned long long int *) addr ) = 0L;
+		*( (unsigned long long int *) addr ) = 0L;
 #endif
-      }
-    }
-    break;
+	  }
+	}
+	break;
   case 3:
 #undef TYPE
 #define TYPE unsigned long int
-    for(offset=0; offset < max_sizeof; ++offset)
-    {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if ( addr % alignment == 0 )
-      {
-        *( (unsigned char *)     addr ) = 0;
-        *( (unsigned short int*) addr ) = 0;
-        *( (unsigned int *)      addr ) = 0;
-        *( (unsigned long int *) addr ) = 0L;
-        *( (float *)             addr ) = 0.0F;
-        *( (double *)            addr ) = 0.0;
-        *( (long double *)       addr ) = 0.0;
+	for(offset=0; offset < max_sizeof; ++offset)
+	{
+	  TYPE addr = (TYPE)(buffer) + offset;
+	  if ( addr % alignment == 0 )
+	  {
+		*( (unsigned char *)     addr ) = 0;
+		*( (unsigned short int*) addr ) = 0;
+		*( (unsigned int *)      addr ) = 0;
+		*( (unsigned long int *) addr ) = 0L;
+		*( (float *)             addr ) = 0.0F;
+		*( (double *)            addr ) = 0.0;
+		*( (long double *)       addr ) = 0.0;
 #ifdef _MSC_VER
-        *( (unsigned __int64 *) addr ) = 0L;
+		*( (unsigned __int64 *) addr ) = 0L;
 #endif
 #ifdef __GNUC__
-        *( (unsigned long long int *) addr ) = 0L;
+		*( (unsigned long long int *) addr ) = 0L;
 #endif
-      }
-    }
-    break;
+	  }
+	}
+	break;
 #ifdef _MSC_VER
   case 4:
 #undef TYPE
 #define TYPE unsigned __int64
-    for(offset=0; offset < max_sizeof; ++offset)
-    {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if ( addr % alignment == 0 )
-      {
-        *( (unsigned char *)     addr ) = 0;
-        *( (unsigned short int*) addr ) = 0;
-        *( (unsigned int *)      addr ) = 0;
-        *( (unsigned long int *) addr ) = 0L;
-        *( (float *)             addr ) = 0.0F;
-        *( (double *)            addr ) = 0.0;
-        *( (long double *)       addr ) = 0.0;
+	for(offset=0; offset < max_sizeof; ++offset)
+	{
+	  TYPE addr = (TYPE)(buffer) + offset;
+	  if ( addr % alignment == 0 )
+	  {
+		*( (unsigned char *)     addr ) = 0;
+		*( (unsigned short int*) addr ) = 0;
+		*( (unsigned int *)      addr ) = 0;
+		*( (unsigned long int *) addr ) = 0L;
+		*( (float *)             addr ) = 0.0F;
+		*( (double *)            addr ) = 0.0;
+		*( (long double *)       addr ) = 0.0;
 #ifdef _MSC_VER
-        *( (unsigned __int64 *) addr ) = 0L;
+		*( (unsigned __int64 *) addr ) = 0L;
 #endif
 #ifdef __GNUC__
-        *( (unsigned long long int *) addr ) = 0L;
+		*( (unsigned long long int *) addr ) = 0L;
 #endif
-      }
-    }
-    break;
+	  }
+	}
+	break;
 #endif
 #ifdef __GNUC__
   case 5:
 #undef TYPE
 #define TYPE unsigned long long int
-    for(offset=0; offset < max_sizeof; ++offset)
-    {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if ( addr % alignment == 0 )
-      {
-        *( (unsigned char *)     addr ) = 0;
-        *( (unsigned short int*) addr ) = 0;
-        *( (unsigned int *)      addr ) = 0;
-        *( (unsigned long int *) addr ) = 0L;
-        *( (float *)             addr ) = 0.0F;
-        *( (double *)            addr ) = 0.0;
-        *( (long double *)       addr ) = 0.0;
+	for(offset=0; offset < max_sizeof; ++offset)
+	{
+	  TYPE addr = (TYPE)(buffer) + offset;
+	  if ( addr % alignment == 0 )
+	  {
+		*( (unsigned char *)     addr ) = 0;
+		*( (unsigned short int*) addr ) = 0;
+		*( (unsigned int *)      addr ) = 0;
+		*( (unsigned long int *) addr ) = 0L;
+		*( (float *)             addr ) = 0.0F;
+		*( (double *)            addr ) = 0.0;
+		*( (long double *)       addr ) = 0.0;
 #ifdef _MSC_VER
-        *( (unsigned __int64 *) addr ) = 0L;
+		*( (unsigned __int64 *) addr ) = 0L;
 #endif
 #ifdef __GNUC__
-        *( (unsigned long long int *) addr ) = 0L;
+		*( (unsigned long long int *) addr ) = 0L;
 #endif
-      }
-    }
-    break;
+	  }
+	}
+	break;
 #endif
-    ;
+	;
   }
 }
 
@@ -282,8 +282,8 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   FILE * f = fopen(filename, "w");
   if (!f)
   {
-    fprintf(stderr, "createconf: Error: could not open file '%s'\n", filename);
-    return;
+	fprintf(stderr, "createconf: Error: could not open file '%s'\n", filename);
+	return;
   }
 
   fprintf(f, "/*\n");
@@ -689,27 +689,27 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, " * Build environment supports the '__attribute ((constructor))'?\n");
   fprintf(f, " */\n");
   if (initattr_ok)
-    fprintf(f, "#define DUMA_GNU_INIT_ATTR 1\n");
+	fprintf(f, "#define DUMA_GNU_INIT_ATTR 1\n");
   else
-    fprintf(f, "/* #define DUMA_GNU_INIT_ATTR 0 */\n");
+	fprintf(f, "/* #define DUMA_GNU_INIT_ATTR 0 */\n");
 
   fprintf(f, "\n");
   fprintf(f, "/*\n");
   fprintf(f, " * An integer type with same size as 'void *'\n");
   fprintf(f, " */\n");
   if (addrIdx >= 0)
-    fprintf(f, "typedef unsigned %s DUMA_ADDR;\n", sIntTypes[addrIdx].type);
+	fprintf(f, "typedef unsigned %s DUMA_ADDR;\n", sIntTypes[addrIdx].type);
   else
-    fprintf(f, "/* Error: No datatype for DUMA_ADDR found! */\n");
+	fprintf(f, "/* Error: No datatype for DUMA_ADDR found! */\n");
 
   fprintf(f, "\n");
   fprintf(f, "/*\n");
   fprintf(f, " * An integer type with same size as 'size_t'\n");
   fprintf(f, " */\n");
   if (sizeIdx >= 0)
-    fprintf(f, "typedef unsigned %s DUMA_SIZE;\n", sIntTypes[sizeIdx].type);
+	fprintf(f, "typedef unsigned %s DUMA_SIZE;\n", sIntTypes[sizeIdx].type);
   else
-    fprintf(f, "/* No datatype for DUMA_SIZE found! */\n");
+	fprintf(f, "/* No datatype for DUMA_SIZE found! */\n");
 
 
   fprintf(f, "\n");
@@ -764,65 +764,65 @@ int main()
   addrIdx = -1;
   for (iIt = 0; iIt < iNumIntTypes; ++iIt)
   {
-    if ( sizeof(void*) == sIntTypes[iIt].size )
-    {
-      addrIdx = iIt;
-      break;
-    }
+	if ( sizeof(void*) == sIntTypes[iIt].size )
+	{
+	  addrIdx = iIt;
+	  break;
+	}
   }
 
   // detect compatible type for SIZE_T
   sizeIdx = -1;
   for (iIt = 0; iIt < iNumIntTypes; ++iIt)
   {
-    if ( sizeof(size_t) == sIntTypes[iIt].size )
-    {
-      sizeIdx = iIt;
-      break;
-    }
+	if ( sizeof(size_t) == sIntTypes[iIt].size )
+	{
+	  sizeIdx = iIt;
+	  break;
+	}
   }
 
   /* detect maximum data type, which should be maximum alignment */
   max_sizeof = 0;
   for (iIt = 0; iIt < iNumIntTypes; ++iIt)
   {
-    if ( max_sizeof < sIntTypes[iIt].size )
-      max_sizeof = sIntTypes[iIt].size;
+	if ( max_sizeof < sIntTypes[iIt].size )
+	  max_sizeof = sIntTypes[iIt].size;
   }
   if ( max_sizeof < (int)sizeof(float) )
-    max_sizeof = sizeof(float);
+	max_sizeof = sizeof(float);
   if ( max_sizeof < (int)sizeof(double) )
-    max_sizeof = sizeof(double);
+	max_sizeof = sizeof(double);
   if ( max_sizeof < (int)sizeof(long double) )
-    max_sizeof = sizeof(long double);
+	max_sizeof = sizeof(long double);
 
   /* test for behaviour on malloc(0) */
   {
-    char * pcNullPtrA = (char*)malloc(0);
-    char * pcNullPtrB = (char*)malloc(0);
-    if ( !pcNullPtrA )
-      malloc0strategy = 1;
-    else if ( pcNullPtrA == pcNullPtrB )
-      malloc0strategy = 2;
-    else
-      malloc0strategy = 3;
+	char * pcNullPtrA = (char*)malloc(0);
+	char * pcNullPtrB = (char*)malloc(0);
+	if ( !pcNullPtrA )
+	  malloc0strategy = 1;
+	else if ( pcNullPtrA == pcNullPtrB )
+	  malloc0strategy = 2;
+	else
+	  malloc0strategy = 3;
   }
 
 #ifdef _MSC_VER
   {
-    /* fix output path when started form Visual C++ IDE */
-    char  directory[1024];
-    char  * start;
+	/* fix output path when started form Visual C++ IDE */
+	char  directory[1024];
+	char  * start;
 
-    _getcwd( directory, 1024 ); /* get current directory */
-    if ( ( start = strstr( directory, "win32-msvc" ) ) )
-    {
-      *start = 0;
-      strcpy(filename, directory);
-      strcat(filename, "duma_config.h");
-    }
-    else
-      strcpy( filename, "duma_config.h" );
+	_getcwd( directory, 1024 ); /* get current directory */
+	if ( ( start = strstr( directory, "win32-msvc" ) ) )
+	{
+	  *start = 0;
+	  strcpy(filename, directory);
+	  strcat(filename, "duma_config.h");
+	}
+	else
+	  strcpy( filename, "duma_config.h" );
   }
 #else
   strcpy( filename, "duma_config.h" );
@@ -832,15 +832,14 @@ int main()
   alignment = max_sizeof;
   do
   {
-    /* do the alignment access tests */
-    testAlignment(addrIdx, buffer, alignment, max_sizeof);
-    /* write whole config file. next test may crash ! */
-    writeFile(filename, pagesize, addrIdx, sizeIdx, alignment, malloc0strategy);
-    /* try next lower alignment */
-    alignment >>= 1;
+	/* do the alignment access tests */
+	testAlignment(addrIdx, buffer, alignment, max_sizeof);
+	/* write whole config file. next test may crash ! */
+	writeFile(filename, pagesize, addrIdx, sizeIdx, alignment, malloc0strategy);
+	/* try next lower alignment */
+	alignment >>= 1;
   }
   while ( alignment > 0 );
 
   return 0;
 }
-

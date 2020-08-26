@@ -33,14 +33,14 @@ int main(int argc, char **argv)
   char* pszDllPath = "dumadetoursdll.dll";
 
   if(getenv("DUMA_DETOURS_DLL"))
-    pszDllPath = getenv("DUMA_DETOURS_DLL");
+	pszDllPath = getenv("DUMA_DETOURS_DLL");
 
   printf("\n| DUMA -- Detours DUMA Loader\n| Copyright (c) 2006 Michael Eddington\n\n");
 
   if (argc < 2)
   {
-    printf("\nSyntax: dumadetours.exe [command line]\n\n");
-    return 1;
+	printf("\nSyntax: dumadetours.exe [command line]\n\n");
+	return 1;
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -61,60 +61,60 @@ int main(int argc, char **argv)
   strcpy(szExe, argv[cnt]);
   for (; cnt < argc; cnt++)
   {
-    if (strchr(argv[cnt], ' ') != NULL || strchr(argv[cnt], '\t') != NULL)
-    {
-      strcat(szCommand, "\"");
-      strcat(szCommand, argv[cnt]);
-      strcat(szCommand, "\"");
-    }
-    else
-      strcat(szCommand, argv[cnt]);
+	if (strchr(argv[cnt], ' ') != NULL || strchr(argv[cnt], '\t') != NULL)
+	{
+	  strcat(szCommand, "\"");
+	  strcat(szCommand, argv[cnt]);
+	  strcat(szCommand, "\"");
+	}
+	else
+	  strcat(szCommand, argv[cnt]);
 
-    if (cnt + 1 < argc)
-      strcat(szCommand, " ");
+	if (cnt + 1 < argc)
+	  strcat(szCommand, " ");
   }
-  
+
   printf("dumadetours.exe: Starting: [%s]\n\n", szCommand);
   fflush(stdout);
 
   SetLastError(0);
   SearchPath(NULL, szExe, ".exe", arrayof(szFullExe), szFullExe, &pszFileExe);
-  
+
 #ifdef DUMA_DUMA_DETOURS_VERSION == 2.1
   if (!DetourCreateProcessWithDll(
-                                    szFullExe[0] ? szFullExe : NULL // lpApplicationName
-                                  , szCommand                 // lpCommandLine
-                                  , NULL                      // lpProcessAttributes
-                                  , NULL                      // lpThreadAttributes
-                                  , TRUE                      // bInheritHandles
-                                  , CREATE_DEFAULT_ERROR_MODE // dwCreationFlags
-                                  , NULL                      // lpEnvironment
-                                  , NULL                      // lpCurrentDirectory
-                                  , &si                       // lpStartupInfo
-                                  , &pi                       // lpProcessInformation
-                                  , NULL                      // lpDetouredDllPath
-                                  , pszDllPath                // lpDllName
-                                  , NULL
-     )                            )   // pfCreateProcessW
+									szFullExe[0] ? szFullExe : NULL // lpApplicationName
+								  , szCommand                 // lpCommandLine
+								  , NULL                      // lpProcessAttributes
+								  , NULL                      // lpThreadAttributes
+								  , TRUE                      // bInheritHandles
+								  , CREATE_DEFAULT_ERROR_MODE // dwCreationFlags
+								  , NULL                      // lpEnvironment
+								  , NULL                      // lpCurrentDirectory
+								  , &si                       // lpStartupInfo
+								  , &pi                       // lpProcessInformation
+								  , NULL                      // lpDetouredDllPath
+								  , pszDllPath                // lpDllName
+								  , NULL
+	 )                            )   // pfCreateProcessW
 #else
   if (!DetourCreateProcessWithDll(
-                                    szFullExe[0] ? szFullExe : NULL
-                                  , szCommand
-                                  , NULL
-                                  , NULL
-                                  , TRUE
-                                  , CREATE_DEFAULT_ERROR_MODE
-                                  , NULL
-                                  , NULL
-                                  , &si
-                                  , &pi
-                                  , pszDllPath
-                                  , NULL
-     )                            )
+									szFullExe[0] ? szFullExe : NULL
+								  , szCommand
+								  , NULL
+								  , NULL
+								  , TRUE
+								  , CREATE_DEFAULT_ERROR_MODE
+								  , NULL
+								  , NULL
+								  , &si
+								  , &pi
+								  , pszDllPath
+								  , NULL
+	 )                            )
 #endif
   {
-    printf("dumadetours.exe: DetourCreateProcessWithDll failed: %d\n", GetLastError());
-    ExitProcess(2);
+	printf("dumadetours.exe: DetourCreateProcessWithDll failed: %d\n", GetLastError());
+	ExitProcess(2);
   }
 
   WaitForSingleObject(pi.hProcess, INFINITE);
@@ -122,11 +122,12 @@ int main(int argc, char **argv)
   DWORD dwResult = 0;
   if (!GetExitCodeProcess(pi.hProcess, &dwResult))
   {
-    printf("dumadetours.exe: GetExitCodeProcess failed: %d\n", GetLastError());
-    dwResult = 3;
+	printf("dumadetours.exe: GetExitCodeProcess failed: %d\n", GetLastError());
+	dwResult = 3;
   }
 
   return dwResult;
 }
+
 
 // end

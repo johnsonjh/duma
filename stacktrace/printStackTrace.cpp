@@ -7,8 +7,8 @@
  * granted without fee, provided that the above copyright notice
  * appear in all copies and that both that copyright notice and
  * this permission notice appear in supporting documentation.
- * Jani Kajala makes no representations about the suitability 
- * of this software for any purpose. It is provided "as is" 
+ * Jani Kajala makes no representations about the suitability
+ * of this software for any purpose. It is provided "as is"
  * without express or implied warranty.
  */
 
@@ -33,7 +33,7 @@ static MapFile*	map = NULL;
 
 
 /* Function: StackTraceCleanup
- * 
+ *
  * Cleanup memory used by stacktrace library.
  *
  * See Also:
@@ -96,4 +96,5 @@ extern "C" void printStackTrace( char* buffer, int bufferSize, char* mapFilename
 		MapFile* maps[] = {map};
 		StackTrace::printStackTrace( maps, 1, 1, 16, buffer, bufferSize);
 	}
+
 }

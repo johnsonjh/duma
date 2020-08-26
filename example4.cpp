@@ -12,7 +12,8 @@ int main()
 #endif
   pi = (int*)malloc(10*sizeof(int));
   for(i=0; i<10; ++i)
-    pi[i] = i;
+	pi[i] = i;
   delete pi;
   return 0;
+
 }

@@ -30,8 +30,8 @@
 // be passed to the real HeapXxxx functions.
 //
 // It is very usefull to have a map file when using duma + detours and
-// enable stacktrace output (DUMA_OUTPUT_STACKTRACE, and 
-// DUMA_OUTPUT_STACKTRACE_MAPFILE) as you will not have filename's in 
+// enable stacktrace output (DUMA_OUTPUT_STACKTRACE, and
+// DUMA_OUTPUT_STACKTRACE_MAPFILE) as you will not have filename's in
 // the output.
 
 #include "stdafx.h"
@@ -68,7 +68,7 @@ DETOUR_TRAMPOLINE(BOOL WINAPI Real_HeapDestroy(HANDLE hHeap), HeapDestroy);
 BOOL WINAPI My_HeapDestroy(HANDLE hHeap)
 {
   if(hHeap != (HANDLE)1)
-    return Real_HeapDestroy(hHeap);
+	return Real_HeapDestroy(hHeap);
 
   return TRUE;
 }
@@ -82,7 +82,7 @@ DETOUR_TRAMPOLINE(BOOL WINAPI Real_HeapFree(HANDLE hHeap, DWORD dwFlags, LPVOID 
 BOOL WINAPI My_HeapFree(HANDLE hHeap, DWORD dwFlags, LPVOID lpMem)
 {
   if(hHeap != (HANDLE)1)
-    return Real_HeapFree(hHeap, dwFlags, lpMem);
+	return Real_HeapFree(hHeap, dwFlags, lpMem);
 
   _duma_free(lpMem, __FILE__, __LINE__);
   return TRUE;
@@ -97,7 +97,7 @@ DETOUR_TRAMPOLINE(LPVOID WINAPI Real_HeapAlloc(HANDLE Heap, DWORD Flags, DWORD B
 LPVOID WINAPI My_HeapAlloc(HANDLE hHeap, DWORD dwFlags, DWORD dwBytes)
 {
   if(hHeap != (HANDLE)1)
-    return Real_HeapAlloc(hHeap, dwFlags, dwBytes);
+	return Real_HeapAlloc(hHeap, dwFlags, dwBytes);
 
   return _duma_malloc(dwBytes, __FILE__, __LINE__);
 }
@@ -111,7 +111,7 @@ DETOUR_TRAMPOLINE(LPVOID WINAPI Real_HeapReAlloc(HANDLE hHeap, DWORD dwFlags, LP
 LPVOID WINAPI My_HeapReAlloc(HANDLE hHeap, DWORD dwFlags, LPVOID lpMem, SIZE_T dwBytes)
 {
   if(hHeap != (HANDLE)1)
-    return Real_HeapReAlloc(hHeap, dwFlags, lpMem, dwBytes);
+	return Real_HeapReAlloc(hHeap, dwFlags, lpMem, dwBytes);
 
   return _duma_realloc(lpMem, dwBytes, __FILE__, __LINE__);
 }
@@ -125,7 +125,7 @@ DETOUR_TRAMPOLINE(SIZE_T WINAPI Real_HeapSize(HANDLE hHeap, DWORD dwFlags, LPCVO
 SIZE_T WINAPI My_HeapSize(HANDLE hHeap, DWORD dwFlags, LPCVOID lpMem)
 {
   if(hHeap != (HANDLE)1)
-    return Real_HeapSize(hHeap, dwFlags, lpMem);
+	return Real_HeapSize(hHeap, dwFlags, lpMem);
 
   return sizeof(lpMem);
 }
@@ -140,7 +140,7 @@ DETOUR_TRAMPOLINE(BOOL WINAPI Real_HeapValidate(HANDLE hHeap, DWORD dwFlags, LPC
 BOOL WINAPI My_HeapValidate(HANDLE hHeap, DWORD dwFlags, LPCVOID lpMem)
 {
   if(hHeap != (HANDLE)1)
-    return Real_HeapValidate(hHeap, dwFlags, lpMem);
+	return Real_HeapValidate(hHeap, dwFlags, lpMem);
 
   return true;
 }
@@ -151,67 +151,67 @@ BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
 {
   if (dwReason == DLL_PROCESS_ATTACH)
   {
-    // For debugging.  Allows us time to attach a debugger.
-    //fprintf(stderr, "DUMA: Press any key to continue...");
-    //fgetc(stdin);
+	// For debugging.  Allows us time to attach a debugger.
+	//fprintf(stderr, "DUMA: Press any key to continue...");
+	//fgetc(stdin);
 
-    duma_init();
+	duma_init();
 
 #ifdef DUMA_DUMA_DETOURS_VERSION == 2.1
 
-    DetourTransactionBegin();
-    DetourUpdateThread(GetCurrentThread());
-    DetourAttach(&(PVOID&)Real_HeapCreate,    My_HeapCreate);
-    DetourAttach(&(PVOID&)Real_HeapDestroy,   My_HeapDestroy);
-    DetourAttach(&(PVOID&)Real_HeapFree,      My_HeapFree);
-    DetourAttach(&(PVOID&)Real_HeapAlloc,     My_HeapAlloc);
-    DetourAttach(&(PVOID&)Real_HeapReAlloc,   My_HeapReAlloc);
-    DetourAttach(&(PVOID&)Real_HeapSize,      My_HeapSize);
-    DetourAttach(&(PVOID&)Real_HeapValidate,  My_HeapValidate);
-    DetourTransactionCommit();
+	DetourTransactionBegin();
+	DetourUpdateThread(GetCurrentThread());
+	DetourAttach(&(PVOID&)Real_HeapCreate,    My_HeapCreate);
+	DetourAttach(&(PVOID&)Real_HeapDestroy,   My_HeapDestroy);
+	DetourAttach(&(PVOID&)Real_HeapFree,      My_HeapFree);
+	DetourAttach(&(PVOID&)Real_HeapAlloc,     My_HeapAlloc);
+	DetourAttach(&(PVOID&)Real_HeapReAlloc,   My_HeapReAlloc);
+	DetourAttach(&(PVOID&)Real_HeapSize,      My_HeapSize);
+	DetourAttach(&(PVOID&)Real_HeapValidate,  My_HeapValidate);
+	DetourTransactionCommit();
 
 #elif DUMA_DUMA_DETOURS_VERSION == 1.5
 
-    DetourFunctionWithTrampoline((PBYTE)Real_HeapCreate,    (PBYTE)My_HeapCreate);
-    DetourFunctionWithTrampoline((PBYTE)Real_HeapDestroy,   (PBYTE)My_HeapDestroy);
-    DetourFunctionWithTrampoline((PBYTE)Real_HeapFree,      (PBYTE)My_HeapFree);
-    DetourFunctionWithTrampoline((PBYTE)Real_HeapAlloc,     (PBYTE)My_HeapAlloc);
-    DetourFunctionWithTrampoline((PBYTE)Real_HeapReAlloc,   (PBYTE)My_HeapReAlloc);
-    DetourFunctionWithTrampoline((PBYTE)Real_HeapSize,      (PBYTE)My_HeapSize);
-    DetourFunctionWithTrampoline((PBYTE)Real_HeapValidate,  (PBYTE)My_HeapValidate);
+	DetourFunctionWithTrampoline((PBYTE)Real_HeapCreate,    (PBYTE)My_HeapCreate);
+	DetourFunctionWithTrampoline((PBYTE)Real_HeapDestroy,   (PBYTE)My_HeapDestroy);
+	DetourFunctionWithTrampoline((PBYTE)Real_HeapFree,      (PBYTE)My_HeapFree);
+	DetourFunctionWithTrampoline((PBYTE)Real_HeapAlloc,     (PBYTE)My_HeapAlloc);
+	DetourFunctionWithTrampoline((PBYTE)Real_HeapReAlloc,   (PBYTE)My_HeapReAlloc);
+	DetourFunctionWithTrampoline((PBYTE)Real_HeapSize,      (PBYTE)My_HeapSize);
+	DetourFunctionWithTrampoline((PBYTE)Real_HeapValidate,  (PBYTE)My_HeapValidate);
 
 #else
 #error "Unsupported version of detours"
 #endif
 
-    bInternal = FALSE;
+	bInternal = FALSE;
   }
   else if (dwReason == DLL_PROCESS_DETACH)
   {
-    bInternal = TRUE;
+	bInternal = TRUE;
 
 #ifdef DUMA_DUMA_DETOURS_VERSION == 2.1
 
-    DetourTransactionBegin();
-    DetourUpdateThread(GetCurrentThread());
-    DetourDetach(&(PVOID&)Real_HeapCreate,    My_HeapCreate);
-    DetourDetach(&(PVOID&)Real_HeapDestroy,   My_HeapDestroy);
-    DetourDetach(&(PVOID&)Real_HeapFree,      My_HeapFree);
-    DetourDetach(&(PVOID&)Real_HeapAlloc,     My_HeapAlloc);
-    DetourDetach(&(PVOID&)Real_HeapReAlloc,   My_HeapReAlloc);
-    DetourDetach(&(PVOID&)Real_HeapSize,      My_HeapSize);
-    DetourDetach(&(PVOID&)Real_HeapValidate,  My_HeapValidate);
-    DetourTransactionCommit();
+	DetourTransactionBegin();
+	DetourUpdateThread(GetCurrentThread());
+	DetourDetach(&(PVOID&)Real_HeapCreate,    My_HeapCreate);
+	DetourDetach(&(PVOID&)Real_HeapDestroy,   My_HeapDestroy);
+	DetourDetach(&(PVOID&)Real_HeapFree,      My_HeapFree);
+	DetourDetach(&(PVOID&)Real_HeapAlloc,     My_HeapAlloc);
+	DetourDetach(&(PVOID&)Real_HeapReAlloc,   My_HeapReAlloc);
+	DetourDetach(&(PVOID&)Real_HeapSize,      My_HeapSize);
+	DetourDetach(&(PVOID&)Real_HeapValidate,  My_HeapValidate);
+	DetourTransactionCommit();
 
 #elif DUMA_DUMA_DETOURS_VERSION == 1.5
 
-    DetourRemove((PBYTE)Real_HeapCreate,    (PBYTE)My_HeapCreate);
-    DetourRemove((PBYTE)Real_HeapDestroy,   (PBYTE)My_HeapDestroy);
-    DetourRemove((PBYTE)Real_HeapFree,      (PBYTE)My_HeapFree);
-    DetourRemove((PBYTE)Real_HeapAlloc,     (PBYTE)My_HeapAlloc);
-    DetourRemove((PBYTE)Real_HeapReAlloc,   (PBYTE)My_HeapReAlloc);
-    DetourRemove((PBYTE)Real_HeapSize,      (PBYTE)My_HeapSize);
-    DetourRemove((PBYTE)Real_HeapValidate,  (PBYTE)My_HeapValidate);
+	DetourRemove((PBYTE)Real_HeapCreate,    (PBYTE)My_HeapCreate);
+	DetourRemove((PBYTE)Real_HeapDestroy,   (PBYTE)My_HeapDestroy);
+	DetourRemove((PBYTE)Real_HeapFree,      (PBYTE)My_HeapFree);
+	DetourRemove((PBYTE)Real_HeapAlloc,     (PBYTE)My_HeapAlloc);
+	DetourRemove((PBYTE)Real_HeapReAlloc,   (PBYTE)My_HeapReAlloc);
+	DetourRemove((PBYTE)Real_HeapSize,      (PBYTE)My_HeapSize);
+	DetourRemove((PBYTE)Real_HeapValidate,  (PBYTE)My_HeapValidate);
 
 #else
 #error "Unsupported version of detours"
@@ -224,5 +224,6 @@ BOOL APIENTRY DllMain(HINSTANCE hinst, DWORD dwReason, LPVOID reserved)
 VOID NullExport()
 {
 }
+
 
 // end

@@ -72,63 +72,64 @@ main(int argc, char * * argv)
 #endif
 
   if ( argc >= 2 )
-    duration = atoi(argv[1]);
+	duration = atoi(argv[1]);
 
   for ( count = 0; count < POOL_SIZE; count++ )
   {
-    pool[count].addr = (void*)0;
-    pool[count].size = (size_t)0;
+	pool[count].addr = (void*)0;
+	pool[count].size = (size_t)0;
   }
 
   for ( count = 0; count < duration; count++ )
   {
-    int                 pool_idx;
-    struct POOL_ELEM  * element;
-    size_t              size;
+	int                 pool_idx;
+	struct POOL_ELEM  * element;
+	size_t              size;
 
-    pool_idx =(int)(drand48() * POOL_SIZE);
-    if (pool_idx >=0 && pool_idx<POOL_SIZE)
-    {
-      element  = &pool[pool_idx];
-      size     = (size_t)(drand48() * (LARGEST_BUFFER + 1));
+	pool_idx =(int)(drand48() * POOL_SIZE);
+	if (pool_idx >=0 && pool_idx<POOL_SIZE)
+	{
+	  element  = &pool[pool_idx];
+	  size     = (size_t)(drand48() * (LARGEST_BUFFER + 1));
 
-      if ( element->addr )
-      {
-        /* check if memory is accessible */
-        memset( element->addr, 0, element->size );
-        free( element->addr );
-        element->addr = (void*)0;
-      }
+	  if ( element->addr )
+	  {
+		/* check if memory is accessible */
+		memset( element->addr, 0, element->size );
+		free( element->addr );
+		element->addr = (void*)0;
+	  }
 
-      if ( size > 0 )
-      {
+	  if ( size > 0 )
+	  {
 #ifdef ALIGNMENT
-        element->addr = memalign(ALIGNMENT,size);
+		element->addr = memalign(ALIGNMENT,size);
 #else
-        element->addr = malloc(size);
+		element->addr = malloc(size);
 #endif
-        element->size = size;
-        /* really use it, so that the system has to use real memory */
-        memset( element->addr, -1, size );
-      }
-    }
+		element->size = size;
+		/* really use it, so that the system has to use real memory */
+		memset( element->addr, -1, size );
+	  }
+	}
   }
 
 #if 1
   /* don't forget to free the allocated memory, else the
-     confidence test won't pass - without having set
-     "EF_NO_LEAKDETECTION" preprocessor definition
+	 confidence test won't pass - without having set
+	 "EF_NO_LEAKDETECTION" preprocessor definition
   */
   for ( count = 0; count < POOL_SIZE; count++ )
   {
-    if ( pool[count].addr )
-    {
-      /* check if memory is accessible */
-      memset( pool[count].addr, 0, pool[count].size );
-      free( pool[count].addr );
-    }
+	if ( pool[count].addr )
+	{
+	  /* check if memory is accessible */
+	  memset( pool[count].addr, 0, pool[count].size );
+	  free( pool[count].addr );
+	}
   }
 #endif
 
   return 0;
+
 }

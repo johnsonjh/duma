@@ -10,21 +10,21 @@ const char * duma_getenv( const char * varname )
   int varno = 0;
 
   if ( !varname )
-    return ret;
+	return ret;
 
   if ( varname[0] == '\0' )
-    return ret;
+	return ret;
 
   while ( environ[varno] )
   {
-    const char * v = environ[varno++];
-    int idx = 0;
+	const char * v = environ[varno++];
+	int idx = 0;
 
-    while ( varname[idx] != '\0' && v[idx] == varname[idx] )
-      ++idx;
+	while ( varname[idx] != '\0' && v[idx] == varname[idx] )
+	  ++idx;
 
-    if ( idx > 0 && varname[idx] == '\0' && v[idx] == '=' )
-      return v + (idx +1);
+	if ( idx > 0 && varname[idx] == '\0' && v[idx] == '=' )
+	  return v + (idx +1);
   }
   return ret;
 }
@@ -40,25 +40,26 @@ int main(int argc, const char * argv[] )
   printf("environment variables:\n");
   while ( environ[i] )
   {
-    const char * v = environ[i];
-    printf("%d: %s\n", i, v);
-    ++i;
+	const char * v = environ[i];
+	printf("%d: %s\n", i, v);
+	++i;
   }
 #endif
 
   if ( argc < 2 )
   {
-    fprintf(stderr, "Usage: testenv <varname\n");
-    return 5;
+	fprintf(stderr, "Usage: testenv <varname\n");
+	return 5;
   }
 
   varname = argv[1];
 
   v = duma_getenv(varname);
   if ( v )
-    printf("%s is '%s'\n", varname, v);
+	printf("%s is '%s'\n", varname, v);
   else
-    printf("%s undefined\n", varname);
+	printf("%s undefined\n", varname);
 
   return 0;
+
 }

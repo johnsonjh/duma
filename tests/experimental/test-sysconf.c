@@ -32,11 +32,10 @@ int main( int argc, char *argv[] )
 
   printf("\ninitialized memory\n");
   for (i=0; i<1024*4096; ++i)
-    p[i] = 0;
+	p[i] = 0;
   sc_print();
-  
+
   if ( p )
-    free( p );
+	free( p );
   return 0;
 }
-

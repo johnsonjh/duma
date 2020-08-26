@@ -7,8 +7,8 @@
  * granted without fee, provided that the above copyright notice
  * appear in all copies and that both that copyright notice and
  * this permission notice appear in supporting documentation.
- * Jani Kajala makes no representations about the suitability 
- * of this software for any purpose. It is provided "as is" 
+ * Jani Kajala makes no representations about the suitability
+ * of this software for any purpose. It is provided "as is"
  * without express or implied warranty.
  */
 
@@ -37,7 +37,7 @@ public:
 	MapFileEntry();
 
 	/** Creates an entry with specified section, offset, length and name. */
-	MapFileEntry( long section, long offset, long length, 
+	MapFileEntry( long section, long offset, long length,
 		const char* name, long rvabase, const char* lib);
 
 	/** Returns section of the entry. */
@@ -72,6 +72,7 @@ private:
 
 
 } // dev
+
 
 
 #endif // _DEV_MAPFILEENTRY_H

@@ -10,4 +10,5 @@ int main() {
   p[10] ^= 0x0F; /* bash after */
   printf("Did you notice?\n");
   free(p);
+
 }

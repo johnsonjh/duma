@@ -2,12 +2,12 @@
 //
 
 #include "stdafx.h"
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
-                       LPVOID lpReserved
+BOOL APIENTRY DllMain( HANDLE hModule,
+					   DWORD  ul_reason_for_call,
+					   LPVOID lpReserved
 					 )
 {
-    return TRUE;
+	return TRUE;
 }
 
 #include "duma.h"
@@ -80,5 +80,6 @@ char * duma_strncat(char *dest, const char *src, size_t size)
 {
   return _duma_strncat(dest, src, size  DUMA_PARAMS_UK);
 }
+
 
 // end

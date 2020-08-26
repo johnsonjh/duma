@@ -1,5 +1,5 @@
 
-/* 
+/*
  * KDUMA - Kernel Mode Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
  * Copyright (C) 2006 Eric Rachner <eric@rachner.us>
@@ -61,22 +61,22 @@ static void mprotectFailed(void)
  *
  * flags - Passed along from kmalloc (GFP_ATOMIC and the like)
  *
- * See Also: 
+ * See Also:
  *	<Page_Delete>
  */
 static void *
 Page_Create(size_t size, int exitonfail, int printerror, int flags)
 {
 	caddr_t    allocation;
-	
+
 	unsigned long numPages = size/DUMA_PAGE_SIZE;
 	if( size % DUMA_AGE_SIZE )
 		numPages++;
-	
+
 	unsigned long order = ilog2(numPages);
-	
+
 	allocation = __get_free_pages(flags, order);
-	
+
 	if ( allocation == 0 )
 	{
 		if ( exitonfail )
@@ -84,7 +84,7 @@ Page_Create(size_t size, int exitonfail, int printerror, int flags)
 		else if ( printerror )
 			DUMA_Print("\nDUMA warning: __get_fre_pages(%d, %d) failed: %s", flags, order, stringErrorReport());
 	}
-	
+
 	return (void *)allocation;
 }
 
@@ -93,7 +93,7 @@ Page_Create(size_t size, int exitonfail, int printerror, int flags)
  *
  * Allow memory access to allocated memory.
  *
- * See Also: 
+ * See Also:
  *	<Page_DenyAccess>
  */
 void Page_AllowAccess(void * address, size_t size)
@@ -108,7 +108,7 @@ void Page_AllowAccess(void * address, size_t size)
  *
  * Deny access to allocated memory region.
  *
- * See Also: 
+ * See Also:
  *	<Page_AllowAccess>
  */
 static void Page_DenyAccess(void * address, size_t size)
@@ -134,7 +134,7 @@ static void Page_Delete(void * address, size_t size)
 	unsigned long numPages = size/DUMA_PAGE_SIZE;
 	if( size % DUMA_AGE_SIZE )
 		numPages++;
-	
+
 	unsigned long order = ilog2(numPages);
 	__free_pages(address, size);
 
@@ -150,5 +150,6 @@ Page_Size(void)
 {
 	return getpagesize();
 }
+
 
 #endif /* DUMA_PAGING_H */

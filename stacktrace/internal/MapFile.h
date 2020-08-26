@@ -7,8 +7,8 @@
  * granted without fee, provided that the above copyright notice
  * appear in all copies and that both that copyright notice and
  * this permission notice appear in supporting documentation.
- * Jani Kajala makes no representations about the suitability 
- * of this software for any purpose. It is provided "as is" 
+ * Jani Kajala makes no representations about the suitability
+ * of this software for any purpose. It is provided "as is"
  * without express or implied warranty.
  */
 
@@ -25,7 +25,7 @@ namespace dev
 class MapFileEntry;
 
 
-/** 
+/**
  * Linker generated module map file parser.
  */
 class MapFile
@@ -65,13 +65,13 @@ public:
 	/** Returns line number of last successful read character. */
 	int					line() const;
 
-	/** 
-	 * Finds entry which contains specified address. 
+	/**
+	 * Finds entry which contains specified address.
 	 * @return Entry index or -1 if not found.
 	 */
 	int					findEntry( long addr ) const;
 
-	/** 
+	/**
 	 * Returns current module name, with map extension.
 	 * The output buffer is always 0-terminated.
 	 */
@@ -87,6 +87,7 @@ private:
 
 
 } // dev
+
 
 
 #endif // _DEV_MAPFILE_H

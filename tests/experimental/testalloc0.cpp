@@ -14,11 +14,11 @@ int get_new0strategy(void)
   piNullPtrB = (int*) operator new(0);
 
   if ( !piNullPtrA )
-    op_new_0_strategy = 1;
+	op_new_0_strategy = 1;
   else if ( piNullPtrA == piNullPtrB )
-    op_new_0_strategy = 2;
+	op_new_0_strategy = 2;
   else
-    op_new_0_strategy = 3;
+	op_new_0_strategy = 3;
 
   delete piNullPtrA;
   delete piNullPtrB;
@@ -37,11 +37,11 @@ int get_newVec0strategy(void)
   piNullPtrB = new int[0];
 
   if ( !piNullPtrA )
-    op_new_0_strategy = 1;
+	op_new_0_strategy = 1;
   else if ( piNullPtrA == piNullPtrB )
-    op_new_0_strategy = 2;
+	op_new_0_strategy = 2;
   else
-    op_new_0_strategy = 3;
+	op_new_0_strategy = 3;
 
   delete []piNullPtrA;
   delete []piNullPtrB;
@@ -59,11 +59,11 @@ int get_malloc0strategy(void)
   piNullPtrB = (int*)malloc(0);
 
   if ( !piNullPtrA )
-    op_new_0_strategy = 1;
+	op_new_0_strategy = 1;
   else if ( piNullPtrA == piNullPtrB )
-    op_new_0_strategy = 2;
+	op_new_0_strategy = 2;
   else
-    op_new_0_strategy = 3;
+	op_new_0_strategy = 3;
 
   free(piNullPtrA);
   free(piNullPtrB);
@@ -78,18 +78,17 @@ int main(int argc, char *argv[])
   int strategy;
 
   if ( argc >= 1 )
-    test = atoi( argv[1] );
+	test = atoi( argv[1] );
 
   switch (test)
   {
-    default:
-    case 0:  printf("testing malloc(0) .. "); strategy = get_malloc0strategy();  break;
-    case 1:  printf("testing new(0) .. ");    strategy = get_new0strategy();     break;
-    case 2:  printf("testing new[0] .. ");    strategy = get_newVec0strategy();  break;
+	default:
+	case 0:  printf("testing malloc(0) .. "); strategy = get_malloc0strategy();  break;
+	case 1:  printf("testing new(0) .. ");    strategy = get_new0strategy();     break;
+	case 2:  printf("testing new[0] .. ");    strategy = get_newVec0strategy();  break;
   }
 
   printf("result is %d\n", strategy);
 
   return 0;
 }
-

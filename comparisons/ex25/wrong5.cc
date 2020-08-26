@@ -9,10 +9,10 @@ class Test {
 public:
   int a;
   string stdstr;
-  
+
   Test() {
-    a=2;
-    stdstr = "test";
+	a=2;
+	stdstr = "test";
   }
 
 };
@@ -36,4 +36,5 @@ int main() {
 
   cerr << "There should be 2 errors in this run" << endl;
   return 0;
+
 }

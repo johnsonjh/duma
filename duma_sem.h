@@ -53,5 +53,3 @@
 #endif /* DUMA_NO_THREAD_SAFETY */
 
 #endif /* DUMA_SEM_INC_H */
-
-

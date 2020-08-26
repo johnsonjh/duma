@@ -22,4 +22,5 @@ int main() {
 
   cerr << "There should be 2 errors in this run" << endl;
   return 0;
+
 }

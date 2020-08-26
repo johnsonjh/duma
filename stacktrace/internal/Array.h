@@ -6,8 +6,8 @@
  * granted without fee, provided that the above copyright notice
  * appear in all copies and that both that copyright notice and
  * this permission notice appear in supporting documentation.
- * Jani Kajala makes no representations about the suitability 
- * of this software for any purpose. It is provided "as is" 
+ * Jani Kajala makes no representations about the suitability
+ * of this software for any purpose. It is provided "as is"
  * without express or implied warranty.
  */
 
@@ -65,13 +65,13 @@ public:
 	}
 
 	/** Returns pointer to the first element in the vector. */
-	T* begin() 
+	T* begin()
 	{
 		return m_data;
 	}
 
 	/** Returns pointer to one beyond the last element in the vector. */
-	T* end() 
+	T* end()
 	{
 		return m_data + m_len;
 	}
@@ -89,13 +89,13 @@ public:
 	}
 
 	/** Returns pointer to the first element in the vector. */
-	const T* begin() const														
+	const T* begin() const
 	{
 		return m_data;
 	}
 
 	/** Returns pointer to one beyond the last element in the vector. */
-	const T* end() const															
+	const T* end() const
 	{
 		return m_data + m_len;
 	}
@@ -124,6 +124,7 @@ private:
 
 
 } // dev
+
 
 
 #endif // _DEV_ARRAY_H

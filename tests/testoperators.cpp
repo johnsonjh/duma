@@ -220,9 +220,9 @@ void rich_test()
 
 #include "../noduma.h"
   #ifndef DUMA_NO_LEAKDETECTION
-    s = new(std::nothrow,__FILE__,__LINE__) optest;
+	s = new(std::nothrow,__FILE__,__LINE__) optest;
   #else
-    s = new(std::nothrow) optest;
+	s = new(std::nothrow) optest;
   #endif
 #include "../dumapp.h"
   delete s;
@@ -236,9 +236,9 @@ void rich_test()
 
 #include "../noduma.h"
   #ifndef DUMA_NO_LEAKDETECTION
-    v = new(std::nothrow,__FILE__,__LINE__) optest[10];
+	v = new(std::nothrow,__FILE__,__LINE__) optest[10];
   #else
-    v = new(std::nothrow) optest[10];
+	v = new(std::nothrow) optest[10];
   #endif
 #include "../dumapp.h"
   delete []v;
@@ -258,4 +258,3 @@ int main( int argc, char *argv[] )
   rich_test();
   return 0;
 }
-

@@ -23,4 +23,5 @@ int main() {
   // valgrind reports 4, but that's ok
   cerr << "There should be 2 errors in this run" << endl;
   return 0;
+
 }

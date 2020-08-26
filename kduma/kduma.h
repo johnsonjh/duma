@@ -1,5 +1,5 @@
 
-/* 
+/*
  * KDUMA - Kernel Mode Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
  * Copyright (C) 2006 Eric Rachner <eric@rachner.us>
@@ -189,5 +189,6 @@ NAME[ DUMA_ASSERT( (NAME ## _checkedidx = (INDEX)) < NAME ## _checkedsize ), NAM
 
 
 #endif /* end ifdef __KDUMA_H__ */
+
 
 // end

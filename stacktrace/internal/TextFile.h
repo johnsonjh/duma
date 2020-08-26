@@ -6,8 +6,8 @@
  * granted without fee, provided that the above copyright notice
  * appear in all copies and that both that copyright notice and
  * this permission notice appear in supporting documentation.
- * Jani Kajala makes no representations about the suitability 
- * of this software for any purpose. It is provided "as is" 
+ * Jani Kajala makes no representations about the suitability
+ * of this software for any purpose. It is provided "as is"
  * without express or implied warranty.
  */
 
@@ -17,7 +17,7 @@
 namespace dev
 {
 
-/** 
+/**
  * ASCII-7 text file parser. Doesnt throw exceptions.
  */
 class TextFile
@@ -42,19 +42,19 @@ public:
 	///
 	~TextFile();
 
-	/** 
-	 * Reads a single character. 
+	/**
+	 * Reads a single character.
 	 * @return true if read ok.
 	 */
 	bool		readChar( char* ch );
 
-	/** 
-	 * Peeks a single character. 
+	/**
+	 * Peeks a single character.
 	 * @return true if peek ok.
 	 */
 	bool		peekChar( char* ch );
 
-	/** 
+	/**
 	 * Reads whitespace delimited string.
 	 * If the string doesnt fit to the buffer then
 	 * the rest of the string is skipped. Buffer
@@ -71,8 +71,8 @@ public:
 	/** Reads hex integer. Skips preceding whitespace. */
 	long		readHex();
 
-	/** 
-	 * Skips whitespace characters. 
+	/**
+	 * Skips whitespace characters.
 	 * @return false if end-of-file reached.
 	 */
 	bool		skipWhitespace();
@@ -96,6 +96,7 @@ private:
 
 
 } // dev
+
 
 
 #endif // _DEV_TEXTFILE_H

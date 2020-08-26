@@ -10,11 +10,12 @@ int main() {
   int* pI = new int[10];
   cerr << "Let's leak a pointer to an array of 10 ints" << endl;
   for (int i=0; i<9; i++) {
-    pI[i] = 303+i;
+	pI[i] = 303+i;
   }
   for (int i=0; i<9; i++) {
-    if (pI[i] != 303+i) cerr << "  Something strange is happening..." << endl;
+	if (pI[i] != 303+i) cerr << "  Something strange is happening..." << endl;
   }
 
   return 0;
+
 }

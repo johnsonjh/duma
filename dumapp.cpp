@@ -77,9 +77,9 @@ inline
 #endif
 void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, bool dothrow
 #ifndef DUMA_NO_LEAKDETECTION
-                         , const char * filename, int lineno
+						 , const char * filename, int lineno
 #endif
-                        )
+						)
 #ifdef __GNUC__
  __attribute__ ((always_inline))
 #endif
@@ -107,9 +107,9 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
  */
 void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, bool dothrow
 #ifndef DUMA_NO_LEAKDETECTION
-                         , const char * filename, int lineno
+						 , const char * filename, int lineno
 #endif
-                        )
+						)
 {
   void * ret = 0;
 #ifdef _MSC_VER
@@ -120,61 +120,61 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
 
   // initialize duma?
   if ( _duma_g.allocList == 0 )
-    _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
+	_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
 
   DUMA_TLSVARS_T  * duma_tls = GET_DUMA_TLSVARS();
 
   do
   {
-    // try allocation
-    ret = _duma_allocate( 0 /*=alignment*/
-                        , userSize
-                        , duma_tls->PROTECT_BELOW
-                        , duma_tls->FILL
-                        , 1 /*=protectAllocList*/
-                        , allocator
-                        , DUMA_FAIL_NULL
-    #ifndef DUMA_NO_LEAKDETECTION
-                        , filename
-                        , lineno
-    #endif
-                        );
+	// try allocation
+	ret = _duma_allocate( 0 /*=alignment*/
+						, userSize
+						, duma_tls->PROTECT_BELOW
+						, duma_tls->FILL
+						, 1 /*=protectAllocList*/
+						, allocator
+						, DUMA_FAIL_NULL
+	#ifndef DUMA_NO_LEAKDETECTION
+						, filename
+						, lineno
+	#endif
+						);
 
-    // when allocation failed (and last call to new_handler didn't fail on Visual C++)
-    if ( !ret && pnhret )
-    {
-      // get the current new_handler
-    #ifdef _MSC_VER
-      _PNH h = _set_new_handler(duma_new_handler);
-      _set_new_handler(h);
-    #else
-      std::new_handler h = std::set_new_handler(duma_new_handler);
-      std::set_new_handler(h);
-    #endif
+	// when allocation failed (and last call to new_handler didn't fail on Visual C++)
+	if ( !ret && pnhret )
+	{
+	  // get the current new_handler
+	#ifdef _MSC_VER
+	  _PNH h = _set_new_handler(duma_new_handler);
+	  _set_new_handler(h);
+	#else
+	  std::new_handler h = std::set_new_handler(duma_new_handler);
+	  std::set_new_handler(h);
+	#endif
 
-      // is there any handler?
-      if ( h )
-      {
-        try               // new_handler may throw an exception!!!
-        {
-          // call handler
-        #ifdef _MSC_VER
-          pnhret = h(userSize);
-        #else
-          h();
-        #endif
-        }
-        catch (std::bad_alloc)        // error occured in new_handler
-        {
-          if (dothrow)  throw;        // report error via re-throwing
-          else          return ret;   // report error via (void*)0
-        } // end try catch
-      }
-      else if (dothrow)   // report non-existing handler via exception
-        throw std::bad_alloc();
-      else                // report non-existing handler via (void*)0
-        return ret;
-    }
+	  // is there any handler?
+	  if ( h )
+	  {
+		try               // new_handler may throw an exception!!!
+		{
+		  // call handler
+		#ifdef _MSC_VER
+		  pnhret = h(userSize);
+		#else
+		  h();
+		#endif
+		}
+		catch (std::bad_alloc)        // error occured in new_handler
+		{
+		  if (dothrow)  throw;        // report error via re-throwing
+		  else          return ret;   // report error via (void*)0
+		} // end try catch
+	  }
+	  else if (dothrow)   // report non-existing handler via exception
+		throw std::bad_alloc();
+	  else                // report non-existing handler via (void*)0
+		return ret;
+	}
   } while ( !ret );       // loop until memory is claimed
   return ret;
 }
@@ -414,4 +414,3 @@ throw()
 #endif /* end ifdef DUMA_NO_LEAKDETECTION */
 
 #endif /* DUMA_NO_CPP_SUPPORT */
-

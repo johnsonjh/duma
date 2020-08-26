@@ -11,7 +11,8 @@ int main() {
   printf("Let's correctly delete an array of 10 objects\n");
   free(ar);
   printf("Done\n");
-  
+
   printf("There should be 0 error in this run\n");
   return 0;
+
 }

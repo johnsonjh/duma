@@ -1,5 +1,5 @@
 
-/* 
+/*
  * KDUMA - Kernel Mode Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
  * Copyright (C) 2006 Eric Rachner <eric@rachner.us>
@@ -29,7 +29,7 @@
  *
  * KDUMA version string
  */
-static const char  version[] = 
+static const char  version[] =
 	"KDUMA v0.1 -- Kernel Mode Red-Zone Memory Allocator\n"
 	"  Copyright (C) 2006 Michael Eddington\n"
 	"  Copyright (C) 2006 Eric Rachner\n"
@@ -51,7 +51,7 @@ static const char  version[] =
  */
 enum _DUMA_SlotState
 {
-    DUMAST_EMPTY			/* slot not in use */
+	DUMAST_EMPTY			/* slot not in use */
   , DUMAST_FREE				/* internal memory reserved, unused by user */
   , DUMAST_IN_USE			/* memory in use by allocator; see following enum AllocType */
   , DUMAST_ALL_PROTECTED	/* memory no more used by allocator; memory is not deallocated but protected */
@@ -66,7 +66,7 @@ enum _DUMA_SlotState
  */
 enum _DUMA_Slot_FileSource
 {
-    DUMAFS_EMPTY			/* no filename, lineno */
+	DUMAFS_EMPTY			/* no filename, lineno */
   , DUMAFS_ALLOCATION		/* filename, lineno from allocation */
   , DUMAFS_DEALLOCATION		/* filename, lineno from deallocation */
 };
@@ -77,7 +77,7 @@ enum _DUMA_Slot_FileSource
  */
 enum _DUMA_InitState
 {
-    DUMAIS_UNINITIALIZED = 0x1611	/* not initialized */
+	DUMAIS_UNINITIALIZED = 0x1611	/* not initialized */
   , DUMAIS_IN_CONSTRUCTOR			/* in constructor _duma_init() */
   , DUMAIS_OUT_CONSTRUCTOR			/* construction _duma_init() finished */
   , DUMAIS_IN_INIT					/* in initializer duma_init() */
@@ -109,19 +109,19 @@ struct _DUMA_Slot
 	void			*protAddress;
 	size_t			internalSize;
 	size_t			userSize;
-	
+
 	/* save (some) space in production */
 	unsigned short	state       :16;
 	unsigned short	allocator   :8;
 	unsigned short	fileSource  :8;
-	
+
 #ifdef DUMA_USE_FRAMENO
 	int					frame;
 #endif
 	char				*filename;   /* filename of allocation */
 	int					lineno;     /* linenumber of allocation */
 #endif
-	
+
 #ifdef DUMA_EXPLICIT_INIT
 	int					slackfill;
 #endif
@@ -331,7 +331,7 @@ void duma_init(void)
 		return;
 	else
 		duma_init_state = DUMAIS_IN_INIT;
-	
+
 	DUMA_Print(version);
 	DUMA_Print("DUMA: Registration was successful.\n");
 
@@ -348,7 +348,7 @@ void duma_init(void)
 	kfree(testAlloc);
 	if (numDeallocs == 0)
 		DUMA_Abort("kfree() is not bound to kduma.\nKDUMA Aborting.\n");
-	
+
 	/* initialization finished */
 	duma_init_state = DUMAIS_OUT_INIT;
 }
@@ -384,7 +384,7 @@ _duma_init(void)
 	/* call of DUMA_GET_SEMAPHORE() may already have done the construction recursively! */
 	if ( duma_init_state >= DUMAIS_OUT_CONSTRUCTOR )
 		goto duma_constructor_relsem;
-	
+
 	/*
 	 * Figure out how many Slot structures to allocate at one time.
 	 */
@@ -417,9 +417,9 @@ _duma_init(void)
 		if ( 0 == _duma_allocList )
 			slot = _duma_allocList = (struct _DUMA_Slot *)Page_Create( size, 1/*=exitonfail*/, 1/*= printerror*/ );
 	}
-	
+
 	memset((char *)_duma_allocList, 0, _duma_allocListSize);
-	
+
 	/* enter _duma_allocList as slot to allow call to free() when doing allocateMoreSlots() */
 	slot[0].internalAddress   = slot[0].userAddress = _duma_allocList;
 	slot[0].internalSize      = slot[0].userSize    = _duma_allocListSize;
@@ -432,7 +432,7 @@ _duma_init(void)
 	slot[0].filename          = __FILE__;
 	slot[0].lineno            = __LINE__;
 #endif
-	
+
 	if ( size > _duma_allocListSize )
 	{
 		slot[1].internalAddress = slot[1].userAddress
@@ -464,7 +464,7 @@ _duma_init(void)
 	/* construction done */
 	if ( duma_init_state < DUMAIS_OUT_CONSTRUCTOR )
 		duma_init_state = DUMAIS_OUT_CONSTRUCTOR;
-	
+
 	/***********************/
 duma_constructor_relsem:
 	if ( !inRecursion )
@@ -489,17 +489,17 @@ static void allocateMoreSlots(void)
 	size_t  newSize = _duma_allocListSize + DUMA_PAGE_SIZE;
 	void *  newAllocation;
 	void *  oldAllocation = _duma_allocList;
-	
-	newAllocation = _duma_allocate( 1 /*=alignment*/, newSize, 
-		0 /*=protectBelow*/, -1 /*=fillByte*/, 0 /*=protectAllocList*/, 
+
+	newAllocation = _duma_allocate( 1 /*=alignment*/, newSize,
+		0 /*=protectBelow*/, -1 /*=fillByte*/, 0 /*=protectAllocList*/,
 		EFA_INT_ALLOC, DUMA_FAIL_NULL, __FILE__, __LINE__ );
-	
+
 	if ( ! newAllocation )
 		return;
-	
+
 	memcpy(newAllocation, _duma_allocList, _duma_allocListSize);
 	memset(&(((char *)newAllocation)[_duma_allocListSize]), 0, DUMA_PAGE_SIZE);
-	
+
 	_duma_allocList = (struct _DUMA_Slot *)newAllocation;
 	_duma_allocListSize = newSize;
 	slotCount   += slotsPerPage;
@@ -513,7 +513,7 @@ static void allocateMoreSlots(void)
 }
 
 /* Function: _duma_allocate
- * 
+ *
  * This is the memory allocator. When asked to allocate a buffer, allocate
  * it in such a way that the end of the buffer is followed by an inaccessable
  * memory page. If software overruns that buffer, it will touch the bad page
@@ -529,13 +529,13 @@ static void allocateMoreSlots(void)
  * functions on Sun systems, which do word references to the string memory
  * and may refer to memory up to three bytes beyond the end of the string.
  * For this reason, I take the alignment requests to memalign() and valloc()
- * seriously, and 
- * 
+ * seriously, and
+ *
  * DUMA wastes lots of memory.
  *
  * See Also: <_duma_deallocate>
  */
-void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow, 
+void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 	int fillByte, int protectAllocList, enum _DUMA_Allocator allocator, enum _DUMA_FailReturn fail  DUMA_PARAMLIST_FL)
 {
 	size_t				count;
@@ -577,7 +577,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 
 		alignment = (size_t)a; /* this is new alignment */
 	}
-	
+
 	if ( (int)alignment != ((int)alignment & -(int)alignment) )
 	{
 		#ifndef DUMA_NO_LEAKDETECTION
@@ -607,7 +607,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 	 */
 	/* a bit tricky but no modulo and no if () */
 	internalSize = ( (userSize + DUMA_PAGE_SIZE -1) & ~(DUMA_PAGE_SIZE -1) ) + DUMA_PAGE_SIZE;
-	
+
 	if ( alignment > DUMA_PAGE_SIZE )
 		internalSize += alignment - DUMA_PAGE_SIZE;
 
@@ -673,7 +673,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 					emptySlots[0] = slot;
 				else if ( !emptySlots[1] )
 					emptySlots[1] = slot;
-	
+
 				#if defined(WIN32)
 					break;
 				#endif
@@ -722,7 +722,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 			reduceProtectedMemory( chunkSizekB );
 
 		fullSlot->internalAddress = Page_Create( chunkSize, 0/*= exitonfail*/, 0/*= printerror*/ );
-		
+
 		if ( 0 == fullSlot->internalAddress  &&  0L != DUMA_PROTECT_FREE )
 		{
 			int reduce_more;
@@ -751,7 +751,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 
 	if ( fullSlot->internalSize )
 	{
-	
+
 		if ( !protectBelow )
 		{
 			/*
@@ -765,7 +765,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 			intAddr  = (DUMA_ADDR)fullSlot->internalAddress;
 			endAddr  = intAddr + internalSize;
 			userAddr = ( intAddr  + internalSize - DUMA_PAGE_SIZE - userSize )
-						& ~(alignment -1); 
+						& ~(alignment -1);
 			protAddr = ( userAddr + userSize     + DUMA_PAGE_SIZE -1)
 						& ~(DUMA_PAGE_SIZE -1);
 
@@ -812,7 +812,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 			#endif
 			fullSlot->filename    = (char*)filename;
 			#ifdef DUMA_EXPLICIT_INIT
-			
+
 				/* mark allocations from standard libraries
 				* before duma_init() is finished with lineno = -1
 				* to allow special treatment in leak_checking
@@ -849,7 +849,7 @@ void * _duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 
 
 /* Function: _duma_deallocate
- * 
+ *
  * Deallocate allocated memory after running some checks, then open
  * slot for use.  Uses Page_Delete to free the underlying memory.
  *
@@ -933,7 +933,7 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 	{
 		volatile char *start = slot->userAddress;
 		volatile char *cur;
-		
+
 		for (cur = (char*)slot->userAddress+slot->userSize; --cur >= start; )
 		{
 			char c = *cur;
@@ -1004,34 +1004,34 @@ void _duma_deallocate(void * address, int protectAllocList, enum _DUMA_Allocator
 /*********************************************************/
 
 /* Function: _duma_kmalloc
- * 
+ *
  * A version of kmalloc.
  */
 void * _duma_kmalloc(size_t size, int flags  DUMA_PARAMLIST_FL)
 {
 	if ( _duma_allocList == 0 )
 		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-	
-	return _duma_allocate(0, size, flags, DUMA_PROTECT_BELOW, 
-		DUMA_FILL, 1 /*=protectAllocList*/, EFA_MALLOC, 
+
+	return _duma_allocate(0, size, flags, DUMA_PROTECT_BELOW,
+		DUMA_FILL, 1 /*=protectAllocList*/, EFA_MALLOC,
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
 
 /* Function: _duma_kfree
- * 
+ *
  * A version of free.
  */
 void   _duma_kfree(void * baseAdr  DUMA_PARAMLIST_FL)
 {
   if ( _duma_allocList == 0 )
 	  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-	
+
 	_duma_deallocate(baseAdr, 1 /*=protectAllocList*/, EFA_FREE  DUMA_PARAMS_FL);
 }
 
 
 /* Function: _duma_valloc
- * 
+ *
  * A version of valloc.
  */
 void * _duma_valloc(size_t size  DUMA_PARAMLIST_FL)
@@ -1039,25 +1039,25 @@ void * _duma_valloc(size_t size  DUMA_PARAMLIST_FL)
 	if ( _duma_allocList == 0 )
 		_duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
 
-	return _duma_allocate(DUMA_PAGE_SIZE, size, DUMA_PROTECT_BELOW, 
-		DUMA_FILL, 1 /*=protectAllocList*/, EFA_VALLOC, 
+	return _duma_allocate(DUMA_PAGE_SIZE, size, DUMA_PROTECT_BELOW,
+		DUMA_FILL, 1 /*=protectAllocList*/, EFA_VALLOC,
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 }
 
 /* Function: _duma_vfree
- * 
+ *
  * A version of free.
  */
 void   _duma_vfree(void * baseAdr  DUMA_PARAMLIST_FL)
 {
   if ( _duma_allocList == 0 )
 	  _duma_init();  /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL, ... */
-	
+
 	_duma_deallocate(baseAdr, 1 /*=protectAllocList*/, EFA_FREE  DUMA_PARAMS_FL);
 }
 
 /* Function: _duma_strdup
- * 
+ *
  * A version of strdup.
  */
 char * _duma_strdup(const char * str  DUMA_PARAMLIST_FL)
@@ -1073,8 +1073,8 @@ char * _duma_strdup(const char * str  DUMA_PARAMLIST_FL)
 	while (str[size])
 		++size;
 
-	dup = _duma_allocate(0, size +1, DUMA_PROTECT_BELOW, 
-		-1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP, 
+	dup = _duma_allocate(0, size +1, DUMA_PROTECT_BELOW,
+		-1 /*=fillByte*/, 1 /*=protectAllocList*/, EFA_STRDUP,
 		DUMA_FAIL_ENV  DUMA_PARAMS_FL);
 
 	if (dup)                    /* if successful */
@@ -1086,7 +1086,7 @@ char * _duma_strdup(const char * str  DUMA_PARAMLIST_FL)
 
 
 /* Function: _duma_memcpy
- * 
+ *
  * A version of memcpy that provides extra checks based on
  * information we know about HEAP.
  *
@@ -1112,7 +1112,7 @@ void * _duma_memcpy(void *dest, const void *src, size_t size  DUMA_PARAMLIST_FL)
 
 
 /* Function: _duma_memmove
- * 
+ *
  * An implementation of memmove is provied by Duma to prevent some optimized
  * memmove implementations from calling memcpy and generate false positive overlap
  * errors.
@@ -1121,25 +1121,25 @@ void * _duma_memmove(void *dest, const void *src, size_t size)
 {
   char       * d = (char *)dest;
   const char * s = (const char *)src;
- 
+
   if (d < s) {
 		const char *end = src + size;
-    while (s < end) {
-      *d++ = *s++;
-    }
+	while (s < end) {
+	  *d++ = *s++;
+	}
   } else {
-    d += size;
-    s += size;
-    while (s > (const char*)src) {
-      *--d = *--s;
-    }
+	d += size;
+	s += size;
+	while (s > (const char*)src) {
+	  *--d = *--s;
+	}
   }
   return dest;
 }
 
 
 /* Function: _duma_strcpy
- * 
+ *
  * A version of strcpy that provides extra checks based on
  * information we know about HEAP.
  *
@@ -1163,7 +1163,7 @@ char * _duma_strcpy(char *dest, const char *src  DUMA_PARAMLIST_FL)
 
 
 /* Function: _duma_strncpy
- * 
+ *
  * A version of strncpy that provides extra checks based on
  * information we know about HEAP.
  *
@@ -1198,7 +1198,7 @@ char * _duma_strncpy(char *dest, const char *src, size_t size  DUMA_PARAMLIST_FL
 
 
 /* Function: _duma_strcat
- * 
+ *
  * A version of strcat that provides extra checks based on
  * information we know about HEAP.
  *
@@ -1222,7 +1222,7 @@ char * _duma_strcat(char *dest, const char *src  DUMA_PARAMLIST_FL)
 }
 
 /* Function: _duma_strncat
- * 
+ *
  * A version of strncat that provides extra checks based on
  * information we know about HEAP.
  *
@@ -1315,11 +1315,11 @@ void  DUMA_delFrame(void)
 				(DUMA_SIZE)slot->userSize,
 				slot->filename,
 				slot->lineno);
-				
+
 				++nonFreed;
 			}
 		}
-	
+
 		if (nonFreed)
 			DUMA_Abort("DUMA_delFrame(): Found non free'd pointers.\n");
 
@@ -1349,5 +1349,6 @@ _duma_exit(void)
 	while (-1 != frameno)
 		DUMA_delFrame();
 }
+
 
 /* end */

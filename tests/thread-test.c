@@ -55,28 +55,28 @@ static void* thread_func(void *arg)
 
   while (--i)
   {
-    if (pthread_mutex_lock(&mutex))
-    {
-      fprintf(stderr, "error: %s failed to lock mutex.\n", name);
-      exit(1);
-    }
-    printf ("%s : %d\n", name, i);
-    if (pthread_mutex_unlock(&mutex))
-    {
-      fprintf(stderr, "error: %s failed to unlock mutex.\n", name);
-      exit(1);
-    }
+	if (pthread_mutex_lock(&mutex))
+	{
+	  fprintf(stderr, "error: %s failed to lock mutex.\n", name);
+	  exit(1);
+	}
+	printf ("%s : %d\n", name, i);
+	if (pthread_mutex_unlock(&mutex))
+	{
+	  fprintf(stderr, "error: %s failed to unlock mutex.\n", name);
+	  exit(1);
+	}
 
-    {
-      /* Try to trigger efence error */
-      FILE *fp = fopen("/etc/resolv.conf", "r");
-      if (NULL != fp)
-      {
-        char buf[1024];
-        fread(buf, sizeof(buf), 1, fp);
-        fclose(fp);
-      }
-    }
+	{
+	  /* Try to trigger efence error */
+	  FILE *fp = fopen("/etc/resolv.conf", "r");
+	  if (NULL != fp)
+	  {
+		char buf[1024];
+		fread(buf, sizeof(buf), 1, fp);
+		fclose(fp);
+	  }
+	}
   }
   --threads_left;
   return NULL;
@@ -106,14 +106,14 @@ int main(int argc, char **argv)
 
   if (pthread_create(&hello_thread, NULL, thread_func, (void*)"hello"))
   {
-    fprintf(stderr, "Failed to create hello thread\n");
-    exit(1);
+	fprintf(stderr, "Failed to create hello thread\n");
+	exit(1);
   }
 
   if (pthread_create(&goodbye_thread, NULL, thread_func, (void*)"goodbye"))
   {
-    fprintf(stderr, "Failed to create goodbye thread\n");
-    exit(1);
+	fprintf(stderr, "Failed to create goodbye thread\n");
+	exit(1);
   }
 
   idle_func(NULL);
@@ -136,4 +136,3 @@ int main(int argc, char **argv)
 }
 
 #endif
-

@@ -7,8 +7,8 @@
  * granted without fee, provided that the above copyright notice
  * appear in all copies and that both that copyright notice and
  * this permission notice appear in supporting documentation.
- * Jani Kajala makes no representations about the suitability 
- * of this software for any purpose. It is provided "as is" 
+ * Jani Kajala makes no representations about the suitability
+ * of this software for any purpose. It is provided "as is"
  * without express or implied warranty.
  */
 
@@ -85,7 +85,7 @@ public:
 
 		return m_file.line();
 	}
-	
+
 private:
 	TextFile			m_file;
 	MapFile::ErrorType	m_err;
@@ -105,9 +105,9 @@ private:
 		return false;
 	}
 
-	/** 
-	 * Parses specified string. 
-	 * Sets error if parsed string doesnt match. 
+	/**
+	 * Parses specified string.
+	 * Sets error if parsed string doesnt match.
 	 */
 	void parse( const char* str )
 	{
@@ -121,8 +121,8 @@ private:
 	}
 
 	/**
-	 * Parses specified character. 
-	 * Sets error if parsed character doesnt match. 
+	 * Parses specified character.
+	 * Sets error if parsed character doesnt match.
 	 */
 	void parse( char ch )
 	{
@@ -163,7 +163,7 @@ private:
 		parse( "Rva+Base" );
 		parse( "Lib:Object" );
 		m_file.skipWhitespace();
-		
+
 		while ( !error() )
 		{
 			seg = m_file.readHex();
@@ -249,7 +249,7 @@ int MapFile::findEntry( long addr ) const
 	// the highest rva+base address we have.
 	if(addr > (getEntry(entries()-1)->rvabase() + 10000))
 		return -1;
-	
+
 	// Entries are sorted, so searching from last
 	// to first will work well
 	for ( int i = entries()-1 ; i >= 0  ; --i )
@@ -273,8 +273,8 @@ void MapFile::getModuleMapFilename( char* buffer, int bufferSize )
 #endif
 
 	// remove .exe or .dll extension
-	if ( len > 3 && 
-		(!strcmp(buffer+len-4,".exe") || !strcmp(buffer+len-4,".EXE") || 
+	if ( len > 3 &&
+		(!strcmp(buffer+len-4,".exe") || !strcmp(buffer+len-4,".EXE") ||
 		!strcmp(buffer+len-4,".DLL") || !strcmp(buffer+len-4,".dll")) )
 	{
 		buffer[len-4] = 0;
@@ -286,6 +286,7 @@ void MapFile::getModuleMapFilename( char* buffer, int bufferSize )
 		strcat( buffer, ".map" );
 	}
 }
+
 
 
 } // dev

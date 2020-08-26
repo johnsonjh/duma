@@ -106,42 +106,42 @@ gotSegmentationFault(int (*test)(void))
 #endif
   {
 #if !defined(WIN32) || defined(__CYGWIN__)
-    /* unblock signal and save previous signal mask */
-    sigemptyset(&newmask);
+	/* unblock signal and save previous signal mask */
+	sigemptyset(&newmask);
   #ifdef PAGE_PROTECTION_VIOLATED_SIGNAL
-    sigaddset(&newmask, PAGE_PROTECTION_VIOLATED_SIGNAL);
+	sigaddset(&newmask, PAGE_PROTECTION_VIOLATED_SIGNAL);
   #else
-    sigaddset(&newmask, SIGSEGV);
-    sigaddset(&newmask, SIGBUS);
+	sigaddset(&newmask, SIGSEGV);
+	sigaddset(&newmask, SIGBUS);
   #endif
-    sigprocmask(SIG_UNBLOCK, &newmask, &oldmask);
+	sigprocmask(SIG_UNBLOCK, &newmask, &oldmask);
 #endif
 
 #ifdef PAGE_PROTECTION_VIOLATED_SIGNAL
-    oldhandler = signal(PAGE_PROTECTION_VIOLATED_SIGNAL, segmentationFaultHandler);
+	oldhandler = signal(PAGE_PROTECTION_VIOLATED_SIGNAL, segmentationFaultHandler);
 #else
-    oldSIGSEGVhandler = signal(SIGSEGV, segmentationFaultHandler);
+	oldSIGSEGVhandler = signal(SIGSEGV, segmentationFaultHandler);
   #if !defined(WIN32) || defined(__CYGWIN__)
-    oldSIGBUShandler  = signal(SIGBUS, segmentationFaultHandler);
+	oldSIGBUShandler  = signal(SIGBUS, segmentationFaultHandler);
   #endif
 #endif
 
-    status = (*test)();
+	status = (*test)();
   }
   else
-    status = 1;
+	status = 1;
 
   /* install previous signal handler */
 
 #ifdef PAGE_PROTECTION_VIOLATED_SIGNAL
   if (SIG_ERR != oldhandler)
-    signal(PAGE_PROTECTION_VIOLATED_SIGNAL, oldhandler);
+	signal(PAGE_PROTECTION_VIOLATED_SIGNAL, oldhandler);
 #else
   if (SIG_ERR != oldSIGSEGVhandler)
-    signal(SIGSEGV, oldSIGSEGVhandler);
+	signal(SIGSEGV, oldSIGSEGVhandler);
 #if !defined(WIN32) || defined(__CYGWIN__)
   if (SIG_ERR != oldSIGBUShandler)
-    signal(SIGBUS, oldSIGBUShandler);
+	signal(SIGBUS, oldSIGBUShandler);
 #endif
 #endif
 
@@ -175,9 +175,9 @@ allocateMemory(void)
   allocation = (char *)malloc(1);
 
   if ( allocation != (char*)0 )
-    return 0;
+	return 0;
   else
-    return 1;
+	return 1;
 }
 
 static int
@@ -234,55 +234,55 @@ readMinus1(void)
 static struct diagnostic diagnostics[] =
 {
   {
-    testSizes, 0,      "Please add -DLONG_LONG to the compiler flags and recompile."
+	testSizes, 0,      "Please add -DLONG_LONG to the compiler flags and recompile."
   },
 #if 1
   {
-    protectAbove, 0,   "Protect above: This sets DUMA to protect\n"
-                       "the upper boundary of a malloc buffer, rather than the lower boundary."
+	protectAbove, 0,   "Protect above: This sets DUMA to protect\n"
+					   "the upper boundary of a malloc buffer, rather than the lower boundary."
   },
   {
-    allocateMemory, 0, "Allocation 1: This test allocates a single byte of memory."
+	allocateMemory, 0, "Allocation 1: This test allocates a single byte of memory."
   },
   {
-    read0, 0,          "Read valid memory 1: This test reads the allocated memory."
+	read0, 0,          "Read valid memory 1: This test reads the allocated memory."
   },
   {
-    write0, 0,         "Write valid memory 1: This test writes the allocated memory."
+	write0, 0,         "Write valid memory 1: This test writes the allocated memory."
   },
   {
-    readMinus1, 0,     "Read underrun: This test reads before the beginning of the buffer."
+	readMinus1, 0,     "Read underrun: This test reads before the beginning of the buffer."
   },
   {
-    read1, 1,          "Read overrun: This test reads beyond the end of the buffer."
+	read1, 1,          "Read overrun: This test reads beyond the end of the buffer."
   },
   {
-    freeMemory, 0,     "Free memory 1: This test frees the allocated memory."
+	freeMemory, 0,     "Free memory 1: This test frees the allocated memory."
   },
 #endif
 #if 1
   {
-    protectBelow, 0,   "Protect below: This sets DUMA to protect\n"
-                       "the lower boundary of a malloc buffer, rather than the upper boundary."
+	protectBelow, 0,   "Protect below: This sets DUMA to protect\n"
+					   "the lower boundary of a malloc buffer, rather than the upper boundary."
   },
   {
-    allocateMemory, 0, "Allocation 2: This allocates memory with the lower boundary protected."
+	allocateMemory, 0, "Allocation 2: This allocates memory with the lower boundary protected."
   },
   {
-    read0, 0,          "Read valid memory 2: This test reads the allocated memory."
+	read0, 0,          "Read valid memory 2: This test reads the allocated memory."
   },
   {
-    write0, 0,         "Write valid memory 2: This test writes the allocated memory."
+	write0, 0,         "Write valid memory 2: This test writes the allocated memory."
   },
   {
-    readMinus1, 1,     "Read underrun: This test reads before the beginning of the buffer."
+	readMinus1, 1,     "Read underrun: This test reads before the beginning of the buffer."
   },
   {
-    freeMemory, 0,     "Free memory 2: This test frees the allocated memory."
+	freeMemory, 0,     "Free memory 2: This test frees the allocated memory."
   },
 #endif
   {
-    0, 0, 0
+	0, 0, 0
   }
 };
 
@@ -311,55 +311,56 @@ main(int argc, char * * argv)
 
   for (testno=0; diag->explanation != 0; ++testno, ++diag)
   {
-    int status;
+	int status;
 
 #if 0
-    write(0, diag->explanation, strlen(diag->explanation));
-    write(0, &newline, 1);
+	write(0, diag->explanation, strlen(diag->explanation));
+	write(0, &newline, 1);
 #endif
 
-    status = gotSegmentationFault(diag->test);
+	status = gotSegmentationFault(diag->test);
 
-    if ( status != diag->expectedStatus )
-    {
-      /*
-       * Don't use stdio to print here, because stdio
-       * uses malloc() and we've just proven that malloc()
-       * is broken. Also, use _exit() instead of exit(),
-       * because _exit() doesn't flush stdio.
-       */
-      write(2, failedTest, sizeof(failedTest) - 1);
-      write(2, diag->explanation, strlen(diag->explanation));
-      write(2, &newline, 1);
-      _exit(-1);
-    }
+	if ( status != diag->expectedStatus )
+	{
+	  /*
+	   * Don't use stdio to print here, because stdio
+	   * uses malloc() and we've just proven that malloc()
+	   * is broken. Also, use _exit() instead of exit(),
+	   * because _exit() doesn't flush stdio.
+	   */
+	  write(2, failedTest, sizeof(failedTest) - 1);
+	  write(2, diag->explanation, strlen(diag->explanation));
+	  write(2, &newline, 1);
+	  _exit(-1);
+	}
   }
 
   /* avoid memory leak */
   if (allocation)
-    freeMemory();
+	freeMemory();
 
 #if 0
   {
-    char * dynmemA;
-    char * dynmemB;
+	char * dynmemA;
+	char * dynmemB;
 
-    /* test for DUMA_CHECK_FREQ */
-    printf("0\n");
-    protectAbove();
-    printf("1\n");
-    dynmemA = (char*)malloc( 10 * sizeof(char) );
-    printf("2\n");
-    dynmemA[-1 ] = 0;
-    printf("3\n");
-    dynmemB = (char*)malloc( 11 * sizeof(char) );
-    printf("4\n");
-    free( dynmemB );
-    printf("5\n");
-    free( dynmemA );
-    printf("6\n");
+	/* test for DUMA_CHECK_FREQ */
+	printf("0\n");
+	protectAbove();
+	printf("1\n");
+	dynmemA = (char*)malloc( 10 * sizeof(char) );
+	printf("2\n");
+	dynmemA[-1 ] = 0;
+	printf("3\n");
+	dynmemB = (char*)malloc( 11 * sizeof(char) );
+	printf("4\n");
+	free( dynmemB );
+	printf("5\n");
+	free( dynmemA );
+	printf("6\n");
   }
 #endif
 
   return 0;
+
 }

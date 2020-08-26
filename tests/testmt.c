@@ -67,13 +67,13 @@ DWORD WINAPI poster( LPVOID arg )
 
   for( ; !iKillThreads; )
   {
-    foo = (char*)malloc(4096);
-    if (foo)
-    {
-      memset(foo, 0, 4096);
-      free(foo);
-    }
-    ++ aiCounter[iThreadNo];
+	foo = (char*)malloc(4096);
+	if (foo)
+	{
+	  memset(foo, 0, 4096);
+	  free(foo);
+	}
+	++ aiCounter[iThreadNo];
   }
 
 #ifdef  HAVE_PTHREADS
@@ -108,17 +108,17 @@ int main(int argc, char *argv[])
 
   if ( argc > 1 )
   {
-    i = atoi(argv[1]);
-    if ( i > 0 )
-      iSleepTime = i;
+	i = atoi(argv[1]);
+	if ( i > 0 )
+	  iSleepTime = i;
   }
   if ( argc > 2 )
   {
-    i = atoi(argv[2]);
-    if ( i > 0 )
-      iNumThreads = i;
-    if ( iNumThreads > MAX_NUM_THREADS )
-      iNumThreads = MAX_NUM_THREADS;
+	i = atoi(argv[2]);
+	if ( i > 0 )
+	  iNumThreads = i;
+	if ( iNumThreads > MAX_NUM_THREADS )
+	  iNumThreads = MAX_NUM_THREADS;
   }
 
   fprintf(stdout, "running %d threads for %d secs ..", iNumThreads, iSleepTime);
@@ -126,29 +126,29 @@ int main(int argc, char *argv[])
 
   for ( i = 0; i < iNumThreads; ++i )
   {
-    tArg[i] = i;
-    aiCounter[i] = 0;
+	tArg[i] = i;
+	aiCounter[i] = 0;
   }
 
 #ifdef  HAVE_PTHREADS
   fprintf(stdout, "creating threads with pthread library .. \n");
   fflush(stdout);
-  
+
   for ( i = 0; i < iNumThreads; ++i )
   {
-    pthread_t *pt = &tId[i];
-    int r = pthread_create( pt, NULL, poster, &tArg[i] );
-    if ( r )
-    {
-      fprintf(stderr, "\nerror in pthread_create() for thread %d: ", i);
-      switch(r)
-      {
-        case EAGAIN:  fprintf(stderr, "EAGAIN");   break;
-        case EINVAL:  fprintf(stderr, "EINVAL");   break;
-        case EPERM:   fprintf(stderr, "EPERM");    break;
-        default:      fprintf(stderr, "unexpected!"); break;
-      }
-    }
+	pthread_t *pt = &tId[i];
+	int r = pthread_create( pt, NULL, poster, &tArg[i] );
+	if ( r )
+	{
+	  fprintf(stderr, "\nerror in pthread_create() for thread %d: ", i);
+	  switch(r)
+	  {
+		case EAGAIN:  fprintf(stderr, "EAGAIN");   break;
+		case EINVAL:  fprintf(stderr, "EINVAL");   break;
+		case EPERM:   fprintf(stderr, "EPERM");    break;
+		default:      fprintf(stderr, "unexpected!"); break;
+	  }
+	}
   }
   fprintf(stdout, ".. creating done\n");
   fflush(stdout);
@@ -156,9 +156,9 @@ int main(int argc, char *argv[])
   /* sleep(iSleepTime); */
   for ( i = 0; i < iSleepTime; ++i )
   {
-    sleep(1);  /* wait 1 sec  */
-    fprintf(stdout, ".");
-    fflush(stdout);
+	sleep(1);  /* wait 1 sec  */
+	fprintf(stdout, ".");
+	fflush(stdout);
   }
 #else
   fprintf(stdout, "creating threads with Win32 API calls\n");
@@ -166,22 +166,22 @@ int main(int argc, char *argv[])
 
   for ( i = 0; i < iNumThreads; ++i )
   {
-    tId[i] = CreateThread( NULL    /* default security attributes */
-                    , 0       /* use default stack size */
-                    , poster  /* thread function name */
-                    , &tArg[i]/* argument to thread function */
-                    , 0       /* use default creation flags */
-                    , NULL    /* returns the thread identifier */
-                    );
-    if ( NULL == tId[i] )
-      fprintf(stderr, "\nerror in CreateThread() for thread %d: ", i);
+	tId[i] = CreateThread( NULL    /* default security attributes */
+					, 0       /* use default stack size */
+					, poster  /* thread function name */
+					, &tArg[i]/* argument to thread function */
+					, 0       /* use default creation flags */
+					, NULL    /* returns the thread identifier */
+					);
+	if ( NULL == tId[i] )
+	  fprintf(stderr, "\nerror in CreateThread() for thread %d: ", i);
   }
   /* Sleep(iSleepTime*1000); */
   for ( i =0; i < iSleepTime; ++i )
   {
-    Sleep(1000);  /* wait 1000 ms  */
-    fprintf(stdout, ".");
-    fflush(stdout);
+	Sleep(1000);  /* wait 1000 ms  */
+	fprintf(stdout, ".");
+	fflush(stdout);
   }
 #endif
 
@@ -193,33 +193,32 @@ int main(int argc, char *argv[])
 #ifdef  HAVE_PTHREADS
   for ( i = 0; i < iNumThreads; ++i )
   {
-    pthread_t *pt = &tId[i];
-    int r = pthread_join( *pt, NULL );
-    if ( r )
-    {
-      fprintf(stderr, "\nerror in pthread_join() for thread %d: ", i);
-      switch(r)
-      {
-        case EINVAL:  fprintf(stderr, "EINVAL");   break;
-        case ESRCH:   fprintf(stderr, "ESRCH");    break;
-        case EDEADLK: fprintf(stderr, "EDEADLK");  break;
-        default:      fprintf(stderr, "unexpected!"); break;
-      }
-    }
+	pthread_t *pt = &tId[i];
+	int r = pthread_join( *pt, NULL );
+	if ( r )
+	{
+	  fprintf(stderr, "\nerror in pthread_join() for thread %d: ", i);
+	  switch(r)
+	  {
+		case EINVAL:  fprintf(stderr, "EINVAL");   break;
+		case ESRCH:   fprintf(stderr, "ESRCH");    break;
+		case EDEADLK: fprintf(stderr, "EDEADLK");  break;
+		default:      fprintf(stderr, "unexpected!"); break;
+	  }
+	}
   }
 #else
   // Wait until all threads have terminated.
   WaitForMultipleObjects( iNumThreads, tId, TRUE, INFINITE);
   for ( i = 0; i < iNumThreads; ++i )
-    CloseHandle(tId[i]);
+	CloseHandle(tId[i]);
 #endif
   fprintf(stdout, "..done\n");
 
   fprintf(stdout, "state:\n");
   for ( i = 0; i < iNumThreads; ++i )
-    fprintf(stdout, "Thread %d did %d (de)allocations\n", i, aiCounter[i]);
+	fprintf(stdout, "Thread %d did %d (de)allocations\n", i, aiCounter[i]);
   fflush(stdout);
 
   return 0;
 }
-

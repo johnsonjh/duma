@@ -1,6 +1,6 @@
 /*
  * log2comp.h - various base 2 log computation versions
- * 
+ *
  * Asterisk -- A telephony toolkit for Linux.
  *
  * Alex Volkov <codepro@usa.net>
@@ -46,13 +46,13 @@ static inline int ilog2(int val)
    int a;
    __asm__
    ("\
-      xorl  %0, %0      ;\
-      decl  %0       ;\
-      bsrl  %1, %0      ;\
-      "
-      : "=r" (a)
-      : "mr" (val)
-      : "cc"
+	  xorl  %0, %0      ;\
+	  decl  %0       ;\
+	  bsrl  %1, %0      ;\
+	  "
+	  : "=r" (a)
+	  : "mr" (val)
+	  : "cc"
    );
    return a;
 }
@@ -60,10 +60,10 @@ static inline int ilog2(int val)
 static inline int ilog2(int val)
 {
    int a;
-   __asm__ ("cntlzw %0,%1" 
-       : "=r" (a) 
-       : "r" (val)
-       );
+   __asm__ ("cntlzw %0,%1"
+	   : "=r" (a)
+	   : "r" (val)
+	   );
    return 31-a;
 }
 #else
@@ -75,14 +75,15 @@ static inline int ilog2(int val)
 {
    int i;
    for (i = -1; val; ++i, val >>= 1)
-      ;
+	  ;
    return (i);
 }
 #endif
 
-/* Variable: none 
+/* Variable: none
  *
  * Fake variable to make docs work right :(
  */
+
 
 // end

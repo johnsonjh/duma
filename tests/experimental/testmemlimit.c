@@ -16,27 +16,27 @@ int main( int argc, char** argv )
 
   ptr1 = (int*) malloc( 100000 * sizeof(int) );
   for( i = 0; i < 100000; ++i )
-    ptr1[i] = i;
+	ptr1[i] = i;
 
   ptr2 = (int*) malloc( 100000 * sizeof(int) );
   for( i = 0; i < 100000; ++i )
-    ptr2[i] = i;
+	ptr2[i] = i;
 
   ptr3 = (int*) malloc( 1000000 * sizeof(int) );
   for( i = 0; i < 1000000; ++i )
-    ptr3[i] = i;
+	ptr3[i] = i;
 
   ptr4 = (int*) malloc( 1000000 * sizeof(int) );
   for( i = 0; i < 1000000; ++i )
-    ptr4[i] = i;
+	ptr4[i] = i;
 
   ptr5 = (int*) malloc( 10000000 * sizeof(int) );
   for( i = 0; i < 10000000; ++i )
-    ptr5[i] = i;
+	ptr5[i] = i;
 
   ptr6 = (int*) malloc( 10000000 * sizeof(int) );
   for( i = 0; i < 10000000; ++i )
-    ptr6[i] = i;
+	ptr6[i] = i;
 
   free(ptr1);
   free(ptr2);
@@ -47,5 +47,3 @@ int main( int argc, char** argv )
 
   return 0;
 }
-
-

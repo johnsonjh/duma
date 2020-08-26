@@ -49,4 +49,3 @@ const char * DUMA_strerror(int duma_errno);
 #endif
 
 #endif /* DUMA_PRINT_H */
-

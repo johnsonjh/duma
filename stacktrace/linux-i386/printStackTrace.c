@@ -24,13 +24,14 @@ void printStackTrace(void)
 		{
 			pf = (char *)(*(int *)frame);
 		}
-		
+
 		printf("Prev frame: %p, Prev EIP: %p\n", pf, eip);
-		
+
 		frame = pf;
 		if(frame == NULL)
 			break;
 	}
 }
+
 
 // end

@@ -11,7 +11,6 @@ int main()
   int result;
   result = regcomp(&rec, res, REG_EXTENDED);
   if (result != 0)
-    printf("Error %d\n",result);
+	printf("Error %d\n",result);
   return 0;
 }
-

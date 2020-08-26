@@ -7,8 +7,8 @@
  * granted without fee, provided that the above copyright notice
  * appear in all copies and that both that copyright notice and
  * this permission notice appear in supporting documentation.
- * Jani Kajala makes no representations about the suitability 
- * of this software for any purpose. It is provided "as is" 
+ * Jani Kajala makes no representations about the suitability
+ * of this software for any purpose. It is provided "as is"
  * without express or implied warranty.
  */
 
@@ -54,13 +54,13 @@ EBP points to stack frame (at least 2 DWORDs) which looks something like this:
 DWORD[EBP+4] = return address (=calling function)
 DWORD[EBP+0] = calling function stack frame
 
-So we 
-1) get the EBP to EBX 
+So we
+1) get the EBP to EBX
 2) take calling function address to EAX
-3) parent stack frame to EBX and 
+3) parent stack frame to EBX and
 4) loop 2,3,4 until desired level in calling stack is reached.
 
-Beware that compiler does not always make stack frame (at least if s.c. "omit stack frame" 
+Beware that compiler does not always make stack frame (at least if s.c. "omit stack frame"
 optimization is enabled), so at least I'd use this code only in debug build.
 */
 static long getCaller( int index )
@@ -137,7 +137,7 @@ int StackTrace::printStackTrace( MapFile** map, int maps,
 
 		if(entry == -1)
 			continue;
-		
+
 		callersAddr[callers] = addr;
 
 		callers++;
@@ -182,5 +182,6 @@ int StackTrace::printStackTrace( MapFile** map, int maps,
 
 	return needed;
 }
+
 
 } // dev

@@ -29,9 +29,9 @@ int main(int argc, char *argv[])
 
   if ( argc >= 1 )
   {
-    int tmp = atoi( argv[1] );
-    if ( tmp >= 0 && tmp <= ((1 << 31)/pagesize) )
-      alloccount = tmp;
+	int tmp = atoi( argv[1] );
+	if ( tmp >= 0 && tmp <= ((1 << 31)/pagesize) )
+	  alloccount = tmp;
   }
 
   pre_phys_pages  = sysconf(_SC_PHYS_PAGES);
@@ -39,9 +39,9 @@ int main(int argc, char *argv[])
 
   printf("before allocation: %ld available of %ld pages\n", pre_avail_pages, pre_phys_pages);
   printf("                   %ld available of %ld kB\n"
-         , ((pre_avail_pages*pagesize)/1024)
-         , ((pre_phys_pages *pagesize)/1024)
-         );
+		 , ((pre_avail_pages*pagesize)/1024)
+		 , ((pre_phys_pages *pagesize)/1024)
+		 );
 
 #if 0
   block = valloc( alloccount * pagesize );
@@ -49,28 +49,27 @@ int main(int argc, char *argv[])
   block = Page_Create( alloccount * pagesize, 0 /*exitonfail*/, 1 /*printerror*/ );
 #endif
   for ( i = 0; i < alloccount * pagesize; ++i )
-    block[i] = (char)(i & 1);
+	block[i] = (char)(i & 1);
 
   post_phys_pages  = sysconf(_SC_PHYS_PAGES);
   post_avail_pages = sysconf(_SC_AVPHYS_PAGES);
 
   printf("\nallocated and used %d pages (=%ld kB)\n\n", alloccount
-        , ((alloccount*pagesize)/1024)
-        );
+		, ((alloccount*pagesize)/1024)
+		);
 
   printf("after  allocation: %ld available of %ld pages\n", post_avail_pages, post_phys_pages);
   printf("                   %ld available of %ld kB\n"
-         , ((post_avail_pages*pagesize)/1024)
-         , ((post_phys_pages *pagesize)/1024)
-         );
+		 , ((post_avail_pages*pagesize)/1024)
+		 , ((post_phys_pages *pagesize)/1024)
+		 );
 
   printf("difference: %ld less available pages\n"
-         , (pre_avail_pages - post_avail_pages)
-         );
+		 , (pre_avail_pages - post_avail_pages)
+		 );
   printf("            %ld less available kB\n"
-         , (((pre_avail_pages - post_avail_pages)*pagesize)/1024)
-         );
+		 , (((pre_avail_pages - post_avail_pages)*pagesize)/1024)
+		 );
 
   return 0;
 }
-
