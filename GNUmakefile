@@ -1,4 +1,5 @@
-#
+# DUMA configuration:
+# 
 # add "-DDUMA_NO_GLOBAL_MALLOC_FREE" (without quotes)
 #   for not defining malloc/free in global namespace
 #
@@ -248,10 +249,12 @@ ifeq ($(OS), linux)
   EXEPOSTFIX=
   RM=rm -v --
   RMFORCE=rm -vf --
+  ECHO=echo
+  ECHOLF=echo ""
 endif
 
 ifndef BSWITCH
-  # default is Linux or other full Unix
+  # default is generic full Unix
   BSWITCH=610
   $(warning using default options. OS/OSTYPE not set or contain unknown values!)
   CURPATH=./
@@ -317,26 +320,28 @@ ifndef includedir
   includedir=$(prefix)/include
 endif
 
-
-PACKAGE_SOURCE=README.txt CHANGELOG COPYING-GPL COPYING-LGPL duma.3 Makefile gdbinit.rc \
+PACKAGE_SOURCE=README.txt CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 Makefile gdbinit.rc \
 	duma.h dumapp.h duma_sem.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
 	tests/dumatest.c tests/tstheap.c tests/thread-test.c tests/testmt.c tests/dumatestpp.cpp tests/testoperators.cpp \
-	createconf.c
+	createconf.c make_git_source_version.sh
 
 OBJECTS=dumapp.o duma.o sem_inc.o print.o
 
 SO_OBJECTS=dumapp_so.o duma_so.o sem_inc_so.o print_so.o
 
 # Make all the top-level targets the makefile knows about.
-all:	libduma.a $(DUMA_DYN_DEPS)
+all:	verinfo.h libduma.a $(DUMA_DYN_DEPS)
+	@ $(ECHO) "Build complete - you can now run make test."
 
 # Perform self tests on the program this makefile builds.
-check test:
+check test: tstheap$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) $(DUMA_DYN_DEPS)
 	@ $(ECHOLF)
 	@ $(ECHO) "Testing DUMA (static library):"
 	$(CURPATH)dumatest$(EXEPOSTFIX)
+	@ $(ECHOLF)
 	$(CURPATH)tstheap$(EXEPOSTFIX) 3072
+	@ $(ECHOLF)
 	$(CURPATH)testoperators$(EXEPOSTFIX)
 	@ $(ECHOLF)
 	@ $(ECHO) "DUMA static confidence test PASSED."
@@ -344,9 +349,9 @@ ifdef DUMASO
 	@ $(ECHOLF)
 	@ $(ECHO) "Testing DUMA (dynamic library)."
 ifeq ($(OS), solaris)
-	(LD_PRELOAD=./$(DUMASO) DYLD_INSERT_LIBRARIES=./$(DUMASO) DYLD_FORCE_FLAT_NAMESPACE=1 exec $(CURPATH)tstheap_so 3072)
+	LD_PRELOAD=./$(DUMASO) DYLD_INSERT_LIBRARIES=./$(DUMASO) DYLD_FORCE_FLAT_NAMESPACE=1 exec $(CURPATH)tstheap_so 3072
 else
-	(export LD_PRELOAD=./$(DUMASO); export DYLD_INSERT_LIBRARIES=./$(DUMASO); export DYLD_FORCE_FLAT_NAMESPACE=1; exec $(CURPATH)tstheap_so 3072)
+	(export LD_PRELOAD=./$(DUMASO); export DYLD_INSERT_LIBRARIES=./$(DUMASO); export DYLD_FORCE_FLAT_NAMESPACE=1 ; exec $(CURPATH)tstheap_so 3072)
 endif
 	@ $(ECHOLF)
 	@ $(ECHO) "DUMA dynamic confidence test PASSED."
@@ -412,16 +417,13 @@ endif
 	@echo DUMA_DYN_DEPS   [$(DUMA_DYN_DEPS)]
 	@echo PACKAGE_SOURCE  [$(PACKAGE_SOURCE)]
 
-
 # Print filenames unknown to git
 printuk:
 	- git status -s --untracked-files=all 2>/dev/null | grep '^? '
 
-
 # Print filenames known to git but not "up-to-date" (modified)
 printmod:
 	- git status -s 2>/dev/null |grep '^\ \?M '
-
 
 # Copy the executable file into a directory that users typically search for
 # commands; copy any auxiliary files that the executable uses into the
@@ -449,7 +451,6 @@ endif
 	- mkdir -p $(DESTDIR)$(MAN_INSTALL_DIR)
 	$(INSTALL) -m 644 duma.3 $(DESTDIR)/$(MAN_INSTALL_DIR)/duma.3
 
-
 # Delete all the installed files that the `install' target would create
 uninstall:
 	- $(RMFORCE) $(DESTDIR)$(DOC_INSTALL_DIR)/README.txt
@@ -471,7 +472,6 @@ ifdef DUMASO_LINK2
 endif
 	- $(RMFORCE) $(DESTDIR)$(MAN_INSTALL_DIR)/duma.3
 
-
 # Delete all files that are normally created by running make.
 clean:
 	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o \
@@ -485,21 +485,24 @@ clean:
 # normally create as preparation for compilation, even if the makefile itself
 # cannot create these files.
 distclean realclean clobber: clean
-	- $(RMFORCE) duma_config.h createconf.o createconf$(EXEPOSTFIX)
+	- $(RMFORCE) duma_config.h verinfo.h createconf.o createconf$(EXEPOSTFIX)
 
 roff:
 	nroff -man < duma.3 > duma.cat
-
 
 DUMA.shar: $(PACKAGE_SOURCE)
 	shar $(PACKAGE_SOURCE) > DUMA.shar
 
 shar: DUMA.shar
 
-libduma.a: duma_config.h $(OBJECTS)
+libduma.a: duma_config.h verinfo.h $(OBJECTS)
 	- $(RMFORCE) libduma.a
 	$(AR) crv libduma.a $(OBJECTS)
 	$(RANLIB) libduma.a
+
+verinfo.h: FORCE
+	- $(CURPATH)make_git_source_version.sh > $(CURPATH)verinfo.h
+	$(shell touch verinfo.h)
 
 duma_config.h: 
 	$(MAKE) reconfig
@@ -542,7 +545,6 @@ testmemlimit$(EXEPOSTFIX): libduma.a testmemlimit.o
 	- $(RMFORCE) testmemlimit$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) testmemlimit.o libduma.a -o testmemlimit$(EXEPOSTFIX) $(LIBS)
 
-
 tstheap_so$(EXEPOSTFIX): tstheap_so.o
 	- $(RMFORCE) tstheap_so$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) tstheap_so.o -o tstheap_so$(EXEPOSTFIX) $(LIBS)
@@ -555,7 +557,6 @@ testmemlimit_so$(EXEPOSTFIX): testmemlimit_so.o
 	- $(RMFORCE) testmemlimit_so$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) testmemlimit_so.o -o testmemlimit_so$(EXEPOSTFIX) $(LIBS)
 
-
 $(OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o: duma.h
 
 ifeq ($(OS), Windows_NT)
@@ -563,13 +564,13 @@ ifeq ($(OS), Windows_NT)
 else
   ifeq ($(OS), osx)
 
-$(DUMASO): duma_config.h $(SO_OBJECTS)
+$(DUMASO): duma_config.h verinfo.h $(SO_OBJECTS)
 	$(CXX) -g -dynamiclib -Wl -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
 	$(CXX) -g -dynamiclib -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
 
   else
 
-$(DUMASO): duma_config.h $(SO_OBJECTS)
+$(DUMASO): duma_config.h verinfo.h $(SO_OBJECTS)
 	$(CXX) -g -shared -Wl,-soname,$(DUMASO) -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
 #	$(CXX) -g -shared -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
 
@@ -577,13 +578,11 @@ $(DUMASO): duma_config.h $(SO_OBJECTS)
 
 endif
 
-
 #
 # define rules how to build objects for createconf
 #
 createconf.o:
 	$(CC_FOR_BUILD) $(HOST_CFLAGS) $(DUMA_OPTIONS) -c createconf.c -o $@
-
 
 #
 # define rules how to build objects for shared library
@@ -592,7 +591,7 @@ createconf.o:
 dumapp_so.o:	dumapp.cpp duma.h duma_sem.h dumapp.h
 	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
 
-duma_so.o:	duma.c duma.h duma_config.h
+duma_so.o:	duma.c duma.h duma_config.h verinfo.h
 	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
 
 sem_inc_so.o:	sem_inc.c duma_sem.h
@@ -611,7 +610,6 @@ dumatestpp_so.o:
 testmemlimit_so.o:
 	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c tests/testmemlimit.c -o $@
 
-
 #
 # define rules how to build objects for static library
 #
@@ -619,7 +617,7 @@ testmemlimit_so.o:
 dumapp.o:	dumapp.cpp duma.h duma_sem.h dumapp.h
 	$(CXX) $(CPPFLAGS) -c dumapp.cpp -o $@
 
-duma.o:	duma.c duma.h duma_config.h
+duma.o:	duma.c duma.h duma_config.h verinfo.h
 	$(CC) $(CFLAGS) -c duma.c -o $@
 
 sem_inc.o:	sem_inc.c duma_sem.h
@@ -628,29 +626,27 @@ sem_inc.o:	sem_inc.c duma_sem.h
 print.o:	print.c print.h
 	$(CC) $(CFLAGS) -c print.c -o $@
 
-
 #
 # define rules how to build the test objects
 #
 
-dumatest.o:	tests/dumatest.c duma.h duma_config.h
+dumatest.o:	tests/dumatest.c duma.h duma_config.h verinfo.h
 	$(CC) $(CFLAGS) -c tests/dumatest.c -o $@
 
-dumatestpp.o:	tests/dumatestpp.cpp duma.h duma_sem.h dumapp.h duma_config.h
+dumatestpp.o:	tests/dumatestpp.cpp duma.h duma_sem.h dumapp.h duma_config.h verinfo.h
 	$(CXX) $(CPPFLAGS) -c tests/dumatestpp.cpp -o $@
 
-tstheap.o:	tests/tstheap.c duma.h duma_config.h
+tstheap.o:	tests/tstheap.c duma.h duma_config.h verinfo.h
 	$(CC) $(CFLAGS) -c tests/tstheap.c -o $@
 
-testoperators.o:	tests/testoperators.cpp duma.h duma_sem.h dumapp.h duma_config.h
+testoperators.o:	tests/testoperators.cpp duma.h duma_sem.h dumapp.h duma_config.h verinfo.h
 	$(CXX) $(CPPFLAGS) -c tests/testoperators.cpp -o $@
 
-thread-test.o:	tests/thread-test.c duma.h duma_config.h
+thread-test.o:	tests/thread-test.c duma.h duma_config.h verinfo.h
 	$(CC) $(CFLAGS) -c tests/thread-test.c -o $@
 
-testmt.o:	tests/testmt.c duma.h duma_config.h
+testmt.o:	tests/testmt.c duma.h duma_config.h verinfo.h
 	$(CC) $(CFLAGS) -c tests/testmt.c -o $@
-
 
 #
 # default rules
@@ -662,5 +658,5 @@ testmt.o:	tests/testmt.c duma.h duma_config.h
 #	$(CXX) $(CPPFLAGS) -c $< -o $@
 #
 
-.PHONY: check test installcheck install uninstall clean distclean realclean clobber dos2unix printvars printuk printmod
-
+.PHONY: check test installcheck install uninstall clean distclean realclean clobber dos2unix printvars printuk printmod FORCE
+FORCE:

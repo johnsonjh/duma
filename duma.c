@@ -90,6 +90,7 @@
 #include "print.h"
 #include "duma_sem.h"
 #include "paging.h"
+#include "verinfo.h"
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 DUMA_EXTERN_C void StackTraceCleanup();
@@ -97,7 +98,11 @@ DUMA_EXTERN_C void printStackTrace(char* buffer, int bufferSize, char* mapFilena
 #endif
 
 static const char  version[] =
-"DUMA 2.5.16 ("
+#ifndef GIT_SOURCE_VERSION
+"DUMA ("
+#else
+GIT_SOURCE_VERSION
+#endif
 #ifdef DUMA_SO_LIBRARY
 "shared library"
 #elif DUMA_DLL_LIBRARY

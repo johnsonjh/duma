@@ -51,8 +51,15 @@
   #include <fcntl.h>
 #else
   /* already defined in cygwin headers */
-  typedef LPVOID caddr_t;
-#endif
+  #ifndef LPVOID
+    typedef void *LPVOID;
+  #endif
+  #if(defined(caddr_t) && defined(daddr_t))
+  #ifndef __USE_MISC
+    typedef LPVOID caddr_t;
+  #endif // __USE_MISC
+  #endif // (defined(caddr_t) && defined(daddr_t))
+#endif // (defined(__MINGW32__) || defined(__MINGW64__) || defined(__CYGWIN__))
 
 #ifdef _MSC_VER
   #include <crtdbg.h>
