@@ -1,5 +1,3 @@
-Title: README
-
 D.U.M.A. - Detect Unintended Memory Access - A Red-Zone memory allocator:
 
 

@@ -1,6 +1,3 @@
-
-Title: 00README
-
 This is the begining of a linux kernel model duma.  Same idea as 
 user space duma, replace kmalloc and friends instead.
 
