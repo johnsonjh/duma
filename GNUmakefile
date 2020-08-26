@@ -268,6 +268,10 @@ ifndef HOST_CFLAGS
   HOST_CFLAGS=$(CFLAGS)
 endif
 
+ifndef CC_FOR_BUILD
+  CC_FOR_BUILD=$(CC)
+endif
+
 ############################################################
 
 ifndef prefix
