@@ -102,13 +102,17 @@ AR=ar
 RANLIB=ranlib
 INSTALL=install
 
+ifndef $(OS)
+ OS=$(shell uname -s 2>/dev/null | tr '[:upper:]' '[:lower:]' 2>/dev/null || true)
+endif
+
 # dynamic dependencies
 DUMA_DYN_DEPS=$(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
 
-# some OS specific:
-
+# some OS specifics:
 ifeq ($(OS), Windows_NT)
   ifeq ($(OSTYPE), msys)
+	$(info using settings for OS=Windows_NT, OSTYPE=msys)
     # call mingw32-make OSTYPE=msys
     # from Windows command prompt
     # having added the PATH for MINGW/bin
@@ -129,6 +133,7 @@ ifeq ($(OS), Windows_NT)
     EXEPOSTFIX=.exe
   endif
   ifeq ($(OSTYPE), msys-sh)
+	$(info using settings for OS=Windows_NT, OSTYPE=msys-sh)
     # call mingw32-make OSTYPE=msyssh
     # from MSYS shell
     # having added the PATH for MINGW/bin
@@ -151,6 +156,7 @@ ifeq ($(OS), Windows_NT)
     EXEPOSTFIX=.exe
   endif
   ifeq ($(OSTYPE), cygwin)
+	$(info using settings for OS=Windows_NT, OSTYPE=cygwin)
     # call make OSTYPE=cygwin
     BSWITCH=103
     DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
@@ -163,6 +169,7 @@ ifeq ($(OS), Windows_NT)
     EXEPOSTFIX=.exe
   endif
   ifndef BSWITCH
+	$(info using settings for OS=Windows_NT)
     BSWITCH=100
     DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
     CURPATH=./
@@ -176,6 +183,7 @@ ifeq ($(OS), Windows_NT)
 endif
 
 ifeq ($(OS), osx)
+  $(info using settings for OS=osx)
   # tested on darwin 8.0, which is the base for mac-osx
   # call: make OS=osx
   BSWITCH=210
@@ -193,6 +201,7 @@ ifeq ($(OS), osx)
 endif
 
 ifeq ($(OS), freebsd)
+  $(info using settings for OS=freebsd)
   BSWITCH=310
   DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
   DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
@@ -206,7 +215,8 @@ ifeq ($(OS), freebsd)
   EXEPOSTFIX=
 endif
 
-ifeq ($(OS), netbsd)
+ifeq ($(OS), netbsd) 
+  $(info using settings for OS=netbsd)
   BSWITCH=320
   CURPATH=./
   DUMASO=libduma.so.0.0.0
@@ -219,6 +229,7 @@ ifeq ($(OS), netbsd)
 endif
 
 ifeq ($(OS), solaris)
+  $(info using settings for OS=solaris)
   BSWITCH=410
   DUMA_OPTIONS += -DDUMA_NO_STRERROR
   CURPATH=./
@@ -235,6 +246,7 @@ ifeq ($(OS), solaris)
 endif
 
 ifeq ($(OS), linux)
+  $(info using settings for OS=linux)
   # Linux with GNU compiler and tools.
   CC=gcc
   CXX=g++
@@ -355,6 +367,8 @@ else
 endif
 	@ $(ECHOLF)
 	@ $(ECHO) "DUMA dynamic confidence test PASSED."
+	@ $(ECHOLF)
+	@ $(ECHO) "You may now run make install and then installcheck"
 	@ $(ECHOLF)
 endif
 
@@ -502,7 +516,7 @@ libduma.a: duma_config.h verinfo.h $(OBJECTS)
 
 verinfo.h: FORCE
 	- $(CURPATH)make_git_source_version.sh > $(CURPATH)verinfo.h
-	$(shell touch verinfo.h)
+	$(shell touch verinfo.h || true)
 
 duma_config.h: 
 	$(MAKE) reconfig

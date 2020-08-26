@@ -1,4 +1,3 @@
-
 Title: README
 
 D.U.M.A. - Detect Unintended Memory Access - A Red-Zone memory allocator:
@@ -7,9 +6,11 @@ D.U.M.A. - Detect Unintended Memory Access - A Red-Zone memory allocator:
 DESCRIPTION:
 
 
-DUMA helps you detect two common programming bugs:
-software that overruns the boundaries of a malloc() memory allocation, and
-software that touches a memory allocation that has been released by free().
+DUMA helps you detect two of the most common programming errors:
+
+1. software that overruns the boundaries of a malloc() memory allocation,
+2. software that touches memory allocations already released by free().
+
 Unlike other malloc() debuggers, DUMA will detect read accesses as well as
 writes, and it will pinpoint the exact instruction that causes an error.
 It has been in use at Pixar since 1987, and at many other sites for years.

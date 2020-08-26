@@ -1,4 +1,3 @@
-
 /*
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
@@ -349,7 +348,5 @@
    */
   #define CA_REF(NAME,INDEX) \
 	NAME[ DUMA_ASSERT( (NAME ## _checkedidx = (INDEX)) < NAME ## _checkedsize ), NAME ## _checkedidx ]
-
-
 
 #endif /* end ifdef DUMA_NO_DUMA */

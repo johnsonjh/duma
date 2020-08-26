@@ -1,4 +1,3 @@
-
 Title: Win32 Detours Howto
 
 It is now possible to use detours with duma on already compiled binaries.

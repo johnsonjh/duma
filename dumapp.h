@@ -1,4 +1,3 @@
-
 /*
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2002-2008 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
@@ -213,6 +212,5 @@
   #endif /* end ifdef DUMA_NO_LEAKDETECTION */
 
 #endif /* end ifdef DUMA_NO_CPP_SUPPORT */
-
 
 #include "duma.h"

@@ -1,4 +1,3 @@
-
 /*
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>

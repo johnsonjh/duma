@@ -1,4 +1,3 @@
-
 /* Title: paging.h */
 
 /*
@@ -402,6 +401,5 @@ Page_Size(void)
   return getpagesize();
 #endif
 }
-
 
 #endif /* DUMA_PAGING_H */

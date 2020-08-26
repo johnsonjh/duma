@@ -1,4 +1,3 @@
-
 This documents describes if and how the library is installed on your system.
 
 I. Linux/Unix environments (including Cygwin and MinGW):
@@ -18,15 +17,16 @@ I. Linux/Unix environments (including Cygwin and MinGW):
   Add option 'OS=freebsd' when calling make for FreeBSD.
   Add option 'OS=netbsd' when calling make for NetBSD.
   Add option 'OS=solaris' when calling make for Solaris.
+  Add option 'OS=linux' when calling make for Linux.
 
-  Get system user with 'su', if you are going to install into
-    system directories
+  Get system user with 'su' or 'sudo', if you are going
+  to install into system directories
 
-  Call 'gmake install' for installation in system directories.
+  Call 'make' or 'gmake install' to install into system directories.
 
   Note: You need not install DUMA. Setting system PATH for duma.sh
     or INCLUDE/LIBS variables after compilation may suffice, too.
-    The (outdated) manual page needs installation.
+    The (outdated) manual page should be installed as well.
 
 
 II. Windows 2000/XP, Visual Studio Environments:
