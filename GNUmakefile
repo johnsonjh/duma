@@ -93,7 +93,13 @@ INSTALL=install
 RM=rm
 RMFORCE=rm -f
 ECHO=echo
-ECHOLF=echo
+ECHOLF=echo .
+CC=cc
+CXX=c++
+LD=ld
+AR=ar
+RANLIB=ranlib
+INSTALL=install
 
 # dynamic dependencies
 DUMA_DYN_DEPS=$(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
@@ -228,7 +234,9 @@ ifeq ($(OS), solaris)
 endif
 
 ifeq ($(OS), linux)
-  # Linux
+  # Linux with GNU compiler and tools.
+  CC=gcc
+  CXX=g++
   BSWITCH=510
   CURPATH=./
   DUMASO=libduma.so.0.0.0
@@ -238,6 +246,8 @@ ifeq ($(OS), linux)
   CPPFLAGS=-g -O0 -Wall -Wextra
   LIBS=-lpthread
   EXEPOSTFIX=
+  RM=rm -v --
+  RMFORCE=rm -vf --
 endif
 
 ifndef BSWITCH
@@ -254,6 +264,9 @@ ifndef BSWITCH
   EXEPOSTFIX=
 endif
 
+ifndef HOST_CFLAGS
+  HOST_CFLAGS=$(CFLAGS)
+endif
 
 ############################################################
 
