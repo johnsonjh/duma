@@ -1,30 +1,3 @@
-NOTE: Unaware of the original author also doing work to properly convert
-his CVS repository to Git, with backdated - yet updated and corrected - 
-commit and authorship attributions for DUMA (github.com/hayguen/duma), I
-set upon the same task and did much of same work, perhaps a bit more
-pedantically, regarding backdating and attributing patches found on forums
-and in various other repositories and mailing lists, but, perhaps a bit more
-liberally, as I have merged in my own changes to the package as well.
-
-Now, the big job is to reconcile these two very similar repositories, and
-decide which should will be "the winner".  Regardless of the actual commits
-or patches chosen to stay verbatim (vs. those that may be dropped or need a
-bit more massaging), it's very likely I'll be primary repo and host the DUMA
-package going forward, as Hayati Ayguen is no longer actively maintaining or
-working on it, and likely doesn not want to deal with the continued burden of
-maintenance and support requests for this package - which, I must add, began
-as a fork of Bruce Perens' 'ElectricFence', created at Pixar in 1987, with 
-D.U.M.A. starting its' life as a fork of Bruce's project sometime around 1993.
-
-So, with more than 25 years, Hayati's put his time in, and has chosen to move
-on on new projects.  You can visit his GitHub at https://github.com/hayguen
-
-See also: https://perens.com/2017/04/04/my-30th-anniversary-in-open-source/
-
- - Jeff Johnson
-
---------------------
-
 D.U.M.A. - Detect Unintended Memory Access - A Red-Zone memory allocator:
 
 
