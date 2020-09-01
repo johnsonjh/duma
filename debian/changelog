@@ -1,4 +1,4 @@
-duma (2.5.16~beta1-1) unstable; urgency=medium
+duma (2.5.16~beta2-1) unstable; urgency=medium
  
   * Removed all patches as they should be unnecessary.
   * Changed upstream.
