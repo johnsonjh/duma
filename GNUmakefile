@@ -246,11 +246,34 @@ ifeq ($(OS), solaris)
 endif
 
 ifeq ($(OS), linux)
-  $(info using settings for OS=linux)
-  # Linux with GNU compiler and tools.
-  CC=gcc
-  CXX=g++
+ ifeq ($(shell $(CXX) -v 2>&1 | grep -c "clang version"), 1)
+  COMPILERX := clang++
+ else
+  COMPILERX := g++
+ endif
+ export COMPILERX
+ ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
+  COMPILER := clang
+ else
+  COMPILER := gcc
+ endif
+ export COMPILER
+ CC=${COMPILER}
+ CXX=${COMPILERX}
+ $(info using CC=${COMPILER})
+ $(info using CXX=${COMPILERX})
+ ifeq ($(OSTYPE), pie)
+  $(info using settings for OS=linux, OSTYPE=pie)
+  # Linux PIE-mode with GNU compiler and GNU tools.
+  CC=${COMPILER} -fpie -fPIE
+  CXX=${COMPILERX} -fpie -fPIE
   BSWITCH=510
+  else
+   $(info using settings for OS=linux)
+   CC=${COMPILER}
+   CXX=${COMPILERX}
+   BSWITCH=610
+  endif
   CURPATH=./
   DUMASO=libduma.so.0.0.0
   DUMASO_LINK1=libduma.so.0
@@ -259,15 +282,15 @@ ifeq ($(OS), linux)
   CPPFLAGS=-g -O0 -Wall -Wextra
   LIBS=-lpthread
   EXEPOSTFIX=
-  RM=rm -v --
-  RMFORCE=rm -vf --
+  RM=rm
+  RMFORCE=rm -f
   ECHO=echo
-  ECHOLF=echo ""
+  ECHOLF=printf '\n'
 endif
 
 ifndef BSWITCH
   # default is generic full Unix
-  BSWITCH=610
+  BSWITCH=810
   $(warning using default options. OS/OSTYPE not set or contain unknown values!)
   CURPATH=./
   DUMASO=libduma.so.0.0.0
