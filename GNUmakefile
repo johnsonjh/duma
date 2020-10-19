@@ -355,7 +355,7 @@ ifndef includedir
   includedir=$(prefix)/include
 endif
 
-PACKAGE_SOURCE=README.txt CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 Makefile gdbinit.rc \
+PACKAGE_SOURCE=README.txt CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 GNUmakefile gdbinit.rc \
 	duma.h dumapp.h duma_sem.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
 	tests/dumatest.c tests/tstheap.c tests/thread-test.c tests/testmt.c tests/dumatestpp.cpp tests/testoperators.cpp \
@@ -407,7 +407,7 @@ ifdef DUMASO
 	@ $(ECHOLF)
 endif
 
-# Print variables of Makefile
+# Print variables of GNUmakefile
 printvars:
 	@echo OS              [$(OS)]
 	@echo OSTYPE          [$(OSTYPE)]
