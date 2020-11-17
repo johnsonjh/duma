@@ -17,17 +17,16 @@ standard offerings.
 Living in my VCS vacuum, it might have been expected that I would avoid the
 first-choice modern DVCS, Git, and instead, continue the project with a VCS
 closely derived from that of the original CVS - this would be taking the path
-of least resistance, and avoiding a the pain of learning a new systems and
-invasive changes. 
+of least resistance, and avoiding the pain of learning a new system.
 
-This likely would have meant moving moving to the last distributed [`CVSNT system`](http://www.evscm.org/modules/Downloads/) release,
+In this case, that likely would have meant moving moving to the last distributed [`CVSNT system`](http://www.evscm.org/modules/Downloads/) release,
 along with updating the antiquated `RCS` base that `CVSNT` is built upon.
 
-Another more viable option that was explored was migration to a mew repository
+Another (more viable) option that was explored was migrating to a new repository
 built on a foundation based on of D. Richard Hipp's excellent [Fossil-SCM](https://fossil-scm.org/fossil/doc/trunk/www/fossil-v-git.wiki)
 system. While more commonly associated with his famous Tcl, Expect, and SQLite,
 software, he also is the author and maintainer of this excellent VCS system,
-currently used to maintainl SQLite. We would benefit the many built-in Fossil
+currently used to maintain SQLite. We would benefit the many built-in Fossil
 features such as the Forum, Wikis, Bug Reporting, and other infrastructure
 DRH has included 'for-free' with [Fossil-SCM](https://fossil-scm.org/fossil/doc/trunk/www/fossil-v-git.wiki).
 
@@ -37,12 +36,12 @@ his legacy `CVS` repository to a `Git` repository — complete with a corrected 
 though, some may argue "rewritten commit history", providing a legitimate but
 sometimes inaccurate dataset, I set upon a similar course of action, 
 converting the original `CVS` to repository to `Git` completely, but totally
-independently. I also tried to identify the aithors of and merge many of the
+independently. I also tried to identify the authors of and merge many of the
 community contributions that had been added over many years.
 
 All in all, considering the end result, I (Jeffrey H. Johnson, owner of this
 repository), will say I am mostly satisfied, as many of my independent
-conclusions reached were close or identical to those of the the author's own
+conclusions reached were close or identical to those of the author's own
 conversion efforts.  
 
 It must be known that I am layman with no special knowledge of this software,
@@ -57,12 +56,12 @@ figuring out who actually wrote the code, when the code was written, and if
 it could (or should) be considered as part of the mainline source repository. 
 
 These are almost always educated guesses, and, when lacking needed details,
-judgment calls. With such a widely distributed, hakced-upon code-base, one
+judgment calls. With such a widely distributed, hacked-upon code-base, one
 that that survived for as long as it did, without any strong central source
 control repository, nor official releases for many years, simply means the
 data we have is often fragmentary and conflicting. Sometimes the only 
 existing source of information is the fading memories of the people originally
-involved. In other casese, the data is derived from inferences I made, based
+involved. In other cases, the data is derived from inferences I made, based
 upon information which is often inaccurate.
 
 While I did my best, I can be absolutely certain that mistakes were made 
@@ -90,23 +89,22 @@ comes to tracking down (and doing my best to properly acknowledge) the authors
 of patches found on random forums, in various other repositories, and in many
 mailing lists archives.
 
-One could also argue this version is actaully be much more "liberal", maybe
-even a distinct fork, since I have included my own changes to the packaging,
+One could also argue this version to be much more "liberal", maybe even 
+a distinct fork, since I have included my own changes to the packaging,
 and extended the build system in ways distinct from the original authors.
 
 # Which repository is going to be "the winner" here? 
 
-Regardless of which actual commits and patches make the cut. and those that
-may be dropped, at this time, it's *very* likely **this** repository will be
-the "primary" source code repository, and the new "official" home of D.U.M.A. 
-going forward.
+Regardless of which actual commits or patches make the cut, at this time, 
+it's looking *very* likely that **this** repository will be the "primary"
+home source code repository, and the new "official" home for D.U.M.A.
 
 This is because Hayati Ayguen, the original author, is no longer
-actively maintaining D.U.M.A. and has moved on to other projects.
+actively maintaining D.U.M.A. - he's moved on to other projects.
 
-While he was happy to correspond with me, I belive it was made clear that 
-he would not want to deal with continued maintenance and support requests
-that would be part of maintining this package.
+While he was happy to correspond with me, It seemed clear that he wouldn't
+want to deal with burden of the continued maintenance and support requests
+that would be necessary to continue on maintaining this tool.
 
 # Acknowledgements
 
