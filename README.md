@@ -11,7 +11,6 @@
 
 ### A Red-Zone memory allocator
 
-
 #### Introduction
 
 Before starting this project, it was clear that the antiquated `CVS` version
@@ -31,27 +30,26 @@ end-user, and had no relationship or previous formal contact with the author.
 
 The largest part of the conversion was tracking down the many changes and
 patches, determining who actually wrote them and when, and then determining
-if these changes should be incorporated into the new "mainline" repository. 
+if these changes should be incorporated into the new "mainline" repository.
 
 This required many "educated guesses", and, when lacking needed details, pure
 judgment calls. With such an old, widely distributed, hacked-upon code-base,
 surviving as long as it did, without a strongly maintained official home or
 new releases for many years, much of data available is fragmentary or
-conflicting. Sometimes the only sources of information are the (fading) 
-memories of those originally involved with project. Sometimes, inferences 
+conflicting. Sometimes the only sources of information are the (fading)
+memories of those originally involved with project. Sometimes, inferences
 would need to be made, based on often inaccurate information.
 
 Because of such uncertainties, I am absolutely certain that mistakes have
 been made and errors introduced, so I welcome any contributions from the
 public that would help to make the repository more historically accurate.
 
-
-#### The Future of DUMA.
+#### The Future of DUMA
 
 A large task which is not yet complete is reconciling this primary
 reconstruction against the last version which was released by the
 [original author](https://github.com/hayguen/duma), focusing on identifying
-(and correcting) any significant deviations, especially in the 
+(and correcting) any significant deviations, especially in the
 identifications of contributors, as well as ensuring any disputes that might
 arise are fairly handled. Any new discoveries will into the making the commit
 logs for the project accurate for posterity.
@@ -69,17 +67,16 @@ considered quite "liberal", perhaps even a distinct fork, since I have
 included my own changes to the packaging, and extended the build system in
 ways distinct from the original work.
 
-
 #### What is the "official" upstream?
 
-At this time, it's looking *very* likely that **this** repository will be
-the "primary" one, and the new "official" home for D.U.M.A. releases.
-Hayati Ayguen, the original author, is no longer actively maintaining 
+At this time, it's *very* likely that **this** repository will be
+the new "official" home for D.U.M.A. releases.
+
+Hayati Ayguen, the original author, is no longer actively maintaining
 D.U.M.A. - he's moved on to other projects. While he was happy to correspond
 with me, it was obvious that he wouldn't want to deal with ongoing burden of
 continued maintenance and support requests that would be necessary if he were
 to continue as the primary maintainer of this tool.
-
 
 #### Conclusion
 
@@ -96,12 +93,12 @@ and permanently open-ended invitation to the original author, should he decide
 to resume the role of primary maintainer. Similar invitations have been sent
 to all the original contributors I could track down as well.
 
-See https://perens.com/2017/04/04/my-30th-anniversary-in-open-source/
-for a short blog entry by Mr. Bruce Perens' mentioning `Electric Fence`. 
+See <https://perens.com/2017/04/04/my-30th-anniversary-in-open-source/>
+for a short blog entry by Mr. Bruce Perens' mentioning `Electric Fence`.
 
-Hayati Ayguen's current projects are available at https://github.com/hayguen 
-
+Hayati Ayguen's current projects are available at <https://github.com/hayguen>
 
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_large)
+
