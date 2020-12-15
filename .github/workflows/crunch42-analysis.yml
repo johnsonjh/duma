@@ -1,0 +1,20 @@
+name: "42Crunch REST API Static Security Testing"
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '17 2 * * 2'
+jobs:
+  rest-api-static-security-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 42Crunch REST API Static Security Testing
+        uses: 42Crunch/api-security-audit-action@v1
+        with:
+          api-token: ${{ secrets.API_TOKEN }}
+          min-score: 75
+          upload-to-code-scanning: true
+          github-token: ${{ github.token }}
