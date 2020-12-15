@@ -1,0 +1,53 @@
+name: Fortify on Demand Scan
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  FoD-SAST-Scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Source Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - run: git checkout HEAD^2
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Download Fortify ScanCentral Client
+        uses: fortify/gha-setup-scancentral-client@v1
+      - name: Package Code + Dependencies
+        run: scancentral package $PACKAGE_OPTS -o package.zip
+        env:
+          PACKAGE_OPTS: "-bt mvn"
+      - name: Download Fortify on Demand Universal CI Tool
+        uses: fortify/gha-setup-fod-uploader@v1
+      - name: Perform SAST Scan
+        run: java -jar $FOD_UPLOAD_JAR -z package.zip -aurl $FOD_API_URL -purl $FOD_URL -rid "$FOD_RELEASE_ID" -tc "$FOD_TENANT" -uc "$FOD_USER" "$FOD_PAT" $FOD_UPLOADER_OPTS -n "$FOD_UPLOADER_NOTES"
+        env:
+          FOD_TENANT: ${{ secrets.FOD_TENANT }}
+          FOD_USER: ${{ secrets.FOD_USER }}
+          FOD_PAT: ${{ secrets.FOD_PAT }}
+          FOD_RELEASE_ID: ${{ secrets.FOD_RELEASE_ID }}
+          FOD_URL: "https://ams.fortify.com/"
+          FOD_API_URL: "https://api.ams.fortify.com/"
+          FOD_UPLOADER_OPTS: "-ep 2 -pp 0 -I 1 -apf"
+          FOD_UPLOADER_NOTES: 'Triggered by GitHub Actions (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})'
+      - name: Download Results
+        uses: fortify/gha-fod-generate-sarif@1.1.0
+        with:
+          base-url: https://ams.fortify.com
+          tenant: ${{ secrets.FOD_TENANT }}
+          user: ${{ secrets.FOD_USER }}
+          password: ${{ secrets.FOD_PAT }}
+          release-id: ${{ secrets.FOD_RELEASE_ID }}
+          output: ./sarif/output.sarif
+      - name: Import Results
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: ./sarif/output.sarif
