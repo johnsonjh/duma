@@ -1,0 +1,24 @@
+name: CxFlow
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Checkmarx CxFlow Action
+      uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.0
+      with:
+        project: GithubActionTest
+        team: '\CxServer\SP\Checkmarx'
+        checkmarx_url: ${{ secrets.CHECKMARX_URL }}
+        checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}
+        checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}
+        checkmarx_client_secret: ${{ secrets.CHECKMARX_CLIENT_SECRET }}
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: cx.sarif
