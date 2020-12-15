@@ -1,0 +1,21 @@
+name: OSSAR
+on:
+  push:
+  pull_request:
+jobs:
+  OSSAR-Scan:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 2
+    - run: git checkout HEAD^2
+      if: ${{ github.event_name == 'pull_request' }}
+    - name: Run OSSAR
+      uses: github/ossar-action@v1
+      id: ossar
+    - name: Upload OSSAR results
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: ${{ steps.ossar.outputs.sarifFile }}
