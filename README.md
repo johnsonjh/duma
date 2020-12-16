@@ -119,7 +119,7 @@ blog entry by Bruce Perens' mentioning the creation of the `Electric Fence` tool
 
 #### Security Policy
 
-* [Security Policy and Vulnerability Reporting]((https://github.com/johnsonjh/duma/SECURITY.md)
+* [Security Policy and Vulnerability Reporting](https://github.com/johnsonjh/duma/SECURITY.md)
 
 ### License
 
