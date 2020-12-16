@@ -5,6 +5,8 @@
 [![FOSSAStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_shield)
 [![LocCount](https://img.shields.io/tokei/lines/github/johnsonjh/duma.svg)](https://github.com/XAMPPRocky/tokei)
 [![GitHubCodeSize](https://img.shields.io/github/languages/code-size/johnsonjh/OldCurve25519ScalarMult.svg)](https://github.com/johnsonjh/OldCurve25519ScalarMult)
+[![GitHubRelease](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
+[![GitHubTag](https://img.shields.io/github/tag/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/tags/)
 [![LgtmAlerts](https://img.shields.io/lgtm/alerts/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/alerts/)
 [![CodacyBadge](https://api.codacy.com/project/badge/Grade/f777934d666b4a6a9672d89b404c4953)](https://app.codacy.com/gh/johnsonjh/duma?utm_source=github.com&utm_medium=referral&utm_content=johnsonjh/duma&utm_campaign=Badge_Grade)
 [![CodeBeat](https://codebeat.co/badges/a0be6809-acda-41a7-96a8-0d46698dc42c)](https://codebeat.co/projects/github-com-johnsonjh-duma-master)
@@ -76,11 +78,12 @@ Hayati Ayguen, the original author, is no longer actively maintaining `D.U.M.A.`
 has moved on to other projects. While he was happy to correspond with me, it is unlikely
 that he will continue on as the primary maintainer of this software package.
 
-### Conclusion
+### History
 
 `D.U.M.A.` started out as a fork of Bruce Perens' venerable "*Electric Fence*",
-a tool created at *Pixar*, way back in 1987. `D.U.M.A.` was an enhanced fork
-of this software, and was known to be running on Linux systems as early as 1992.
+a tool created at *Pixar*, back in 1987. It was ported to Linux as early as 1992.
+
+### Conclusion
 
 Now, almost 30 years later, we should offer thanks to Hayati Ayguen and the other
 contributors who put time and effort into this project, while allowing them move
