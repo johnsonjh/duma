@@ -1,7 +1,11 @@
 CHANGELOG:
 ==========
 
-(unreleased)
+2.5.17
+  * Updated README with extra history and information.
+    (2020-12-15, JJ)
+  * Added SECURITY.md: New Security Policy for bug reporting.
+    (2020-12-15, JJ)
   * Added LICENSE: Merged COPYING-GPL and COPYING-LGPL.
     (2020-08-25, JJ)
   * Updated TODO with items from 2009-12-30 by Daniel Trebbien.
