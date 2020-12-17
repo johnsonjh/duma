@@ -40,19 +40,19 @@ default:
 ###################### End Common Blocks
 
 ###################### Begin Windows Build + Test
-windows job:
-    tags:
-    - Windows-x86_64
-    stage: all
-    script: 
-    - *scriptCommon
-    - $env:Path += ";C:\Program Files\Git\cmd;C:\Go\bin;C:\Progra~1\Git"
-    - *scriptGitPre
-    - | 
-        # TODO(jhj): PLACEHOLDER - Windows build and test will eventually go here
-    - | 
-        # status
-        echo "Windows skipped"
+#windows job:
+#   tags:
+#   - Windows-x86_64
+#   stage: all
+#   script: 
+#   - *scriptCommon
+#   - $env:Path += ";C:\Program Files\Git\cmd;C:\Go\bin;C:\Progra~1\Git"
+#   - *scriptGitPre
+#   - | 
+#       # TODO(jhj): PLACEHOLDER - Windows build and test will eventually go here
+#   - | 
+#       # status
+#       echo "Windows skipped"
 ###################### End Windows Build + Test
 
 ###################### Begin Linux
