@@ -34,26 +34,26 @@
 #
 
 mkdir contrib
-mv gdbinit.rc    contrib/
-mv duma.sh       contrib/
+mv gdbinit.rc contrib/
+mv duma.sh contrib/
 mv builddocs.bat contrib/
-mv mkclean.bat   contrib/
+mv mkclean.bat contrib/
 
 mkdir doc
 mv README.txt doc/
-mv INSTALL    doc/
-mv CHANGELOG  doc/
-mv TODO       doc/
-mv duma.3     doc/
+mv INSTALL doc/
+mv CHANGELOG doc/
+mv TODO doc/
+mv duma.3 doc/
 mv WIN32_DETOURS_HOWTO.txt doc/
 mv comparisons doc/
 
 mkdir include
 mkdir include/duma
-mv noduma.h      include/duma/
-mv duma.h        include/duma/
-mv dumapp.h      include/duma/
-mv duma_sem.h    include/duma/
+mv noduma.h include/duma/
+mv duma.h include/duma/
+mv dumapp.h include/duma/
+mv duma_sem.h include/duma/
 mv duma_config.h include/duma/
 # mkdir include/dumadetours
 
@@ -62,14 +62,13 @@ mkdir obj
 
 mkdir src
 mkdir src/libduma
-mv duma.c     src/libduma/
+mv duma.c src/libduma/
 mv duma_hlp.h src/libduma/
-mv paging.h   src/libduma/
-mv print.h    src/libduma/
-mv print.c    src/libduma/
-mv sem_inc.c  src/libduma/
+mv paging.h src/libduma/
+mv print.h src/libduma/
+mv print.c src/libduma/
+mv sem_inc.c src/libduma/
 mv dumapp.cpp src/libduma/
-
 
 mkdir src/conf
 mv createconf.c src/conf/

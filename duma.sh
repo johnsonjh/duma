@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# Simple script to run DUMA on stuff.  
+# Simple script to run DUMA on stuff.
 # (Requires libduma.so.0.0 insalled).
 
 # Usage.
