@@ -1,0 +1,117 @@
+###################### Begin Defaults
+stages:
+    - all
+variables:
+    GIT_DEPTH: 0
+    GIT_STRATEGY: clone
+default:
+    before_script:
+    - | 
+        # before_script
+        echo "Starting before_script actions."
+        echo "Finished before_script actions."
+    after_script:
+    - | 
+        # after_script
+        echo "Starting after_script actions."
+        echo "Finished after_script actions."
+###################### End Defaults
+
+###################### Begin Common Blocks
+.scriptCommon: &scriptCommon | 
+    # scriptCommon
+    echo "Project Name              : $CI_PROJECT_TITLE"
+    echo "Project Git Commit        : $CI_COMMIT_SHA"
+    echo "Project Git Branch        : $CI_COMMIT_BRANCH"
+    echo "GitLab CI User Details    : $GITLAB_USER_LOGIN - $GITLAB_USER_NAME ($GITLAB_USER_ID) $GITLAB_USER_EMAIL"
+    echo "GitLab CI Job Name        : $CI_JOB_NAME"
+    echo "GitLab CI Job ID          : $CI_JOB_ID"
+    echo "GitLab CI Job Stage       : $CI_JOB_STAGE"
+    echo "GitLab CI Runner Details  : $CI_RUNNER_VERSION ($CI_RUNNER_REVISION)"
+.scriptGitPre: &scriptGitPre | 
+    # scriptGitPre
+    git config remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+    git --no-pager fetch --tags
+    git --no-pager fetch --all --recurse-submodules=yes
+    git --no-pager update-index -q --refresh --really-refresh
+    git --no-pager for-each-ref --count=1
+    git --no-pager reset --hard
+    git --no-pager diff --full-index --ignore-cr-at-eol --exit-code
+###################### End Common Blocks
+
+###################### Begin Windows Build + Test
+windows job:
+    tags:
+    - Windows-x86_64
+    stage: all
+    script: 
+    - *scriptCommon
+    - $env:Path += ";C:\Program Files\Git\cmd;C:\Go\bin;C:\Progra~1\Git"
+    - *scriptGitPre
+    - | 
+        # TODO(jhj): PLACEHOLDER - Windows build and test will eventually go here
+    - | 
+        # status
+        echo "Windows skipped"
+###################### End Windows Build + Test
+
+###################### Begin Linux
+linux job:
+    tags:
+    - Linux-x86_64
+    stage: all
+    script: 
+    - *scriptCommon
+    - | 
+        # upgrade system, install development tools
+    - yum install dnf -y || true :;
+    - yum clean all -y || true :;
+    - dnf upgrade --refresh -y || true :;
+    - dnf groupinstall "Development Tools" -y || true :;
+    - dnf install epel-release centos-release-scl centos-release-scl-rh -y || true :;
+    - dnf install pv valgrind ccache graphviz zsh autoconf-archive bash mksh rpmconf scl-utils devtoolset-9 -y || true :;
+    - yes | rpmconf -a || true :;
+    - . /opt/rh/devtoolset-9/enable
+    - dnf clean all -y || true :;
+    - *scriptGitPre
+    - gcc --version
+    - gmake clean
+    - gmake distclean
+    - gmake test
+#   - gmake install
+#   - gmake installcheck
+#   - gmake uninstall
+    - gmake clean
+    - gmake distclean
+    - | 
+        # status
+        echo "gmake: clean -> distclean -> test -> clean -> distclean: OK"
+###################### End Linux Build + Test
+
+###################### Begin macOS Build + Test
+macos job:
+    tags:
+    - macOS_X-x86_64
+    stage: all
+    script:
+    - | 
+        # update & upgrade homebrew
+        bash --norc --noprofile --posix -c "brew  update >/dev/null 2>&1 || true :;" >/dev/null 2>&1 || true :;
+        bash --norc --noprofile --posix -c "brew upgrade >/dev/null 2>&1 || true :;" >/dev/null 2>&1 || true :;
+    - *scriptCommon
+    - if type brew >/dev/null 2>&1; then export HOMEBREW_PREFIX=$(brew --prefix 2>/dev/null); for dir in ${HOMEBREW_PREFIX}/opt/*/libexec/gnubin; do export PATH="${dir}:${PATH}"; done; fi
+    - export PATH="/usr/local/opt/gcc/bin:${PATH}"
+    - *scriptGitPre
+    - gcc --version
+    - gmake clean
+    - gmake distclean
+    - gmake test
+#   - gmake install
+#   - gmake installcheck
+#   - gmake uninstall
+    - gmake clean
+    - gmake distclean
+    - | 
+        # status
+        echo "gmake: clean -> distclean -> test -> clean -> distclean: OK"
+###################### End macOS Build + Test
