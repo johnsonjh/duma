@@ -1,5 +1,3 @@
------------------------------
-
 # **D.U.M.A.**
 
 -----------------------------
@@ -18,15 +16,15 @@
 
 -----------------------------
 
-# **Detect Unintended Memory Access**
+## **Detect Unintended Memory Access**
 
 -----------------------------
 
-## ***A Red-Zone memory allocator***
+### ***A Red-Zone memory allocator***
 
 -----------------------------
 
-### Introduction
+#### Introduction
 
 After deciding it was important to revive *D.U.M.A.*, it quickly became
 clear continued use of the `cvs` version control system would be a limiting
@@ -62,7 +60,7 @@ make the repository more historically accurate as well as improve functionality.
 
 -----------------------------
 
-### The Future of *D.U.M.A.*
+#### The Future of *D.U.M.A.*
 
 A large task, not yet complete, is reconciling this reconstruction against the
 last version which was released by the [original author](https://github.com/hayguen/duma).
@@ -84,24 +82,24 @@ to ensure compatability with modern systems operating systems and environments.
 
 -----------------------------
 
-### Is this the official *D.U.M.A.*?
+#### Official *D.U.M.A.*?
 
 Yes, this repository should be considered the "official" source for *D.U.M.A.* releases.
 
 Hayati Ayguen, the original author, is no longer actively maintaining *D.U.M.A.* and
-has moved on to other projects. While he was happy to correspond about the project, it 
+has moved on to other projects. While he was happy to correspond about the project, it
 seems unlikely that he will take on the role of primary maintainer of the package.
 
 -----------------------------
 
-### History
+#### History
 
 *D.U.M.A.* started out as a fork of Bruce Perens' venerable "*Electric Fence*",
 a tool created at Pixar, back in 1987. It was ported to Linux as early as 1992.
 
 -----------------------------
 
-### Conclusion
+#### Conclusion
 
 Now, almost 30 years later, we should offer thanks to Hayati Ayguen and the other
 contributors who put time and effort into this project, while allowing them move
@@ -110,7 +108,7 @@ mature software package, but it will be properly maintained and updated as neede
 
 -----------------------------
 
-### Addendum 
+#### Addendum
 
 For some additional information on the history of *D.U.M.A.* and *Electric Fence*,
 see <https://perens.com/2017/04/04/my-30th-anniversary-in-open-source/>, for short
@@ -120,39 +118,39 @@ The orginal author, [Hayati Ayguen](https://github.com/hayguen), remains an acti
 
 -----------------------------
 
-### Availability
+#### Availability
 
-#### Source Code (Releases)
+##### Source Code (Releases)
 
 * [Gridfinity GitLab Releases](https://gitlab.gridfinity.com/jeff/duma/-/releases/)
 * [GitHub Releases](https://github.com/johnsonjh/duma/releases/)
 
-#### Source Code (Tags)
+##### Source Code (Tags)
 
 * [Gridfinity GitLab Tags](https://gitlab.gridfinity.com/jeff/duma/-/tags/)
 * [GitHub Tags](https://github.com/johnsonjh/duma/tags/)
 
-#### Source Code (Development Repositories)
+##### Source Code (Development Repositories)
 
 * [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma)
 * [GitHub](https://github.com/johnsonjh/duma)
 
 -----------------------------
 
-### Issue Tracking
+#### Issue Tracking
 
 * [GitLab Issue Tracker](https://github.com/johnsonjh/duma/issues)
 * [Gridfinity GitLab Issues](https://gitlab.gridfinity.com/jeff/duma/-/issues)
 
 -----------------------------
 
-### Security Policy
+#### Security Policy
 
 * [Security Policy and Vulnerability Reporting](https://github.com/johnsonjh/duma/SECURITY.md)
 
 -----------------------------
 
-### License
+#### License
 
 * [GNU General Public License v2.0 (GPLv2)](https://tldrlegal.com/license/gnu-general-public-license-v2)
 * [GNU Lesser General Public License v2.1 (LGPLv2.1)](https://tldrlegal.com/license/gnu-lesser-general-public-license-v2.1-(lgpl-2.1))

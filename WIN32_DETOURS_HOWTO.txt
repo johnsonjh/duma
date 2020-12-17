@@ -42,5 +42,4 @@ Conifiguration:
 Bug reports:
 
  Report problems and patches for DUMA + Detours to meddington@gmail.com
-
-
+ 
