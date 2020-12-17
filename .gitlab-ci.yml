@@ -103,14 +103,14 @@ macos job:
     - export PATH="/usr/local/opt/gcc/bin:${PATH}"
     - *scriptGitPre
     - gcc --version
-    - export OS=osx && OS=osx gmake clean
-    - export OS=osx && OS=osx gmake distclean
-    - export OS=osx && OS=osx gmake test
-#   - export OS=osx && OS=osx gmake install
-#   - export OS=osx && OS=osx gmake installcheck
-#   - export OS=osx && OS=osx gmake uninstall
-    - export OS=osx && OS=osx gmake clean
-    - export OS=osx && OS=osx gmake distclean
+    - gmake clean OS=darwin
+    - gmake distclean OS=darwin
+    - gmake test OS=darwin
+#   - gmake install OS=darwin
+#   - gmake installcheck OS=darwin
+#   - gmake uninstall OS=darwin
+    - gmake clean OS=darwin
+    - gmake distclean OS=darwin
     - | 
         # status
         echo "gmake: clean -> distclean -> test -> clean -> distclean: OK"
