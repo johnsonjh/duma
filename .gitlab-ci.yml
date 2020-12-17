@@ -71,7 +71,7 @@ linux job:
     - dnf install epel-release centos-release-scl centos-release-scl-rh -y || true :;
     - dnf install pv valgrind ccache graphviz clang zsh autoconf-archive bash mksh rpmconf scl-utils devtoolset-9 -y || true :;
     - dnf groupupdate base -y || true :;
-    - yes | rpmconf -a || true :;
+    - yes | /usr/sbin/rpmconf -a || true :;
     - . /opt/rh/devtoolset-9/enable
     - dnf clean all -y || true :;
     - *scriptGitPre
