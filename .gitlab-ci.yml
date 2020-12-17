@@ -77,7 +77,8 @@ linux job:
     - gcc --version
     - gmake clean
     - gmake distclean
-    - gmake test
+    - gmake -k
+    - gmake test -k
 #   - gmake install
 #   - gmake installcheck
 #   - gmake uninstall
@@ -105,7 +106,8 @@ macos job:
     - gcc --version
     - gmake clean OS=darwin
     - gmake distclean OS=darwin
-    - gmake test OS=darwin
+    - gmake OS=darwin -k
+    - gmake test OS=darwin -k
 #   - gmake install OS=darwin
 #   - gmake installcheck OS=darwin
 #   - gmake uninstall OS=darwin
