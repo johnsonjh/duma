@@ -110,7 +110,7 @@ endif
 DUMA_DYN_DEPS=$(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
 
 # some OS specifics:
-ifeq ($(OS), Windows_NT)
+ifeq ($(OS), windows_nt)
   ifeq ($(OSTYPE), msys)
 	$(info using settings for OS=Windows_NT, OSTYPE=msys)
     # call mingw32-make OSTYPE=msys
@@ -182,10 +182,9 @@ ifeq ($(OS), Windows_NT)
   endif
 endif
 
-ifeq ($(OS), osx)
-  $(info using settings for OS=osx)
-  # tested on darwin 8.0, which is the base for mac-osx
-  # call: make OS=osx
+ifeq ($(OS), darwin)
+  $(info using settings for OS=darwin)
+  # call: make OS=darwin
   BSWITCH=210
   DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
   DUMA_OPTIONS += -DDUMA_SO_PREFER_GETENV
@@ -289,7 +288,7 @@ ifeq ($(OS), linux)
 endif
 
 ifndef BSWITCH
-  # default is generic full Unix
+  # default is generic full "UNIX"
   BSWITCH=810
   $(warning using default options. OS/OSTYPE not set or contain unknown values!)
   CURPATH=./
@@ -596,10 +595,10 @@ testmemlimit_so$(EXEPOSTFIX): testmemlimit_so.o
 
 $(OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o: duma.h
 
-ifeq ($(OS), Windows_NT)
+ifeq ($(OS), windows_nt)
   # do nothing
 else
-  ifeq ($(OS), osx)
+  ifeq ($(OS), darwin)
 
 $(DUMASO): duma_config.h verinfo.h $(SO_OBJECTS)
 	$(CXX) -g -dynamiclib -Wl -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
