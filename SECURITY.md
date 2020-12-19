@@ -2,11 +2,11 @@
 
 ## Supported releases
 
-* Only the most recent current release is ***SUPPORTED***.**☨**
+- Only the most recent current release is **_SUPPORTED_**.**☨**
 
-    [![GitHubRelease](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
+  [![GitHubRelease](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
 
-* **☨** Support is offered on a **best-effort** basis **ONLY**.
+- **☨** Support is offered on a **best-effort** basis **ONLY**.
 
 ```text
 BECAUSE THE THE SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR
@@ -26,14 +26,15 @@ OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF SUCH HOLDER OR OTHE
 PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 ```
 
-* Pre-release versions and past releases are ***NOT SUPPORTED***.
+- Pre-release versions and past releases are **_NOT SUPPORTED_**.
 
 ## Report a security vulnerability
 
-* Create a new issue at [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma/-/issues)
-  * **Check** "*This issue is confidential and should only be visible to team members with at least Reporter access.*"
+- Create a new issue at [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma/-/issues)
 
-  * *Or*, send a **PGP-encrypted** email to <mailto:jeff@gridfinity.com>
+  - **Check** "_This issue is confidential and should only be visible to team members with at least Reporter access._"
+
+  - _Or_, send a **PGP-encrypted** email to <mailto:jeff@gridfinity.com>
 
 ```text
 -----BEGIN PGP PUBLIC KEY BLOCK-----
