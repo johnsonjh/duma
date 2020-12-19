@@ -1,6 +1,6 @@
 # **D.U.M.A.**
 
------------------------------
+---
 
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://github.com/johnsonjh/duma/blob/master/COPYING-GPL)
 [![License: LGPL v2.1](https://img.shields.io/badge/License-LGPL%20v2.1-blue.svg)](https://github.com/johnsonjh/duma/blob/master/COPYING-LGPL)
@@ -14,21 +14,21 @@
 [![CodeBeat](https://codebeat.co/badges/a0be6809-acda-41a7-96a8-0d46698dc42c)](https://codebeat.co/projects/github-com-johnsonjh-duma-master)
 [![TickgitTODOs](https://img.shields.io/endpoint?url=https://api.tickgit.com/badge?repo=github.com/johnsonjh/duma)](https://www.tickgit.com/browse?repo=github.com/johnsonjh/duma)
 
------------------------------
+---
 
 ## **Detect Unintended Memory Access**
 
------------------------------
+---
 
-### ***A Red-Zone memory allocator***
+### **_A Red-Zone memory allocator_**
 
------------------------------
+---
 
 #### Introduction
 
-After deciding it was important to revive *D.U.M.A.*, it quickly became
+After deciding it was important to revive _D.U.M.A._, it quickly became
 clear continued use of the `cvs` version control system would be a limiting
-factor to the success of a new *D.U.M.A.* distribution. If the project was
+factor to the success of a new _D.U.M.A._ distribution. If the project was
 going to survive in the long-term, it would be necessary to perform a full
 conversion to a more modern, commonly used, and accessible VCS system.
 
@@ -58,9 +58,9 @@ Because of these uncertainties, I am certain that mistakes have been made and ne
 errors introduced. I welcome any contributions from the public that would help to
 make the repository more historically accurate as well as improve functionality.
 
------------------------------
+---
 
-#### The Future of *D.U.M.A.*
+#### The Future of _D.U.M.A._
 
 A large task, not yet complete, is reconciling this reconstruction against the
 last version which was released by the [original author](https://github.com/hayguen/duma).
@@ -74,86 +74,86 @@ repository. In contrast, the orignal author's conversion efforts included a radi
 refactoring the source tree and directory structures. I believe that this was a prudent
 decision, and eventually plan to incorporate similar restructuring in this repository.
 
-While every attempt was been made to ensure *correctness*, especially when acknowledging
+While every attempt was been made to ensure _correctness_, especially when acknowledging
 contributors, extracting information where available from the original SourceForge site,
 random web forums, other `cvs`, `svn`, and, `git` repositories, and mailing lists archives,
-this release *does* incorporate changes that were never part of the original work, mostly
+this release _does_ incorporate changes that were never part of the original work, mostly
 to ensure compatability with modern systems operating systems and environments.
 
------------------------------
+---
 
-#### Official *D.U.M.A.*?
+#### Official _D.U.M.A._?
 
-Yes, this repository should be considered the "official" source for *D.U.M.A.* releases.
+Yes, this repository should be considered the "official" source for _D.U.M.A._ releases.
 
-Hayati Ayguen, the original author, is no longer actively maintaining *D.U.M.A.* and
+Hayati Ayguen, the original author, is no longer actively maintaining _D.U.M.A._ and
 has moved on to other projects. While he was happy to correspond about the project, it
 seems unlikely that he will take on the role of primary maintainer of the package.
 
------------------------------
+---
 
 #### History
 
-*D.U.M.A.* started out as a fork of Bruce Perens' venerable "*Electric Fence*",
+_D.U.M.A._ started out as a fork of Bruce Perens' venerable "_Electric Fence_",
 a tool created at Pixar, back in 1987. It was ported to Linux as early as 1992.
 
------------------------------
+---
 
 #### Conclusion
 
 Now, almost 30 years later, we should offer thanks to Hayati Ayguen and the other
 contributors who put time and effort into this project, while allowing them move
-on to other endeavours, knowing that *D.U.M.A.* is not gone or forgotten. It's a
+on to other endeavours, knowing that _D.U.M.A._ is not gone or forgotten. It's a
 mature software package, but it will be properly maintained and updated as needed.
 
------------------------------
+---
 
 #### Addendum
 
-For some additional information on the history of *D.U.M.A.* and *Electric Fence*,
+For some additional information on the history of _D.U.M.A._ and _Electric Fence_,
 see <https://perens.com/2017/04/04/my-30th-anniversary-in-open-source/>, for short
-blog entry by Bruce Perens' mentioning the creation of his *Electric Fence* tool.
+blog entry by Bruce Perens' mentioning the creation of his _Electric Fence_ tool.
 
 The orginal author, [Hayati Ayguen](https://github.com/hayguen), remains an active developer.
 
------------------------------
+---
 
 #### Availability
 
 ##### Source Code (Releases)
 
-* [Gridfinity GitLab Releases](https://gitlab.gridfinity.com/jeff/duma/-/releases/)
-* [GitHub Releases](https://github.com/johnsonjh/duma/releases/)
+- [Gridfinity GitLab Releases](https://gitlab.gridfinity.com/jeff/duma/-/releases/)
+- [GitHub Releases](https://github.com/johnsonjh/duma/releases/)
 
 ##### Source Code (Tags)
 
-* [Gridfinity GitLab Tags](https://gitlab.gridfinity.com/jeff/duma/-/tags/)
-* [GitHub Tags](https://github.com/johnsonjh/duma/tags/)
+- [Gridfinity GitLab Tags](https://gitlab.gridfinity.com/jeff/duma/-/tags/)
+- [GitHub Tags](https://github.com/johnsonjh/duma/tags/)
 
 ##### Source Code (Development Repositories)
 
-* [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma)
-* [GitHub](https://github.com/johnsonjh/duma)
+- [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma)
+- [GitHub](https://github.com/johnsonjh/duma)
 
------------------------------
+---
 
 #### Issue Tracking
 
-* [GitLab Issue Tracker](https://github.com/johnsonjh/duma/issues)
-* [Gridfinity GitLab Issues](https://gitlab.gridfinity.com/jeff/duma/-/issues)
+- [GitLab Issue Tracker](https://github.com/johnsonjh/duma/issues)
+- [Gridfinity GitLab Issues](https://gitlab.gridfinity.com/jeff/duma/-/issues)
 
------------------------------
+---
 
 #### Security Policy
 
-* [Security Policy and Vulnerability Reporting](https://github.com/johnsonjh/duma/SECURITY.md)
+- [Security Policy and Vulnerability Reporting](https://github.com/johnsonjh/duma/SECURITY.md)
 
------------------------------
+---
 
 #### License
 
-* [GNU General Public License v2.0 (GPLv2)](https://tldrlegal.com/license/gnu-general-public-license-v2)
-* [GNU Lesser General Public License v2.1 (LGPLv2.1)](https://tldrlegal.com/license/gnu-lesser-general-public-license-v2.1-(lgpl-2.1))
-* [![FOSSASmallStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_small)
+- [GNU General Public License v2.0 (GPLv2)](https://tldrlegal.com/license/gnu-general-public-license-v2)
+- [GNU Lesser General Public License v2.1 (LGPLv2.1)](<https://tldrlegal.com/license/gnu-lesser-general-public-license-v2.1-(lgpl-2.1)>)
+- [![FOSSASmallStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_small)
 
------------------------------
+---
