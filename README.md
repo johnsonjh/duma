@@ -140,12 +140,6 @@ active developer.
 - [SourceHut Releases](https://sr.ht/~trn/duma/) _(available soon)_
 - [GitHub Releases](https://github.com/johnsonjh/duma/releases/)
 
-##### Source Code (Tags)
-
-- [Gridfinity GitLab Tags](https://gitlab.gridfinity.com/jeff/duma/-/tags/)
-- [SourceHut Git Refs](https://git.sr.ht/~trn/duma/refs)
-- [GitHub Tags](https://github.com/johnsonjh/duma/tags/)
-
 ##### Source Code (Development Repositories)
 
 - [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma)
