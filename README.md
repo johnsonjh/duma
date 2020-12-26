@@ -26,9 +26,9 @@
 
 #### Introduction
 
-After deciding it was important to revive *D.U.M.A.*, it quickly became
+After deciding it was important to revive D.U.M.A., it quickly became
 clear continued use of the `cvs` version control system would be a limiting
-factor to the success of a new *D.U.M.A.* distribution. If the project was
+factor to the success of a new D.U.M.A. distribution. If the project was
 going to survive in the long-term, it would be necessary to perform a full
 conversion to a more modern, commonly used, and accessible VCS system.
 
@@ -60,7 +60,7 @@ make the repository more historically accurate as well as improve functionality.
 
 -----------------------------
 
-#### The Future of *D.U.M.A.*
+#### The Future of D.U.M.A.
 
 A large task, not yet complete, is reconciling this reconstruction against the
 last version which was released by the [original author](https://github.com/hayguen/duma).
@@ -74,19 +74,19 @@ repository. In contrast, the orignal author's conversion efforts included a radi
 refactoring the source tree and directory structures. I believe that this was a prudent
 decision, and eventually plan to incorporate similar restructuring in this repository.
 
-While every attempt was been made to ensure *correctness*, especially when acknowledging
+While every attempt was been made to ensure correctness, especially when acknowledging
 contributors, extracting information where available from the original SourceForge site,
 random web forums, other `cvs`, `svn`, and, `git` repositories, and mailing lists archives,
-this release *does* incorporate changes that were never part of the original work, mostly
+this release does incorporate changes that were never part of the original work, mostly
 to ensure compatability with modern systems operating systems and environments.
 
 -----------------------------
 
-#### Official *D.U.M.A.*?
+#### Official D.U.M.A.?
 
-Yes, this repository should be considered the "official" source for *D.U.M.A.* releases.
+This repository should be considered the "official" source for D.U.M.A. releases.
 
-Hayati Ayguen, the original author, is no longer actively maintaining *D.U.M.A.* and
+Hayati Ayguen, the original author, is no longer actively maintaining D.U.M.A. and
 has moved on to other projects. While he was happy to correspond about the project, it
 seems unlikely that he will take on the role of primary maintainer of the package.
 
@@ -94,25 +94,26 @@ seems unlikely that he will take on the role of primary maintainer of the packag
 
 #### History
 
-*D.U.M.A.* started out as a fork of Bruce Perens' venerable "*Electric Fence*",
-a tool created at Pixar, back in 1987. It was ported to Linux as early as 1992.
+D.U.M.A. started out as a fork of Bruce Perens' venerable "Electric Fence",
+a tool created at Pixar, back in 1987. 
+
+D.U.M.A. was ported to Linux as early as 1992.
 
 -----------------------------
 
 #### Conclusion
 
-Now, almost 30 years later, we should offer thanks to Hayati Ayguen and the other
-contributors who put time and effort into this project, while allowing them move
-on to other endeavours, knowing that *D.U.M.A.* is not gone or forgotten. It's a
-mature software package, but it will be properly maintained and updated as needed.
+Now, almost 30 years later, we thank to Hayati Ayguen and all other
+contributors, who put time and effort into this project, but allow them move
+on to other endeavours. They can do so knowing that D.U.M.A. is not gone or forgotten. Even though it is a mature software and package, it will be properly maintained and updated as needed.
 
 -----------------------------
 
 #### Addendum
 
-For some additional information on the history of *D.U.M.A.* and *Electric Fence*,
+For some additional information on the history of D.U.M.A. and Electric Fence,
 see <https://perens.com/2017/04/04/my-30th-anniversary-in-open-source/>, for short
-blog entry by Bruce Perens' mentioning the creation of his *Electric Fence* tool.
+blog entry by Bruce Perens' mentioning the creation of his Electric Fence tool.
 
 The orginal author, [Hayati Ayguen](https://github.com/hayguen), remains an active developer.
 
@@ -123,7 +124,7 @@ The orginal author, [Hayati Ayguen](https://github.com/hayguen), remains an acti
 ##### Source Code (Releases)
 
 * [Gridfinity GitLab Releases](https://gitlab.gridfinity.com/jeff/duma/-/releases/)
-* [SourceHut Releases](https://sr.ht/~trn/duma/) available soon
+* [SourceHut Releases](https://sr.ht/~trn/duma/)  *(available soon)*
 * [GitHub Releases](https://github.com/johnsonjh/duma/releases/)
 
 ##### Source Code (Tags)
@@ -160,3 +161,4 @@ The orginal author, [Hayati Ayguen](https://github.com/hayguen), remains an acti
 * [![FOSSASmallStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_small)
 
 -----------------------------
+
