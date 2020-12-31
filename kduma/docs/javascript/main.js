@@ -1,5 +1,5 @@
-// This file is part of Natural Docs, which is Copyright (C) 2003-2005 Greg Valure
-// Natural Docs is licensed under the GPL
+// This file is part of Natural Docs, which is Copyright (C) 2003-2005 Greg
+// Valure Natural Docs is licensed under the GPL
 
 //
 //  Browser Styles
@@ -126,7 +126,8 @@ function ReallyShowTip(tooltipID, linkID, docX, docY) {
     let left = 0;
     let top = 0;
 
-    // Not everything supports offsetTop/Left/Width, and some, like Konqueror and Opera 5, think they do but do it badly.
+    // Not everything supports offsetTop/Left/Width, and some, like Konqueror
+    // and Opera 5, think they do but do it badly.
 
     if (
       link &&
@@ -148,8 +149,9 @@ function ReallyShowTip(tooltipID, linkID, docX, docY) {
       top += link.offsetHeight;
     }
 
-    // The fallback method is to use the mouse X and Y relative to the document.  We use a separate if and test if its a number
-    // in case some browser snuck through the above if statement but didn't support everything.
+    // The fallback method is to use the mouse X and Y relative to the document.
+    // We use a separate if and test if its a number in case some browser snuck
+    // through the above if statement but didn't support everything.
 
     if (!isFinite(top) || top == 0) {
       left = docX;
@@ -160,8 +162,10 @@ function ReallyShowTip(tooltipID, linkID, docX, docY) {
 
     top += 10;
 
-    // Make sure the tooltip doesnt get smushed by being too close to the edge, or in some browsers, go off the edge of the
-    // page.  We do it here because Konqueror does get offsetWidth right even if it doesnt get the positioning right.
+    // Make sure the tooltip doesnt get smushed by being too close to the edge,
+    // or in some browsers, go off the edge of the page.  We do it here because
+    // Konqueror does get offsetWidth right even if it doesnt get the
+    // positioning right.
 
     if (tooltip.offsetWidth != null) {
       const width = tooltip.offsetWidth;
@@ -172,7 +176,8 @@ function ReallyShowTip(tooltipID, linkID, docX, docY) {
       }
     }
 
-    // Opera 5 chokes on the px extension, so it can use the Microsoft one instead.
+    // Opera 5 chokes on the px extension, so it can use the Microsoft one
+    // instead.
 
     if (tooltip.style.left != null && browserVer != "Opera5") {
       tooltip.style.left = left + "px";
