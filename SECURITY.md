@@ -30,11 +30,9 @@ PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 ## Report a security vulnerability
 
-- Create a new issue at
-  [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma/-/issues)
+- Create a new issue at [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma/-/issues)
 
-  - **Check** "_This issue is confidential and should only be visible to team
-    members with at least Reporter access._"
+  - **Check** "_This issue is confidential and should only be visible to team members with at least Reporter access._"
 
   - _Or_, send a **PGP-encrypted** email to <mailto:jeff@gridfinity.com>
 
