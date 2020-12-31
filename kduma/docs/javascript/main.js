@@ -1,5 +1,5 @@
-// This file is part of Natural Docs, which is Copyright (C) 2003-2005 Greg Valure
-// Natural Docs is licensed under the GPL
+// This file is part of Natural Docs, which is Copyright (C) 2003-2005 Greg
+// Valure Natural Docs is licensed under the GPL
 
 //
 //  Browser Styles
@@ -19,11 +19,8 @@ if (agt.indexOf("opera") != -1) {
   } else if (agt.indexOf("opera 7") != -1 || agt.indexOf("opera/7") != -1) {
     browserVer = "Opera7";
   }
-} else if (
-  agt.indexOf("khtml") != -1 ||
-  agt.indexOf("konq") != -1 ||
-  agt.indexOf("safari") != -1
-) {
+} else if (agt.indexOf("khtml") != -1 || agt.indexOf("konq") != -1 ||
+           agt.indexOf("safari") != -1) {
   browserType = "KHTML";
 } else if (agt.indexOf("msie") != -1) {
   browserType = "IE";
@@ -40,13 +37,9 @@ if (agt.indexOf("opera") != -1) {
 }
 
 // Opera already taken care of.
-else if (
-  agt.indexOf("mozilla") != -1 &&
-  agt.indexOf("compatible") == -1 &&
-  agt.indexOf("spoofer") == -1 &&
-  agt.indexOf("webtv") == -1 &&
-  agt.indexOf("hotjava") == -1
-) {
+else if (agt.indexOf("mozilla") != -1 && agt.indexOf("compatible") == -1 &&
+         agt.indexOf("spoofer") == -1 && agt.indexOf("webtv") == -1 &&
+         agt.indexOf("hotjava") == -1) {
   browserType = "Netscape";
 
   if (agt.indexOf("mozilla/4") != -1) {
@@ -88,16 +81,8 @@ function ShowTip(event, tooltipID, linkID) {
   const docX = event.clientX + window.pageXOffset;
   const docY = event.clientY + window.pageYOffset;
 
-  const showCommand =
-    "ReallyShowTip('" +
-    tooltipID +
-    "', '" +
-    linkID +
-    "', " +
-    docX +
-    ", " +
-    docY +
-    ")";
+  const showCommand = "ReallyShowTip('" + tooltipID + "', '" + linkID + "', " +
+                      docX + ", " + docY + ")";
 
   // KHTML cant handle showing on a timer right now.
 
@@ -126,14 +111,11 @@ function ReallyShowTip(tooltipID, linkID, docX, docY) {
     let left = 0;
     let top = 0;
 
-    // Not everything supports offsetTop/Left/Width, and some, like Konqueror and Opera 5, think they do but do it badly.
+    // Not everything supports offsetTop/Left/Width, and some, like Konqueror
+    // and Opera 5, think they do but do it badly.
 
-    if (
-      link &&
-      link.offsetWidth != null &&
-      browserType != "KHTML" &&
-      browserVer != "Opera5"
-    ) {
+    if (link && link.offsetWidth != null && browserType != "KHTML" &&
+        browserVer != "Opera5") {
       let item = link;
       while (item != document.body) {
         left += item.offsetLeft;
@@ -148,8 +130,9 @@ function ReallyShowTip(tooltipID, linkID, docX, docY) {
       top += link.offsetHeight;
     }
 
-    // The fallback method is to use the mouse X and Y relative to the document.  We use a separate if and test if its a number
-    // in case some browser snuck through the above if statement but didn't support everything.
+    // The fallback method is to use the mouse X and Y relative to the document.
+    // We use a separate if and test if its a number in case some browser snuck
+    // through the above if statement but didn't support everything.
 
     if (!isFinite(top) || top == 0) {
       left = docX;
@@ -160,8 +143,10 @@ function ReallyShowTip(tooltipID, linkID, docX, docY) {
 
     top += 10;
 
-    // Make sure the tooltip doesnt get smushed by being too close to the edge, or in some browsers, go off the edge of the
-    // page.  We do it here because Konqueror does get offsetWidth right even if it doesnt get the positioning right.
+    // Make sure the tooltip doesnt get smushed by being too close to the edge,
+    // or in some browsers, go off the edge of the page.  We do it here because
+    // Konqueror does get offsetWidth right even if it doesnt get the
+    // positioning right.
 
     if (tooltip.offsetWidth != null) {
       const width = tooltip.offsetWidth;
@@ -172,7 +157,8 @@ function ReallyShowTip(tooltipID, linkID, docX, docY) {
       }
     }
 
-    // Opera 5 chokes on the px extension, so it can use the Microsoft one instead.
+    // Opera 5 chokes on the px extension, so it can use the Microsoft one
+    // instead.
 
     if (tooltip.style.left != null && browserVer != "Opera5") {
       tooltip.style.left = left + "px";
@@ -214,9 +200,8 @@ function NDOnLoad() {
     const scrollboxes = document.getElementsByTagName("blockquote");
 
     if (scrollboxes.item(0)) {
-      const width =
-        scrollboxes.item(0).parentNode.offsetWidth -
-        scrollboxes.item(0).offsetLeft;
+      const width = scrollboxes.item(0).parentNode.offsetWidth -
+                    scrollboxes.item(0).offsetLeft;
 
       let i = 0;
       let item;
@@ -255,8 +240,8 @@ function NDDoResize() {
     i++;
   }
 
-  const width =
-    scrollboxes.item(0).parentNode.offsetWidth - scrollboxes.item(0).offsetLeft;
+  const width = scrollboxes.item(0).parentNode.offsetWidth -
+                scrollboxes.item(0).offsetLeft;
 
   i = 0;
   while ((item = scrollboxes.item(i))) {
