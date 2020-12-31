@@ -1,4 +1,7 @@
+SPAN.definition {
+  font-style: italic;
+}
 
-SPAN.definition { font-style:italic }
-
-a { text-decoration:underline }
+a {
+  text-decoration: underline;
+}
