@@ -90,31 +90,31 @@ linux job:
         echo "gmake: clean -> distclean -> test -> clean -> distclean: OK"
 ###################### End Linux Build + Test
 
-###################### Begin macOS Build + Test
-macos job:
-    tags:
-    - macOS_X-x86_64
-    stage: all
-    script:
-    - | 
-        # update & upgrade homebrew
-        bash --norc --noprofile --posix -c "brew  update >/dev/null 2>&1 || true :;" >/dev/null 2>&1 || true :;
-        bash --norc --noprofile --posix -c "brew upgrade >/dev/null 2>&1 || true :;" >/dev/null 2>&1 || true :;
-    - *scriptCommon
-    - if type brew >/dev/null 2>&1; then export HOMEBREW_PREFIX=$(brew --prefix 2>/dev/null); for dir in ${HOMEBREW_PREFIX}/opt/*/libexec/gnubin; do export PATH="${dir}:${PATH}"; done; fi
-    - export PATH="/usr/local/opt/gcc/bin:${PATH}"
-    - *scriptGitPre
-    - gcc --version
-    - gmake clean OS=darwin
-    - gmake distclean OS=darwin
-    - gmake OS=darwin -k
-    - gmake test OS=darwin -k
-#   - gmake install OS=darwin
-#   - gmake installcheck OS=darwin
-#   - gmake uninstall OS=darwin
-    - gmake clean OS=darwin
-    - gmake distclean OS=darwin
-    - | 
-        # status
-        echo "gmake: clean -> distclean -> test -> clean -> distclean: OK"
-###################### End macOS Build + Test
+####################### Begin macOS Build + Test
+#macos job:
+#    tags:
+#    - macOS_X-x86_64
+#    stage: all
+#    script:
+#    - | 
+#        # update & upgrade homebrew
+#        bash --norc --noprofile --posix -c "brew  update >/dev/null 2>&1 || true :;" >/dev/null 2>&1 || true :;
+#        bash --norc --noprofile --posix -c "brew upgrade >/dev/null 2>&1 || true :;" >/dev/null 2>&1 || true :;
+#    - *scriptCommon
+#    - if type brew >/dev/null 2>&1; then export HOMEBREW_PREFIX=$(brew --prefix 2>/dev/null); for dir in ${HOMEBREW_PREFIX}/opt/*/libexec/gnubin; do export PATH="${dir}:${PATH}"; done; fi
+#    - export PATH="/usr/local/opt/gcc/bin:${PATH}"
+#    - *scriptGitPre
+#    - gcc --version
+#    - gmake clean OS=darwin
+#    - gmake distclean OS=darwin
+#    - gmake OS=darwin -k
+#    - gmake test OS=darwin -k
+##   - gmake install OS=darwin
+##   - gmake installcheck OS=darwin
+##   - gmake uninstall OS=darwin
+#    - gmake clean OS=darwin
+#    - gmake distclean OS=darwin
+#    - | 
+#        # status
+#        echo "gmake: clean -> distclean -> test -> clean -> distclean: OK"
+####################### End macOS Build + Test
