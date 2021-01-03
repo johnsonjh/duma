@@ -36,7 +36,7 @@ default:
     git --no-pager update-index -q --refresh --really-refresh
     git --no-pager for-each-ref --count=1
     git --no-pager reset --hard
-    git --no-pager diff --full-index --ignore-cr-at-eol --exit-code
+    git --no-pager diff --full-index --exit-code
 ###################### End Common Blocks
 
 ###################### Begin Windows Build + Test
