@@ -1,6 +1,15 @@
 CHANGELOG:
 ==========
 
+2.5.20
+  * Typo fix and build system updates - nothing functional.
+
+2.5.19
+  * Updated scripts, Debian release info, minor changes.
+
+2.5.18
+  * Non-beta tagged release.
+
 2.5.17
   * Updated README with extra history and information.
     (2020-12-15, JJ)

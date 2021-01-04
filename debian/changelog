@@ -1,9 +1,8 @@
-duma (2.5.16~beta2-1) unstable; urgency=medium
+duma (2.5.19-1) stable; urgency=medium
  
-  * Removed all patches as they should be unnecessary.
-  * Changed upstream.
+  * New Stable Release
 
- -- Jeffrey H. Johnson <jeff@gridfinity.com>  Wed, 26 Aug 2020 04:54:05 +0300
+ -- Jeffrey H. Johnson <jeff@gridfinity.com>  Mon, 01 Jan 2021 00:26:27 +0500
 
 
 duma (2.5.15-2) unstable; urgency=medium
