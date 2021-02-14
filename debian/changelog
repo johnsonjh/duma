@@ -1,8 +1,8 @@
-duma (2.5.19-1) stable; urgency=medium
+duma (2.5.21-1) stable; urgency=medium
  
   * New Stable Release
 
- -- Jeffrey H. Johnson <jeff@gridfinity.com>  Mon, 01 Jan 2021 00:26:27 +0500
+ -- Jeffrey H. Johnson <trnsz@pobox.com>  Sun, 14 Feb 2021 13:20:57 +0500
 
 
 duma (2.5.15-2) unstable; urgency=medium
