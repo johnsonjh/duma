@@ -138,13 +138,10 @@ active developer.
 
 ##### Source Code (Releases)
 
-- [Gridfinity GitLab Releases](https://gitlab.gridfinity.com/jeff/duma/-/releases/)
-- [SourceHut Releases](https://sr.ht/~trn/duma/) _(available soon)_
 - [GitHub Releases](https://github.com/johnsonjh/duma/releases/)
 
 ##### Source Code (Development Repositories)
 
-- [Gridfinity GitLab](https://gitlab.gridfinity.com/jeff/duma)
 - [SourceHut Git](https://git.sr.ht/~trn/duma)
 - [GitHub](https://github.com/johnsonjh/duma)
 
@@ -153,7 +150,6 @@ active developer.
 #### Issue Tracking
 
 - [GitLab Issue Tracker](https://github.com/johnsonjh/duma/issues)
-- [Gridfinity GitLab Issues](https://gitlab.gridfinity.com/jeff/duma/-/issues)
 
 ---
 
@@ -170,3 +166,4 @@ active developer.
 - [![FOSSASmallStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_small)
 
 ---
+

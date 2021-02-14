@@ -15,7 +15,6 @@ Upstream Authors:
 Copyright: 
 
     Copyright (C) 2021 Jeffrey H. Johnson <jeff@gridfinity.com>
-    Copyright (C) 2021 Gridfinity, LLC. <admin@gridfinity.com>
     Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
     Copyright (C) 2002-2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
     Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
@@ -41,3 +40,4 @@ Public License can be found in `/usr/share/common-licenses/GPL-2'.
 
 The Debian packaging is (C) 2008, Julien Danjou <acid@debian.org> and
 is licensed under the GPL, see above.
+
