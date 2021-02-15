@@ -149,7 +149,7 @@ active developer.
 
 #### Issue Tracking
 
-- [GitLab Issue Tracker](https://github.com/johnsonjh/duma/issues)
+- [GitHub Issue Tracker](https://github.com/johnsonjh/duma/issues)
 
 ---
 
