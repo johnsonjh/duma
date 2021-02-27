@@ -17,8 +17,8 @@ get_git_info()
 			if [ -n "${GITTEST}" ] && [ ! -z "${GITTEST}" ]; then
 				BRANCH=$(git branch --show-current 2> /dev/null)
 				if [ -n "${RELEASED}" ] && [ ! -z "${RELEASED}" ]; then
-					GITVER=$(git describe --tags --always 2> /dev/null \
-						| cut -d "-" -f 1 2> /dev/null)
+					GITVER=$(git describe --tags --always 2> /dev/null |
+						cut -d "-" -f 1 2> /dev/null)
 				else
 					GITVER=$(git describe --tags --dirty --broken --long --always \
 						2> /dev/null)
@@ -41,8 +41,8 @@ get_git_info()
 	fi
 
 	GIT_SOURCE_INFO="DUMA${GIT_OUT}"
-	GIT_SOURCE_XFRM=$(printf '%s\n' "${GIT_SOURCE_INFO}" \
-		| sed -e 's/\VERSION_//' -e 's/_/\./g' 2> /dev/null)
+	GIT_SOURCE_XFRM=$(printf '%s\n' "${GIT_SOURCE_INFO}" |
+		sed -e 's/\VERSION_//' -e 's/_/\./g' 2> /dev/null)
 
 	# shellcheck disable=SC2236
 	if [ -n "${GIT_SOURCE_XFRM}" ] && [ ! -z "${GIT_SOURCE_XFRM}" ]; then

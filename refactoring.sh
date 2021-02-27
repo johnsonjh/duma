@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 # Script to do refactoring of duma.. (put all files in extra subfolders to
 # make it somewhat more organized ;-)
