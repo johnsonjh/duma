@@ -35,36 +35,35 @@
 #include "duma.h"
 
 #if __cplusplus < 201103L
-  #define DUMA_EXCEPTION_SPECS 1
+#define DUMA_EXCEPTION_SPECS 1
 #endif
 
 /* remove previous macro definitions */
 #include "noduma.h"
 
-
-#if ( defined(DUMA_NO_CPP_SUPPORT) || defined(DUMA_NO_LEAKDETECTION) )
-  /* define macros as wrapper without special functionality */
-  #define NEW_ELEM(TYPE)                  new TYPE
-  #define NEW_ARRAY(TYPE, COUNT)          new TYPE[COUNT]
-  #define DEL_ELEM(PTR)                   delete PTR
-  #define DEL_ARRAY(PTR)                  delete []PTR
-#endif /* ( defined(DUMA_NO_CPP_SUPPORT) || defined(DUMA_NO_LEAKDETECTION) ) */
-
+#if (defined(DUMA_NO_CPP_SUPPORT) || defined(DUMA_NO_LEAKDETECTION))
+/* define macros as wrapper without special functionality */
+#define NEW_ELEM(TYPE) new TYPE
+#define NEW_ARRAY(TYPE, COUNT) new TYPE[COUNT]
+#define DEL_ELEM(PTR) delete PTR
+#define DEL_ARRAY(PTR) delete[] PTR
+#endif /* ( defined(DUMA_NO_CPP_SUPPORT) || defined(DUMA_NO_LEAKDETECTION) )   \
+        */
 
 #ifndef DUMA_CDECL
-  #ifdef _MSC_VER
-	#define DUMA_CDECL  __cdecl
-  #else
-	#define DUMA_CDECL
-  #endif
+#ifdef _MSC_VER
+#define DUMA_CDECL __cdecl
+#else
+#define DUMA_CDECL
+#endif
 #endif
 
 #ifndef DUMA_SIZE_T
-  #ifdef _MSC_VER
-	#define DUMA_SIZE_T    size_t
-  #else
-	#define DUMA_SIZE_T    std::size_t
-  #endif
+#ifdef _MSC_VER
+#define DUMA_SIZE_T size_t
+#else
+#define DUMA_SIZE_T std::size_t
+#endif
 #endif
 
 #if __cplusplus <= 199711L
@@ -75,141 +74,136 @@
 
 #ifndef DUMA_NO_CPP_SUPPORT
 
-  #ifndef DUMA_CPP_OPERATORS_DECLARED /* && !defined(DUMA_NO_CPP_SUPPORT) */
-  #define DUMA_CPP_OPERATORS_DECLARED
-	/*
-	 * Classification
-	 * A allocation          <-> F free
-	 * S single object form  <-> A array form
-	 * W without nothrow     <-> N with std::nothrow_t parameter
-	 */
+#ifndef DUMA_CPP_OPERATORS_DECLARED /* && !defined(DUMA_NO_CPP_SUPPORT) */
+#define DUMA_CPP_OPERATORS_DECLARED
+/*
+ * Classification
+ * A allocation          <-> F free
+ * S single object form  <-> A array form
+ * W without nothrow     <-> N with std::nothrow_t parameter
+ */
 
-	/* 1x : SINGLE OBJECT FORM - NO DEBUG INFORMATION */
-	/* (11) = (a) ; ASW */
-	/* (12) = (b) ; ASN */
-	/* (13) = (c) ; FSW */
-	/* (14) = (d) ; FSN */
-	void * DUMA_CDECL operator new(DUMA_SIZE_T) NEW_THROW_SPEC;
-	void * DUMA_CDECL operator new(DUMA_SIZE_T, const std::nothrow_t &) throw();
-	void   DUMA_CDECL operator delete(void *) throw();
-	void   DUMA_CDECL operator delete(void *, const std::nothrow_t &)   throw();
+/* 1x : SINGLE OBJECT FORM - NO DEBUG INFORMATION */
+/* (11) = (a) ; ASW */
+/* (12) = (b) ; ASN */
+/* (13) = (c) ; FSW */
+/* (14) = (d) ; FSN */
+void *DUMA_CDECL operator new(DUMA_SIZE_T) NEW_THROW_SPEC;
+void *DUMA_CDECL operator new(DUMA_SIZE_T, const std::nothrow_t &) throw();
+void DUMA_CDECL operator delete(void *) throw();
+void DUMA_CDECL operator delete(void *, const std::nothrow_t &) throw();
 
-	/* 2x : ARRAY OBJECT FORM - NO DEBUG INFORMATION */
-	/* (21) = (a) ; AAW */
-	/* (22) = (b) ; AAN */
-	/* (23) = (c) ; FAW */
-	/* (24) = (d) ; FAN */
-	void * DUMA_CDECL operator new[](DUMA_SIZE_T) NEW_THROW_SPEC;
-	void * DUMA_CDECL operator new[](DUMA_SIZE_T, const std::nothrow_t &) throw();
-	void   DUMA_CDECL operator delete[](void *) throw();
-	void   DUMA_CDECL operator delete[](void *, const std::nothrow_t &)   throw();
+/* 2x : ARRAY OBJECT FORM - NO DEBUG INFORMATION */
+/* (21) = (a) ; AAW */
+/* (22) = (b) ; AAN */
+/* (23) = (c) ; FAW */
+/* (24) = (d) ; FAN */
+void *DUMA_CDECL operator new[](DUMA_SIZE_T) NEW_THROW_SPEC;
+void *DUMA_CDECL operator new[](DUMA_SIZE_T, const std::nothrow_t &) throw();
+void DUMA_CDECL operator delete[](void *) throw();
+void DUMA_CDECL operator delete[](void *, const std::nothrow_t &) throw();
 
-	#ifndef DUMA_NO_LEAKDETECTION /* && !defined(DUMA_CPP_OPERATORS_DECLARED) */
+#ifndef DUMA_NO_LEAKDETECTION /* && !defined(DUMA_CPP_OPERATORS_DECLARED) */
 
-	  /* 3x : SINGLE OBJECT FORM - WITH DEBUG INFORMATION */
-	  /* (31) = (a) ; ASW */
-	  /* (32) = (b) ; ASN */
-	  /* (33) = (c) ; FSW */
-	  /* (34) = (d) ; FSN */
-	  void * DUMA_CDECL operator new(DUMA_SIZE_T, const char *, int) NEW_THROW_SPEC;
-	  void * DUMA_CDECL operator new(DUMA_SIZE_T, const std::nothrow_t &, const char *, int) throw();
-	  void   DUMA_CDECL operator delete(void *, const char *, int) throw();
-	  void   DUMA_CDECL operator delete(void *, const std::nothrow_t &, const char *, int) throw();
+/* 3x : SINGLE OBJECT FORM - WITH DEBUG INFORMATION */
+/* (31) = (a) ; ASW */
+/* (32) = (b) ; ASN */
+/* (33) = (c) ; FSW */
+/* (34) = (d) ; FSN */
+void *DUMA_CDECL operator new(DUMA_SIZE_T, const char *, int) NEW_THROW_SPEC;
+void *DUMA_CDECL operator new(DUMA_SIZE_T, const std::nothrow_t &, const char *,
+                              int) throw();
+void DUMA_CDECL operator delete(void *, const char *, int) throw();
+void DUMA_CDECL operator delete(void *, const std::nothrow_t &, const char *,
+                                int) throw();
 
-	  /* 4x : ARRAY OBJECT FORM - WITH DEBUG INFORMATION */
-	  /* (41) = (a) ; AAW */
-	  /* (42) = (b) ; AAN */
-	  /* (43) = (c) ; FAW */
-	  /* (44) = (d) ; FAN */
-	  void * DUMA_CDECL operator new[](DUMA_SIZE_T, const char *, int) NEW_THROW_SPEC;
-	  void * DUMA_CDECL operator new[](DUMA_SIZE_T, const std::nothrow_t &, const char *, int) throw();
-	  void   DUMA_CDECL operator delete[](void *, const char *, int) throw();
-	  void   DUMA_CDECL operator delete[](void *, const std::nothrow_t &, const char *, int) throw();
+/* 4x : ARRAY OBJECT FORM - WITH DEBUG INFORMATION */
+/* (41) = (a) ; AAW */
+/* (42) = (b) ; AAN */
+/* (43) = (c) ; FAW */
+/* (44) = (d) ; FAN */
+void *DUMA_CDECL operator new[](DUMA_SIZE_T, const char *, int) NEW_THROW_SPEC;
+void *DUMA_CDECL operator new[](DUMA_SIZE_T, const std::nothrow_t &,
+                                const char *, int) throw();
+void DUMA_CDECL operator delete[](void *, const char *, int) throw();
+void DUMA_CDECL operator delete[](void *, const std::nothrow_t &, const char *,
+                                  int) throw();
 
-	#endif /* DUMA_NO_LEAKDETECTION */
-  #endif /* DUMA_CPP_OPERATORS_DECLARED */
+#endif /* DUMA_NO_LEAKDETECTION */
+#endif /* DUMA_CPP_OPERATORS_DECLARED */
 
-  #ifndef DUMA_NO_LEAKDETECTION /* && !defined(DUMA_CPP_OPERATORS_DECLARED) */
+#ifndef DUMA_NO_LEAKDETECTION /* && !defined(DUMA_CPP_OPERATORS_DECLARED) */
 
-	#ifndef DUMA_NO_THREAD_SAFETY
-	  #include "duma_sem.h"
-	#endif
+#ifndef DUMA_NO_THREAD_SAFETY
+#include "duma_sem.h"
+#endif
 
-	/* define macros as wrapper for our special operators */
+/* define macros as wrapper for our special operators */
 
-	#ifdef DUMA_OLD_NEW_MACRO
-	  /* throwing variants */
-	  #define NEW_ELEM(TYPE)                  new(__FILE__,__LINE__) TYPE
-	  #define NEW_ARRAY(TYPE, COUNT)          new(__FILE__,__LINE__) TYPE[COUNT]
-	  /* non throwing variant */
-	  #define NEW_ELEM_NOTHROW(TYPE)          new(std::nothrow,__FILE__,__LINE__) TYPE
-	  #define NEW_ARRAY_NOTHROW(TYPE, COUNT)  new(std::nothrow,__FILE__,__LINE__) TYPE[COUNT]
-	#else
-	  /* #define new_NOTHROW                      new(std::nothrow,__FILE__,__LINE__) */
-	  #define new                             new(__FILE__, __LINE__)
-	#endif /* DUMA_OLD_NEW_MACRO */
+#ifdef DUMA_OLD_NEW_MACRO
+/* throwing variants */
+#define NEW_ELEM(TYPE) new (__FILE__, __LINE__) TYPE
+#define NEW_ARRAY(TYPE, COUNT) new (__FILE__, __LINE__) TYPE[COUNT]
+/* non throwing variant */
+#define NEW_ELEM_NOTHROW(TYPE) new (std::nothrow, __FILE__, __LINE__) TYPE
+#define NEW_ARRAY_NOTHROW(TYPE, COUNT)                                         \
+  new (std::nothrow, __FILE__, __LINE__) TYPE[COUNT]
+#else
+/* #define new_NOTHROW                      new(std::nothrow,__FILE__,__LINE__)
+ */
+#define new new (__FILE__, __LINE__)
+#endif /* DUMA_OLD_NEW_MACRO */
 
-	#ifdef DUMA_OLD_DEL_MACRO
-	  /* always use _duma_g.TLS.DelPtr/DUMA_DeleteFile/DUMA_DeleteLine
-	   * to allow best possible filename/line reports when
-	   * non-DUMA deallocations are called from destructors
-	   */
-	  /* non-throwing */
-	  #define DEL_ELEM(PTR)           for( ++_duma_g.TLS.DelPtr,               \
-										   _duma_g.TLS.Magic = 1;              \
-										   _duma_g.TLS.Magic;                  \
-										   _duma_g.TLS.Magic = 0,              \
-										   --_duma_g.TLS.DelPtr                \
-										 ) operator delete  (PTR, __FILE__, __LINE__)
+#ifdef DUMA_OLD_DEL_MACRO
+/* always use _duma_g.TLS.DelPtr/DUMA_DeleteFile/DUMA_DeleteLine
+ * to allow best possible filename/line reports when
+ * non-DUMA deallocations are called from destructors
+ */
+/* non-throwing */
+#define DEL_ELEM(PTR)                                                          \
+  for (++_duma_g.TLS.DelPtr, _duma_g.TLS.Magic = 1; _duma_g.TLS.Magic;         \
+       _duma_g.TLS.Magic = 0, --_duma_g.TLS.DelPtr)                            \
+  operator delete(PTR, __FILE__, __LINE__)
 
-	  #define DEL_ARRAY(PTR)          for( ++_duma_g.TLS.DelPtr,               \
-										   _duma_g.TLS.Magic = 1;              \
-										   _duma_g.TLS.Magic;                  \
-										   _duma_g.TLS.Magic = 0,              \
-										   --_duma_g.TLS.DelPtr                \
-										 ) operator delete[](PTR, __FILE__, __LINE__)
-	  /* explicitly non-throwing */
-	  #define DEL_ELEM_NOTHROW(PTR)   for( ++_duma_g.TLS.DelPtr,               \
-										   _duma_g.TLS.Magic = 1;              \
-										   _duma_g.TLS.Magic;                  \
-										   _duma_g.TLS.Magic = 0,              \
-										   --_duma_g.TLS.DelPtr                \
-										 ) operator delete  (PTR, std::nothrow,__FILE__, __LINE__)
-	  #define DEL_ARRAY_NOTHROW(PTR)  for( ++_duma_g.TLS.DelPtr,               \
-										   _duma_g.TLS.Magic = 1;              \
-										   _duma_g.TLS.Magic;                  \
-										   _duma_g.TLS.Magic = 0,              \
-										   --_duma_g.TLS.DelPtr                \
-										 ) operator delete[](PTR, std::nothrow,__FILE__, __LINE__)
-	#else
-	  #ifndef DUMA_NO_THREAD_SAFETY
-		/* define a thread safe delete */
-		#define delete                for( DUMA_GET_SEMAPHORE(),                         \
-										   DUMA_GET_SEMAPHORE(),                         \
-										   ++_duma_g.TLS.DelPtr,                         \
-										   DUMA_ASSERT(_duma_g.TLS.DelPtr < DUMA_MAX_DEL_DEPTH), \
-										   _duma_g.TLS.Magic = 1,                                \
-										   _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__,   \
-										   _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__;   \
-										   DUMA_RELEASE_SEMAPHORE(_duma_g.TLS.Magic);    \
-										   _duma_g.TLS.Magic = 0,                        \
-										   --_duma_g.TLS.DelPtr                          \
-										 ) delete
-	  #else
-		/* also thread safe by using TLS variables */
-		#define delete                for( ++_duma_g.TLS.DelPtr,                         \
-										   DUMA_ASSERT(_duma_g.TLS.DelPtr < DUMA_MAX_DEL_DEPTH), \
-										   _duma_g.TLS.Magic = 1,                                \
-										   _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__,   \
-										   _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__;   \
-										   _duma_g.TLS.Magic;                            \
-										   _duma_g.TLS.Magic = 0,                        \
-										   --_duma_g.TLS.DelPtr                          \
-										 ) delete
-	  #endif /* DUMA_NO_THREAD_SAFETY */
-	#endif /* DUMA_OLD_DEL_MACRO */
+#define DEL_ARRAY(PTR)                                                         \
+  for (++_duma_g.TLS.DelPtr, _duma_g.TLS.Magic = 1; _duma_g.TLS.Magic;         \
+       _duma_g.TLS.Magic = 0, --_duma_g.TLS.DelPtr)                            \
+  operator delete[](PTR, __FILE__, __LINE__)
+/* explicitly non-throwing */
+#define DEL_ELEM_NOTHROW(PTR)                                                  \
+  for (++_duma_g.TLS.DelPtr, _duma_g.TLS.Magic = 1; _duma_g.TLS.Magic;         \
+       _duma_g.TLS.Magic = 0, --_duma_g.TLS.DelPtr)                            \
+  operator delete(PTR, std::nothrow, __FILE__, __LINE__)
+#define DEL_ARRAY_NOTHROW(PTR)                                                 \
+  for (++_duma_g.TLS.DelPtr, _duma_g.TLS.Magic = 1; _duma_g.TLS.Magic;         \
+       _duma_g.TLS.Magic = 0, --_duma_g.TLS.DelPtr)                            \
+  operator delete[](PTR, std::nothrow, __FILE__, __LINE__)
+#else
+#ifndef DUMA_NO_THREAD_SAFETY
+/* define a thread safe delete */
+#define delete                                                                 \
+  for (DUMA_GET_SEMAPHORE(), DUMA_GET_SEMAPHORE(), ++_duma_g.TLS.DelPtr,       \
+       DUMA_ASSERT(_duma_g.TLS.DelPtr < DUMA_MAX_DEL_DEPTH),                   \
+       _duma_g.TLS.Magic = 1,                                                  \
+       _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__,                     \
+       _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__;                     \
+       DUMA_RELEASE_SEMAPHORE(_duma_g.TLS.Magic);                              \
+       _duma_g.TLS.Magic = 0, --_duma_g.TLS.DelPtr)                            \
+  delete
+#else
+/* also thread safe by using TLS variables */
+#define delete                                                                 \
+  for (++_duma_g.TLS.DelPtr,                                                   \
+       DUMA_ASSERT(_duma_g.TLS.DelPtr < DUMA_MAX_DEL_DEPTH),                   \
+       _duma_g.TLS.Magic = 1,                                                  \
+       _duma_g.TLS.DelFile[_duma_g.TLS.DelPtr] = __FILE__,                     \
+       _duma_g.TLS.DelLine[_duma_g.TLS.DelPtr] = __LINE__;                     \
+       _duma_g.TLS.Magic; _duma_g.TLS.Magic = 0, --_duma_g.TLS.DelPtr)         \
+  delete
+#endif /* DUMA_NO_THREAD_SAFETY */
+#endif /* DUMA_OLD_DEL_MACRO */
 
-  #endif /* end ifdef DUMA_NO_LEAKDETECTION */
+#endif /* end ifdef DUMA_NO_LEAKDETECTION */
 
 #endif /* end ifdef DUMA_NO_CPP_SUPPORT */
 
