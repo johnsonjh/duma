@@ -1,0 +1,24 @@
+# Vendor non-source
+*.html linguist-vendored
+.devbots/* linguist-vendored
+comparisons linguist-vendored
+debian linguist-vendored
+*.yml linguist-vendored
+*.toml linguist-vendored
+.github/* linguist-vendored
+detours/* linguist-vendored
+detoursexample1/* linguist-vendored
+docs-data/* linguist-vendored
+dumadetours/* linguist-vendored
+dumadetoursdll/* linguist-vendored
+dumadll/* linguist-vendored
+example_makes/* linguist-vendored
+kduma/* linguist-vendored
+prj/* linguist-vendored
+stacktrace/* linguist-vendored
+tests/* linguist-vendored
+win32-devcpp/* linguist-vendored
+win32-msvc/* linguist-vendored
+win32-msvc.2005/* linguist-vendored
+win32-msvc.net/* linguist-vendored
+win32-vide/* linguist-vendored
