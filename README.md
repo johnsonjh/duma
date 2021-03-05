@@ -143,7 +143,7 @@ active developer.
 
 - [GitHub](https://github.com/johnsonjh/duma)
 - [GitLab](https://gitlab.com/johnsonjh/duma)
-- [SourceHut Git](https://git.sr.ht/~trn/duma)
+- [SourceHut](https://sr.ht/~trn/duma)
 - [NotABug](https://notabug.org/trn/duma)
 
 ---
