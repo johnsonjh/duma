@@ -510,7 +510,7 @@ endif
 
 # Delete all files that are normally created by running make.
 clean:
-	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o \
+	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o a.out \
 		tstheap_so.o dumatestpp_so.o testoperators.o \
 		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
 		thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) \
