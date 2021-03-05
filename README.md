@@ -141,8 +141,10 @@ active developer.
 
 ##### Source Code (Development Repositories)
 
-- [SourceHut Git](https://git.sr.ht/~trn/duma)
 - [GitHub](https://github.com/johnsonjh/duma)
+- [GitLab](https://gitlab.com/johnsonjh/duma)
+- [SourceHut Git](https://git.sr.ht/~trn/duma)
+- [NotABug](https://notabug.org/trn/duma)
 
 ---
 
