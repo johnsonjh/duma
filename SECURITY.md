@@ -30,7 +30,7 @@ PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 ## Report a security vulnerability
 
--  Send a **PGP-encrypted** email to <mailto:trnsz@pobox.com>
+- Send a **PGP-encrypted** email to <mailto:trnsz@pobox.com>
 
 ```text
 -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -86,4 +86,3 @@ db6SFclbQx5x03Wn
 =wvMh
 -----END PGP PUBLIC KEY BLOCK-----
 ```
-
