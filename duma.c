@@ -89,7 +89,7 @@
 #include "print.h"
 #include "duma_sem.h"
 #include "paging.h"
-#include "verinfo.h"
+#include "verinfo.h"  /* generated from make_git_source_version.sh */
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 DUMA_EXTERN_C void StackTraceCleanup();
@@ -137,12 +137,11 @@ GIT_SOURCE_VERSION
 "Copyright (C) 2002-2009 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
 "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n\n";
 
+#ifndef DUMA_NO_LEAKDETECTION
 
 static const char unknown_file[] =
   "UNKNOWN (use #include \"duma.h\")";
 
-
-#ifndef DUMA_NO_LEAKDETECTION
 #define DUMA_PARAMLIST_FL       , const char * filename, int lineno
 #define DUMA_PARAMS_FL          , filename, lineno
 #define DUMA_PARAMS_UK          , unknown_file, 0

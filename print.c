@@ -251,13 +251,13 @@ static int DUMA_vsprintf(char *buffer, const char *pattern, va_list args) {
  */
 void DUMA_Abort(const char *pattern, ...) {
   char buffer[STRING_BUFFER_SIZE];
-  int lena, lenb;
+  int lena;
   va_list args;
 
   va_start(args, pattern);
   strcpy(buffer, "\nDUMA Aborting: ");
   lena = strlen(buffer);
-  lenb = DUMA_vsprintf(&buffer[lena], pattern, args);
+  DUMA_vsprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
   DUMA_Print("%s", buffer);
   va_end(args);
@@ -328,13 +328,13 @@ void DUMA_Print(const char *pattern, ...) {
  */
 void DUMA_Exit(const char *pattern, ...) {
   char buffer[STRING_BUFFER_SIZE];
-  int lena, lenb;
+  int lena;
   va_list args;
 
   va_start(args, pattern);
   strcpy(buffer, "\nDUMA Exiting: ");
   lena = strlen(buffer);
-  lenb = DUMA_vsprintf(&buffer[lena], pattern, args);
+  DUMA_vsprintf(&buffer[lena], pattern, args);
   strcat(buffer, "\n");
   DUMA_Print("%s", buffer);
 #ifdef WIN32

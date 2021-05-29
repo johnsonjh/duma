@@ -163,7 +163,7 @@ void * duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator, b
 		  h();
 		#endif
 		}
-		catch (std::bad_alloc)        // error occured in new_handler
+		catch (std::bad_alloc&)       // error occured in new_handler
 		{
 		  if (dothrow)  throw;        // report error via re-throwing
 		  else          return ret;   // report error via (void*)0

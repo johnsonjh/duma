@@ -35,6 +35,12 @@
 #include <memory.h>
 #include <stdarg.h>
 
+#if defined(__STDC__) && (__STDC_VERSION__ >= 199901L)
+#define HAVE_C99
+#include <stdint.h>
+#endif
+
+
 #ifdef _MSC_VER
 #include <direct.h>
 #endif
@@ -94,37 +100,40 @@ init_function(void)
 typedef struct
 {
   int  id;
-  int  size;
+  unsigned size;
   char *type;
+  int c99;
 }
 DataType_T;
 
 
 DataType_T  sIntTypes[] =
 {
-	{ 0, sizeof(char)     , "char"      }
-  , { 1, sizeof(short int), "short int" }
-  , { 2, sizeof(int)      , "int"       }
-  , { 3, sizeof(long int) , "long int"  }
-  /* add additional compiler specific typer here */
+    { 0, sizeof(unsigned long int) , "unsigned long int", 0 }
+  /* add additional compiler specific types here */
+#if defined(HAVE_C99)
+  , { 1, sizeof(uint_fast32_t), "uint_fast32_t", 1 }
+  , { 2, sizeof(uint_fast64_t), "uint_fast64_t", 1 }
+#endif
 #ifdef _MSC_VER
-  , { 4, sizeof(__int64), "__int64"     }
+  , { 3, sizeof(unsigned __int64), "unsigned __int64", 0 }
 #endif
 #ifdef __GNUC__
-  , { 5, sizeof(long long int), "long long int" }
+  , { 4, sizeof(unsigned long long int), "unsigned long long int", 0 }
 #endif
 };
 
 
 /* test access to each data type */
-void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
+void testAlignment(int addrIdx, char * buffer, unsigned alignment, unsigned max_sizeof)
 {
-  int offset;
+  unsigned offset;
 
   switch ( sIntTypes[addrIdx].id )
   {
+
   case 0:
-#define TYPE unsigned char
+#define TYPE long int
 	for(offset=0; offset < max_sizeof; ++offset)
 	{
 	  TYPE addr = (TYPE)(buffer) + offset;
@@ -137,6 +146,10 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 		*( (float *)             addr ) = 0.0F;
 		*( (double *)            addr ) = 0.0;
 		*( (long double *)       addr ) = 0.0;
+#if defined(HAVE_C99)
+		*( (int_fast32_t*)       addr ) = 0;
+		*( (int_fast64_t*)       addr ) = 0;
+#endif
 #ifdef _MSC_VER
 		*( (unsigned __int64 *) addr ) = 0L;
 #endif
@@ -146,9 +159,11 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 	  }
 	}
 	break;
+#undef TYPE
+
+#if defined(HAVE_C99)
   case 1:
-#undef TYPE
-#define TYPE unsigned short int
+#define TYPE int_fast32_t
 	for(offset=0; offset < max_sizeof; ++offset)
 	{
 	  TYPE addr = (TYPE)(buffer) + offset;
@@ -161,6 +176,10 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 		*( (float *)             addr ) = 0.0F;
 		*( (double *)            addr ) = 0.0;
 		*( (long double *)       addr ) = 0.0;
+#if defined(HAVE_C99)
+		*( (int_fast32_t*)       addr ) = 0;
+		*( (int_fast64_t*)       addr ) = 0;
+#endif
 #ifdef _MSC_VER
 		*( (unsigned __int64 *) addr ) = 0L;
 #endif
@@ -170,9 +189,10 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 	  }
 	}
 	break;
+#undef TYPE
+
   case 2:
-#undef TYPE
-#define TYPE unsigned int
+#define TYPE int_fast64_t
 	for(offset=0; offset < max_sizeof; ++offset)
 	{
 	  TYPE addr = (TYPE)(buffer) + offset;
@@ -185,6 +205,10 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 		*( (float *)             addr ) = 0.0F;
 		*( (double *)            addr ) = 0.0;
 		*( (long double *)       addr ) = 0.0;
+#if defined(HAVE_C99)
+		*( (int_fast32_t*)       addr ) = 0;
+		*( (int_fast64_t*)       addr ) = 0;
+#endif
 #ifdef _MSC_VER
 		*( (unsigned __int64 *) addr ) = 0L;
 #endif
@@ -194,32 +218,11 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 	  }
 	}
 	break;
+#undef TYPE
+#endif
+
+#ifdef _MSC_VER
   case 3:
-#undef TYPE
-#define TYPE unsigned long int
-	for(offset=0; offset < max_sizeof; ++offset)
-	{
-	  TYPE addr = (TYPE)(buffer) + offset;
-	  if ( addr % alignment == 0 )
-	  {
-		*( (unsigned char *)     addr ) = 0;
-		*( (unsigned short int*) addr ) = 0;
-		*( (unsigned int *)      addr ) = 0;
-		*( (unsigned long int *) addr ) = 0L;
-		*( (float *)             addr ) = 0.0F;
-		*( (double *)            addr ) = 0.0;
-		*( (long double *)       addr ) = 0.0;
-#ifdef _MSC_VER
-		*( (unsigned __int64 *) addr ) = 0L;
-#endif
-#ifdef __GNUC__
-		*( (unsigned long long int *) addr ) = 0L;
-#endif
-	  }
-	}
-	break;
-#ifdef _MSC_VER
-  case 4:
 #undef TYPE
 #define TYPE unsigned __int64
 	for(offset=0; offset < max_sizeof; ++offset)
@@ -234,6 +237,10 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 		*( (float *)             addr ) = 0.0F;
 		*( (double *)            addr ) = 0.0;
 		*( (long double *)       addr ) = 0.0;
+#if defined(HAVE_C99)
+		*( (int_fast32_t*)       addr ) = 0;
+		*( (int_fast64_t*)       addr ) = 0;
+#endif
 #ifdef _MSC_VER
 		*( (unsigned __int64 *) addr ) = 0L;
 #endif
@@ -243,10 +250,12 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 	  }
 	}
 	break;
-#endif
-#ifdef __GNUC__
-  case 5:
 #undef TYPE
+#endif
+
+
+#ifdef __GNUC__
+  case 4:
 #define TYPE unsigned long long int
 	for(offset=0; offset < max_sizeof; ++offset)
 	{
@@ -260,6 +269,10 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 		*( (float *)             addr ) = 0.0F;
 		*( (double *)            addr ) = 0.0;
 		*( (long double *)       addr ) = 0.0;
+#if defined(HAVE_C99)
+		*( (int_fast32_t*)       addr ) = 0;
+		*( (int_fast64_t*)       addr ) = 0;
+#endif
 #ifdef _MSC_VER
 		*( (unsigned __int64 *) addr ) = 0L;
 #endif
@@ -269,14 +282,14 @@ void testAlignment(int addrIdx, char * buffer, int alignment, int max_sizeof)
 	  }
 	}
 	break;
+#undef TYPE
 #endif
 	;
   }
 }
 
 
-
-void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int sizeIdx, int alignment, int malloc0strategy)
+void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int sizeIdx, unsigned alignment, int malloc0strategy)
 {
   FILE * f = fopen(filename, "w");
   if (!f)
@@ -672,6 +685,10 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, "\n");
 
   fprintf(f, "\n");
+
+  if (addrIdx >= 0 && sIntTypes[addrIdx].c99)
+	fprintf(f, "#include <stdint.h>\n\n");
+
   fprintf(f, "/*\n");
   fprintf(f, " * Number of bytes per virtual-memory page, as returned by Page_Size().\n");
   fprintf(f, " */\n");
@@ -697,7 +714,7 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, " * An integer type with same size as 'void *'\n");
   fprintf(f, " */\n");
   if (addrIdx >= 0)
-	fprintf(f, "typedef unsigned %s DUMA_ADDR;\n", sIntTypes[addrIdx].type);
+	fprintf(f, "typedef %s DUMA_ADDR;\n", sIntTypes[addrIdx].type);
   else
 	fprintf(f, "/* Error: No datatype for DUMA_ADDR found! */\n");
 
@@ -706,7 +723,7 @@ void writeFile(const char * filename, unsigned long pagesize, int addrIdx, int s
   fprintf(f, " * An integer type with same size as 'size_t'\n");
   fprintf(f, " */\n");
   if (sizeIdx >= 0)
-	fprintf(f, "typedef unsigned %s DUMA_SIZE;\n", sIntTypes[sizeIdx].type);
+	fprintf(f, "typedef %s DUMA_SIZE;\n", sIntTypes[sizeIdx].type);
   else
 	fprintf(f, "/* No datatype for DUMA_SIZE found! */\n");
 
@@ -737,7 +754,8 @@ int main()
 {
   int iNumIntTypes, iIt;
   int addrIdx, sizeIdx;
-  int alignment, max_sizeof;
+  unsigned alignment;
+  unsigned max_sizeof;
   int malloc0strategy;
   char  buffer[1024];
   char filename[1024];
@@ -763,7 +781,7 @@ int main()
   addrIdx = -1;
   for (iIt = 0; iIt < iNumIntTypes; ++iIt)
   {
-	if ( sizeof(void*) == sIntTypes[iIt].size )
+	if ( sIntTypes[iIt].size >= sizeof(void*) )
 	{
 	  addrIdx = iIt;
 	  break;
@@ -774,7 +792,7 @@ int main()
   sizeIdx = -1;
   for (iIt = 0; iIt < iNumIntTypes; ++iIt)
   {
-	if ( sizeof(size_t) == sIntTypes[iIt].size )
+	if ( sIntTypes[iIt].size >= sizeof(size_t) )
 	{
 	  sizeIdx = iIt;
 	  break;
