@@ -188,9 +188,9 @@ ifeq ($(OS), darwin)
   BSWITCH=210
   DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
   DUMA_OPTIONS += -DDUMA_SO_PREFER_GETENV
-#  DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
+# DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
   CURPATH=./
-#  DUMA_DYN_DEPS=
+# DUMA_DYN_DEPS=
   DUMASO=libduma.dylib
   DUMASO_LINK1=libduma.dylib
   CFLAGS=-g -O0
@@ -354,7 +354,7 @@ ifndef includedir
   includedir=$(prefix)/include
 endif
 
-PACKAGE_SOURCE=README.txt CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 GNUmakefile gdbinit.rc \
+PACKAGE_SOURCE=README.md CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 GNUmakefile gdbinit.rc \
 	duma.h dumapp.h duma_sem.h paging.h print.h duma_hlp.h noduma.h \
 	duma.c dumapp.cpp sem_inc.c print.c \
 	tests/dumatest.c tests/tstheap.c tests/thread-test.c tests/testmt.c tests/dumatestpp.cpp tests/testoperators.cpp \
@@ -466,7 +466,7 @@ printmod:
 # directories where it will look for them.
 install: libduma.a duma.3 $(DUMASO)
 	- mkdir -p $(DESTDIR)$(DOC_INSTALL_DIR)
-	$(INSTALL) -m 644 README.txt $(DESTDIR)$(DOC_INSTALL_DIR)
+	$(INSTALL) -m 644 README.md $(DESTDIR)$(DOC_INSTALL_DIR)
 	- mkdir -p $(DESTDIR)$(includedir)
 	$(INSTALL) -m 644 noduma.h duma.h dumapp.h duma_sem.h duma_config.h $(DESTDIR)$(includedir)
 	- mkdir -p $(DESTDIR)$(bindir)
@@ -489,7 +489,7 @@ endif
 
 # Delete all the installed files that the `install' target would create
 uninstall:
-	- $(RMFORCE) $(DESTDIR)$(DOC_INSTALL_DIR)/README.txt
+	- $(RMFORCE) $(DESTDIR)$(DOC_INSTALL_DIR)/README.md
 	- $(RMFORCE) $(DESTDIR)$(includedir)/noduma.h
 	- $(RMFORCE) $(DESTDIR)$(includedir)/duma.h
 	- $(RMFORCE) $(DESTDIR)$(includedir)/dumapp.h
