@@ -42,11 +42,11 @@ int get_new0strategy(void)
   piNullPtrB = (int*) operator new(0);
 
   if ( !piNullPtrA )
-	op_new_0_strategy = 0;
+        op_new_0_strategy = 0;
   else if ( piNullPtrA == piNullPtrB )
-	op_new_0_strategy = 1;
+        op_new_0_strategy = 1;
   else
-	op_new_0_strategy = 2;
+        op_new_0_strategy = 2;
 
   return op_new_0_strategy;
 }
