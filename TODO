@@ -11,19 +11,6 @@ TODO items (possibly obsolete, listed by general priority):
 
 -Interface to cause verification walk
 
--enhance detection of DUMA_MIN_ALIGNMENT in createconf
-  use defines specifying the target architecture
-  use compiler attributes which specify the necessary alignment
-
--add autoconf/automake build process (useful for cross-build)
-
--use libtool to build shared libraries in Makefile
- depends on autoconf/automake
-
--use configure to detect if f.e. pthread.h is installed and in search path
- check if pthread available before using it in Makefile
- depends on autoconf/automake
-
 -implement a list structure over pages rather than an array for all slots.
   this would save copying all slot entries, when list grows
 
