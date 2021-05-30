@@ -94,12 +94,6 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
 PRI LOW
 ====================
 
-
--use configuration file, which is read directly with system calls as
- replacement for the environment switches which use calls to the C library.
- this is to avoid hangs in the C library's getenv() function.
- --> outdated: now using char **environ variable instead getenv()
-
 -document 'J. "MUFTI" Scheurich' way of compiling/using DUMA's memory
  replacement functions only from own source files. Thus usage of DUMA
  for several system libraries is avoided.
