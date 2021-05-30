@@ -21,6 +21,11 @@
 
 ---
 
+## Table of Contents
+<!-- toc -->
+
+---
+
 ### Description
 
 **DUMA** helps you detect two of the most common programming errors:
