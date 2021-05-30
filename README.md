@@ -23,6 +23,34 @@
 
 <!-- toc -->
 
+- [Description](#description)
+- [Usage](#usage)
+- [Global and Environment Variables](#global-and-environment-variables)
+- [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
+- [Catching the Erroneous Line](#catching-the-erroneous-line)
+  * [Live (debugger control)](#live-debugger-control)
+  * [Post-mortem (core analysis)](#post-mortem-core-analysis)
+- [Debugging your Program](#debugging-your-program)
+  * [General Debugging Instructions](#general-debugging-instructions)
+  * [Debugging Word-Alignment and Overrun Detection](#debugging-word-alignment-and-overrun-detection)
+- [Memory Usage and Execution Speed](#memory-usage-and-execution-speed)
+- [Memory Leak Detection](#memory-leak-detection)
+- [C++ Memory Operators and Leak Detection](#c-memory-operators-and-leak-detection)
+- [Definition of own member new/delete Operators](#definition-of-own-member-newdelete-operators)
+- [Compilation Notes for Release/Production](#compilation-notes-for-releaseproduction)
+- [No Warranty](#no-warranty)
+- [Diagnostics](#diagnostics)
+- [Bugs](#bugs)
+- [Comparison with other tools](#comparison-with-other-tools)
+- [Availability](#availability)
+  * [Releases](#releases)
+    + [Git Repositories](#git-repositories)
+- [Issue Tracking](#issue-tracking)
+- [Security Policy](#security-policy)
+- [License](#license)
+
+<!-- tocstop -->
+
 ---
 
 ### Description
