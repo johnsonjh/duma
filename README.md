@@ -31,7 +31,7 @@
   - [Post-mortem (core analysis)](#post-mortem-core-analysis)
 - [Debugging your Program](#debugging-your-program)
   - [General Debugging Instructions](#general-debugging-instructions)
-  - [Debugging Word-Alignment and Overrun Detection](#debugging-word-alignment-and-overrun-detection)
+  - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
 - [Memory Usage and Execution Speed](#memory-usage-and-execution-speed)
 - [Memory Leak Detection](#memory-leak-detection)
 - [C++ Memory Operators and Leak Detection](#c-memory-operators-and-leak-detection)
@@ -418,7 +418,7 @@ To get the line in you sources where an error occurs:
 7. Optionally, read and install `gdbinit.rc` as `~/.gdbinit` if you are using
    the `gdb` debugger
 
-#### Debugging Word-Alignment and Overrun Detection
+#### Word-Alignment and Overrun Detection
 
 - See if you can set `DUMA_ALIGNMENT` to `1`, and repeat step 2.
   - Sometimes this will be too much work, or there will be problems with library
