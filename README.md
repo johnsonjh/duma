@@ -1,4 +1,4 @@
-# **DUMA**
+# DUMA
 
 ---
 
@@ -17,7 +17,7 @@
 
 ---
 
-## **Detect Unintended Memory Access**
+## Detect Unintended Memory Access
 
 ---
 
