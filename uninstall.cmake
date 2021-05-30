@@ -14,7 +14,7 @@ foreach(file ${files})
             OUTPUT_VARIABLE stdout
             RETURN_VALUE result
         )
-        
+
         if(NOT "${result}" STREQUAL 0)
             message(FATAL_ERROR "Failed to remove file: '${file}'.")
         endif()

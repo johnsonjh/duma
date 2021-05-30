@@ -366,4 +366,3 @@ if (BUILD_EXAMPLES)
   target_link_libraries(example8_shared DUMA_SHARED)
 
 endif()
-
