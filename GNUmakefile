@@ -514,7 +514,7 @@ clean:
 		tstheap_so.o dumatestpp_so.o testoperators.o \
 		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
 		thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) \
-		libduma.a $(DUMASO) libduma.cat DUMA.shar
+		libduma.a $(DUMASO) libduma.cat
 
 # Any of these targets might be defined to delete more files than `clean' does.
 # For example, this would delete configuration files or links that you would
@@ -525,11 +525,6 @@ distclean realclean clobber: clean
 
 roff:
 	nroff -man < duma.3 > duma.cat
-
-DUMA.shar: $(PACKAGE_SOURCE)
-	shar $(PACKAGE_SOURCE) > DUMA.shar
-
-shar: DUMA.shar
 
 libduma.a: duma_config.h verinfo.h $(OBJECTS)
 	- $(RMFORCE) libduma.a
