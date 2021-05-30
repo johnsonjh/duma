@@ -8,9 +8,3 @@ TODO items (possibly obsolete, listed by general priority):
 -memccpy(), bcopy() + test for all overloaded string functions
 
 -Interface to cause verification walk
-
--implement a list structure over pages rather than an array for all slots.
-  this would save copying all slot entries, when list grows
-
--store __func__ additionally to __FILE__ and __LINE__
- depends on storing full filename (not just pointer) in slot
