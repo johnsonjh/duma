@@ -27,7 +27,7 @@
 #                           go in here
 # examples/             <-- example code
 # examples/cpp          <-- C++ examples
-# examples/C            <-- C examples (TODO ?)
+# examples/C            <-- C examples (?)
 
 # prj/                  <-- project files
 #                           win32-*, codeblocks, later: eclipse
