@@ -21,30 +21,7 @@
 
 ---
 
-## Table of Contents
-
-- [Description](#description)
-- [Usage](#usage)
-- [Global and Environment Variables](#global-and-environment-variables)
-- [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
-- [Catching the Erroneous Line](#catching-the-erroneous-line)
-- [Instructions for Debugging your Program](#instructions-for-debugging-your-program)
-- [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection-1)
-- [Memory Usage and Execution Speed](#memory-usage-and-execution-speed)
-- [Memory Leak Detection](#memory-leak-detection)
-- [C++ Memory Operators and Leak Detection](#c-memory-operators-and-leak-detection)
-- [Definition of own member new/delete Operators](#definition-of-own-member-newdelete-operators)
-- [Compilation Notes for Release/Production](#compilation-notes-for-releaseproduction)
-- [No Warranty](#no-warranty)
-- [Diagnostics](#diagnostics)
-- [Bugs](#bugs)
-- [Comparison with other tools](#comparison-with-other-tools)
-- [Availability](#availability)
-  * [Releases](#releases)
-    + [Git Repositories](#git-repositories)
-- [Issue Tracking](#issue-tracking)
-- [Security Policy](#security-policy)
-- [License](#license)
+<!-- toc -->
 
 ---
 
@@ -375,7 +352,9 @@ instead of _word references_.
 
 ### Catching the Erroneous Line
 
-To get the line in your sources, where an error occurs, go as follows:
+To get the line in you sources where an error occurs:
+
+#### Live (debugger control)
 
 1. Compile your program with debugging information and statically linked to
    DUMA. On some systems, including some Linux distributions, the linking order
@@ -386,7 +365,7 @@ To get the line in your sources, where an error occurs, go as follows:
 4. Set your program arguments with `'set args …'`
 5. Run and wait for the segmentation fault
 
-_alternatively_,
+#### Post-mortem (core analysis)
 
 1. Compile your program (**_with_** debugging information), but **_without_**
    **DUMA**.
@@ -399,7 +378,9 @@ _alternatively_,
 
 ---
 
-### Instructions for Debugging your Program
+### Debugging your Program
+
+#### General Debugging Instructions
 
 1. Link with `libduma.a` as explained above, ensuring proper linking order.
 2. Run your program in a debugger and fix any overruns or accesses to free
@@ -411,9 +392,7 @@ _alternatively_,
 7. Optionally, read and install `gdbinit.rc` as `~/.gdbinit` if you are using
    the `gdb` debugger
 
----
-
-### Word-Alignment and Overrun Detection
+#### Debugging Word-Alignment and Overrun Detection
 
 - See if you can set `DUMA_ALIGNMENT` to `1`, and repeat step 2.
   - Sometimes this will be too much work, or there will be problems with library
