@@ -57,6 +57,7 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
  depends on storing full filename (not just pointer) in slot
 
 -modification of manual page duma.3
+ sync to README.md - GitHub Issue #64
 
 -check documents for line lengths of 80 coloumns
 
