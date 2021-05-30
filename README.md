@@ -20,7 +20,6 @@
 ## Detect Unintended Memory Access
 
 ---
-
 <!-- toc -->
 
 - [Description](#description)
@@ -50,7 +49,6 @@
 - [License](#license)
 
 <!-- tocstop -->
-
 ---
 
 ### Description
