@@ -59,8 +59,6 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
 -modification of manual page duma.3 ans INSTALL
  sync to README.md - GitHub Issue #64 and #65
 
--check documents for line lengths of 80 coloumns
-
 -check and replace tabs in documents
 
 -config for
