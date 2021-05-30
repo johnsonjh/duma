@@ -2,6 +2,116 @@ CHANGELOG:
 ==========
 
 2.6xx
+=====
+
+  * Update README.txt: Remove alt tag spaces
+  * Update README.md: Update lgtm analysis badging
+  * stacktrace/printStackTrace.cpp: Refer to #81
+  * duma.h: Refer to #82
+  * multi: Quiet TickGit
+  * Merge pull request #80 from hayguen/master
+  * fix warning: https://github.com/johnsonjh/duma/issues/76
+  * Merge pull request #79 from johnsonjh/restyled/pull-78
+  * Restyled by clang-format
+  * Restyled by astyle
+  * fix warning: https://github.com/johnsonjh/duma/issues/77
+  * Update README.md: Clarify text
+  * Update GNUmakefile: Remove shar target
+  * Merge pull request #74 from johnsonjh/deepsource-transform-162cfcd9
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * Update README.md: Simplify header section titles
+  * Update TODO: Reference GitHub #70
+  * Update TODO: Remove verified completed items
+  * Update TODO: Remove obsolete service reference
+  * multi: process code with `expand`; remove TODO
+  * Update TODO: Remove item redundant by #65 and #64
+  * Update TODO: Reference GitHub #65
+  * Update TODO: Reference #64
+  * Update TODO: Remove {s,p,q,b}make references
+  * Update TODO: Remove obsolete compiler references.
+  * Update TODO: Remove ICC (now DPC++) - it works.
+  * Update TODO: Fix DMCC and OWC URLs
+  * Update TODO: Add notes
+  * Update README.md: Remove comment newlines
+  * Merge pull request #68 from johnsonjh/deepsource-transform-de75b352
+  * Merge pull request #67 from johnsonjh/deepsource-transform-769b82fe
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * Update README.md: Remove redundant header emphasis
+  * Update README.md: Process with markdown-toc
+  * Update README.md: Small reorganization
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * Update README.md: Process with markdown-toc
+  * Update README.md: Prepare for markdown-toc
+  * Rename: docs-data -> docs; builddocs.bat to Attic
+  * Attic: refactoring.sh -> Attic/refactoring.sh
+  * Merge pull request #57 from johnsonjh/restyled/pull-56
+  * Update GNUmakefile: C++-11 compilation mode w/g++
+  * Update duma.c: Adjust include ordering
+  * Merge pull request #59 from johnsonjh/deepsource-transform-80543723
+  * Merge pull request #61 from johnsonjh/deepsource-transform-6eb76d71
+  * Merge pull request #62 from johnsonjh/restyled/deepsource-transform-6eb76d71
+  * Merge pull request #60 from johnsonjh/restyled/deepsource-transform-80543723
+  * Restyled by prettier-markdown
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * Rebase and merge - Restyling by prettier-markdown
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * Restyled by prettier-markdown
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * Update README.md: Incorporate #52 and #53.
+  * Update README.md: Incorporate #52 and #53.
+  * Restyled by whitespace
+  * Restyled by shfmt
+  * Restyled by shellharden
+  * Restyled by clang-format
+  * Restyled by astyle
+  * Restyled by prettier-markdown
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * added cmake targets install and uninstall
+  * initial cmake support +fixes
+  * Update README.md: Fixup conversion, correct typos
+  * Rename: Attic/README.txt -> Attic/README_orig.txt
+  * Update GNUmakefile: Install Markdown-ified doc
+  * Merge pull request #49 from johnsonjh/restyled/pull-48
+  * Restyled by prettier-markdown
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * Update CHANGELOG
+  * README.md: Commit first attempt at (mostlt automated) Markdown-ification.
+  * Restyled by clang-format
+  * Restyled by astyle
+  * fix compilation warnings with gcc-9.3; changes in createconf on addr
+  * Update README.md
+  * Stow old comparions to make way for overhaul.
+  * CHANGELOG: Document Attic
+  * Merge pull request #46 from johnsonjh/deepsource-transform-c20ce809
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * Update 42Crunch/api-security-audit-action action to v2
+  * Update codacy/codacy-analysis-cli-action action to v3.0.3
+  * Update codacy/codacy-analysis-cli-action action to v3.0.2
+  * Update codacy/codacy-analysis-cli-action action to v3.0.1
+  * Create Attic: Store detours and kduma for now.
+  * Merge pull request #37 from johnsonjh/renovate/codacy-codacy-analysis-cli-action-3.x
+  * Update codacy/codacy-analysis-cli-action action to v3
+  * Merge pull request #36 from jhjv/patch-1
+  * Update README.md: Fix code size badge
+  * Merge pull request #35 from johnsonjh/renovate/actions-setup-java-2.x
+  * Update actions/setup-java action to v2
+  * Update GNUmakefile: Remove "a.out" during clean.
+  * Update README.md: SourceHut: Link to project page
+  * Update README.md: Add links to GitLab mirror.
+  * Add .gitattributes to configure GitHub Linguist.
+  * Merge pull request #34 from johnsonjh/deepsource-transform-3b52b849
+  * Format code with black, gofmt, yapf, autopep8, isort, standardrb, standardjs, prettier and rubocop
+  * README.md: Remove duplicated Codacy badging.
+  * Merge pull request #33 from johnsonjh/renovate/codacy-codacy-analysis-cli-action-2.x
+  * Update codacy/codacy-analysis-cli-action action to v2.0.1
+  * Merge pull request #32 from johnsonjh/renovate/codacy-codacy-analysis-cli-action-2.x
+  * Normalize some code styling with clang-format.
+  * scripts: Reformat
+  * Update codacy/codacy-analysis-cli-action action to v2
+  * README: Correct link title
+  * Update contact info and documentation.
+  * Switch to git-changelog generated CHANGELOG (manually triggered for now)
+  (2021-05-30, JJ)
   * Stow README.txt, add initial Markdown conversion.
   * Create Attic, store Detours and kduma for now.
   (2021-05-28, JJ)
