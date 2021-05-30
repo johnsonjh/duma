@@ -67,5 +67,5 @@ get_utc_date()
 BUILD_VER=$(get_git_info)
 BUILD_UTC=$(get_utc_date)
 
-printf '%s\n' "// Auto-generated git information."
-printf '%s\n' "#define GIT_SOURCE_VERSION \"${BUILD_VER}${BUILD_UTC} (\""
+printf '%s\n' "// Auto-generated git information." >verinfo.h
+printf '%s\n' "#define GIT_SOURCE_VERSION \"${BUILD_VER}${BUILD_UTC} (\"" >>verinfo.h

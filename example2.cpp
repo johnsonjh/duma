@@ -11,4 +11,7 @@ int main()
   for(i=0; i<10; ++i)
 	pi[i] = i;
   return 0;
+  // pi is not freed
+  // that should produce a memory leak
+  // without information on allocation source without including duma.h
 }

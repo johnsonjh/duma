@@ -1,3 +1,12 @@
+
+# duma specific
+
+duma_config.h
+verinfo.h
+build
+build_gcc*
+
+
 # Created by https://www.toptal.com/developers/gitignore/api/vim,visualstudiocode,linux,macos,cvs,git,c,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=vim,visualstudiocode,linux,macos,cvs,git,c,c++
 

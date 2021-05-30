@@ -32,6 +32,8 @@
 #error compile with a C++ compiler, or define DUMA_NO_CPP_SUPPORT to remove this error
 #endif
 
+#include <new>
+
 #include "duma.h"
 
 #if __cplusplus < 201103L

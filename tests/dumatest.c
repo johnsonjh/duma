@@ -25,6 +25,11 @@
  * Make sure all of the various functions of DUMA work correctly.
  */
 
+
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 1
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

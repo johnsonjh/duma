@@ -74,7 +74,6 @@
 
 #ifndef __CYGWIN__
 /* already defined in cygwin headers */
-typedef LPVOID caddr_t;
 typedef unsigned u_int;
 #endif
 
@@ -858,7 +857,11 @@ static void duma_getenvvars(DUMA_TLSVARS_T *duma_tls) {
    * meaning that this option is disabled.
    */
   if ((string = DUMA_GETENV("DUMA_OUTPUT_STACKTRACE_MAPFILE")) != 0)
-    DUMA_OUTPUT_STACKTRACE_MAPFILE = strdup(string);
+  #ifndef DUMA_NO_LEAKDETECTION
+	DUMA_OUTPUT_STACKTRACE_MAPFILE = _duma_strdup(string, __FILE__, __LINE__);
+  #else
+	DUMA_OUTPUT_STACKTRACE_MAPFILE = _duma_strdup(string);
+  #endif
 
   /*
    * DUMA_OUTPUT_DEBUG is a global variable used to control if DUMA
@@ -890,7 +893,11 @@ static void duma_getenvvars(DUMA_TLSVARS_T *duma_tls) {
    * meaning that output is not by default sent to a file.
    */
   if ((string = DUMA_GETENV("DUMA_OUTPUT_FILE")) != 0)
-    DUMA_OUTPUT_FILE = strdup(string);
+  #ifndef DUMA_NO_LEAKDETECTION
+	DUMA_OUTPUT_FILE = _duma_strdup(string, __FILE__, __LINE__);
+  #else
+	DUMA_OUTPUT_FILE = _duma_strdup(string);
+  #endif
 
   /* Get Value for DUMA_SKIPCOUNT_INIT */
   if ((string = DUMA_GETENV("DUMA_SKIPCOUNT_INIT")) != 0)
@@ -1761,7 +1768,8 @@ void _duma_deallocate(void *address, int protectAllocList,
       DUMA_Abort("Free mismatch: allocator '%s' used  at %s(%i)\n  but  "
                  "deallocator '%s' called at %s(%i)!",
                  _duma_allocDesc[slot->allocator].name, slot->filename,
-                 slot->lineno, _duma_allocDesc[allocator].name, filename,
+                 slot->lineno, _duma_allocDesc[allocator].name,
+                 filename ? filename : "UNKNOWN",
                  lineno);
     else if (DUMAFS_DEALLOCATION == slot->fileSource)
       /*                                    1                           2 3  4

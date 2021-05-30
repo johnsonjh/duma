@@ -10,5 +10,5 @@ int main()
 	pi[i] = i;
   delete []pi;
   return 0;
-
+  // should run fine
 }
