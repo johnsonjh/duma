@@ -570,7 +570,7 @@ operator delete[](ptr, file,line);  // vector delete
 **_NOTE_**: _All source repositories are mirrors with identical contents._
 
 - [GitHub](https://github.com/johnsonjh/duma)
-- [GitLab](https://gitlab.com/johnsonjh/duma)
+<!-- - [GitLab](https://gitlab.com/johnsonjh/duma) -->
 - [SourceHut](https://sr.ht/~trn/duma)
 - [NotABug](https://notabug.org/trn/duma)
 
