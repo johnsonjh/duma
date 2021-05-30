@@ -3,8 +3,6 @@ TODO items (possibly obsolete, listed by general priority):
 
 -Move TODO items to issue tracker
 
--Linux symbol support
-
 -prevent inclusion of duma_sem.h from outside duma headers
 
 -memccpy(), bcopy() + test for all overloaded string functions
@@ -16,31 +14,3 @@ TODO items (possibly obsolete, listed by general priority):
 
 -store __func__ additionally to __FILE__ and __LINE__
  depends on storing full filename (not just pointer) in slot
-
--config for
- long int sysconf (int parameter)  	Function
-  This function is used to inquire about runtime system parameters. The 
-  parameter argument should be one of the _SC_ symbols listed below.
-  The normal return value from sysconf is the value you requested. A value
-  of -1 is returned both if the implementation does not impose a limit, and
-  in case of an error.
-  The following errno error conditions are defined for this function:
-  EINVAL           The value of the parameter is invalid.
-  enums:
-    _SC_PAGESIZE     Inquire about the virtual memory page size of the machine. 
-              getpagesize returns the same value (see Query Memory Parameters).
-    _SC_PHYS_PAGES   Inquire about the number of physical pages in the system.
-    _SC_AVPHYS_PAGES Inquire about the number of available physical pages in
-              the system.
-
--config for The ulimit Function:
-  The ulimit function can be used to get and set certain process limits.
-    #include <ulimit.h>
-    long ulimit (int cmd, /* long newlimit */...);
-    Returns: the value of the requested limit if OK, -1 on error
-  The ulimit function allows a process to get or set some of its limits. The 
-  operation performed is determined by the value of the cmd argument, which 
-  must be one of the following four values:
-    UL_GMEMLIM This returns the maximum amount of memory the process may use.
-  On successful completion, the requested limit is returned. Otherwise, -1 is 
-  returned and the limit is not changed.
