@@ -55,8 +55,8 @@ extern "C" void StackTraceCleanup()
  *
  * Must call <StackTraceCleanup> to free used memory.
  *
- * TODO: Support for multiple map files in func def.
- *       already supported by core code.
+ * GitHub #81: Support for multiple map files in func def.
+ *             already supported by core code.
  *
  * Parameters:
  *
