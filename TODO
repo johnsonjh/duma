@@ -43,12 +43,6 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
 -test duma on several freely available/downloadable compilers:
   1- OpenWatcom C/C++ (http://open-watcom.github.io/)
   2- Digital MARS C/C++ (https://digitalmars.com)
-  4- Borland C++ Builder from
-     http://www.borland.com/products/downloads/download_cbuilder.html
-  5- Macintosh Programmer's Workshop from
-     http://developer.apple.com/tools/mpw-tools/
-  6- TenDRA C/C++ compiler from http://www.tendra.org/
-     or http://www.cse.unsw.edu.au/~patrykz/TenDRA/
 
 -test cmake, dmake, pmake, smake
  maybe no more necessary when build is done via autoconf/automake
