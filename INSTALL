@@ -1,6 +1,46 @@
 This documents describes if and how the library is installed on your system.
 
-I. Linux/Unix environments (including Cygwin and MinGW):
+I. environments with cmake:
+
+  clone/checkout sources with git. cd into the sources.
+  then execute create and change to a build directory:
+      mkdir build
+      cd build
+
+  run cmake:
+      cmake ../
+  optionally, you might add additional options like here:
+      cmake -DCMAKE_BUILD_TYPE=Debug ../
+  or
+      cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain_gcc-8.cmake ../
+  or following for using Visual Studio
+  (see https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html )
+      cmake -G "Visual Studio 16 2019" -A x64 ../
+
+  with a tool like 'ccmake' or 'cmake-gui' you can change configuration
+  exploring the available options:
+      ccmake .
+      cmake-gui .
+
+  when finished, then build the library, tests and examples
+      cmake --build .
+
+  for running tests, execute:
+      ctest
+
+   for installation (sudo depending on CMAKE_INSTALL_PREFIX):
+      [sudo] cmake --build . --target install
+   with 'make' as cmake target you can simplify to:
+      [sudo] make install
+
+   for uninstall:
+      [sudo] cmake --build . --target uninstall
+
+
+  the examples should be run within a debugger/IDE.
+
+
+II. Linux/Unix environments (including Cygwin and MinGW):
 
   Configure the options by editing the Makefile.
     Read carefully the description of options at top of the Makefile.
@@ -29,14 +69,14 @@ I. Linux/Unix environments (including Cygwin and MinGW):
     The (outdated) manual page should be installed as well.
 
 
-II. Windows 2000/XP, Visual Studio Environments:
+III. Windows 2000/XP, Visual Studio Environments:
 
   Compile and run 'createconf', that generates the file duma_config.h.
   Compile 'dumalib' and set the directories 'INCLUDE' and 'LIBS'
   in your environment or project.
 
 
-III. Solaris Environment:
+IV. Solaris Environment:
 
   Add the location(s) of the GNU Toolchain (gmake, gcc, ar, ..) to the PATH:
   On my Solaris 10 installation with the Companion CD it is:
@@ -47,7 +87,7 @@ III. Solaris Environment:
   look at the solaris section in DUMA's Makefile.
 
 
-IV. FreeBSD Environment:
+V. FreeBSD Environment:
 
   At least on my FreeBSD-6.2 installation i have to set the shell environment
   variable with 'export DUMA_DISABLE_BANNER=1' before running any programs
@@ -55,7 +95,7 @@ IV. FreeBSD Environment:
   the pthreads library.
 
 
-V. NetBSD Environment:
+VI. NetBSD Environment:
 
   At least on my NetBSD-3.1 (HOSTTYPE=i386; OSTYPE=netbsdelf) installation
   i always get exactly one memory leak. I've not tested to install.
@@ -70,3 +110,4 @@ updated 11 August 2007
 updated 18 August 2007
 updated 28 August 2007
 updated 17 March 2009
+updated 30 May 2021

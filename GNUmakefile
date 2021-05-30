@@ -1,5 +1,5 @@
 # DUMA configuration:
-# 
+#
 # add "-DDUMA_NO_GLOBAL_MALLOC_FREE" (without quotes)
 #   for not defining malloc/free in global namespace
 #
@@ -214,7 +214,7 @@ ifeq ($(OS), freebsd)
   EXEPOSTFIX=
 endif
 
-ifeq ($(OS), netbsd) 
+ifeq ($(OS), netbsd)
   $(info using settings for OS=netbsd)
   BSWITCH=320
   CURPATH=./
@@ -537,10 +537,10 @@ libduma.a: duma_config.h verinfo.h $(OBJECTS)
 	$(RANLIB) libduma.a
 
 verinfo.h: FORCE
-	- $(CURPATH)make_git_source_version.sh > $(CURPATH)verinfo.h
+	- $(CURPATH)make_git_source_version.sh
 	$(shell touch verinfo.h || true)
 
-duma_config.h: 
+duma_config.h:
 	$(MAKE) reconfig
 
 reconfig: createconf$(EXEPOSTFIX) createconf.o createconf.c

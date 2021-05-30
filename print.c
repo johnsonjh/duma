@@ -25,6 +25,11 @@
  * contains aborting, printing functions with minor system/platform dependencies
  */
 
+/* define for "kill(2)" */
+#ifndef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200809L
+#endif
+
 #include <signal.h>
 #include <stdarg.h>
 #include <stdlib.h>

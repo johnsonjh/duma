@@ -1,16 +1,14 @@
-#include <duma.h>
-#include <stdlib.h>
-
 int main() {
   int *pi;
   int i;
 #ifdef DUMA_EXPLICIT_INIT
   duma_init();
 #endif
-  pi = (int *)malloc(10 * sizeof(int));
+  pi = new int[10];
   for (i = 0; i < 10; ++i)
     pi[i] = i;
   delete pi; // this line should produce error, cause pi was allocated with
-             // malloc()
+             // new[]()
+  // unable to report allocation source - without including dumapp.h
   return 0;
 }
