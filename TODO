@@ -93,11 +93,6 @@ PRI LOW
 ====================
 
 
--get duma running/compiling on all platforms which are supported on
- sourceforge.net's compile farms. see
- http://sourceforge.net/docman/display_doc.php?docid=762&group_id=1
- --> outdated: sourceforge's compile farm is no more available
-
 -use configuration file, which is read directly with system calls as
  replacement for the environment switches which use calls to the C library.
  this is to avoid hangs in the C library's getenv() function.
