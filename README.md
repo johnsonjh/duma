@@ -46,12 +46,14 @@
 - [Comparison with other tools](#comparison-with-other-tools)
 - [Availability](#availability)
   - [Releases](#releases)
-    - [Git Repositories](#git-repositories)
+  - [Git Repositories](#git-repositories)
 - [Issue Tracking](#issue-tracking)
 - [Security Policy](#security-policy)
 - [License](#license)
 
-## <!-- tocstop -->
+<!-- tocstop -->
+
+---
 
 ### Description
 
@@ -138,7 +140,7 @@ important that you know how to use them.
   If your program requires that allocations be aligned to 64-bit boundaries
   you'll have to set this value to 8. This is the case when compiling with the
   `-mips2` flag on _MIPS_-based systems such as those from _SGI_. For some
-  architectures the default is defined to even more - x86_64 uses alignment to
+  architectures the default is defined to even more - x86\_64 uses alignment to
   16 bytes by default.
 
   **DUMA** internally uses a smaller value if the requested memory size is
@@ -563,7 +565,7 @@ operator delete[](ptr, file,line);  // vector delete
 
 - [GitHub Releases](https://github.com/johnsonjh/duma/releases/)
 
-##### Git Repositories
+#### Git Repositories
 
 **_NOTE_**: _All source repositories are mirrors with identical contents._
 
