@@ -58,9 +58,6 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
 -store __func__ additionally to __FILE__ and __LINE__
  depends on storing full filename (not just pointer) in slot
 
--modification of manual page duma.3 ans INSTALL
- sync to README.md - GitHub Issue #64 and #65
-
 -config for
  long int sysconf (int parameter)  	Function
   This function is used to inquire about runtime system parameters. The 
@@ -88,14 +85,3 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
     UL_GMEMLIM This returns the maximum amount of memory the process may use.
   On successful completion, the requested limit is returned. Otherwise, -1 is 
   returned and the limit is not changed.
-
-
-====================
-PRI LOW
-====================
-
--document 'J. "MUFTI" Scheurich' way of compiling/using DUMA's memory
- replacement functions only from own source files. Thus usage of DUMA
- for several system libraries is avoided.
- --> outdated with preprocessor option DUMA_NO_GLOBAL_MALLOC_FREE
-   and compiler options "-include" (gcc) and "/FI" (MS Visual C++)
