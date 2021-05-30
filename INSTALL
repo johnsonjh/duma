@@ -28,6 +28,15 @@ I. environments with cmake:
   for running tests, execute:
       ctest
 
+   for installation (sudo depending on CMAKE_INSTALL_PREFIX):
+      [sudo] cmake --build . --target install
+   with 'make' as cmake target you can simplify to:
+      [sudo] make install
+
+   for uninstall:
+      [sudo] cmake --build . --target uninstall
+
+
   the examples should be run within a debugger/IDE.
 
 

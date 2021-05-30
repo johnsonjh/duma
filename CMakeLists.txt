@@ -128,16 +128,19 @@ add_custom_command( OUTPUT "${CMAKE_SOURCE_DIR}/verinfo.h"
 )
 
 
+set( DUMA_PUB_HDRS
+  noduma.h
+  duma.h
+  dumapp.h
+  "${CMAKE_SOURCE_DIR}/duma_config.h"
+  duma_sem.h  # not for public use .. but required from dumapp.h
+)
 
 set( DUMA_HDRS
+  ${DUMA_PUB_HDRS}
   # createconf.h  # required but we can't put dependency here
-  "${CMAKE_SOURCE_DIR}/duma_config.h"
   verinfo.h
-  duma.h
   duma_hlp.h
-  dumapp.h
-  duma_sem.h
-  noduma.h
   paging.h
   print.h
 )
@@ -208,6 +211,27 @@ else()
   target_link_libraries( DUMA_SHARED PUBLIC pthread )
 endif()
 
+
+# produce same filenames - as GNUmakefile
+set_target_properties(DUMA_STATIC PROPERTIES OUTPUT_NAME "duma")
+set_target_properties(DUMA_SHARED PROPERTIES OUTPUT_NAME "duma")
+set_target_properties(DUMA_SHARED PROPERTIES VERSION 0.0.0 SOVERSION 0)
+
+
+# todo: install readme, man file, ..?
+install( TARGETS DUMA_STATIC DUMA_SHARED  DESTINATION lib)
+install( FILES  ${DUMA_PUB_HDRS}  DESTINATION include)
+install( FILES  duma.sh  DESTINATION bin
+  PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+              GROUP_EXECUTE GROUP_READ
+              WORLD_EXECUTE WORLD_READ
+)
+
+add_custom_target(uninstall
+    "${CMAKE_COMMAND}" -P "${CMAKE_SOURCE_DIR}/uninstall.cmake"
+)
+
+
 enable_testing()
 
 if (BUILD_TESTS)
@@ -277,6 +301,19 @@ endif()
 
 
 if (BUILD_EXAMPLES)
+
+  # no linked against duma
+  add_executable(example1_pure example1.cpp)
+  add_executable(example2_pure example2.cpp)
+  # add_executable(example3_pure example3.cpp)  # uses duma.h
+  # add_executable(example4_pure example4.cpp)  # uses duma.h
+  # add_executable(example5_pure example5.cpp)  # uses dumapp.h
+  add_executable(example6_pure example6.cpp)
+  add_executable(example7_pure example7.cpp)
+  # add_executable(example8_pure example8.cpp)  # uses dumapp.h
+
+
+  # linked statically against duma
   add_executable(example1_static example1.cpp)
   target_link_libraries(example1_static DUMA_STATIC)
 
@@ -302,7 +339,7 @@ if (BUILD_EXAMPLES)
   target_link_libraries(example8_static DUMA_STATIC)
 
 
-  # shared variants
+  # linked against shared duma-library (.so)
 
   add_executable(example1_shared example1.cpp)
   target_link_libraries(example1_shared DUMA_SHARED)
