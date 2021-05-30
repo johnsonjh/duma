@@ -2,5 +2,3 @@ TODO items (possibly obsolete, listed by general priority):
 ===========================================================
 
 -Move TODO items to issue tracker
-
--prevent inclusion of duma_sem.h from outside duma headers
