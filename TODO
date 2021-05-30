@@ -56,8 +56,8 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
 -store __func__ additionally to __FILE__ and __LINE__
  depends on storing full filename (not just pointer) in slot
 
--modification of manual page duma.3
- sync to README.md - GitHub Issue #64
+-modification of manual page duma.3 ans INSTALL
+ sync to README.md - GitHub Issue #64 and #65
 
 -check documents for line lengths of 80 coloumns
 
