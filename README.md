@@ -178,7 +178,7 @@ important that you know how to use them.
   of pthreads or other libaries and produce a hang. To get **DUMA** work even in
   these situations you can control (with this environment variable) after how
   many allocations the full internal initialization of **DUMA** is done. Default
-  is 0.
+  is `0`.
 
 * `DUMA_REPORT_ALL_LEAKS` - **DUMA** usually reports only memory leaks where the
   source filename with line number of the allocating instruction is known.
@@ -219,7 +219,7 @@ important that you know how to use them.
   _no-mans-land_ every *value*th allocation or deallocation. Set this variable
   to 1, to let **DUMA** check at each allocation and deallocation.
 
-  Per default the value 0 is used, which means to check only at deallocation.
+  Per default the value `0` is used, which means to check only at deallocation.
 
 * `DUMA_ALLOW_MALLOC_0` - Memory allocation of size zero is _ANSI_ conforming,
   but, often this is the result of a software bug. For this reason **DUMA** may
