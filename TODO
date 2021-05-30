@@ -17,9 +17,6 @@ TODO items (possibly obsolete, listed by general priority):
 
 -Interface to cause verification walk
 
--integrate modifications of
-http://tutorial.gsse.at/uploads/media/duma_iue.tgz
-
 -enhance detection of DUMA_MIN_ALIGNMENT in createconf
   use defines specifying the target architecture
   use compiler attributes which specify the necessary alignment
