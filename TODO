@@ -38,20 +38,6 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
  check if pthread available before using it in Makefile
  depends on autoconf/automake
 
--add feature to enable floating point exceptions
- by default C programs work with quiet NANs or similar values after an error
- this feature shall allow detecting of floating point division by zero, overflow, ..
-
--test duma on several freely available/downloadable compilers:
-  1- OpenWatcom C/C++ (http://open-watcom.github.io/)
-  2- Digital MARS C/C++ (https://digitalmars.com)
-
--find solution for errors, when duma used in combination with STL (and MFC)
- under MS Visual C++ on Windows
-
--make new variants behave fully C++ conform
- at least new_handler() gets called now
-
 -implement a list structure over pages rather than an array for all slots.
   this would save copying all slot entries, when list grows
 
