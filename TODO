@@ -44,9 +44,6 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
   1- OpenWatcom C/C++ (http://open-watcom.github.io/)
   2- Digital MARS C/C++ (https://digitalmars.com)
 
--test cmake, dmake, pmake, smake
- maybe no more necessary when build is done via autoconf/automake
-
 -find solution for errors, when duma used in combination with STL (and MFC)
  under MS Visual C++ on Windows
 
