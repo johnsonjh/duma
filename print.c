@@ -100,24 +100,24 @@ static int DUMA_vsprintf(char *buffer, const char *pattern, va_list args);
  * internal function to print a DUMA_ADDR into a buffer
  */
 static int sprintAddr(char *dest, DUMA_ADDR value, DUMA_ADDR base) {
-    char buffer[NUMBER_BUFFER_SIZE + 1];
-    char *s = &buffer[NUMBER_BUFFER_SIZE];
-    int size;
-    DUMA_ADDR digit;
+  char buffer[NUMBER_BUFFER_SIZE + 1];
+  char *s = &buffer[NUMBER_BUFFER_SIZE];
+  int size;
+  DUMA_ADDR digit;
 
-    do {
-        if (--s == buffer)
-            DUMA_Abort("Internal error printing number.");
+  do {
+    if (--s == buffer)
+      DUMA_Abort("Internal error printing number.");
 
-        digit = value % base;
-        *s = (char)((digit < 10) ? ('0' + digit) : ('a' + digit - 10));
+    digit = value % base;
+    *s = (char)((digit < 10) ? ('0' + digit) : ('a' + digit - 10));
 
-    } while ((value /= base) > 0);
+  } while ((value /= base) > 0);
 
-    size = &buffer[NUMBER_BUFFER_SIZE] - s;
-    buffer[NUMBER_BUFFER_SIZE] = '\0';
-    strcpy(dest, s);
-    return size;
+  size = &buffer[NUMBER_BUFFER_SIZE] - s;
+  buffer[NUMBER_BUFFER_SIZE] = '\0';
+  strcpy(dest, s);
+  return size;
 }
 
 /* Function: sprintLong
@@ -125,24 +125,24 @@ static int sprintAddr(char *dest, DUMA_ADDR value, DUMA_ADDR base) {
  * internal function to print a int into a buffer
  */
 static int sprintLong(char *dest, long value, long base) {
-    char buffer[NUMBER_BUFFER_SIZE + 1];
-    char *s = &buffer[NUMBER_BUFFER_SIZE];
-    long size;
-    long digit;
+  char buffer[NUMBER_BUFFER_SIZE + 1];
+  char *s = &buffer[NUMBER_BUFFER_SIZE];
+  long size;
+  long digit;
 
-    do {
-        if (--s == buffer)
-            DUMA_Abort("Internal error printing number.");
+  do {
+    if (--s == buffer)
+      DUMA_Abort("Internal error printing number.");
 
-        digit = value % base;
-        *s = (char)((digit < 10) ? ('0' + digit) : ('a' + digit - 10));
+    digit = value % base;
+    *s = (char)((digit < 10) ? ('0' + digit) : ('a' + digit - 10));
 
-    } while ((value /= base) > 0);
+  } while ((value /= base) > 0);
 
-    size = &buffer[NUMBER_BUFFER_SIZE] - s;
-    buffer[NUMBER_BUFFER_SIZE] = '\0';
-    strcpy(dest, s);
-    return size;
+  size = &buffer[NUMBER_BUFFER_SIZE] - s;
+  buffer[NUMBER_BUFFER_SIZE] = '\0';
+  strcpy(dest, s);
+  return size;
 }
 
 /* Function: DUMA_vsprintf
@@ -160,87 +160,87 @@ static int sprintLong(char *dest, long value, long base) {
  *   %c = char
  */
 static int DUMA_vsprintf(char *buffer, const char *pattern, va_list args) {
-    char c;
-    static const char bad_pattern[] =
-        "\nDUMA: Bad pattern specifier %%%c in DUMA_Print().\n";
-    const char *s = pattern;
-    int len = 0;
-    DUMA_ADDR n;
+  char c;
+  static const char bad_pattern[] =
+      "\nDUMA: Bad pattern specifier %%%c in DUMA_Print().\n";
+  const char *s = pattern;
+  int len = 0;
+  DUMA_ADDR n;
+
+  c = *s++;
+  while (c) {
+    if (c == '%') {
+      c = *s++;
+      switch (c) {
+      case '%':
+        buffer[len++] = c;
+        break;
+      case 'a': /* DUMA_ADDR */
+      case 'x': /* DUMA_ADDR */
+        /*
+         * Print an address passed as a void pointer.
+         * The type of DUMA_ADDR must be set so that
+         * it is large enough to contain all of the
+         * bits of a void pointer.
+         */
+        n = va_arg(args, DUMA_ADDR);
+        len += sprintAddr(&buffer[len], n, 16);
+        break;
+      case 'd': /* DUMA_SIZE */
+        n = va_arg(args, DUMA_SIZE);
+        len += sprintAddr(&buffer[len], n, 10);
+        break;
+      case 'i': /* int */
+      {
+        long n = (long)va_arg(args, int);
+        if (n < 0) {
+          buffer[len++] = '-';
+          n = -n;
+        }
+        len += sprintLong(&buffer[len], n, 10);
+        break;
+      }
+      case 'l': /* long */
+      {
+        long n = va_arg(args, long);
+        if (n < 0) {
+          buffer[len++] = '-';
+          n = -n;
+        }
+        len += sprintLong(&buffer[len], n, 10);
+        break;
+      }
+      case 's': /* string */
+      {
+        const char *string;
+        size_t length;
+
+        string = va_arg(args, char *);
+        if (string) {
+          length = strlen(string);
+          strcpy(&buffer[len], string);
+        } else {
+          length = 4; /* = strlen("NULL") */
+          strcpy(&buffer[len], "NULL");
+        }
+        len += length;
+        break;
+      }
+      case 'c': /* char */
+        /* characters are passed as int ! */
+        buffer[len++] = (char)va_arg(args, int);
+        break;
+      default:
+        DUMA_Print(bad_pattern, c);
+      }
+    } else /* if ( c != '%' ) */
+      buffer[len++] = c;
 
     c = *s++;
-    while (c) {
-        if (c == '%') {
-            c = *s++;
-            switch (c) {
-            case '%':
-                buffer[len++] = c;
-                break;
-            case 'a': /* DUMA_ADDR */
-            case 'x': /* DUMA_ADDR */
-                /*
-                 * Print an address passed as a void pointer.
-                 * The type of DUMA_ADDR must be set so that
-                 * it is large enough to contain all of the
-                 * bits of a void pointer.
-                 */
-                n = va_arg(args, DUMA_ADDR);
-                len += sprintAddr(&buffer[len], n, 16);
-                break;
-            case 'd': /* DUMA_SIZE */
-                n = va_arg(args, DUMA_SIZE);
-                len += sprintAddr(&buffer[len], n, 10);
-                break;
-            case 'i': /* int */
-            {
-                long n = (long)va_arg(args, int);
-                if (n < 0) {
-                    buffer[len++] = '-';
-                    n = -n;
-                }
-                len += sprintLong(&buffer[len], n, 10);
-                break;
-            }
-            case 'l': /* long */
-            {
-                long n = va_arg(args, long);
-                if (n < 0) {
-                    buffer[len++] = '-';
-                    n = -n;
-                }
-                len += sprintLong(&buffer[len], n, 10);
-                break;
-            }
-            case 's': /* string */
-            {
-                const char *string;
-                size_t length;
+  } /* end while (c) */
 
-                string = va_arg(args, char *);
-                if (string) {
-                    length = strlen(string);
-                    strcpy(&buffer[len], string);
-                } else {
-                    length = 4; /* = strlen("NULL") */
-                    strcpy(&buffer[len], "NULL");
-                }
-                len += length;
-                break;
-            }
-            case 'c': /* char */
-                /* characters are passed as int ! */
-                buffer[len++] = (char)va_arg(args, int);
-                break;
-            default:
-                DUMA_Print(bad_pattern, c);
-            }
-        } else /* if ( c != '%' ) */
-            buffer[len++] = c;
-
-        c = *s++;
-    } /* end while (c) */
-
-    buffer[len] = '\0';
-    return len;
+  buffer[len] = '\0';
+  return len;
 }
 
 /* Function: DUMA_Abort
@@ -250,31 +250,31 @@ static int DUMA_vsprintf(char *buffer, const char *pattern, va_list args) {
  * void DUMA_Abort(const char * pattern, ...)
  */
 void DUMA_Abort(const char *pattern, ...) {
-    char buffer[STRING_BUFFER_SIZE];
-    int lena;
-    va_list args;
+  char buffer[STRING_BUFFER_SIZE];
+  int lena;
+  va_list args;
 
-    va_start(args, pattern);
-    strcpy(buffer, "\nDUMA Aborting: ");
-    lena = strlen(buffer);
-    DUMA_vsprintf(&buffer[lena], pattern, args);
-    strcat(buffer, "\n");
-    DUMA_Print("%s", buffer);
-    va_end(args);
+  va_start(args, pattern);
+  strcpy(buffer, "\nDUMA Aborting: ");
+  lena = strlen(buffer);
+  DUMA_vsprintf(&buffer[lena], pattern, args);
+  strcat(buffer, "\n");
+  DUMA_Print("%s", buffer);
+  va_end(args);
 
 #ifndef WIN32
-    /*
-     * I use kill(getpid(), SIGILL) instead of abort() because some
-     * mis-guided implementations of abort() flush stdio, which can
-     * cause malloc() or free() to be called.
-     */
-    kill(getpid(), SIGILL);
+  /*
+   * I use kill(getpid(), SIGILL) instead of abort() because some
+   * mis-guided implementations of abort() flush stdio, which can
+   * cause malloc() or free() to be called.
+   */
+  kill(getpid(), SIGILL);
 #else
-    /* Windows doesn't have a kill() */
-    abort();
+  /* Windows doesn't have a kill() */
+  abort();
 #endif
-    /* Just in case something handles SIGILL and returns, exit here. */
-    _exit(-1);
+  /* Just in case something handles SIGILL and returns, exit here. */
+  _exit(-1);
 }
 
 /* Function: DUMA_Print
@@ -284,40 +284,40 @@ void DUMA_Abort(const char *pattern, ...) {
  * void DUMA_Print(const char * pattern, ...)
  */
 void DUMA_Print(const char *pattern, ...) {
-    char buffer[STRING_BUFFER_SIZE];
-    int len, fd;
-    va_list args;
+  char buffer[STRING_BUFFER_SIZE];
+  int len, fd;
+  va_list args;
 
-    va_start(args, pattern);
-    len = DUMA_vsprintf(buffer, pattern, args);
-    va_end(args);
+  va_start(args, pattern);
+  len = DUMA_vsprintf(buffer, pattern, args);
+  va_end(args);
 
 #ifdef WIN32
-    if (DUMA_OUTPUT_DEBUG)
-        OutputDebugString(buffer);
+  if (DUMA_OUTPUT_DEBUG)
+    OutputDebugString(buffer);
 #endif
 
-    if (DUMA_OUTPUT_STDOUT)
-        write(1, buffer, len);
+  if (DUMA_OUTPUT_STDOUT)
+    write(1, buffer, len);
 
-    if (DUMA_OUTPUT_STDERR)
-        write(2, buffer, len);
+  if (DUMA_OUTPUT_STDERR)
+    write(2, buffer, len);
 
-    if (DUMA_OUTPUT_FILE != NULL) {
+  if (DUMA_OUTPUT_FILE != NULL) {
 #if defined(WIN32) && !defined(__CYGWIN__)
-        fd = _open(DUMA_OUTPUT_FILE, _O_APPEND | _O_CREAT | _O_WRONLY, 0600);
+    fd = _open(DUMA_OUTPUT_FILE, _O_APPEND | _O_CREAT | _O_WRONLY, 0600);
 #else
-        fd = open(DUMA_OUTPUT_FILE, O_APPEND | O_CREAT | O_WRONLY, 0600);
+    fd = open(DUMA_OUTPUT_FILE, O_APPEND | O_CREAT | O_WRONLY, 0600);
 #endif
-        if (fd >= 0) {
-            write(fd, buffer, len);
+    if (fd >= 0) {
+      write(fd, buffer, len);
 #if defined(WIN32) && !defined(__CYGWIN__)
-            _close(fd);
+      _close(fd);
 #else
-            close(fd);
+      close(fd);
 #endif
-        }
     }
+  }
 }
 
 /* Function: DUMA_Exit
@@ -327,48 +327,48 @@ void DUMA_Print(const char *pattern, ...) {
  * void DUMA_Exit(const char * pattern, ...)
  */
 void DUMA_Exit(const char *pattern, ...) {
-    char buffer[STRING_BUFFER_SIZE];
-    int lena;
-    va_list args;
+  char buffer[STRING_BUFFER_SIZE];
+  int lena;
+  va_list args;
 
-    va_start(args, pattern);
-    strcpy(buffer, "\nDUMA Exiting: ");
-    lena = strlen(buffer);
-    DUMA_vsprintf(&buffer[lena], pattern, args);
-    strcat(buffer, "\n");
-    DUMA_Print("%s", buffer);
+  va_start(args, pattern);
+  strcpy(buffer, "\nDUMA Exiting: ");
+  lena = strlen(buffer);
+  DUMA_vsprintf(&buffer[lena], pattern, args);
+  strcat(buffer, "\n");
+  DUMA_Print("%s", buffer);
 #ifdef WIN32
-    if (DUMA_OUTPUT_DEBUG)
-        OutputDebugString(buffer);
+  if (DUMA_OUTPUT_DEBUG)
+    OutputDebugString(buffer);
 #endif
-    va_end(args);
+  va_end(args);
 
-    /*
-     * I use _exit() because the regular exit() flushes stdio,
-     * which may cause malloc() or free() to be called.
-     */
-    _exit(-1);
+  /*
+   * I use _exit() because the regular exit() flushes stdio,
+   * which may cause malloc() or free() to be called.
+   */
+  _exit(-1);
 }
 
 /* Function: DUMA_sprintf */
 void DUMA_sprintf(char *buffer, const char *pattern, ...) {
-    int len;
-    va_list args;
+  int len;
+  va_list args;
 
-    va_start(args, pattern);
-    len = DUMA_vsprintf(buffer, pattern, args);
-    va_end(args);
-    if (len <= 0)
-        buffer[0] = 0;
+  va_start(args, pattern);
+  len = DUMA_vsprintf(buffer, pattern, args);
+  va_end(args);
+  if (len <= 0)
+    buffer[0] = 0;
 }
 
 const char *DUMA_strerror(int duma_errno) {
-    static char acStrError[STRING_BUFFER_SIZE];
+  static char acStrError[STRING_BUFFER_SIZE];
 
-    DUMA_sprintf(acStrError,
-                 "System Error Number 'errno' from Standard C Library is %i\n",
-                 duma_errno);
-    return acStrError;
+  DUMA_sprintf(acStrError,
+               "System Error Number 'errno' from Standard C Library is %i\n",
+               duma_errno);
+  return acStrError;
 }
 
 /* end */
