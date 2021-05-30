@@ -31,7 +31,7 @@
 Unlike other `malloc()` debuggers, **DUMA** will detect read accesses as well as
 writes, and it will pinpoint the exact instruction that causes an error.
 
-It has been in use at _Pixar_ since 1987, and at many other sites for years.
+**Electric Fence**, the predecessor of **DUMA**, has been in use at _Pixar_ since 1987, and at many other sites for years.
 
 **DUMA** uses the virtual memory hardware of your computer to place an
 inaccessible memory page immediately after (or before, at the user's option)
@@ -42,10 +42,9 @@ favorite debugger. In a similar manner, memory that has been released by
 `free()` is made inaccessible, and any code that touches it will get a
 segmentation fault.
 
-Simply linking your application with `libduma.a` will allow you to detect most,
-but not all, `malloc` buffer overruns and accesses of free memory. If you want
-to be reasonably sure that you've found all bugs of this type, you'll have to
-read and understand the rest of the documentation.
+Simply linking your application with `libduma.a` will allow you to detect most, but not all, `malloc` buffer overruns and accesses of free memory. If you want to be reasonably sure that you've found all catchable bugs of this type, you'll have to read and understand the rest of the documentation.
+
+Besides catching these kind of memory bugs, **DUMA** also provides a means to detect memory leaks. When using **DUMA** to pinpoint the source of a memory-leak, some source modification is necessary - at minimum, adding  `#include 'duma.h'`.
 
 ---
 
@@ -180,11 +179,7 @@ useful especially if you are using the shared **DUMA** library.
   memory, set `DUMA_PROTECT_FREE` shell environment to `-1`. This is the default
   and will cause **DUMA** not to re-allocate any memory.
 
-  For programs with many allocations and deallocations this may lead to the
-  consumption of the full address space and thus to the failure of `malloc()`. To
-  avoid such failures you may limit the amount of protected deallocated memory
-  by setting `DUMA_PROTECT_FREE` to a positive value. This value in kB will be
-  the limit for such protected free memory.
+  For programs with many allocations and deallocations this may lead to the consumption of the full address space and thus to the failure of `malloc()`.  It is important to discriminate between *address space* and *pyhsical memory*; **DUMA** does free the *physical memory*; but the *address space* is not freed. Thus, the *address space* may be exhausted despite available *physical memory*. This is especially important on 32-bit systems. To avoid such failures, you may limit the amount of protected de-allocated memory by setting `DUMA_PROTECT_FREE` to a positive value. This value in **kB** will be the limit for such protected free memory.
 
   A value of `0` will disable protection of freed memory.
 
@@ -293,8 +288,7 @@ Another example of software incompatible with `DUMA_ALIGNMENT` set less than the
 
 To get the line in your sources, where an error occurs, go as follows:
 
-1. Compile your program with debugging information and statically linked to
-   DUMA.
+1. Compile your program with debugging information and statically linked to DUMA. On some systems, including some Linux distributions, the linking order is crucial - **DUMA** must be the last library passed to the linker.
 2. Start your program from debugger e.g. with `gdb <program>`
 3. Set program environment variables like `'set environment DUMA_PROTECT_BELOW 1'`
 4. Set your program arguments with `'set args …'`
@@ -314,7 +308,7 @@ _alternatively_,
 
 ### Instructions for Debugging your Program
 
-1. Link with `libduma.a` as explained above.
+1. Link with `libduma.a` as explained above, and ensuring proper linkinf order.
 2. Run your program in a debugger and fix any overruns or accesses to free memory.
 3. Quit the debugger.
 4. Set `DUMA_PROTECT_BELOW = 1` in the shell environment.
