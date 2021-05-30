@@ -345,7 +345,7 @@ the string functions that perform byte references instead of word references.
 To get the line in your sources, where an error occurs, go as follows:
 
 1. Compile your program with debugging information and statically linked to
-   DUMA. On some systems like Linux, the Linux order is crucial: mostly DUMA
+   DUMA. On some systems like Linux, the link order is crucial: mostly DUMA
    needs to be given at the very end of the libraries list - to be linked.
 2. Start your program from debugger e.g. with `gdb <program>`
 3. Set program environment variables like `set environment DUMA_PROTECT_BELOW 1`
