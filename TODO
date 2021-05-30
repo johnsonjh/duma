@@ -27,7 +27,7 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
   use defines specifying the target architecture
   use compiler attributes which specify the necessary alignment
 
--add autoconf/automake build process
+-add autoconf/automake build process (useful for cross-build)
 
 -use libtool to build shared libraries in Makefile
  depends on autoconf/automake
@@ -41,8 +41,8 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
  this feature shall allow detecting of floating point division by zero, overflow, ..
 
 -test duma on several freely available/downloadable compilers:
-  1- OpenWatcom C/C++ compiler from http://www.openwatcom.org/
-  2- Digital MARS C/C++ compiler from http://www.digitalmars.com/
+  1- OpenWatcom C/C++ (http://open-watcom.github.io/)
+  2- Digital MARS C/C++ (https://digitalmars.com)
   3- Intel C++ compiler from http://www.intel.com/cd/software/products
                                 /asmo-na/eng/compilers/clin/219856.htm
   4- Borland C++ Builder from
