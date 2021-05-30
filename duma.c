@@ -2091,7 +2091,7 @@ void *_duma_realloc(void *oldBuffer, size_t newSize DUMA_PARAMLIST_FL) {
       if (newSize > slot->userSize) {
         memcpy(ptr, oldBuffer, slot->userSize);
         memset((char *)ptr + slot->userSize, 0, newSize - slot->userSize);
-      } else if (newSize > 0)
+      } else // if (newSize > 0) // (newSize <= 0) already in other case
         memcpy(ptr, oldBuffer, newSize);
 
       _duma_deallocate(oldBuffer, 0 /*=protectAllocList*/,
