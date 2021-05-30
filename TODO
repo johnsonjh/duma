@@ -105,8 +105,3 @@ PRI LOW
  for several system libraries is avoided.
  --> outdated with preprocessor option DUMA_NO_GLOBAL_MALLOC_FREE
    and compiler options "-include" (gcc) and "/FI" (MS Visual C++)
-
--Similar to `DUMA_NO_GLOBAL_MALLOC_FREE`, it would be really nice if
-there were a `DUMA_NO_GLOBAL_NEW_DELETE` option, which would disable
-the DUMA implementations of `new`, `new[]`, `delete`, and `delete[]`
-from being included into the library.
