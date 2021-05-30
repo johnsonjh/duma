@@ -2,6 +2,7 @@ CHANGELOG:
 ==========
 
 2.6xx
+  * Stow README.txt, add initial Markdown conversion.
   * Create Attic, store Detours and kduma for now.
   (2021-05-28, JJ)
   * Stow away old comparison data; prepare for overhaul.
