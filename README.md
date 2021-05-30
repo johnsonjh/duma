@@ -44,7 +44,7 @@ segmentation fault.
 
 Simply linking your application with `libduma.a` will allow you to detect most, but not all, `malloc` buffer overruns and accesses of free memory. If you want to be reasonably sure that you've found all catchable bugs of this type, you'll have to read and understand the rest of the documentation.
 
-Besides catching these kind of memory bugs, **DUMA** also provides a means to detect memory leaks. When using **DUMA** to pinpoint the source of a memory-leak, some source modification is necessary - at minimum, adding  `#include 'duma.h'`.
+Besides catching these kind of memory bugs, **DUMA** also provides a means to detect memory leaks. When using **DUMA** to pinpoint the source of a memory-leak, some source modification is necessary - at minimum, adding `#include 'duma.h'`.
 
 ---
 
@@ -217,7 +217,7 @@ important that you know how to use them.
   free memory, set `DUMA_PROTECT_FREE` shell environment to `-1`. This is the
   default and will cause **DUMA** not to re-allocate any memory.
 
-  For programs with many allocations and deallocations this may lead to the consumption of the full address space and thus to the failure of `malloc()`.  It is important to discriminate between *address space* and *pyhsical memory*; **DUMA** does free the *physical memory*; but the *address space* is not freed. Thus, the *address space* may be exhausted despite available *physical memory*. This is especially important on 32-bit systems. To avoid such failures, you may limit the amount of protected de-allocated memory by setting `DUMA_PROTECT_FREE` to a positive value. This value in **kB** will be the limit for such protected free memory.
+  For programs with many allocations and deallocations this may lead to the consumption of the full address space and thus to the failure of `malloc()`. It is important to discriminate between _address space_ and _pyhsical memory_; **DUMA** does free the _physical memory_; but the _address space_ is not freed. Thus, the _address space_ may be exhausted despite available _physical memory_. This is especially important on 32-bit systems. To avoid such failures, you may limit the amount of protected de-allocated memory by setting `DUMA_PROTECT_FREE` to a positive value. This value in **kB** will be the limit for such protected free memory.
 
   A value of `0` will disable protection of freed memory.
 
