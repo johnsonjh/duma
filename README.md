@@ -31,7 +31,8 @@
 Unlike other `malloc()` debuggers, **DUMA** will detect read accesses as well as
 writes, and it will pinpoint the exact instruction that causes an error.
 
-It has been in use at _Pixar_ since 1987, and at many other sites for years.
+**efence**, the predecessor of **DUMA**, has been in use at _Pixar_ since 1987,
+and at many other sites for years.
 
 **DUMA** uses the virtual memory hardware of your computer to place an
 inaccessible memory page immediately after (or before, at the user's option)
@@ -44,8 +45,12 @@ segmentation fault.
 
 Simply linking your application with `libduma.a` will allow you to detect most,
 but not all, `malloc` buffer overruns and accesses of free memory. If you want
-to be reasonably sure that you've found all bugs of this type, you'll have to
+to be reasonably sure that you've found all catchable bugs of this type, you'll have to
 read and understand the rest of the documentation.
+
+Besides catching this kind of memory bugs, **DUMA** does also provide some means
+to detect memory leaks. But, for pinpointing the source of a memory-leak, it requires
+to modify the sources. At minimum adding some `#include 'duma.h'`.
 
 ---
 
@@ -140,7 +145,7 @@ useful especially if you are using the shared **DUMA** library.
   situations you can control (with this environment variable) after how many
   allocations the full internal initialization of DUMA is done. Default is 0.
 
-\*,`DUMA_REPORT_ALL_LEAKS` - DUMA usually reports only memory leaks where the
+- `DUMA_REPORT_ALL_LEAKS` - DUMA usually reports only memory leaks where the
 source filename with line number of the allocating instruction is known. Setting
 this variable to 1 in shell environment reports all memory leaks. The default is
 0 to avoid reporting of irrelevant memory leaks from system/compiler
@@ -217,7 +222,11 @@ is no real problem as the system frees up all memory on program exit.
   and will cause DUMA not to re-allocate any memory.
 
   For programs with many allocations and deallocations this may lead to the
-  consumption of the full address space and thus to the failure of malloc(). To
+  consumption of the full address space and thus to the failure of malloc().
+  It is important to discriminate between address space and pyhsical memory:
+  DUMA does free the physical memory; but the address space is not freed. Thus,
+  it can happen that the address space is exhausted - despite physical memory
+  would be available - especially in 32 bit programs. To
   avoid such failures you may limit the amount of protected deallocated memory
   by setting `DUMA_PROTECT_FREE` to a positive value. This value in kB will be
   the limit for such protected free memory.
@@ -336,7 +345,8 @@ the string functions that perform byte references instead of word references.
 To get the line in your sources, where an error occurs, go as follows:
 
 1. Compile your program with debugging information and statically linked to
-   DUMA.
+   DUMA. On some systems like Linux, the Linux order is crucial: mostly DUMA
+   needs to be given at the very end of the libraries list - to be linked.
 2. Start your program from debugger e.g. with `gdb <program>`
 3. Set program environment variables like `set environment DUMA_PROTECT_BELOW 1`
 4. set your program arguments with `set args ...`
@@ -356,7 +366,7 @@ _alternatively_
 
 ### Instructions for Debugging your Program
 
-1. Link with `libduma.a` as explained above.
+1. Link with `libduma.a` as explained above (Link order is crucial).
 2. Run your program in a debugger and fix any overruns or accesses to free
    memory.
 3. Quit the debugger.
@@ -394,7 +404,7 @@ See if you can set `DUMA_ALIGNMENT` to 1 and repeat step 2.
 
 `sysctl -w vm.max_map_count=1000000`
 
-- Don't leave `libduma.a` enabked ans linked into production software! Use it
+- Don't leave `libduma.a` enabled and linked into production software! Use it
   only for debugging. See section 'Compilation Notes for Release/Production'
   below.
 
