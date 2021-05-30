@@ -142,7 +142,7 @@ ifeq ($(OS), windows_nt)
     BSWITCH=102
     DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
     CC=mingw32-gcc
-    CXX=mingw32-g++
+    CXX=mingw32-g++ -std=c++11
     RM=rm
     RMFORCE=rm -f
     ECHO=echo
@@ -248,7 +248,7 @@ ifeq ($(OS), linux)
  ifeq ($(shell $(CXX) -v 2>&1 | grep -c "clang version"), 1)
   COMPILERX := clang++
  else
-  COMPILERX := g++
+  COMPILERX := g++ -std=c++11
  endif
  export COMPILERX
  ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version"), 1)
