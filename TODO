@@ -1,6 +1,8 @@
 TODO items (possibly obsolete, listed by general priority):
 ===========================================================
 
+-Move TODO items to issue tracker
+
 -Linux symbol support
 
 -Win32 use dbghelp for symbol support
