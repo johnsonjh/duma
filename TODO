@@ -43,8 +43,6 @@ http://tutorial.gsse.at/uploads/media/duma_iue.tgz
 -test duma on several freely available/downloadable compilers:
   1- OpenWatcom C/C++ (http://open-watcom.github.io/)
   2- Digital MARS C/C++ (https://digitalmars.com)
-  3- Intel C++ compiler from http://www.intel.com/cd/software/products
-                                /asmo-na/eng/compilers/clin/219856.htm
   4- Borland C++ Builder from
      http://www.borland.com/products/downloads/download_cbuilder.html
   5- Macintosh Programmer's Workshop from
