@@ -572,6 +572,7 @@ operator delete[](ptr, file,line);  // vector delete
 - [GitHub](https://github.com/johnsonjh/duma)
 <!-- - [GitLab](https://gitlab.com/johnsonjh/duma) -->
 - [SourceHut](https://sr.ht/~trn/duma)
+<!-- Normalize spacing -->
 - [NotABug](https://notabug.org/trn/duma)
 
 ---
