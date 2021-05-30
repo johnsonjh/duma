@@ -107,7 +107,7 @@ DUMA_EXTERN_C int DUMA_OUTPUT_STACKTRACE;
 
 #ifndef DUMA_TLSVARTYPE_DEFINED
 #define DUMA_TLSVARTYPE_DEFINED
-/* TODO following variables should exist per thread ("thread-local") */
+/* GitHub #82 - following variables should exist per thread ("thread-local") */
 typedef struct {
   /*
    * ALIGNMENT is a global variable used to control the default alignment
