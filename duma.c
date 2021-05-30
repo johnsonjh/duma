@@ -86,8 +86,8 @@ typedef unsigned u_int;
 #include "duma.h"
 #include "duma_sem.h"
 #include "noduma.h"
-#include "print.h"
 #include "paging.h"
+#include "print.h"
 #include "verinfo.h" /* generated from make_git_source_version.sh */
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) &&         \
@@ -177,7 +177,7 @@ enum _DUMA_SlotState {
   DUMAST_IN_USE /* memory in use by allocator; see following enum AllocType */
   ,
   DUMAST_ALL_PROTECTED /* memory no more used by allocator; memory is not
-                        deallocated but protected */
+                      deallocated but protected */
   ,
   DUMAST_BEGIN_PROTECTED /* most memory deallocated, but not page covering
                           * userAddress: slot holds userAddress, userSize and
@@ -1315,7 +1315,7 @@ void *_duma_allocate(size_t alignment, size_t userSize, int protectBelow,
   if (0 == userSize) {
     switch (allocationStrategy) {
     case 0: /* like having former ALLOW_MALLOC_0 = 0  ==> abort program with
-           segfault */
+       segfault */
 #ifndef DUMA_NO_LEAKDETECTION
       DUMA_Abort("Allocating 0 bytes, probably a bug at %s(%i). See "
                  "DUMA_ALLOW_MALLOC_0.",
@@ -1959,7 +1959,7 @@ void *_duma_malloc(size_t size DUMA_PARAMLIST_FL) {
 
   if (_duma_g.allocList == 0)
     _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
-                 ... */
+             ... */
 
   duma_tls = GET_DUMA_TLSVARS();
 
@@ -1977,7 +1977,7 @@ void *_duma_calloc(size_t nelem, size_t elsize DUMA_PARAMLIST_FL) {
 
   if (_duma_g.allocList == 0)
     _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
-                 ... */
+             ... */
 
   duma_tls = GET_DUMA_TLSVARS();
 
@@ -1993,7 +1993,7 @@ void *_duma_calloc(size_t nelem, size_t elsize DUMA_PARAMLIST_FL) {
 void _duma_free(void *baseAdr DUMA_PARAMLIST_FL) {
   if (_duma_g.allocList == 0)
     _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
-                 ... */
+             ... */
 
   _duma_deallocate(baseAdr, 1 /*=protectAllocList*/, EFA_FREE DUMA_PARAMS_FL);
 }
@@ -2007,7 +2007,7 @@ void *_duma_memalign(size_t alignment, size_t size DUMA_PARAMLIST_FL) {
 
   if (_duma_g.allocList == 0)
     _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
-                 ... */
+             ... */
 
   duma_tls = GET_DUMA_TLSVARS();
 
@@ -2030,7 +2030,7 @@ int _duma_posix_memalign(void **memptr, size_t alignment,
 
   if (_duma_g.allocList == 0)
     _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
-                 ... */
+             ... */
 
   duma_tls = GET_DUMA_TLSVARS();
 
@@ -2058,7 +2058,7 @@ void *_duma_realloc(void *oldBuffer, size_t newSize DUMA_PARAMLIST_FL) {
 
   if (_duma_g.allocList == 0)
     _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
-                 ... */
+             ... */
 
   duma_tls = GET_DUMA_TLSVARS();
 
@@ -2091,7 +2091,7 @@ void *_duma_realloc(void *oldBuffer, size_t newSize DUMA_PARAMLIST_FL) {
       if (newSize > slot->userSize) {
         memcpy(ptr, oldBuffer, slot->userSize);
         memset((char *)ptr + slot->userSize, 0, newSize - slot->userSize);
-      } else if (newSize > 0)
+      } else // if (newSize > 0) // (newSize <= 0) already in other case
         memcpy(ptr, oldBuffer, newSize);
 
       _duma_deallocate(oldBuffer, 0 /*=protectAllocList*/,
@@ -2116,7 +2116,7 @@ void *_duma_valloc(size_t size DUMA_PARAMLIST_FL) {
 
   if (_duma_g.allocList == 0)
     _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
-                 ... */
+             ... */
 
   duma_tls = GET_DUMA_TLSVARS();
 
@@ -2137,7 +2137,7 @@ char *_duma_strdup(const char *str DUMA_PARAMLIST_FL) {
 
   if (_duma_g.allocList == 0)
     _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
-                 ... */
+             ... */
 
   duma_tls = GET_DUMA_TLSVARS();
 
