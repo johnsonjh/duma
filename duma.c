@@ -87,8 +87,8 @@ typedef unsigned u_int;
 #include "duma.h"
 #include "duma_sem.h"
 #include "noduma.h"
-#include "paging.h"
 #include "print.h"
+#include "paging.h"
 #include "verinfo.h" /* generated from make_git_source_version.sh */
 
 #if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__) &&         \
