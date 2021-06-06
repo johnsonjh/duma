@@ -49,7 +49,8 @@ for as_var in BASH_ENV ENV MAIL MAILPATH; do
 				printf >&2 '%s\n' \
 					"Error: clear environment failed."
 				exit 1
-			}) &&
+			}
+		) &&
 		unset "${as_var:-}" || true
 done
 
