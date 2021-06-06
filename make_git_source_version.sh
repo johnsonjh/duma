@@ -1,69 +1,174 @@
 #!/usr/bin/env sh
+# shellcheck disable=SC3040
+
+# shellcheck disable=SC2006,SC2046,SC2065
+test _`printf '%s' "asdf" 2>/dev/null` != "_asdf" >/dev/null && \
+	printf '%s\n' \
+		"Error: This shell seems to be csh, which is not supported." && \
+	exit 1
+
+set +e > /dev/null 2>&1
+set +u > /dev/null 2>&1
+
+DUALCASE=1 && export DUALCASE
+# shellcheck disable=SC2046
+eval export $(locale 2> /dev/null) > /dev/null 2>&1 || true
+LC_ALL=C && export LC_ALL
+LANGUAGE=C && export LANGUAGE
+LANG=C && export LANG
+(unset CDPATH 2> /dev/null) > /dev/null 2>&1 &&
+	unset CDPATH > /dev/null 2>&1
+
+if [ ".${ZSH_VERSION:-}" != "." ] &&
+	(emulate sh 2> /dev/null) > /dev/null 2>&1; then
+	emulate sh > /dev/null 2>&1
+	NULLCMD=: && export NULLCMD
+	# shellcheck disable=SC2142
+	alias -g '${1+"$@"}'='"$@"'
+	unalias -a 2> /dev/null || true > /dev/null 2>&1
+	unalias -m '*' > /dev/null 2>&1
+	disable -f -m '*' > /dev/null 2>&1
+	setopt pipefail > /dev/null 2>&1
+	POSIXLY_CORRECT=1 && export POSIXLY_CORRECT
+	POSIX_ME_HARDER=1 && export POSIX_ME_HARDER
+elif [ ".${BASH_VERSION:-}" != "." ] &&
+	(set -o posix 2> /dev/null) > /dev/null 2>&1; then
+	set -o posix > /dev/null 2>&1
+	set -o pipefail > /dev/null 2>&1
+	POSIXLY_CORRECT=1 && export POSIXLY_CORRECT
+	POSIX_ME_HARDER=1 && export POSIX_ME_HARDER
+	unalias -a 2> /dev/null || true > /dev/null 2>&1
+fi
+
+for as_var in BASH_ENV ENV MAIL MAILPATH; do
+	# shellcheck disable=SC1083,SC2015
+	eval test x\${"${as_var:?}"+set} = xset &&
+		( (unset "${as_var:-}") ||
+			{
+				printf >&2 '%s\n' \
+					"Error: clear environment failed."
+				exit 1
+			}) &&
+		unset "${as_var:-}" || true
+done
 
 if [ -f "./.release" ]; then
-  export RELEASED=1
-  export RELENG="prepared"
+	RELEASED=1 && export RELEASED
+	RELENG="prepared" && export RELENG
 else
-  export RELENG="built"
+	unset RELEASED > /dev/null 2>&1 || true
+	RELENG="built" && export RELENG
 fi
-rm -f ./.release 2>/dev/null
+rm -f ./.release 2> /dev/null
 
-get_git_info() {
-  if command command true 2>/dev/null 1>&2; then
-    if command git version 2>/dev/null 1>&2; then
-      GITTEST=$(git version 2>/dev/null)
-      # shellcheck disable=SC2236
-      if [ -n "$GITTEST" ] && [ ! -z "$GITTEST" ]; then
-        BRANCH=$(git branch --show-current 2>/dev/null)
-        if [ -n "$RELEASED" ] && [ ! -z "$RELEASED" ]; then
-          GITVER=$(git describe --tags --always 2>/dev/null |
-            cut -d "-" -f 1 2>/dev/null)
-        else
-          GITVER=$(git describe --tags --dirty --broken --long --always \
-            2>/dev/null)
-        fi
+set -u > /dev/null 2>&1
+set -e > /dev/null 2>&1
 
-        if [ ! -n "$BRANCH" ] || [ -z "$BRANCH" ]; then
-          BRANCH="nobranch"
-        fi
+get_git_info()
+{
+	if command command true 2> /dev/null 1>&2; then
+		if command git version 2> /dev/null 1>&2; then
+			GITTEST=$(git version 2> /dev/null)
+			# shellcheck disable=SC2236
+			if [ -n "${GITTEST:-}" ] &&
+				[ ! -z "${GITTEST:-}" ]; then
+				BRANCH=$(git branch --show-current 2> /dev/null)
+				if [ -n "${RELEASED:-}" ] && [ ! -z "${RELEASED:-}" ]; then
+					GITVER=$(git describe --tags --always 2> /dev/null |
+						cut -d "-" -f 1 2> /dev/null)
+				else
+					GITVER=$(git describe \
+						--tags --dirty --broken --long --always \
+						2> /dev/null)
+				fi
 
-        if [ ! -n "$RELEASED" ] && [ -z "$RELEASED" ]; then
-          if [ -n "$GITVER" ] && [ ! -z "$GITVER" ]; then
-            GIT_OUT=" $GITVER-$BRANCH"
-          fi
-        fi
-        if [ -n "$GITVER" ] && [ ! -z "$GITVER" ]; then
-          GIT_OUT=" $GITVER"
-        fi
-      fi
-    fi
-  fi
+				if [ ! -n "${BRANCH:-}" ] ||
+					[ -z "${BRANCH:-}" ]; then
+					BRANCH="nobranch"
+				fi
 
-  GIT_SOURCE_INFO="DUMA$GIT_OUT"
-  GIT_SOURCE_XFRM=$(printf '%s\n' "$GIT_SOURCE_INFO" |
-    sed -e 's/\VERSION_//' -e 's/_/\./g' 2>/dev/null)
+				if [ ! -n "${RELEASED:-}" ] &&
+					[ -z "${RELEASED:-}" ]; then
+					if [ -n "${GITVER:-}" ] &&
+						[ ! -z "${GITVER:-}" ]; then
+						GIT_OUT=" ${GITVER:?}-${BRANCH:?}"
+					fi
+				fi
+				if [ -n "${GITVER:-}" ] &&
+					[ ! -z "${GITVER:-}" ]; then
+					GIT_OUT=" ${GITVER:?}"
+				fi
+			fi
+		fi
+	fi
 
-  # shellcheck disable=SC2236
-  if [ -n "$GIT_SOURCE_XFRM" ] && [ ! -z "$GIT_SOURCE_XFRM" ]; then
-    printf '%s\n' "$GIT_SOURCE_XFRM"
-  else
-    printf '%s\n' "$GIT_SOURCE_INFO"
-  fi
+	GIT_SOURCE_INFO="DUMA${GIT_OUT:?}"
+	GIT_SOURCE_XFRM=$(printf '%s\n' "${GIT_SOURCE_INFO:?}" |
+		sed -e 's/\VERSION_//' -e 's/_/\./g' 2> /dev/null) ||
+		{
+			printf >&2 '%s\n' \
+				"Error: sed failed."
+			exit 1
+		}
+
+	# shellcheck disable=SC2236
+	if [ -n "${GIT_SOURCE_XFRM:-}" ] &&
+		[ ! -z "${GIT_SOURCE_XFRM:-}" ]; then
+		printf '%s\n' \
+			"${GIT_SOURCE_XFRM:?}"
+	else
+		printf '%s\n' \
+			"${GIT_SOURCE_INFO:?}"
+	fi
 }
 
-get_utc_date() {
-  UTC_DATE=$(TZ=UTC date -u "+%D %T" 2>/dev/null)
-  # shellcheck disable=SC2236
-  if [ -n "$UTC_DATE" ] && [ ! -z "$UTC_DATE" ]; then
-    UTC_DATE_INFO=", $RELENG $UTC_DATE"
-  else
-    UTC_DATE_INFO=""
-  fi
-  printf '%s\n' "$UTC_DATE_INFO"
+get_utc_date()
+{
+	UTC_DATE=$(TZ=UTC date -u "+%D %T" 2> /dev/null) ||
+		{
+			printf >&2 '%s\n' \
+				"Error: date failed."
+			exit 1
+		}
+	# shellcheck disable=SC2236
+	if [ -n "${UTC_DATE:-}" ] &&
+		[ ! -z "${UTC_DATE:-}" ]; then
+		UTC_DATE_INFO=", ${RELENG:?} ${UTC_DATE:?}"
+	else
+		UTC_DATE_INFO=""
+	fi
+	printf '%s\n' \
+		"${UTC_DATE_INFO:?}"
 }
 
-BUILD_VER=$(get_git_info)
-BUILD_UTC=$(get_utc_date)
+BUILD_VER="$(get_git_info)" ||
+	{
+		printf >&2 '%s\n' \
+			"Error: get_git_info() failed."
+		exit 1
+	}
+BUILD_UTC="$(get_utc_date)" ||
+	{
+		printf >&2 '%s\n' \
+			"Error: get_utc_date() failed."
+		exit 1
+	}
 
-printf '%s\n' "// Auto-generated git information." >verinfo.h
-printf '%s\n' "#define GIT_SOURCE_VERSION \"$BUILD_VER$BUILD_UTC (\"" >>verinfo.h
+# shellcheck disable=SC1003
+printf '%s\n' \
+	'/* NOTICE: Auto-generated by "make_git_source_version.sh" */' \
+	"/* MODIFICATIONS MADE DIRECTLY TO THIS FILE WILL BE LOST. */" \
+	"" \
+	"#ifndef GIT_SOURCE_VERSION_VERINFO_H" \
+	"#define GIT_SOURCE_VERSION_VERINFO_H" \
+	"" \
+	'#define GIT_SOURCE_VERSION \' \
+	"    \"${BUILD_VER:?}${BUILD_UTC:?} (\"" \
+	"" \
+	"#endif /* GIT_SOURCE_VERSION_VERINFO_H */" \
+	> ./verinfo.h ||
+	{
+		printf >&2 '%s\n' \
+			"Error: writing verinfo.h failed."
+		exit 1
+	}
