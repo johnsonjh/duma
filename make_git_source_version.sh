@@ -10,13 +10,13 @@ test _`printf '%s' "asdf" 2>/dev/null` != "_asdf" >/dev/null && \
 set +e > /dev/null 2>&1
 set +u > /dev/null 2>&1
 
-DUALCASE=1 && export DUALCASE
 # shellcheck disable=SC2046
 eval export $(locale 2> /dev/null) > /dev/null 2>&1 || true
+DUALCASE=1 && export DUALCASE
 LC_ALL=C && export LC_ALL
 LANGUAGE=C && export LANGUAGE
 LANG=C && export LANG
-(unset CDPATH 2> /dev/null) > /dev/null 2>&1 &&
+(unset CDPATH > /dev/null 2>&1) > /dev/null 2>&1 &&
 	unset CDPATH > /dev/null 2>&1
 
 if [ ".${ZSH_VERSION:-}" != "." ] &&
@@ -24,8 +24,8 @@ if [ ".${ZSH_VERSION:-}" != "." ] &&
 	emulate sh > /dev/null 2>&1
 	NULLCMD=: && export NULLCMD
 	# shellcheck disable=SC2142
-	alias -g '${1+"$@"}'='"$@"'
-	unalias -a 2> /dev/null || true > /dev/null 2>&1
+	alias -g '${1+"$@"}'='"$@"' > /dev/null 2>&1
+	unalias -a > /dev/null 2>&1 || true > /dev/null 2>&1
 	unalias -m '*' > /dev/null 2>&1
 	disable -f -m '*' > /dev/null 2>&1
 	setopt pipefail > /dev/null 2>&1
@@ -37,7 +37,7 @@ elif [ ".${BASH_VERSION:-}" != "." ] &&
 	set -o pipefail > /dev/null 2>&1
 	POSIXLY_CORRECT=1 && export POSIXLY_CORRECT
 	POSIX_ME_HARDER=1 && export POSIX_ME_HARDER
-	unalias -a 2> /dev/null || true > /dev/null 2>&1
+	unalias -a > /dev/null 2>&1 || true > /dev/null 2>&1
 fi
 
 for as_var in BASH_ENV ENV MAIL MAILPATH; do
@@ -99,7 +99,15 @@ get_git_info()
 					GIT_OUT=" ${GITVER:?}"
 				fi
 			fi
+		else
+			printf >&2 '%s\n' \
+				"Error: git version failed."
+			exit 1
 		fi
+	else
+		printf >&2 '%s\n' \
+			"Error: command true failed."
+		exit 1
 	fi
 
 	GIT_SOURCE_INFO="DUMA${GIT_OUT:?}"
