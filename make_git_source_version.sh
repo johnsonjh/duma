@@ -60,7 +60,7 @@ else
 	unset RELEASED > /dev/null 2>&1 || true
 	RELENG="built" && export RELENG
 fi
-rm -f ./.release 2> /dev/null
+rm -f ./.release
 
 set -u > /dev/null 2>&1
 set -e > /dev/null 2>&1
