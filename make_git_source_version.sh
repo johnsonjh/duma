@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 # shellcheck disable=SC3040
+# vim: filetype=sh:tabstop=4:tw=76
 
 # shellcheck disable=SC2006,SC2046,SC2065
 test _`printf '%s' "asdf" 2>/dev/null` != "_asdf" >/dev/null && \
@@ -180,3 +181,11 @@ printf '%s\n' \
 			"Error: writing verinfo.h failed."
 		exit 1
 	}
+
+# Local Variables:
+# mode: sh
+# sh-shell: sh
+# sh-indentation: 4
+# sh-basic-offset: 4
+# tab-width: 4
+# End:
