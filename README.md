@@ -547,8 +547,8 @@ operator delete[](ptr, file,line);  // vector delete
   access to a protected page with `SIGBUS` rather than `SIGSEGV` - I suspect
   this is an undocumented feature of a particular Sun hardware version, not just
   the operating system. On these systems, `dumatest` will fail with a bus error
-  until you modify the Makefile to define `PAGE_PROTECTION_VIOLATED_SIGNAL`
-  as `SIGBUS`.
+  until you modify the Makefile to define `PAGE_PROTECTION_VIOLATED_SIGNAL` as
+  `SIGBUS`.
 
 ---
 
