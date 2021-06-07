@@ -6,7 +6,7 @@
 
   [![GitHubRelease](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
 
-- Previous releases will not receive backported/retroactive security patches. *Use the most recent release.*
+- Previous releases will not receive backported/retroactive security patches. _Use the most recent release._
 
 ## Reporting a security vulnerability
 
