@@ -313,66 +313,66 @@ endif()
 if (BUILD_EXAMPLES)
 
   # no linked against duma
-  add_executable(example1_pure example1.cpp)
-  add_executable(example2_pure example2.cpp)
-  # add_executable(example3_pure example3.cpp)  # uses duma.h
-  # add_executable(example4_pure example4.cpp)  # uses duma.h
-  # add_executable(example5_pure example5.cpp)  # uses dumapp.h
-  add_executable(example6_pure example6.cpp)
-  add_executable(example7_pure example7.cpp)
-  # add_executable(example8_pure example8.cpp)  # uses dumapp.h
+  add_executable(example1_pure examples/example1.cpp)
+  add_executable(example2_pure examples/example2.cpp)
+  # add_executable(example3_pure examples/example3.cpp)  # uses duma.h
+  # add_executable(example4_pure examples/example4.cpp)  # uses duma.h
+  # add_executable(example5_pure examples/example5.cpp)  # uses dumapp.h
+  add_executable(example6_pure examples/example6.cpp)
+  add_executable(example7_pure examples/example7.cpp)
+  # add_executable(example8_pure examples/example8.cpp)  # uses dumapp.h
 
 
   # linked statically against duma
-  add_executable(example1_static example1.cpp)
+  add_executable(example1_static examples/example1.cpp)
   target_link_libraries(example1_static DUMA_STATIC)
 
-  add_executable(example2_static example2.cpp)
+  add_executable(example2_static examples/example2.cpp)
   target_link_libraries(example2_static DUMA_STATIC)
 
-  add_executable(example3_static example3.cpp)
+  add_executable(example3_static examples/example3.cpp)
   target_link_libraries(example3_static DUMA_STATIC)
 
-  add_executable(example4_static example4.cpp)
+  add_executable(example4_static examples/example4.cpp)
   target_link_libraries(example4_static DUMA_STATIC)
 
-  add_executable(example5_static example5.cpp)
+  add_executable(example5_static examples/example5.cpp)
   target_link_libraries(example5_static DUMA_STATIC)
 
-  add_executable(example6_static example6.cpp)
+  add_executable(example6_static examples/example6.cpp)
   target_link_libraries(example6_static DUMA_STATIC)
 
-  add_executable(example7_static example7.cpp)
+  add_executable(example7_static examples/example7.cpp)
   target_link_libraries(example7_static DUMA_STATIC)
 
-  add_executable(example8_static example8.cpp)
+  add_executable(example8_static examples/example8.cpp)
   target_link_libraries(example8_static DUMA_STATIC)
 
 
   # linked against shared duma-library (.so)
 
-  add_executable(example1_shared example1.cpp)
+  add_executable(example1_shared examples/example1.cpp)
   target_link_libraries(example1_shared DUMA_SHARED)
 
-  add_executable(example2_shared example2.cpp)
+  add_executable(example2_shared examples/example2.cpp)
   target_link_libraries(example2_shared DUMA_SHARED)
 
-  add_executable(example3_shared example3.cpp)
+  add_executable(example3_shared examples/example3.cpp)
   target_link_libraries(example3_shared DUMA_SHARED)
 
-  add_executable(example4_shared example4.cpp)
+  add_executable(example4_shared examples/example4.cpp)
   target_link_libraries(example4_shared DUMA_SHARED)
 
-  add_executable(example5_shared example5.cpp)
+  add_executable(example5_shared examples/example5.cpp)
   target_link_libraries(example5_shared DUMA_SHARED)
 
-  add_executable(example6_shared example6.cpp)
+  add_executable(example6_shared examples/example6.cpp)
   target_link_libraries(example6_shared DUMA_SHARED)
 
-  add_executable(example7_shared example7.cpp)
+  add_executable(example7_shared examples/example7.cpp)
   target_link_libraries(example7_shared DUMA_SHARED)
 
-  add_executable(example8_shared example8.cpp)
+  add_executable(example8_shared examples/example8.cpp)
   target_link_libraries(example8_shared DUMA_SHARED)
 
 endif()

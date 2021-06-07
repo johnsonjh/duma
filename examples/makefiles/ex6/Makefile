@@ -1,6 +1,6 @@
 
-DUMADIR=../..
-CPPFLAGS=-g -O0 -I$(DUMADIR)
+DUMADIR=../../..
+CPPFLAGS=-g -O0 -I$(DUMADIR) -include stdlib.h -include new -include dumapp.h
 LFLAGS=$(DUMADIR)/libduma.a
 ifeq ($(OS), Windows_NT)
   LIBS=
@@ -11,7 +11,7 @@ endif
 CC=gcc
 CXX=g++
 
-BIN=example3
+BIN=example6
 OBJ=../../$(BIN).o
 
 all: $(BIN)
@@ -22,4 +22,7 @@ clean:
 
 $(BIN): $(OBJ)
 	$(CXX) $(OBJ) $(LFLAGS) $(LIBS) -o $(BIN)
+
+.cpp.o:
+	$(CXX) $(CPPFLAGS) -c $< -o $@
 

@@ -1,5 +1,5 @@
 
-DUMADIR=../..
+DUMADIR=../../..
 CPPFLAGS=-g -O0 -I$(DUMADIR)
 LFLAGS=$(DUMADIR)/libduma.a
 ifeq ($(OS), Windows_NT)
@@ -11,7 +11,7 @@ endif
 CC=gcc
 CXX=g++
 
-BIN=example1
+BIN=example4
 OBJ=../../$(BIN).o
 
 all: $(BIN)
