@@ -6,15 +6,19 @@
 
   [![GitHubRelease](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
 
-- Previous releases will not receive backported/retroactive security patches. _Use the most recent release._
+- Previous releases will not receive backported/retroactive security patches.
+  _Use the most recent release._
 
 ## Reporting a security vulnerability
 
-- If you wish to report a security vulnerability (or any other issue of a sensitive nature):
+- If you wish to report a security vulnerability (or any other issue of a
+  sensitive nature):
 
   1. Ensure that the bug exists in the most recent release.
 
-  2. Send email to [Jeffrey H. Johnson](mailto:trnsz@pobox.com) <[trnsz@pobox.com](mailto:trnsz@pobox.com)>. **PGP-encrypted** email is accepted.
+  2. Send email to [Jeffrey H. Johnson](mailto:trnsz@pobox.com)
+     <[trnsz@pobox.com](mailto:trnsz@pobox.com)>. **PGP-encrypted** email is
+     accepted.
 
 ```text
 -----BEGIN PGP PUBLIC KEY BLOCK-----
