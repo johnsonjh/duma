@@ -21,10 +21,10 @@ Makefile.v
 efencelib.lib
 
 //% Section 6  - SOURCE FILES
-..\..\duma.c
-..\..\dumapp.cpp
-..\..\page.c
-..\..\print.c
+..\..\src\duma.c
+..\..\src\dumapp.cpp
+..\..\src\page.c
+..\..\src\print.c
 //%end-srcfiles
 
 //% Section 7  - COMPILER NAME

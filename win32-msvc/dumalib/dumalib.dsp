@@ -114,19 +114,19 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\duma.c
+SOURCE=..\..\src\duma.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\dumapp.cpp
+SOURCE=..\..\src\dumapp.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\print.c
+SOURCE=..\..\src\print.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\sem_inc.c
+SOURCE=..\..\src\sem_inc.c
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"

@@ -40,7 +40,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit2]
-FileName=..\dumapp.cpp
+FileName=..\src\dumapp.cpp
 Folder=
 CompileCpp=0
 Compile=1
@@ -60,7 +60,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=..\duma.c
+FileName=..\src\duma.c
 Folder=
 CompileCpp=0
 Compile=1
@@ -133,7 +133,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit11]
-FileName=..\print.c
+FileName=..\src\print.c
 CompileCpp=0
 Folder=DUMA
 Compile=1
@@ -161,7 +161,7 @@ ProductVersion=0.1
 AutoIncBuildNr=0
 
 [Unit12]
-FileName=..\sem_inc.c
+FileName=..\src\sem_inc.c
 CompileCpp=0
 Folder=DUMA
 Compile=1

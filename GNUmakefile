@@ -357,7 +357,7 @@ endif
 
 PACKAGE_SOURCE=README.md CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 GNUmakefile gdbinit.rc \
 	duma.h dumapp.h duma_sem.h paging.h print.h duma_hlp.h noduma.h \
-	duma.c dumapp.cpp sem_inc.c print.c \
+	src/duma.c src/dumapp.cpp src/sem_inc.c src/print.c \
 	tests/dumatest.c tests/tstheap.c tests/thread-test.c tests/testmt.c tests/dumatestpp.cpp tests/testoperators.cpp \
 	createconf.c make_git_source_version.sh
 
@@ -620,17 +620,17 @@ createconf.o:
 # define rules how to build objects for shared library
 #
 
-dumapp_so.o:	dumapp.cpp duma.h duma_sem.h dumapp.h
-	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c dumapp.cpp -o $@
+dumapp_so.o:	src/dumapp.cpp duma.h duma_sem.h dumapp.h
+	$(CXX) -I./ $(CPPFLAGS) $(DUMA_SO_OPTIONS) -c src/dumapp.cpp -o $@
 
-duma_so.o:	duma.c duma.h duma_config.h verinfo.h
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c duma.c -o $@
+duma_so.o:	src/duma.c duma.h duma_config.h verinfo.h
+	$(CC) -I./ $(CFLAGS) $(DUMA_SO_OPTIONS) -c src/duma.c -o $@
 
-sem_inc_so.o:	sem_inc.c duma_sem.h
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c sem_inc.c -o $@
+sem_inc_so.o:	src/sem_inc.c duma_sem.h
+	$(CC) -I./ $(CFLAGS) $(DUMA_SO_OPTIONS) -c src/sem_inc.c -o $@
 
-print_so.o:	print.c print.h
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) -c print.c -o $@
+print_so.o:	src/print.c print.h
+	$(CC) -I./ $(CFLAGS) $(DUMA_SO_OPTIONS) -c src/print.c -o $@
 
 # DUMA_SO_OPTIONS needed cause duma.h is included explicitly
 tstheap_so.o:
@@ -646,17 +646,17 @@ testmemlimit_so.o:
 # define rules how to build objects for static library
 #
 
-dumapp.o:	dumapp.cpp duma.h duma_sem.h dumapp.h
-	$(CXX) $(CPPFLAGS) -c dumapp.cpp -o $@
+dumapp.o:	src/dumapp.cpp duma.h duma_sem.h dumapp.h
+	$(CXX) -I./ $(CPPFLAGS) -c src/dumapp.cpp -o $@
 
-duma.o:	duma.c duma.h duma_config.h verinfo.h
-	$(CC) $(CFLAGS) -c duma.c -o $@
+duma.o:	src/duma.c duma.h duma_config.h verinfo.h
+	$(CC) -I./ $(CFLAGS) -c src/duma.c -o $@
 
-sem_inc.o:	sem_inc.c duma_sem.h
-	$(CC) $(CFLAGS) -c sem_inc.c -o $@
+sem_inc.o:	src/sem_inc.c duma_sem.h
+	$(CC) -I./ $(CFLAGS) -c src/sem_inc.c -o $@
 
-print.o:	print.c print.h
-	$(CC) $(CFLAGS) -c print.c -o $@
+print.o:	src/print.c print.h
+	$(CC) -I./ $(CFLAGS) -c src/print.c -o $@
 
 #
 # define rules how to build the test objects
