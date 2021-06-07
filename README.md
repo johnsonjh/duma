@@ -397,8 +397,7 @@ To get the line in you sources where an error occurs:
 
 #### Post-mortem (core analysis)
 
-1. Compile your program (**_with_** debugging information), but **_without_**
-   **DUMA**.
+1. Compile your program (**_with_** debugging information).
 2. Set `ulimit -c unlimited` to get core files
 3. Start your program, choose one of following options
    - Start your program (linked **_statically_** with **DUMA**)
@@ -548,8 +547,8 @@ operator delete[](ptr, file,line);  // vector delete
   access to a protected page with `SIGBUS` rather than `SIGSEGV` - I suspect
   this is an undocumented feature of a particular Sun hardware version, not just
   the operating system. On these systems, `dumatest` will fail with a bus error
-  until you modify the Makefile to define `PAGE_PROTECTION_VIOLATED_SIGNAL`
-  as `SIGBUS`.
+  until you modify the Makefile to define `PAGE_PROTECTION_VIOLATED_SIGNAL` as
+  `SIGBUS`.
 
 ---
 
