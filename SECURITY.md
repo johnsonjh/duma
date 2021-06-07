@@ -1,36 +1,20 @@
-# Security Policy
+# Security
 
-## Supported releases
+## Overview
 
-- Only the most recent current release is **_SUPPORTED_**.**☨**
+- There are no known security vulnerabilities in the current release version:
 
   [![GitHubRelease](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
 
-- **☨** Support is offered on a **best-effort** basis **ONLY**.
+- Previous releases will not receive backported/retroactive security patches. *Use the most recent release.*
 
-```text
-BECAUSE THE THE SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR
-THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE
-STATED IN WRITING, THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE SOFTWARE
-"AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT
-NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH YOU.
-SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
-REPAIR OR CORRECTION. IN NO EVENT, UNLESS REQUIRED BY APPLICABLE LAW, OR AGREED TO IN
-WRITING, WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-REDISTRIBUTE THE SOFTWARE AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING
-ANY GENERAL, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR
-INABILITY TO USE THE SOFTWARE (INCLUDING, BUT NOT LIMITED TO, LOSS OF DATA, OR DATA
-BEING RENDERED INACCURATE, OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES, OR A FAILURE
-OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF SUCH HOLDER OR OTHER
-PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-```
+## Reporting a security vulnerability
 
-- Pre-release versions and past releases are **_NOT SUPPORTED_**.
+- If you wish to report a security vulnerability (or any other issue of a sensitive nature):
 
-## Report a security vulnerability
+  1. Ensure that the bug exists in the most recent release.
 
-- Send a **PGP-encrypted** email to <mailto:trnsz@pobox.com>
+  2. Send email to [Jeffrey H. Johnson](mailto:trnsz@pobox.com) <[trnsz@pobox.com](mailto:trnsz@pobox.com)>. **PGP-encrypted** email is accepted.
 
 ```text
 -----BEGIN PGP PUBLIC KEY BLOCK-----
