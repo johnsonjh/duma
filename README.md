@@ -397,8 +397,7 @@ To get the line in you sources where an error occurs:
 
 #### Post-mortem (core analysis)
 
-1. Compile your program (**_with_** debugging information), but **_without_**
-   **DUMA**.
+1. Compile your program (**_with_** debugging information).
 2. Set `ulimit -c unlimited` to get core files
 3. Start your program, choose one of following options
    - Start your program (linked **_statically_** with **DUMA**)
