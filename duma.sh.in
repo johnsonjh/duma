@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+# Simple script to run DUMA on stuff.
+# (Requires libduma.so.0.0 insalled).
+
+# Usage.
+if [ "$#" -lt 1 ]; then
+	printf '%s\n' "$0:	Usage: duma <executable> [optional arguments]."
+	printf '%s\n' "		Runs the executable under the DUMA malloc debugger."
+	exit 1
+fi
+
+# Set the environment to preload DUMA library.
+export LD_PRELOAD=@CMAKE_INSTALL_PREFIX@/lib/@DUMA_SO_FILENAME@.@DUMA_SO_VERSION@
+export DYLD_INSERT_LIBRARIES=@CMAKE_INSTALL_PREFIX@/lib/@DUMA_SO_FILENAME@
+export DYLD_FORCE_FLAT_NAMESPACE=1
+exec "$@"

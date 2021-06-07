@@ -217,15 +217,25 @@ set_target_properties(DUMA_STATIC PROPERTIES OUTPUT_NAME "duma")
 set_target_properties(DUMA_SHARED PROPERTIES OUTPUT_NAME "duma")
 set_target_properties(DUMA_SHARED PROPERTIES VERSION 0.0.0 SOVERSION 0)
 
-
 # todo: install readme, man file, ..?
 install( TARGETS DUMA_STATIC DUMA_SHARED  DESTINATION lib)
 install( FILES  ${DUMA_PUB_HDRS}  DESTINATION include)
-install( FILES  duma.sh  DESTINATION bin
-  PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
-              GROUP_EXECUTE GROUP_READ
-              WORLD_EXECUTE WORLD_READ
-)
+
+if (NOT WIN32)
+  # determine filename
+  get_target_property(DUMA_SO_VERSION DUMA_SHARED VERSION)
+  set(DUMA_SO_FILENAME "${CMAKE_SHARED_LIBRARY_PREFIX}duma${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  # message(STATUS "CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}")
+  # message(STATUS "DUMA_SO_FILENAME ${DUMA_SO_FILENAME}")
+
+  configure_file(duma.sh.in ${CMAKE_CURRENT_BINARY_DIR}/duma.sh @ONLY)
+
+  install( FILES  ${CMAKE_CURRENT_BINARY_DIR}/duma.sh  DESTINATION bin
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                GROUP_EXECUTE GROUP_READ
+                WORLD_EXECUTE WORLD_READ
+  )
+endif()
 
 add_custom_target(uninstall
     "${CMAKE_COMMAND}" -P "${CMAKE_SOURCE_DIR}/uninstall.cmake"
