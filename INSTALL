@@ -11,6 +11,8 @@ I. environments with cmake:
       cmake ../
   optionally, you might add additional options like here:
       cmake -DCMAKE_BUILD_TYPE=Debug ../
+  or, change destination prefix (for not requiring sudo):
+      cmake -DCMAKE_INSTALL_PREFIX=~ ../
   or
       cmake -DCMAKE_TOOLCHAIN_FILE=../toolchain_gcc-8.cmake ../
   or following for using Visual Studio
@@ -18,7 +20,7 @@ I. environments with cmake:
       cmake -G "Visual Studio 16 2019" -A x64 ../
 
   with a tool like 'ccmake' or 'cmake-gui' you can change configuration
-  exploring the available options:
+  exploring all the available options:
       ccmake .
       cmake-gui .
 
