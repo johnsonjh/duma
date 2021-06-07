@@ -146,14 +146,15 @@ set( DUMA_HDRS
 )
 
 set( DUMA_SRCS
-  duma.c
-  dumapp.cpp
-  print.c
-  sem_inc.c
+  src/duma.c
+  src/dumapp.cpp
+  src/print.c
+  src/sem_inc.c
 )
 
 add_library(DUMA_STATIC STATIC ${DUMA_SRCS} ${DUMA_HDRS})
 target_include_directories(DUMA_STATIC INTERFACE "${CMAKE_SOURCE_DIR}")
+target_include_directories(DUMA_STATIC PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 if (NOT DUMA_WITH_GLOBAL_MALLOC_FREE)
   target_compile_definitions(DUMA_STATIC PRIVATE DUMA_NO_GLOBAL_MALLOC_FREE)
 endif()
@@ -187,6 +188,7 @@ endif()
 
 add_library(DUMA_SHARED SHARED ${DUMA_SRCS} ${DUMA_HDRS})
 target_include_directories(DUMA_SHARED INTERFACE "${CMAKE_SOURCE_DIR}")
+target_include_directories(DUMA_SHARED PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 if (NOT DUMA_SHARED_WITH_CPP_SUPPORT)
   target_compile_definitions(DUMA_SHARED PRIVATE DUMA_SO_NO_CPP_SUPPORT)
 endif()

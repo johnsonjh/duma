@@ -37,22 +37,22 @@
 		<Unit filename="../../../GNUmakefile" />
 		<Unit filename="../../../README.txt" />
 		<Unit filename="../../../TODO" />
-		<Unit filename="../../../duma.c">
+		<Unit filename="../../../src/duma.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../../duma.h" />
 		<Unit filename="../../../duma_config.h" />
 		<Unit filename="../../../duma_hlp.h" />
 		<Unit filename="../../../duma_sem.h" />
-		<Unit filename="../../../dumapp.cpp" />
+		<Unit filename="../../../src/dumapp.cpp" />
 		<Unit filename="../../../dumapp.h" />
 		<Unit filename="../../../noduma.h" />
 		<Unit filename="../../../paging.h" />
-		<Unit filename="../../../print.c">
+		<Unit filename="../../../src/print.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../../print.h" />
-		<Unit filename="../../../sem_inc.c">
+		<Unit filename="../../../src/sem_inc.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

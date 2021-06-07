@@ -304,16 +304,16 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="..\..\duma.c">
+				RelativePath="..\..\src\duma.c">
 			</File>
 			<File
-				RelativePath="..\..\dumapp.cpp">
+				RelativePath="..\..\src\dumapp.cpp">
 			</File>
 			<File
-				RelativePath="..\..\print.c">
+				RelativePath="..\..\src\print.c">
 			</File>
 			<File
-				RelativePath="..\..\sem_inc.c">
+				RelativePath="..\..\src\sem_inc.c">
 			</File>
 		</Filter>
 		<Filter
