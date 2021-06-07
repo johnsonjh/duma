@@ -197,6 +197,7 @@ ifeq ($(OS), darwin)
   CPPFLAGS=-g -O0
   LIBS=-lpthread
   EXEPOSTFIX=
+  prefix=/opt/duma
 endif
 
 ifeq ($(OS), freebsd)
