@@ -5,9 +5,9 @@
 
 # Usage.
 if [ "$#" -lt 1 ]; then
-	printf '%s\n' "$0:	Usage: duma <executable> [optional arguments]."
-	printf '%s\n' "		Runs the executable under the DUMA malloc debugger."
-	exit 1
+  printf '%s\n' "$0:	Usage: duma <executable> [optional arguments]."
+  printf '%s\n' "		Runs the executable under the DUMA malloc debugger."
+  exit 1
 fi
 
 # Set the environment to preload DUMA library.
