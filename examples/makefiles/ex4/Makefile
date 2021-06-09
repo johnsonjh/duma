@@ -22,4 +22,3 @@ clean:
 
 $(BIN): $(OBJ)
 	$(CXX) $(OBJ) $(LFLAGS) $(LIBS) -o $(BIN)
-

@@ -77,4 +77,3 @@ BCC32DEF =
 BCC32RTLIB = cw32
 # BCC32 Startup: c0x32.obj-console, c0w32.obj-winapi
 //%end-user-targets
-

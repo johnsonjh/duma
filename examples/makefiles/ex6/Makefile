@@ -25,4 +25,3 @@ $(BIN): $(OBJ)
 
 .cpp.o:
 	$(CXX) $(CPPFLAGS) -c $< -o $@
-
