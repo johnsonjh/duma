@@ -18,7 +18,8 @@
   - Send email to:
 
     - Jeffrey H. Johnson <[trnsz@pobox.com](mailto:trnsz@pobox.com)>
-      - PGP fingerprints: `8C38 0A87 EEF5 31AD E272 F115 CEF9 3734 4085 819D` *and* `A448 D636 66B9 6E73 ACF4 F1EE B2AC CCAB 751C 790E`
+
+      - PGP fingerprints: `8C38 0A87 EEF5 31AD E272 F115 CEF9 3734 4085 819D` _and_ `A448 D636 66B9 6E73 ACF4 F1EE B2AC CCAB 751C 790E`
 
     - Hayati Ayguen <[h_ayguen@web.de](mailto:h_ayguen@web.de)>
       - PGP fingerprint: `558E C9EF 3EAB 05E8 76AF 61DC D44C 9772 6FA1 CC0B`
