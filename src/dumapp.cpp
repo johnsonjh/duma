@@ -57,7 +57,9 @@ static const char unknown_cxx_file[] = "UNKNOWN (use #include \"dumapp.h\")";
 
 #ifdef _MSC_VER
 
-int DUMA_CDECL duma_new_handler(size_t size) { return 0; }
+int DUMA_CDECL duma_new_handler(size_t size) {
+    return 0;
+}
 
 #else
 
@@ -68,22 +70,22 @@ void duma_new_handler() {}
 // declare function ; needed for attribute
 static
 #ifdef _MSC_VER
-    __forceinline
+__forceinline
 #else
-    inline
+inline
 #endif
-    void *
-    duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator,
-                      bool dothrow
+void *
+duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator,
+                  bool dothrow
 #ifndef DUMA_NO_LEAKDETECTION
-                      ,
-                      const char *filename, int lineno
+                  ,
+                  const char *filename, int lineno
 #endif
-                      )
+                 )
 #ifdef __GNUC__
-        __attribute__((always_inline))
+__attribute__((always_inline))
 #endif
-        ;
+;
 
 /* Function: duma_new_operator
  *
@@ -111,71 +113,71 @@ void *duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator,
                         ,
                         const char *filename, int lineno
 #endif
-) {
-  void *ret = 0;
+                       ) {
+    void *ret = 0;
 #ifdef _MSC_VER
-  int pnhret = 1;
+    int pnhret = 1;
 #else
 #define pnhret 1
 #endif
 
-  // initialize duma?
-  if (_duma_g.allocList == 0)
-    _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
+    // initialize duma?
+    if (_duma_g.allocList == 0)
+        _duma_init(); /* This sets DUMA_ALIGNMENT, DUMA_PROTECT_BELOW, DUMA_FILL,
                      ... */
 
-  DUMA_TLSVARS_T *duma_tls = GET_DUMA_TLSVARS();
+    DUMA_TLSVARS_T *duma_tls = GET_DUMA_TLSVARS();
 
-  do {
-    // try allocation
-    ret = _duma_allocate(0 /*=alignment*/
-                         ,
-                         userSize, duma_tls->PROTECT_BELOW, duma_tls->FILL,
-                         1 /*=protectAllocList*/
-                         ,
-                         allocator, DUMA_FAIL_NULL
+    do {
+        // try allocation
+        ret = _duma_allocate(0 /*=alignment*/
+                             ,
+                             userSize, duma_tls->PROTECT_BELOW, duma_tls->FILL,
+                             1 /*=protectAllocList*/
+                             ,
+                             allocator, DUMA_FAIL_NULL
 #ifndef DUMA_NO_LEAKDETECTION
-                         ,
-                         filename, lineno
+                             ,
+                             filename, lineno
 #endif
-    );
+                            );
 
-    // when allocation failed (and last call to new_handler didn't fail on
-    // Visual C++)
-    if (!ret && pnhret) {
-      // get the current new_handler
+        // when allocation failed (and last call to new_handler didn't fail on
+        // Visual C++)
+        if (!ret && pnhret) {
+            // get the current new_handler
 #ifdef _MSC_VER
-      _PNH h = _set_new_handler(duma_new_handler);
-      _set_new_handler(h);
+            _PNH h = _set_new_handler(duma_new_handler);
+            _set_new_handler(h);
 #else
-      std::new_handler h = std::set_new_handler(duma_new_handler);
-      std::set_new_handler(h);
+            std::new_handler h = std::set_new_handler(duma_new_handler);
+            std::set_new_handler(h);
 #endif
 
-      // is there any handler?
-      if (h) {
-        try // new_handler may throw an exception!!!
-        {
-          // call handler
+            // is there any handler?
+            if (h) {
+                try // new_handler may throw an exception!!!
+                {
+                    // call handler
 #ifdef _MSC_VER
-          pnhret = h(userSize);
+                    pnhret = h(userSize);
 #else
-          h();
+                    h();
 #endif
-        } catch (std::bad_alloc &) // error occured in new_handler
-        {
-          if (dothrow)
-            throw; // report error via re-throwing
-          else
-            return ret;   // report error via (void*)0
-        }                 // end try catch
-      } else if (dothrow) // report non-existing handler via exception
-        throw std::bad_alloc();
-      else // report non-existing handler via (void*)0
-        return ret;
-    }
-  } while (!ret); // loop until memory is claimed
-  return ret;
+                } catch (std::bad_alloc &) // error occured in new_handler
+                {
+                    if (dothrow)
+                        throw; // report error via re-throwing
+                    else
+                        return ret;   // report error via (void*)0
+                }                 // end try catch
+            } else if (dothrow) // report non-existing handler via exception
+                throw std::bad_alloc();
+            else // report non-existing handler via (void*)0
+                return ret;
+        }
+    } while (!ret); // loop until memory is claimed
+    return ret;
 }
 
 /********************************************************************
@@ -187,7 +189,7 @@ void *duma_new_operator(DUMA_SIZE_T userSize, enum _DUMA_Allocator allocator,
  * (11) = (a) ; ASW
  */
 void *DUMA_CDECL operator new(DUMA_SIZE_T size) NEW_THROW_SPEC {
-  return duma_new_operator(size, EFA_NEW_ELEM, true DUMA_PARAMS_UK);
+    return duma_new_operator(size, EFA_NEW_ELEM, true DUMA_PARAMS_UK);
 }
 
 /* Function: operator new
@@ -197,7 +199,7 @@ void *DUMA_CDECL operator new(DUMA_SIZE_T size) NEW_THROW_SPEC {
  */
 void *DUMA_CDECL operator new(DUMA_SIZE_T size,
                               const std::nothrow_t &) throw() {
-  return duma_new_operator(size, EFA_NEW_ELEM, false DUMA_PARAMS_UK);
+    return duma_new_operator(size, EFA_NEW_ELEM, false DUMA_PARAMS_UK);
 }
 
 /* Function: operator delete
@@ -207,12 +209,12 @@ void *DUMA_CDECL operator new(DUMA_SIZE_T size,
  */
 void DUMA_CDECL operator delete(void *ptr) throw() {
 #ifndef DUMA_NO_LEAKDETECTION
-  DUMA_TLSVARS_T &duma_tls = *GET_DUMA_TLSVARS();
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM,
-                   duma_tls.DelFile[duma_tls.DelPtr],
-                   duma_tls.DelLine[duma_tls.DelPtr]);
+    DUMA_TLSVARS_T &duma_tls = *GET_DUMA_TLSVARS();
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM,
+                     duma_tls.DelFile[duma_tls.DelPtr],
+                     duma_tls.DelLine[duma_tls.DelPtr]);
 #else
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM DUMA_PARAMS_UK);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM DUMA_PARAMS_UK);
 #endif
 }
 
@@ -223,12 +225,12 @@ void DUMA_CDECL operator delete(void *ptr) throw() {
  */
 void DUMA_CDECL operator delete(void *ptr, const std::nothrow_t &) throw() {
 #ifndef DUMA_NO_LEAKDETECTION
-  DUMA_TLSVARS_T &duma_tls = *GET_DUMA_TLSVARS();
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM,
-                   duma_tls.DelFile[duma_tls.DelPtr],
-                   duma_tls.DelLine[duma_tls.DelPtr]);
+    DUMA_TLSVARS_T &duma_tls = *GET_DUMA_TLSVARS();
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM,
+                     duma_tls.DelFile[duma_tls.DelPtr],
+                     duma_tls.DelLine[duma_tls.DelPtr]);
 #else
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM DUMA_PARAMS_UK);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ELEM DUMA_PARAMS_UK);
 #endif
 }
 
@@ -243,7 +245,7 @@ void DUMA_CDECL operator delete(void *ptr, const std::nothrow_t &) throw() {
  * (21) = (a) ; AAW
  */
 void *DUMA_CDECL operator new[](DUMA_SIZE_T size) NEW_THROW_SPEC {
-  return duma_new_operator(size, EFA_NEW_ARRAY, true DUMA_PARAMS_UK);
+    return duma_new_operator(size, EFA_NEW_ARRAY, true DUMA_PARAMS_UK);
 }
 
 /* Function: operator new[]
@@ -253,7 +255,7 @@ void *DUMA_CDECL operator new[](DUMA_SIZE_T size) NEW_THROW_SPEC {
  */
 void *DUMA_CDECL operator new[](DUMA_SIZE_T size,
                                 const std::nothrow_t &) throw() {
-  return duma_new_operator(size, EFA_NEW_ARRAY, false DUMA_PARAMS_UK);
+    return duma_new_operator(size, EFA_NEW_ARRAY, false DUMA_PARAMS_UK);
 }
 
 /* Function: operator delete[]
@@ -263,12 +265,12 @@ void *DUMA_CDECL operator new[](DUMA_SIZE_T size,
  */
 void DUMA_CDECL operator delete[](void *ptr) throw() {
 #ifndef DUMA_NO_LEAKDETECTION
-  DUMA_TLSVARS_T &duma_tls = *GET_DUMA_TLSVARS();
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY,
-                   duma_tls.DelFile[duma_tls.DelPtr],
-                   duma_tls.DelLine[duma_tls.DelPtr]);
+    DUMA_TLSVARS_T &duma_tls = *GET_DUMA_TLSVARS();
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY,
+                     duma_tls.DelFile[duma_tls.DelPtr],
+                     duma_tls.DelLine[duma_tls.DelPtr]);
 #else
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY DUMA_PARAMS_UK);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY DUMA_PARAMS_UK);
 #endif
 }
 
@@ -279,12 +281,12 @@ void DUMA_CDECL operator delete[](void *ptr) throw() {
  */
 void DUMA_CDECL operator delete[](void *ptr, const std::nothrow_t &) throw() {
 #ifndef DUMA_NO_LEAKDETECTION
-  DUMA_TLSVARS_T &duma_tls = *GET_DUMA_TLSVARS();
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY,
-                   duma_tls.DelFile[duma_tls.DelPtr],
-                   duma_tls.DelLine[duma_tls.DelPtr]);
+    DUMA_TLSVARS_T &duma_tls = *GET_DUMA_TLSVARS();
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY,
+                     duma_tls.DelFile[duma_tls.DelPtr],
+                     duma_tls.DelLine[duma_tls.DelPtr]);
 #else
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY DUMA_PARAMS_UK);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/, EFA_DEL_ARRAY DUMA_PARAMS_UK);
 #endif
 }
 
@@ -302,7 +304,7 @@ void DUMA_CDECL operator delete[](void *ptr, const std::nothrow_t &) throw() {
  */
 void *DUMA_CDECL operator new(DUMA_SIZE_T size, const char *filename,
                               int lineno) NEW_THROW_SPEC {
-  return duma_new_operator(size, EFA_NEW_ELEM, true DUMA_PARAMS_FILELINE);
+    return duma_new_operator(size, EFA_NEW_ELEM, true DUMA_PARAMS_FILELINE);
 }
 
 /* Function: operator new
@@ -312,7 +314,7 @@ void *DUMA_CDECL operator new(DUMA_SIZE_T size, const char *filename,
  */
 void *DUMA_CDECL operator new(DUMA_SIZE_T size, const std::nothrow_t &,
                               const char *filename, int lineno) throw() {
-  return duma_new_operator(size, EFA_NEW_ELEM, false DUMA_PARAMS_FILELINE);
+    return duma_new_operator(size, EFA_NEW_ELEM, false DUMA_PARAMS_FILELINE);
 }
 
 /* Function: operator delete
@@ -322,8 +324,8 @@ void *DUMA_CDECL operator new(DUMA_SIZE_T size, const std::nothrow_t &,
  */
 void DUMA_CDECL operator delete(void *ptr, const char *filename,
                                 int lineno) throw() {
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/,
-                   EFA_DEL_ELEM DUMA_PARAMS_FILELINE);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/,
+                     EFA_DEL_ELEM DUMA_PARAMS_FILELINE);
 }
 
 /* Function: operator delete
@@ -333,8 +335,8 @@ void DUMA_CDECL operator delete(void *ptr, const char *filename,
  */
 void DUMA_CDECL operator delete(void *ptr, const std::nothrow_t &,
                                 const char *filename, int lineno) throw() {
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/,
-                   EFA_DEL_ELEM DUMA_PARAMS_FILELINE);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/,
+                     EFA_DEL_ELEM DUMA_PARAMS_FILELINE);
 }
 
 /********************************************************************
@@ -349,7 +351,7 @@ void DUMA_CDECL operator delete(void *ptr, const std::nothrow_t &,
  */
 void *DUMA_CDECL operator new[](DUMA_SIZE_T size, const char *filename,
                                 int lineno) NEW_THROW_SPEC {
-  return duma_new_operator(size, EFA_NEW_ARRAY, true DUMA_PARAMS_FILELINE);
+    return duma_new_operator(size, EFA_NEW_ARRAY, true DUMA_PARAMS_FILELINE);
 }
 
 /* Function: operator new[]
@@ -359,7 +361,7 @@ void *DUMA_CDECL operator new[](DUMA_SIZE_T size, const char *filename,
  */
 void *DUMA_CDECL operator new[](DUMA_SIZE_T size, const std::nothrow_t &,
                                 const char *filename, int lineno) throw() {
-  return duma_new_operator(size, EFA_NEW_ARRAY, false DUMA_PARAMS_FILELINE);
+    return duma_new_operator(size, EFA_NEW_ARRAY, false DUMA_PARAMS_FILELINE);
 }
 
 /* Function: operator delete[]
@@ -369,8 +371,8 @@ void *DUMA_CDECL operator new[](DUMA_SIZE_T size, const std::nothrow_t &,
  */
 void DUMA_CDECL operator delete[](void *ptr, const char *filename,
                                   int lineno) throw() {
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/,
-                   EFA_DEL_ARRAY DUMA_PARAMS_FILELINE);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/,
+                     EFA_DEL_ARRAY DUMA_PARAMS_FILELINE);
 }
 
 /* Function: operator delete[]
@@ -380,8 +382,8 @@ void DUMA_CDECL operator delete[](void *ptr, const char *filename,
  */
 void DUMA_CDECL operator delete[](void *ptr, const std::nothrow_t &,
                                   const char *filename, int lineno) throw() {
-  _duma_deallocate(ptr, 1 /*=protectAllocList*/,
-                   EFA_DEL_ARRAY DUMA_PARAMS_FILELINE);
+    _duma_deallocate(ptr, 1 /*=protectAllocList*/,
+                     EFA_DEL_ARRAY DUMA_PARAMS_FILELINE);
 }
 
 #endif /* end ifdef DUMA_NO_LEAKDETECTION */
