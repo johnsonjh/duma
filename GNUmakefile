@@ -340,7 +340,7 @@ ifndef datadir
   datadir=$(prefix)/share
 endif
 
-# The directory for installing read-only data files that pertain to a single machine--that is to say, files for configuring a host.
+# The directory for installing read-only data files that pertain to a single machine.
 ifndef sysconfdir
   sysconfdir=$(prefix)/etc
 endif
@@ -350,16 +350,17 @@ ifndef libdir
   libdir=$(exec_prefix)/lib
 endif
 
-# The directory for installing header files to be included by user programs with the C `#include' preprocessor directive.
+# The directory for installing header files to be included by user programs.
 ifndef includedir
   includedir=$(prefix)/include
 endif
 
-PACKAGE_SOURCE=README.md CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 GNUmakefile gdbinit.rc \
-	duma.h dumapp.h duma_sem.h paging.h print.h duma_hlp.h noduma.h \
-	src/duma.c src/dumapp.cpp src/sem_inc.c src/print.c \
-	tests/dumatest.c tests/tstheap.c tests/thread-test.c tests/testmt.c tests/dumatestpp.cpp tests/testoperators.cpp \
-	createconf.c make_git_source_version.sh
+PACKAGE_SOURCE=README.md CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 \
+	GNUmakefile gdbinit.rc duma.h dumapp.h duma_sem.h paging.h print.h \
+	duma_hlp.h noduma.h src/duma.c src/dumapp.cpp src/sem_inc.c src/print.c \
+	tests/dumatest.c tests/tstheap.c tests/thread-test.c tests/testmt.c \
+	tests/dumatestpp.cpp tests/testoperators.cpp createconf.c \
+	make_git_source_version.sh
 
 OBJECTS=dumapp.o duma.o sem_inc.o print.o
 
@@ -511,11 +512,13 @@ endif
 
 # Delete all files that are normally created by running make.
 clean:
-	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o a.out \
-		tstheap_so.o dumatestpp_so.o testoperators.o \
-		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
+	- $(RMFORCE) $(OBJECTS) $(SO_OBJECTS) tstheap.o dumatest.o thread-test.o \
+		testmt.o dumatestpp.o a.out tstheap_so.o dumatestpp_so.o \
+		testoperators.o tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) \
+		dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) libduma.cat \
+		dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
 		thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) \
-		libduma.a $(DUMASO) libduma.cat
+		libduma.a $(DUMASO)
 
 # Any of these targets might be defined to delete more files than `clean' does.
 # For example, this would delete configuration files or links that you would
@@ -543,7 +546,7 @@ reconfig: createconf$(EXEPOSTFIX) createconf.o createconf.c
 	- $(CURPATH)createconf$(EXEPOSTFIX)
 
 dos2unix:
-	@ dos2unix --d2u $(PACKAGE_SOURCE)
+	dos2unix --d2u $(PACKAGE_SOURCE)
 
 createconf$(EXEPOSTFIX): createconf.o
 	- $(RMFORCE) createconf$(EXEPOSTFIX)
