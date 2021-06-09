@@ -18,12 +18,14 @@
   2. Send email to:
 
   - Jeffrey H. Johnson:
+
     - [trnsz@pobox.com](mailto:trnsz@pobox.com)
 
       - PGP fingerprint: `8C38 0A87 EEF5 31AD E272 F115 CEF9 3734 4085 819D`
       - PGP fingerprint: `A448 D636 66B9 6E73 ACF4 F1EE B2AC CCAB 751C 790E`
 
   - Hayati Ayguen:
+
     - [h_ayguen@web.de](mailto:h_ayguen@web.de)
     - [h.ayguen@procitec.de](mailto:h.ayguen@procitec.de)
     - [h.ayguen@googlemail.com](mailto:h.ayguen@googlemail.com)
