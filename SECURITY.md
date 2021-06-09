@@ -14,22 +14,13 @@
 - If you wish to report a security vulnerability (or any other issue of a
   sensitive nature):
 
-  1. Ensure that the bug exists in the most recent release.
-  2. Send email to:
+  - Ensure that the bug exists in the most recent release.
+  - Send email to:
 
-  - Jeffrey H. Johnson:
+    - Jeffrey H. Johnson <[trnsz@pobox.com](mailto:trnsz@pobox.com)>
+      - PGP fingerprints: `8C38 0A87 EEF5 31AD E272 F115 CEF9 3734 4085 819D` *and* `A448 D636 66B9 6E73 ACF4 F1EE B2AC CCAB 751C 790E`
 
-    - [trnsz@pobox.com](mailto:trnsz@pobox.com)
-
-      - PGP fingerprint: `8C38 0A87 EEF5 31AD E272 F115 CEF9 3734 4085 819D`
-      - PGP fingerprint: `A448 D636 66B9 6E73 ACF4 F1EE B2AC CCAB 751C 790E`
-
-  - Hayati Ayguen:
-
-    - [h_ayguen@web.de](mailto:h_ayguen@web.de)
-    - [h.ayguen@procitec.de](mailto:h.ayguen@procitec.de)
-    - [h.ayguen@googlemail.com](mailto:h.ayguen@googlemail.com)
-
+    - Hayati Ayguen <[h_ayguen@web.de](mailto:h_ayguen@web.de)>
       - PGP fingerprint: `558E C9EF 3EAB 05E8 76AF 61DC D44C 9772 6FA1 CC0B`
 
 ```text

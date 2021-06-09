@@ -582,7 +582,7 @@ operator delete[](ptr, file,line);  // vector delete
 
 ### Security Policy
 
-- [Security Policy and Vulnerability Reporting](https://github.com/johnsonjh/duma/SECURITY.md)
+- [Security Policy and Vulnerability Reporting](https://github.com/johnsonjh/duma/security/policy)
 
 ---
 
