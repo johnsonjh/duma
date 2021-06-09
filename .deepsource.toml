@@ -1,5 +1,9 @@
 version = 1
 
+exclude_patterns = [
+  "Attic/**"
+]
+
 [[analyzers]]
 name = "javascript"
 enabled = true
