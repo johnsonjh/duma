@@ -85,7 +85,7 @@ have to read and understand the rest of the documentation.
 Besides catching these kind of memory bugs, **DUMA** also provides a means to
 detect memory leaks. When using **DUMA** to pinpoint the source of a
 memory-leak, some source modification is necessary - at the minimum, adding
-`#include 'duma.h'` to your source.
+`#include "duma.h"` to your source.
 
 ---
 
