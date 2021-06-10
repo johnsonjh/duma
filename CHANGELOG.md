@@ -522,9 +522,9 @@
 - Forked Electric Fence cause Bruce Perens wrote:
   > Hayati Ayguen must choose another name for his program
   > "Electric Fence" is a trademark he is not permitted to use
-- Opened a "*new*" project **DUMA** - *Detect Unintended Memory Access*:
-  - Rename *efence* to **duma**
-  - Rename *Electric Fence* to **DUMA**
+- Opened a "_new_" project **DUMA** - _Detect Unintended Memory Access_:
+  - Rename _efence_ to **duma**
+  - Rename _Electric Fence_ to **DUMA**
   - Rename EF\_ to DUMA\_
   - Rename ef\_ to duma\_
   - Rename eff\_ to duma\_ \* (and so on ...)
