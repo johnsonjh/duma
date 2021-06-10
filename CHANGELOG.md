@@ -5,24 +5,23 @@
 - Squash some details for generated CHANGELOG.md
 - Make all scripts pass shfmt and shellcheck
 - Update README.md: Add DeepSource analysis status badge
-- Update GNUmakefile: CHANGELOG → CHANGELOG.md
-- Update GNUmakefile: Fix "dos2unix" target
 - Convert CHANGELOG to Markdown, fix spelling, add dates
 - Update SECURITY.md: Clarify document, reformat, add PGP details
 - Reorganization of source tree
-- Fix OS X default installation prefix, also allow override 
-- Generate duma.sh to have absolute path to installed shared library
-- Update shell scripts to improve stylinf, tune redirection, add
-    pedantic error checking, better POSIX complaince
-- Update GNUmakefile: Remove shar target
-- Update GNUmakefile: Use C++-11 compilation mode w/g++
+- GNU Make: Fix OS X default installation prefix, also allow override 
+- CMake: Generate `duma.sh` to have absolute path to installed shared library
+- Update shell scripts to improve styling, tune redirection, add
+    pedantic error checking, better POSIX compliance
+- Update GNUmakefile
+  - Remove `shar` target
+  - Fix `dos2unix` target
+  - Use C++-11 compilation mode w/g++
 - Update duma.c: Adjust include ordering
-- Add CMake support
-- Update README.md: Fix-up conversion, correct typos
+- New CMake build support
 - Fix compilation warnings with gcc-9.3; changes in createconf on addr
 - Create Attic for outdated/deprecated components
   - Store detours and kduma for now
-- Update GNUmakefile: Remove "a.out" during clean
+- Remove `a.out` during `gmake clean`
 - Overhaul README.md: Integrate and update all README information 
 - Add .gitattributes to configure GitHub Linguist
 - Normalize some code styling with clang-format
@@ -40,11 +39,14 @@
 
 ## 2.5.20 (2021-01-04)
 
-- Typo fix and build system updates - nothing functional
+- Typo fixes and build system updates
+  - No functional changes
 
 ## 2.5.19 (2021-01-02)
 
-- Updated scripts, Debian release info, minor changes
+- Other minor changes
+- Updated shell scripts
+- Fixed Debian release info
 
 ## 2.5.18 (2020-12-18)
 
@@ -498,8 +500,8 @@
 
 ## 2.4.18 (2005-09-16)
 
-- Checked Source code: DUMA_get_sem() is nor more called, when
-  DUMA_NO_THREAD_SAFETY is set splitted this document into two files:
+- Checked Source code: DUMA_get_sem() is no longer called, when
+  DUMA_NO_THREAD_SAFETY is set - split this document into two files:
   TODO and CHANGELOG
 - Created INSTALL document
 - Modified Makefile: added special rules for building shared library
