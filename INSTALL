@@ -1,6 +1,6 @@
 This documents describes if and how the library is installed on your system.
 
-I. environments with cmake:
+I. environments with CMake:
 
   clone/checkout sources with git. cd into the sources.
   then execute create and change to a build directory:
@@ -80,13 +80,13 @@ III. Windows 2000/XP, Visual Studio Environments:
 
 IV. Solaris Environment:
 
-  Add the location(s) of the GNU Toolchain (gmake, gcc, ar, ..) to the PATH:
+  Add the location(s) of the GNU tool-chain (gmake, gcc, ar, ..) to the PATH:
   On my Solaris 10 installation with the Companion CD it is:
     /opt/sfw/bin and /opt/sfw/lib/bin
 
   Also notice that the Makefile has to contain some special settings so that
-  the compiled executable can dynmically find and link to libstdc++. Have a
-  look at the solaris section in DUMA's Makefile.
+  the compiled executable can dynamically find and link to libstdc++. Have a
+  look at the Solaris section in DUMA's Makefile.
 
 
 V. FreeBSD Environment:
