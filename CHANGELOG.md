@@ -1,7 +1,8 @@
 # CHANGELOG:
 
-# 2.6xx
+## 2.6xx
 
+- Update CHANGELOG.md: Fix conversion errors, minor updates
 - Convert CHANGELOG to Markdown
 - Update .deepsource.toml: Exclude Attic from checks
 - Merge pull request #113 from johnsonjh/deepsource-transform-62cab989
@@ -51,7 +52,7 @@
 - Update README.md: Fix spacing
 - Update README.md: Indent FOSSAbot scan item
 - Update README.md: Normalize Markdown spacing
-- Update README.md: `\_` -> `﹎`
+- Update README.md: `_` -> `﹎`
 - Update README.md: Hide GitLab until closing #73
 - Merge pull request #96 from johnsonjh/deepsource-transform-fba48e62
 - Format code with standardrb, standardjs, autopep8, isort, rubocop,
@@ -201,23 +202,23 @@
 - Stow away old comparison data; prepare for overhaul.
   (2021-05-28, JJ)
 
-# 2.5.21
+## 2.5.21
 
 - Update contact information and documentation.
 
-# 2.5.20
+## 2.5.20
 
 - Typo fix and build system updates - nothing functional.
 
-# 2.5.19
+## 2.5.19
 
 - Updated scripts, Debian release info, minor changes.
 
-# 2.5.18
+## 2.5.18
 
 - Beta tagged, not released.
 
-# 2.5.17
+## 2.5.17
 
 - Updated README with extra history and information.
   (2020-12-15, JJ)
@@ -244,10 +245,10 @@
 - Applied a patch for bug ID #2831348 from an anonymous SourceForge user
   (2009-07-23, JJ)
 
-# 2.5.16
+## 2.5.16
 
 - Add memmove() implementation based on memove() from klibc by Andris Zeila:
-  http://sf.net/tracker/?func=detail&aid=2792252&group\_id=149725&atid=775376
+  http://sf.net/tracker/?func=detail&aid=2792252&group_id=149725&atid=775376
   (2009-05-21, HA)
 - Fixed "Broken build in Msys and C++ tests fail"
   - Fixed USE_WIN32_CRIT_SECT implementation in sem_inc.c
@@ -259,17 +260,17 @@
 - Removed debian subdirectory from CVS
   (2009-06-07, HA)
 - Fixed "Wrong LD_PRELOAD path in duma.sh". see
-  https://sf.net/tracker/?func=detail&aid=2800139&group\_id=149725&atid=775376
+  https://sf.net/tracker/?func=detail&aid=2800139&group_id=149725&atid=775376
   (2009-06-12, HA)
 - Fixed "GNUmakefile is missing DESTDIR" using submitted patch:
-  https://sf.net/tracker/?func=detail&aid=2800137&group\_id=149725&atid=775376
+  https://sf.net/tracker/?func=detail&aid=2800137&group_id=149725&atid=775376
 - Moved definition of MAN_INSTALL_DIR and DOC_INSTALL_DIR in GNUmakefile
   after definition of prefix
   (2009-06-15, HA)
 - Removed GNUmakefile option "DUMA_SEMAPHORES"
   (2009-06-14, HA)
 
-# 2.5.15
+## 2.5.15
 
 - Added alternative locking implementation in sem_inc.c using critical
   sections. Code from Peter Harris, see:
@@ -290,7 +291,7 @@
   too rigorous
   (2009-04-11, HA)
 
-# 2.5.14
+## 2.5.14
 
 - Added suggested ~/.gdbinit as gdbinit.rc
 - Added hint in mprotectFailed()
@@ -321,7 +322,7 @@
   "DUMA_NEW_0_STRATEGY"
   (2008-04-27, HA)
 
-# 2.5.13
+## 2.5.13
 
 - PATCH(es) from [Philip Mucci](mailto:mucci@cs.utk.edu)
   of [SiCortex](http://sicortex.com):
@@ -348,7 +349,7 @@
 - Updated Makefile: updated PACKAGE_SOURCE and added target dos2unix
   (2008-03-09, HA)
 
-# 2.5.12
+## 2.5.12
 
 - Enhancement: added environment variable 'DUMA_CHECK_FREQ' to autmatically
   check all memories no man's land at each n'th allocation/deallocation,
@@ -358,14 +359,14 @@
   DUMA_SKIPCOUNT_INIT.
   (2008-01-25, HA)
 
-# 2.5.11
+## 2.5.11
 
 - Bugfix on thread safety in sem_inc.c,
   thanks to Andrew Kornev writing the right hint as bugreport:
   "[ 1875926 ] non-thread safe lock() implementation"
   (2008-01-20, HA)
 
-# 2.5.10
+## 2.5.10
 
 - Added small test program to demonstrate crashing on multithreaded
   programs from
@@ -382,7 +383,7 @@
 - Added hint where no man's land was overwritten below or above userSpace
   (2008-01-03, HA)
 
-# 2.5.9
+## 2.5.9
 
 - Added link to mpatrol in README
 - Added shell environment variable 'DUMA_SKIPCOUNT_INIT'
@@ -404,7 +405,7 @@
 - Some comments in duma.h and dumapp.h
   (2007-12-23, HA)
 
-# 2.5.8
+## 2.5.8
 
 - Fix: set DUMA_PREFER_GETENV for osx; it doesn't link with environ
 - Fix: MinGW wanted exact declaration as in definition for
@@ -427,7 +428,7 @@
   conditional breakpoint on this function to catch a specific allocation
   (2007-08-19, HA)
 
-# 2.5.7
+## 2.5.7
 
 - Reformatting: converted tabs to spaces
 - Added test program testenv.c using global environ variable as alternative
@@ -453,7 +454,7 @@
   memory blocks
   (2007-08-17, HA)
 
-# 2.5.6
+## 2.5.6
 
 - Modified example Makefiles for not linking to pthreads on Windows
   (2007-08-12, HA)
@@ -466,7 +467,7 @@
 - Added Debian Bug report logs - #241156 as testmt.c
   (2007-08-14, HA)
 
-# 2.5.5
+## 2.5.5
 
 - Support for Solaris (Solaris 10 with the GNU toolchain from Companion CD)
 - Fix for solaris: strerror() calls calloc() leading to recursion; added
@@ -477,7 +478,7 @@
     and appended protection space
     (2007-08-11, HA)
 
-# 2.5.4
+## 2.5.4
 
 - Support for win32 mingw when calling make with OSTYPE=msys; call
   "mingw32-make OSTYPE=msys" from Windows command prompt having added the
@@ -486,7 +487,7 @@
 - Echo single dot '.' for windows command shell
   (2007-07-31, HA)
 
-# 2.5.3
+## 2.5.3
 
 - Added simple Makefiles for examples in subdir example_makes/ex\*/
 - Modified Makefile to avoid build of shared libs/executables specific to OS
@@ -502,7 +503,7 @@
   - updated Makefile
     (2007-07-13, HA)
 
-# 2.5.2
+## 2.5.2
 
 - Other minor corrections
 - Added preprocessor option "DUMA_SEMAPHORES" to select pthreads, locking
@@ -511,7 +512,7 @@
   from CVS and archives
   (2007-07-12, HA)
 
-# 2.5.1
+## 2.5.1
 
 - Turned global variables DUMA_PROTECT_BELOW, DUMA_ALIGNMENT and DUMA_FILL
   to thread local variables. Access now with new function macros
@@ -521,7 +522,7 @@
 - Add pthread_mutex implementation alternative to semaphores
   (2007-07-03, HA)
 
-# 2.5
+## 2.5.0
 
 - Documentation updates. Now using Natural Docs
   - Win32-specific fixes:
@@ -533,7 +534,7 @@
 - Support for output to a file
 - Can control output via environmental variables
 
-# 2.4.28
+## 2.4.28
 
 - Enhancement: reworked initialization for RequestID 1458083 on SF
   checks for recursive calls in \_duma_init() and duma_init()
@@ -549,11 +550,11 @@
   for /usr and /usr/local
   (2006-06-18, HA)
 
-# 2.4.27
+## 2.4.27
 
 - This version is now reachable via CVS on sourceforge.net
 
-# 2.4.27
+## 2.4.27
 
 - Published a german article on DUMA on http://duma.sourceforge.net/
 - Bugfix: Removed buffer overflow in DUMA_sprintf() for long filenames:
@@ -562,7 +563,7 @@
     This bug was reported by <mailto:loigu@volny.cz>
     (2006-01-09, HA)
 
-# 2.4.26
+## 2.4.26
 
 - New project file for Dev-C++ 4.9.9.2 for createconf from
   [Benjamin Berkels](mailto:benjamin.berkels@ins.uni-bonn.de)
@@ -574,7 +575,7 @@
 - Some more TLS preparation
   (2005-10-28, HA)
 
-# 2.4.25
+## 2.4.25
 
 - Bugfix: semaphores were not initialized correctly; this lead to a hang.
   Thanks for reporting and providing a test environment to
@@ -586,7 +587,7 @@
 - DUMA_Magic now array (call_depth)
   (2005-10-21, HA)
 
-# 2.4.24
+## 2.4.24
 
 - New program testoperators: writes its own member new/delete operator with
   filename and line number forwarding to DUMA
@@ -594,7 +595,7 @@
   in banner now shows which library (static/shared) is used
   (2005-10-09, HA)
 
-# 2.4.23
+## 2.4.23
 
 - Write DUMA's preprocessor flags at compile time of the library to
   duma_config.h. Thus one no more would have to provide the same flags when
@@ -602,7 +603,7 @@
   - Changed Makefile, to take care for this
     (2005-10-07, HA)
 
-# 2.4.22
+## 2.4.22
 
 - C++ 'new' operators now (more) standard conforming; allocation of
   size==0 now returns non 0 pointer
@@ -620,7 +621,7 @@
 - Bugfix: rules how to build test objects; DUMA_OPTIONS were not passed
   (2005-10-06, HA)
 
-# 2.4.21
+## 2.4.21
 
 - Modified Makefile: name for shared library and symbolic links now
   configurable at start
@@ -632,7 +633,7 @@
   when allocation failed new operators now (nearly) C++ conform
   (2005-09-29, HA)
 
-# 2.4.20
+## 2.4.20
 
 - Integrated patches from [Zbynek Vyskovsky](kvr@centrum.cz)
   - Use tighter alignment when size is smaller than default alignment
@@ -660,7 +661,7 @@
 - Bugfix: return '(void\*)0' in \_duma_allocate(), when userSize==0
   (2005-09-27, HA)
 
-# 2.4.19
+## 2.4.19
 
 - Fixed compile error in duma.c introduced in 2.4.18 fixed/enhanced Makefile
   (2005-09-19, HA)
@@ -669,7 +670,7 @@
 - Added check for initialization function "\_\_attribute ((constructor))"
   (2005-09-18, HA)
 
-# 2.4.18
+## 2.4.18
 
 - Checked Source code: DUMA_get_sem() is nor more called, when
   DUMA_NO_THREAD_SAFETY is set splitted this document into two files:
@@ -690,7 +691,7 @@
 - Add new preprocessor flag 'DUMA_NO_HANG_MSG' in Makefile
   (2005-09-16, HA)
 
-# 2.4.17
+## 2.4.17
 
 - Forked Electric Fence cause Bruce Perens wrote:
   > Hayati Ayguen must choose another name for his program.
@@ -703,7 +704,7 @@
   - Rename eff\_ to duma\_ \* and so on ...
     (2005-09-10, HA)
 
-# 2.4.16
+## 2.4.16
 
 - Added examples for article portability: use standardized strerror() instead
   sys_nerr and sys_errlist[].
@@ -722,7 +723,7 @@
 - Added EF_EXPLICIT_INIT preprocessor flag to workaround buggy environments.
   (2005-08-21, HA)
 
-# 2.4.15
+## 2.4.15
 
 - Bugfixed page management under Windows: virtual address space never got
   released. Unfortunately, this "quick" fix avoids memory pooling
@@ -735,7 +736,7 @@
   - Extended \_eff_allocate() for this; prepared new for standard conformity.
     (2005-07-20, HA)
 
-# 2.4.14
+## 2.4.14
 
 - Integrated code from [Tim Braun](mailto:braun@informatik.uni-kl.de)
   - New EF_SHOW_ALLOC environment variable, which prints allocations and
@@ -764,7 +765,7 @@
   is defined which has standard conforming syntax.
   (2005-02-14, HA)
 
-# 2.4.13
+## 2.4.13
 
 - Added internal flag saving the source (allocation/deallocation) for
   filename and lineno.
@@ -791,7 +792,7 @@
   also for valloc()
   (2005-02-03, HA)
 
-# 2.4.12
+## 2.4.12
 
 - Added EF_NO_GLOBAL_MALLOC_FREE preprocessor flag to workaround buggy
   environments: no malloc(), free(), realloc(), calloc() are put into the
@@ -805,7 +806,7 @@
   when libstdc++ / libgcc is not linked in correct order.
   (2005-01-04, HA)
 
-# 2.4.11
+## 2.4.11
 
 - Bugfixed signal handling in confidence test (eftest), which lead to false
   errors with my newly installed MandrakeLinux 10.1
@@ -816,7 +817,7 @@
   too short. fixed functions EF_Abort() and EF_Exit().
   (2004-08-15, HA)
 
-# 2.4.10
+## 2.4.10
 
 - Added preprocessor macros for CA_DECLARE, CA_DEFINE, CA_REF in efence.h
   for declaration, definition and reference to Checked Arrays. These macros
@@ -856,14 +857,14 @@
   efence in your release builds!
   (2004-03-21, HA)
 
-# 2.4.9
+## 2.4.9
 
 - Added checks for no mans land (= space which cannot get protected from the
   MMU): this area gets filled with EF_FILL on allocation, and gets checked
   on deallocation.
   (2002-12-04, HA)
 
-# 2.4.8
+## 2.4.8
 
 - One big fix and many improvements for C++ code. old macros NEW_ELEM,
   NEW_ARRAY were not usable when allocating classes, which have
@@ -871,7 +872,7 @@
   (See 2.4.3).
   (2002-12-04, HA)
 
-# 2.4.7
+## 2.4.7
 
 - Support Borland Free Commandline Tools: Borland C++ Builder 5.5
   - Throw away unnecessary declarations of malloc(), free(), ..
@@ -881,7 +882,7 @@
     Borland C++ Builder 5.5 (see http://www.objectcentral.com)
     (2002-11-22, HA)
 
-# 2.4.6
+## 2.4.6
 
 - Remove memory leak in eftest
 - Allow re-inclusion of efence.h after inclusion of efenceint.h
@@ -890,14 +891,14 @@
   makefiles left tstheap's memory leaks
   (2002-11-17, HA)
 
-# 2.4.5
+## 2.4.5
 
 - Modifications in print routines (EF_Print, EF_Abort, ..)
 - Added direct output to visual c++ debug output window.
 - Some additions to Makefile
   (2002-11-17, HA)
 
-# 2.4.4
+## 2.4.4
 
 - Seperation of c++ files: efencepp.h, efencepp.cpp
 - Rename EF_push()/EF_pop() to EF_newFrame()/EF_delFrame()
@@ -908,7 +909,7 @@
 - Rename COPYING to COPYING-GPL
   (2002-11-03, HA)
 
-# 2.4.3
+## 2.4.3
 
 - Added following PreProcessor Macros for Release and Debug Mode
   - #define NEW_ELEM(TYPE) new TYPE
@@ -919,7 +920,7 @@
 - Use these macros to get filename and linenumber of a C++ style memory leak.
   (2002-10-07, HA)
 
-# 2.4.2
+## 2.4.2
 
 - Added support for implicit and explicit leak checking:
   - void EF_push(void) creates a new memory frame.
@@ -928,7 +929,7 @@
     EF_push().
     (2002-10-07, HA)
 
-# 2.4.1
+## 2.4.1
 
 - Port to Windows (NT/2000/XP) by adding sections to following functions:
   - Page_AllowAccess()
@@ -938,27 +939,27 @@
   - Page_Size()
     (2002-10-06, HA)
 
-# 2.4.0
+## 2.4.0
 
 - Added support for C++ operators new, new[], delete and delete[].
 - Added some project files in subdir "win32-msvc" for MS-Visual C++ 6.0
   (2002-10-03, HA)
 
-# 2.2.2
+## 2.2.2
 
 - Oops. Shared library must be position-independent code.
 
-# 2.2.0
+## 2.2.0
 
 - Merge in bug-fixes, multi-thread patch, shared library patch, debian/
   subdirectory used for building the Debian package
 
-# 2.0.5
+## 2.0.5
 
 - Port to Linux.
   (1995-01-20)
 
-# 2.0.4
+## 2.0.4
 
 - Don't attempt to allow access to a zero-sized page when
   EF_ALLOW_MALLOC_0 is set.
@@ -968,19 +969,19 @@
   that nobody is running 5.0 any longer.
   (1993-05-29)
 
-# 2.0.3
+## 2.0.3
 
 - When realloc is passed a zero address, it should work the same way as
   malloc(). Fix forward declaration of mprotect() in page.c to use void \*,
   not caddr_t, for addresses. IRIX 5.0.1 complained about that.
   (1994-09-30)
 
-# 2.0.2
+## 2.0.2
 
 - Add support for DEC Alpha. Add %a pattern for printing addresses, which
   assumes they are passed in a void \*.
 
-# 2.0.1
+## 2.0.1
 
 - Add work-arounds for kernel and library bugs under HP-UX.
   - HP has been notified and will repair these soon.
