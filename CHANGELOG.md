@@ -3,34 +3,33 @@
 ## 2.6xx
 
 - Squash details in generated `CHANGELOG.md`
-- Update SECURITY.md
+- Update `SECURITY.md`
   - Clarify purpose of document, update, reformat, add PGP details
 - Reorganization of files in source tree
-- Update shell scripts to improve styling (shfmt), tune redirection, add
+- Update shell scripts to improve styling (`shfmt`), tune redirection, add
     pedantic error checking, better POSIX compliance, appease shellcheck
-- Update GNUmakefile
+- Update `GNUmakefile`
   - Remove `shar` target
   - Fix `dos2unix` target
   - Use C++-11 compilation mode w/g++
   - Fix OS X default installation prefix
-    - also, allow user to override prefix
+    - also, allow user to override default prefix
   - Remove `a.out` during `gmake clean`
 - Update `duma.c`: Adjust ordering of included headers
-- **New CMake build support**
+- New CMake build support
   - Generate `duma.sh` to have absolute path to installed shared library
 - Fix compilation warnings with GCC 9.3
-- Create Attic for outdated / deprecated components
+- Create *Attic* for outdated / deprecated components
   - Store '*detours*' and '*kduma*'
-- **Overhaul and consolidate documentation** into `README.md`
+- Overhaul and consolidate documentation into `README.md`
   - Optimize for both web browser and plain-text viewing
   - Integrate all `README.txt` information
   - Update status badge image links
-- Add `.gitattributes` to configure GitHub Linguist
+- Add `.gitattributes` to configure *GitHub Linguist*
 - Normalize source code styling with `clang-format`
 - Convert `CHANGELOG` to Markdown
   - Normalize format, fix spelling, add dates
 - Switch to `git-changelog` generated `CHANGELOG`
-  (2021-05-30, JJ)
 
 ## 2.5.21 (2021-02-14)
 
