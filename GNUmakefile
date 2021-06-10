@@ -355,7 +355,7 @@ ifndef includedir
   includedir=$(prefix)/include
 endif
 
-PACKAGE_SOURCE=README.md CHANGELOG LICENSE COPYING-GPL COPYING-LGPL duma.3 \
+PACKAGE_SOURCE=README.md CHANGELOG.md LICENSE COPYING-GPL COPYING-LGPL duma.3 \
 	GNUmakefile gdbinit.rc duma.h dumapp.h duma_sem.h paging.h print.h \
 	duma_hlp.h noduma.h src/duma.c src/dumapp.cpp src/sem_inc.c src/print.c \
 	tests/dumatest.c tests/tstheap.c tests/thread-test.c tests/testmt.c \
