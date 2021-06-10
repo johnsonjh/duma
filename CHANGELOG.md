@@ -2,7 +2,11 @@
 
 ## 2.6xx
 
-- Update CHANGELOG.md: Add dates, fix some typos, formatting.
+- Update CHANGELOG.md: Normalize punctuation
+- Update CHANGELOG.md: Add dates, fix some typos, formatting
+  - Merge pull request #117 from johnsonjh/deepsource-transform-1ff996fc
+    - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+      standardjs, prettier and rubocop
 - Update GNUmakefile: Fix "dos2unix" target
 - Convert CHANGELOG to Markdown
   - Update CHANGELOG.md: Fix spelling with hunspell
@@ -109,8 +113,8 @@
 - Update TODO: Reference GitHub #65
 - Update TODO: Reference #64
 - Update TODO: Remove {s,p,q,b}make references
-- Update TODO: Remove obsolete compiler references.
-- Update TODO: Remove ICC (now DPC++) - it works.
+- Update TODO: Remove obsolete compiler references
+- Update TODO: Remove ICC (now DPC++) (it works)
 - Update TODO: Fix DMCC and OWC URLs
 - Update TODO: Add notes
 - Update README.md: Remove comment newlines
@@ -145,8 +149,8 @@
   - Restyled by prettier-markdown
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
-- Update README.md: Incorporate #52 and #53.
-- Update README.md: Incorporate #52 and #53.
+- Update README.md: Incorporate #52 and #53
+- Update README.md: Incorporate #52 and #53
   - Restyled by whitespace
   - Restyled by shfmt
   - Restyled by shellharden
@@ -166,12 +170,12 @@
     standardjs, prettier and rubocop
 - Update CHANGELOG
 - Update README.md: Commit first attempt at (mostly automated)
-  Markdown-ification.
+  Markdown-ification
   - Restyled by clang-format
   - Restyled by astyle
 - Fix compilation warnings with gcc-9.3; changes in createconf on addr
 - Update README.md
-- Stow old comparisons to make way for overhaul.
+- Stow old comparisons to make way for overhaul
 - Update CHANGELOG: Document Attic
 - Merge pull request #46 from johnsonjh/deepsource-transform-c20ce809
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
@@ -180,7 +184,7 @@
 - Update codacy/codacy-analysis-cli-action action to v3.0.3
 - Update codacy/codacy-analysis-cli-action action to v3.0.2
 - Update codacy/codacy-analysis-cli-action action to v3.0.1
-- Create Attic: Store detours and kduma for now.
+- Create Attic: Store detours and kduma for now
 - Merge pull request #37 from
   johnsonjh/renovate/codacy-codacy-analysis-cli-action-3.x
 - Update codacy/codacy-analysis-cli-action action to v3
@@ -188,71 +192,71 @@
 - Update README.md: Fix code size badge
 - Merge pull request #35 from johnsonjh/renovate/actions-setup-java-2.x
 - Update actions/setup-java action to v2
-- Update GNUmakefile: Remove "a.out" during clean.
+- Update GNUmakefile: Remove "a.out" during clean
 - Update README.md: SourceHut: Link to project page
-- Update README.md: Add links to GitLab mirror.
-- Add .gitattributes to configure GitHub Linguist.
+- Update README.md: Add links to GitLab mirror
+- Add .gitattributes to configure GitHub Linguist
 - Merge pull request #34 from johnsonjh/deepsource-transform-3b52b849
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
-- README.md: Remove duplicated Codacy badging.
+- README.md: Remove duplicated Codacy badging
 - Merge pull request #33 from
   johnsonjh/renovate/codacy-codacy-analysis-cli-action-2.x
   - Update codacy/codacy-analysis-cli-action action to v2.0.1
 - Merge pull request #32 from
   johnsonjh/renovate/codacy-codacy-analysis-cli-action-2.x
-- Normalize some code styling with clang-format.
+- Normalize some code styling with clang-format
 - Scripts: Reformat
 - Update codacy/codacy-analysis-cli-action action to v2
 - README: Correct link title
-- Update contact info and documentation.
+- Update contact info and documentation
 - Switch to git-changelog generated CHANGELOG (manually triggered for now)
   (2021-05-30, JJ)
-- Stow README.txt, add initial Markdown conversion.
-- Create Attic: Store Detours and kduma for now.
+- Stow README.txt, add initial Markdown conversion
+- Create Attic: Store Detours and kduma for now
   (2021-05-28, JJ)
-- Stow away old comparison data; prepare for overhaul.
+- Stow away old comparison data; prepare for overhaul
   (2021-05-28, JJ)
 
 ## 2.5.21 (2021-02-14)
 
-- Update contact information and documentation.
+- Update contact information and documentation
 
 ## 2.5.20 (2021-01-04)
 
-- Typo fix and build system updates - nothing functional.
+- Typo fix and build system updates - nothing functional
 
 ## 2.5.19 (2021-01-02)
 
-- Updated scripts, Debian release info, minor changes.
+- Updated scripts, Debian release info, minor changes
 
 ## 2.5.18 (2020-12-18)
 
-- Updated documentation.
+- Updated documentation
 
 ## 2.5.17 (2020-12-16)
 
-- Updated README with extra history and information.
+- Updated README with extra history and information
   (2020-12-15, JJ)
-- Added SECURITY.md: New Security Policy for bug reporting.
+- Added SECURITY.md: New Security Policy for bug reporting
   (2020-12-15, JJ)
-- Added LICENSE: Merged COPYING-GPL and COPYING-LGPL.
+- Added LICENSE: Merged COPYING-GPL and COPYING-LGPL
   (2020-08-25, JJ)
-- Updated TODO with items from 2009-12-30 by Daniel Trebbien.
+- Updated TODO with items from 2009-12-30 by Daniel Trebbien
   (2020-08-25, JJ)
-- Updated TODO with items from 2008-05-23 by Michael Eddington.
+- Updated TODO with items from 2008-05-23 by Michael Eddington
   (2020-08-25, JJ)
-- No longer build test programs (for now) to unbreak static builds.
+- No longer build test programs (for now) to unbreak static builds
   (2020-08-24, JJ)
-- Applied various update patches from the Buildroot Project.
+- Applied various update patches from the Buildroot Project
   (2020-10-28, JJ)
-- Applied a patch from Swati Kumari for additional NULL checks.
+- Applied a patch from Swati Kumari for additional NULL checks
   (2015-07-30, JJ)
-- Applied a patch for bug ID #3035145 from Reinhard Katzmann.
+- Applied a patch for bug ID #3035145 from Reinhard Katzmann
   (2010-07-26, JJ)
-- Applied a patch for bug ID #2923784 from Daniel Trebbien.
+- Applied a patch for bug ID #2923784 from Daniel Trebbien
   (2009-12-30, JJ)
-- Applied a patch for bug ID #2923779 from Daniel Trebbien.
+- Applied a patch for bug ID #2923779 from Daniel Trebbien
   (2009-12-30, JJ)
 - Applied a patch for bug ID #2831348 from an anonymous SourceForge user
   (2009-07-23, JJ)
@@ -313,7 +317,7 @@
   (2008-04-20, HA)
 - PATCH from [Philip Mucci](mailto:mucci@cs.utk.edu) on behalf
   of SiCortex
-  - Fix for malloc(0) which previously always returned NULL.
+  - Fix for malloc(0) which previously always returned NULL
   - Added environment switch DUMA_MALLOC_0_STRATEGY, which may return a
     special protected piece of memory for malloc(0)
   - Moved malloc/SHOW_ALLOC printouts before all abort checks
@@ -323,11 +327,11 @@
   (2008-04-21, HA)
 - Removed environment variable "DUMA_ALLOW_MALLOC_0",
   "DUMA_MALLOC_0_STRATEGY = 0" is equivalent to previous
-  "DUMA_ALLOW_MALLOC_0 = 0", default is 3.
+  "DUMA_ALLOW_MALLOC_0 = 0", default is 3
   (2008-04-22, HA)
 - Return unique pointer for C++ operator new for
   "DUMA_MALLOC_0_STRATEGY == 3". Now it should be really standards
-  conforming.
+  conforming
   (2008-04-26, HA)
 - Fix for C++ operator new with size zero added environment switch
   "DUMA_NEW_0_STRATEGY"
@@ -364,10 +368,10 @@
 
 - Enhancement: added environment variable 'DUMA_CHECK_FREQ' to automatically
   check all memories no man's land at each n'th allocation/deallocation,
-  n=0 to deactivate automatic checks.
+  n=0 to deactivate automatic checks
   (2008-01-24, HA)
 - Updated README.txt for environment variables DUMA_CHECK_FREQ and
-  DUMA_SKIPCOUNT_INIT.
+  DUMA_SKIPCOUNT_INIT
   (2008-01-25, HA)
 
 ## 2.5.11 (2008-01-20)
@@ -404,7 +408,7 @@
 - Tested on powerpc-apple-darwin8.0.0 inside of PearPC 0.4 (Windows):
   - Compiles and passes all confidence tests. trying to debug example1
     from within gdb crashes whole PearPC; running without gdb creates a
-    core dump one can analyze afterwards with gdb.
+    core dump one can analyze afterwards with gdb
     (2007-09-02, HA)
 - Bugfix for \_duma_strncpy(): no more call to strlen(), reported by
   [Kamall Neet](mailto:kamalneet@gmail.com)
@@ -426,7 +430,7 @@
   [Dries Verachtert](mailto:dries@ulyssis.org) at
   http://dries.ulyssis.org/apt/packages/duma/info.html
   (2007-08-17, HA)
-- Added environment variable 'DUMA_REPORT_ALL_LEAKS' defaulting to 0.
+- Added environment variable 'DUMA_REPORT_ALL_LEAKS' defaulting to 0
 - Added empty definitions for macro functions DUMA_SET_ALIGNMENT(),
   DUMA_SET_PROTECT_BELOW() and DUMA_SET_FILL()
 - Updated README on shell environment variable options, added some entries
@@ -450,11 +454,11 @@
   memory got allocated. Meanwhile I think leak-checking without further
   information is quite useless! Too many correct programs don't free
   all memory, cause the system frees memory up at program end. Thus,
-  too many platforms/environments are reported "broken" from DUMA.
+  too many platforms/environments are reported "broken" from DUMA
 - Output allocator type (malloc, strdup, ..) with leak report for each
   non freed memory block
 - Removed option DUMA_USE_FRAMENO and the frameno variable; I suppose nobody
-  is using it, but additionally it is not thread safe.
+  is using it, but additionally it is not thread safe
 - Added option DUMA_PREFER_GETENV; if you prefer standard C library getenv()
   over global char \*\*environ
 - Added function duma_check(void\*) and its macro DUMA_CHECK(): it checks the
@@ -564,8 +568,8 @@
 
 - Published a German article on DUMA on http://duma.sourceforge.net/
 - Bugfix: Removed buffer overflow in DUMA_sprintf() for long file names:
-  - Added parameter maxsize for output buffers in some functions.
-  - Incremented STRING_BUFFER_SIZE to reduce this risk.
+  - Added parameter maxsize for output buffers in some functions
+  - Incremented STRING_BUFFER_SIZE to reduce this risk
     This bug was reported by <mailto:loigu@volny.cz>
     (2006-01-09, HA)
 
@@ -583,7 +587,7 @@
 
 ## 2.4.25 (2005-10-21)
 
-- Bugfix: semaphores were not initialized correctly; this lead to a hang.
+- Bugfix: semaphores were not initialized correctly; this lead to a hang
   Thanks for reporting and providing a test environment to
   [Tim Braun](mailto:braun@informatik.uni-kl.de)
 - Updated project files for Dev-C++ 4.9.9.2 / GCC 3.3.1 and bug-fixed compiler
@@ -605,7 +609,7 @@
 
 - Write DUMA's preprocessor flags at compile time of the library to
   duma_config.h. Thus one no more would have to provide the same flags when
-  compiling his own objects files.
+  compiling his own objects files
   - Changed Makefile, to take care for this
     (2005-10-07, HA)
 
@@ -616,9 +620,9 @@
 - New option 'DUMA_SUPPRESS_ATEXIT' as environment variable from
   [Tim Braun](mailto:braun@informatik.uni-kl.de): suppress call to C
   library's atexit() function for DUMA's leak checking function in buggy
-  environments, where atexit() hangs.
+  environments, where atexit() hangs
 - Implemented alternative for C library's atexit() using GNU C compiler's
-  'destructor' function attribute.
+  'destructor' function attribute
 - New preprocessor flag 'DUMA_PREFER_ATEXIT' in Makefile
 - Updated project files for Dev-C++ 4.9.9.2 / GCC 3.3.1 from
   [Benjamin Berkels](mailto:benjamin.berkels@ins.uni-bonn.de)
@@ -656,10 +660,10 @@
       C++ new, new[], delete and delete[] operators
       (2005-09-24, HA)
 - Bugfixed reduceProtectedMemory(): Windows VirtualFree(,,MEM_RELEASE) can
-  only free whole allocations. not parts.
+  only free whole allocations. not parts
 - Bugfix in memory allocation: try allocation in loop until
   reduceProtectedMemory() fails deallocating more memory; long running
-  programs with much memory handling should benefit.
+  programs with much memory handling should benefit
   (2005-09-26, HA)
 - Added project files for Visual C++ .NET 2003
 - Applied one more patch from Zbynek Vyskovsky concerning alignment his
@@ -700,20 +704,20 @@
 ## 2.4.17 (2005-09-10)
 
 - Forked Electric Fence cause Bruce Perens wrote:
-  > Hayati Ayguen must choose another name for his program.
-  > "Electric Fence" is a trademark he is not permitted to use.
+  > Hayati Ayguen must choose another name for his program
+  > "Electric Fence" is a trademark he is not permitted to use
 - Opened a "new" project DUMA - Detect Unintended Memory Access:
   - Rename efence to duma
   - Rename Electric Fence to DUMA
   - Rename EF\_ to DUMA\_
   - Rename ef\_ to duma\_
-  - Rename eff\_ to duma\_ \* and so on ...
+  - Rename eff\_ to duma\_ \* (and so on ...)
     (2005-09-10, HA)
 
 ## 2.4.16 (2005-08-28)
 
 - Added examples for article portability: use standardized strerror() instead
-  sys_nerr and sys_errlist[].
+  sys_nerr and sys_errlist[]
 - Bugfix: error when defined EF_NO_LEAKDETECTION in \_eff_allocate()
 - Bugfix: error when defined EF_NO_LEAKDETECTION in \_eff_deallocate()
 - Enhancement: mark allocations from standard libraries before ef_init() is
@@ -726,20 +730,20 @@
 - Enhancement: allow alignments bigger than page size
   (2005-08-23, HA)
 - Document EF_NO_THREAD_SAFETY preprocessor flag in Makefile
-- Added EF_EXPLICIT_INIT preprocessor flag to workaround buggy environments.
+- Added EF_EXPLICIT_INIT preprocessor flag to workaround buggy environments
   (2005-08-21, HA)
 
 ## 2.4.15 (2005-07-24)
 
 - Bugfixed page management under Windows: virtual address space never got
   released. Unfortunately, this "quick" fix avoids memory pooling
-  under Windows.
+  under Windows
 - Remove double "Electric Fence:" messages when calling EF_Abort()
   or EF_Exit()
   (2005-07-24, HA)
-- Added parameter ExitOnFail to Page_Create().
-- Added warning when allocation failed and ExitOnFail is off.
-  - Extended \_eff_allocate() for this; prepared new for standard conformity.
+- Added parameter ExitOnFail to Page_Create()
+- Added warning when allocation failed and ExitOnFail is off
+  - Extended \_eff_allocate() for this; prepared new for standard conformity
     (2005-07-20, HA)
 
 ## 2.4.14 (2005-07-15)
@@ -758,36 +762,36 @@
   (2005-07-11, HA)
 - Bugfix for internal slot mode EFST_DEALLOCATED reported by Mikolas Patocka
   error occurred when userSpace memory region of freed memory is reused from
-  system and freed again: efence claimed freeing already freed memory.
+  system and freed again: efence claimed freeing already freed memory
   (2005-03-02, HA)
 - Defining macros/functions also for str[n]cpy() and str[n]cat() checking for
-  overlapping memory regions.
+  overlapping memory regions
   (2005-02-17, HA)
-- Now defining macros/functions also for strdup(), memcpy().
-- memcpy() checks if memory regions overlap.
+- Now defining macros/functions also for strdup(), memcpy()
+- memcpy() checks if memory regions overlap
   (2005-02-16, HA)
 - Added EF_OLD_DEL_MACRO preprocessor flag to keep compatibility to old
   DEL_ELEM() / DEL_ARRAY() macros; when not defined a macro for "delete"
-  is defined which has standard conforming syntax.
+  is defined which has standard conforming syntax
   (2005-02-14, HA)
 
 ## 2.4.13 (2005-02-11)
 
 - Added internal flag saving the source (allocation/deallocation) for
-  file name and lineno.
+  file name and lineno
 - Added EF_OLD_NEW_MACRO preprocessor flag to keep compatibility to old
   NEW_ELEM() / NEW_ARRAY() macros. When not defined a macro for "new" is
   defined which has standard conform syntax. Unfortunately, you have to
   use DEL_ELEM/DEL_ARRAY further to utilize file name and line number
-  of deallocation calls.
+  of deallocation calls
   (2005-02-10, HA)
 - Reworked/revised ALL internal functions !!!
 - Freeing already freed memory is now detected (much better)
 - Disallows coalescing memory regions and also stores
   \_\_FILE\_\_ and \_\_LINE\_\_ of free() to be able to print position
-  of first free.
+  of first free
 - Added EF_USE_FRAMENO preprocessor flag. changed not to support
-  EF_newFrame() and EF_delFrame() by default.
+  EF_newFrame() and EF_delFrame() by default
   (2005-02-07, HA)
 - Applied bug-fix posted by Luis Gonzalez. Bug was occurring under SuSE Linux
   9.1 when calling eftest with a higher number (such as 10000.)
@@ -809,7 +813,7 @@
   called from efence using efence. this is a problem when using
   DLL libraries which are linked against msvcrt.dll and its
   malloc/free under MS Windows. The same problem applies
-  when libstdc++ / libgcc is not linked in correct order.
+  when libstdc++ / libgcc is not linked in correct order
   (2005-01-04, HA)
 
 ## 2.4.11 (2005-01-03)
@@ -818,9 +822,9 @@
   errors with my newly installed Mandrake Linux 10.1
   (2005-01-03, HA)
 - Bugfixed checking at free(), when EF_PROTECT_BELOW flag changed which lead
-  to false positives.
+  to false positives
 - Bugfixed error message output to stderr: length of messages were calculated
-  too short. fixed functions EF_Abort() and EF_Exit().
+  too short. fixed functions EF_Abort() and EF_Exit()
   (2004-08-15, HA)
 
 ## 2.4.10 (2004-07-21)
@@ -828,21 +832,21 @@
 - Added preprocessor macros for CA_DECLARE, CA_DEFINE, CA_REF in efence.h
   for declaration, definition and reference to Checked Arrays. These macros
   allow checks of arrays which are allocated on stack, but they are very
-  slow on references cause every reference has to be checked.
+  slow on references cause every reference has to be checked
 - Added EF_ASSERT() which definitely halts (for debugging)
 - Precompiled headers have to be switched off in MS Visual C++ to get all the
   C++ operators to work, but don't ask me why!
 - Implemented all the various new/delete/new[]/delete[] C++ operators. The
   implementations are not C++ conform concerning their behavior added type
-  mismatch detection between malloc()/free(), new/delete, new[]/delete[].
-  This is deactivated when EF_NO_LEAKDETECTION is set.
+  mismatch detection between malloc()/free(), new/delete, new[]/delete[]
+  This is deactivated when EF_NO_LEAKDETECTION is set
 - Added EF_MALLOC_FAILEXIT parameter. (for now not implemented)
-- Extended semantics of EF_PROTECT_FREE.
-- Added EF_MAX_ALLOC parameter.
+- Extended semantics of EF_PROTECT_FREE
+- Added EF_MAX_ALLOC parameter
 - Bugfix: why should we ever use Page_Delete() when setting up the
   "dead" page?
 - Bugfix: EF_PROTECT_FREE did exactly the opposite of that, what it should
-  do up from Bruce's version 2.2.2 maybe earlier.
+  do up from Bruce's version 2.2.2 maybe earlier
   (2004-07-16, HA)
 - Confidence test now PASS again
 - Removed problems when used EF_NO_LEAKDETECTION preprocessor flag
@@ -867,23 +871,23 @@
 
 - Added checks for no mans land (= space which cannot get protected from the
   MMU): this area gets filled with EF_FILL on allocation, and gets checked
-  on deallocation.
+  on deallocation
   (2002-12-05, HA)
 
 ## 2.4.8 (2002-12-04)
 
 - One big fix and many improvements for C++ code. old macros NEW_ELEM,
   NEW_ARRAY were not usable when allocating classes, which have
-  constructor/destructor. The usage of these macros has not changed.
-  (See 2.4.3).
+  constructor/destructor. The usage of these macros has not changed
+  (See 2.4.3)
   (2002-12-04, HA)
 
 ## 2.4.7 (2002-11-22)
 
 - Support Borland Free Command-line Tools: Borland C++ Builder 5.5
-  - Throw away unnecessary declarations of malloc(), free(), ..
+  - Throw away unnecessary declarations of malloc(), free(), etc.
     Borland didn't like them, and neither MS-Visual C++ 6.0 nor gcc
-    (Dev-C++) needs them.
+    (Dev-C++) needs them
   - Added project files in subdir "win32-vide" for VIDE 1.24 using
     Borland C++ Builder 5.5 (see http://www.objectcentral.com)
     (2002-11-22, HA)
@@ -899,8 +903,8 @@
 
 ## 2.4.5 (2002-11-17)
 
-- Modifications in print routines (EF_Print, EF_Abort, ..)
-- Added direct output to visual C++ debug output window.
+- Modifications in print routines (EF_Print, EF_Abort, ...)
+- Added direct output to visual C++ debug output window
 - Some additions to Makefile
   (2002-11-17, HA)
 
@@ -922,17 +926,17 @@
   - #define NEW_ARRAY(TYPE,COUNT) new (TYPE)[COUNT]
   - #define DEL_ELEM(PTR) delete PTR
   - #define DEL_ARRAY(PTR) delete []PTR
-    which are mapped to malloc() and free() in Debug Mode.
-- Use these macros to get file name and line number of a C++ style memory leak.
+    which are mapped to malloc() and free() in Debug Mode
+- Use these macros to get file name and line number of a C++ style memory leak
   (2002-10-08, HA)
 
 ## 2.4.2 (2002-10-07)
 
 - Added support for implicit and explicit leak checking:
-  - void EF_push(void) creates a new memory frame.
+  - void EF_push(void) creates a new memory frame
   - void EF_pop(void) checks for memory leaks allocated after EF_push();
     this function is called automatically onexit(), even without
-    EF_push().
+    EF_push()
     (2002-10-07, HA)
 
 ## 2.4.1 (2002-10-06)
@@ -947,13 +951,13 @@
 
 ## 2.4.0 (2002-10-03)
 
-- Added support for C++ operators new, new[], delete and delete[].
+- Added support for C++ operators new, new[], delete and delete[]
 - Added some project files in subdir "win32-msvc" for MS-Visual C++ 6.0
   (2002-10-03, HA)
 
 ## 2.2.2
 
-- Shared library must be position-independent code.
+- Shared library must be position-independent code
 
 ## 2.2.0
 
@@ -962,32 +966,32 @@
 
 ## 2.0.5 (1995-01-20)
 
-- Port to Linux.
+- Port to Linux
   (1995-01-20)
 
 ## 2.0.4 (1994-09-30)
 
 - When realloc is passed a zero address, it should work the same way as
   malloc(). Fix forward declaration of mprotect() in page.c to use void \*,
-  not caddr_t, for addresses. IRIX 5.0.1 complained about that.
+  not caddr_t, for addresses. IRIX 5.0.1 complained about that
   (1994-09-30)
 
 ## 2.0.3 (1993-05-29)
 
 - Don't attempt to allow access to a zero-sized page when
-  EF_ALLOW_MALLOC_0 is set.
+  EF_ALLOW_MALLOC_0 is set
 - Attempt to un-map memory from Page_Delete(). If that doesn't work, fall
   back by protecting the page from all references. Un-mapping small
   segments of a mapping used to crash my SGI IRIX 5.0 system. I assume
-  that nobody is running 5.0 any longer.
+  that nobody is running 5.0 any longer
   (1993-05-29)
 
 ## 2.0.2
 
 - Add support for DEC Alpha. Add %a pattern for printing addresses, which
-  assumes they are passed in a void \*.
+  assumes they are passed in a void \*
 
 ## 2.0.1
 
-- Add work-arounds for kernel and library bugs under HP-UX.
-  - HP has been notified and will repair these soon.
+- Add work-arounds for kernel and library bugs under HP-UX
+  - HP has been notified and will repair these soon
