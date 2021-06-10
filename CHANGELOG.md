@@ -7,7 +7,7 @@
   - Clarify purpose of document, update, reformat, add PGP details
 - Reorganization of files in source tree
 - Update shell scripts to improve styling (`shfmt`), tune redirection, add
-    pedantic error checking, better POSIX compliance, appease shellcheck
+  pedantic error checking, better POSIX compliance, appease shellcheck
 - Update `GNUmakefile`
   - Remove `shar` target
   - Fix `dos2unix` target
@@ -19,13 +19,13 @@
 - New CMake build support
   - Generate `duma.sh` to have absolute path to installed shared library
 - Fix compilation warnings with GCC 9.3
-- Create *Attic* for outdated / deprecated components
-  - Store '*detours*' and '*kduma*'
+- Create _Attic_ for outdated / deprecated components
+  - Store '_detours_' and '_kduma_'
 - Overhaul and consolidate documentation into `README.md`
   - Optimize for both web browser and plain-text viewing
   - Integrate all `README.txt` information
   - Update status badge image links
-- Add `.gitattributes` to configure *GitHub Linguist*
+- Add `.gitattributes` to configure _GitHub Linguist_
 - Normalize source code styling with `clang-format`
 - Convert `CHANGELOG` to Markdown
   - Normalize format, fix spelling, add dates
