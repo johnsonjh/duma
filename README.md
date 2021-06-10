@@ -102,8 +102,8 @@ memory-leak, some source modification is necessary - at the minimum, adding
 
 - You can also use dynamic linking. If you're using a Bourne-style shell, the
   statement `export LD_PRELOAD=libduma.so` will cause **DUMA** to be loaded to
-  run all dynamic executables. (_[TODO(jhj)]_: _Document Darwin invocation._)
-  The helper command `duma.sh <command>` runs a single command under **DUMA**.
+  run all dynamic executables. The helper command `duma.sh <command>` runs a
+  single command under **DUMA**.
 
 - Some systems will require special arguments to the linker to assure that you
   are using the **DUMA** `malloc()` and not the one from your C library.
