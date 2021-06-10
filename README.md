@@ -2,20 +2,21 @@
 
 ---
 
-[![License-GPLv2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://github.com/johnsonjh/duma/blob/master/COPYING-GPL)
-[![License-LGPLv2.1](https://img.shields.io/badge/License-LGPL%20v2.1-blue.svg)](https://github.com/johnsonjh/duma/blob/master/COPYING-LGPL)
-[![FOSSAStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_shield)
-[![LocCount](https://img.shields.io/tokei/lines/github/johnsonjh/duma.svg)](https://github.com/XAMPPRocky/tokei)
-[![GitHubCodeSize](https://img.shields.io/github/languages/code-size/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma)
-[![GitHubRelease](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
-[![LgtmAlerts](https://img.shields.io/lgtm/alerts/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/alerts/)
-[![LanguageGradeC](https://img.shields.io/lgtm/grade/cpp/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/context:cpp)
-[![LanguageGradeJavaScript](https://img.shields.io/lgtm/grade/javascript/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/context:javascript)
-[![CodacyBadge](https://api.codacy.com/project/badge/Grade/f777934d666b4a6a9672d89b404c4953)](https://app.codacy.com/gh/johnsonjh/duma?utm_source=github.com&utm_medium=referral&utm_content=johnsonjh/duma&utm_campaign=Badge_Grade)
-[![CodeBeat](https://codebeat.co/badges/a0be6809-acda-41a7-96a8-0d46698dc42c)](https://codebeat.co/projects/github-com-johnsonjh-duma-master)
-[![DeepScanGrade](https://deepscan.io/api/teams/12184/projects/15170/branches/299583/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12184&pid=15170&bid=299583)
-[![DeepSource](https://deepsource.io/gh/johnsonjh/duma.svg/?label=resolved+issues)](https://deepsource.io/gh/johnsonjh/duma/?ref=repository-badge)
-[![TickgitTODOs](https://img.shields.io/endpoint?url=https://api.tickgit.com/badge?repo=github.com/johnsonjh/duma)](https://www.tickgit.com/browse?repo=github.com/johnsonjh/duma)
+[![license-gplv2](https://img.shields.io/badge/license-GPL%20v2-blue.svg)](https://github.com/johnsonjh/duma/blob/master/COPYING-GPL)
+[![license-lgplv2.1](https://img.shields.io/badge/license-LGPL%20v2.1-blue.svg)](https://github.com/johnsonjh/duma/blob/master/COPYING-LGPL)
+[![fossastatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_shield)
+[![loccount](https://img.shields.io/tokei/lines/github/johnsonjh/duma.svg)](https://github.com/XAMPPRocky/tokei)
+[![codesize](https://img.shields.io/github/languages/code-size/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma)
+[![release](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
+[![lgtm](https://img.shields.io/lgtm/alerts/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/alerts/)
+[![languagegrade-c](https://img.shields.io/lgtm/grade/cpp/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/context:cpp)
+[![languagegrade-javascript](https://img.shields.io/lgtm/grade/javascript/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/context:javascript)
+[![codacy](https://api.codacy.com/project/badge/Grade/f777934d666b4a6a9672d89b404c4953)](https://app.codacy.com/gh/johnsonjh/duma?utm_source=github.com&utm_medium=referral&utm_content=johnsonjh/duma&utm_campaign=Badge_Grade)
+[![codebeat](https://codebeat.co/badges/a0be6809-acda-41a7-96a8-0d46698dc42c)](https://codebeat.co/projects/github-com-johnsonjh-duma-master)
+[![deepscan](https://deepscan.io/api/teams/12184/projects/15170/branches/299583/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12184&pid=15170&bid=299583)
+[![deepsource-active](https://deepsource.io/gh/johnsonjh/duma.svg/?label=active-issues)](https://deepsource.io/gh/johnsonjh/duma/?ref=repository-badge)
+[![deepsource-resolved](https://deepsource.io/gh/johnsonjh/duma.svg/?label=resolved+issues)](https://deepsource.io/gh/johnsonjh/duma/?ref=repository-badge)
+[![tickgit](https://img.shields.io/endpoint?url=https://api.tickgit.com/badge?repo=github.com/johnsonjh/duma)](https://www.tickgit.com/browse?repo=github.com/johnsonjh/duma)
 
 ---
 

@@ -2,6 +2,7 @@
 
 ## 2.6xx
 
+- Update README.md: Add DeepSource analysis status badge
 - Update GNUmakefile: CHANGELOG → CHANGELOG.md
 - Update CHANGELOG.md: Normalize punctuation
 - Update CHANGELOG.md: Add dates, fix some typos, formatting
