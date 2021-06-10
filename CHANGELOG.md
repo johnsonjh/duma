@@ -67,7 +67,7 @@
   (2020-08-24, JJ)
 - Applied various update patches from the _Buildroot Project_
   (2020-10-28, JJ)
-- Applied a patch from _Swati Kumari_ for additional `NUL`L checks
+- Applied a patch from _Swati Kumari_ for additional `NULL` checks
   (2015-07-30, JJ)
 - Applied a patch for bug ID _3035145_ from _Reinhard Katzmann_
   (2010-07-26, JJ)
