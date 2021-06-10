@@ -2,14 +2,15 @@
 
 ## 2.6xx
 
-- Update CHANGELOG.md: Indentation
-- Update CHANGELOG.md: Fix conversion errors, minor updates
 - Convert CHANGELOG to Markdown
+  - Update CHANGELOG.md: Fix spelling with hunspell
+  - Update CHANGELOG.md: Indentation
+  - Update CHANGELOG.md: Fix conversion errors, minor updates
 - Update .deepsource.toml: Exclude Attic from checks
 - Merge pull request #113 from johnsonjh/deepsource-transform-62cab989
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
-- Update README.md, SECURITY.md: Nornalize docs
+- Update README.md, SECURITY.md: Normalize docs
 - Update GNUmakefile: Simplify comments, line length
 - Reorganize source: mkclean.bat -> Attic
 - Merge pull request #111 from johnsonjh/deepsource-transform-49792d92
@@ -27,8 +28,8 @@
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
 - Update SECURITY.md: Expand contacts, add PGP info
-- GNUmakefile: Allow overriding OSX default prefix
-- GNUmakefile: For OSX, use prefix of "/opt/duma"
+- GNUmakefile: Allow overriding OS X default prefix
+- GNUmakefile: For OS X, use prefix of "/opt/duma"
 - Merge pull request #104 from johnsonjh/README/X002-Simplify
 - Merge pull request #105 from johnsonjh/restyled/README/X002-Simplify
   - Restyled by prettier-markdown
@@ -45,12 +46,12 @@
   - Restyle duma.sh with shfmt
 - Update make_git_source_version.sh: Styling
 - Update make_git_source_version.sh: Don't redirect rm
-- Update make_git_source_version.sh: emacs & vim settings
+- Update make_git_source_version.sh: Emacs & vim settings
 - Update make_git_source_version.sh: Pedantic error checks
 - Update make_git_source_version.sh: error checking; POSIX
 - Update README.md: Restore GitLab link, close #73
 - Update README.md: ‑ (use non-breaking dash)
-- Update README.md: Display `0` as monospace
+- Update README.md: Display `0` as mono-space
 - Update README.md: Fix spacing
 - Update README.md: Indent FOSSAbot scan item
 - Update README.md: Normalize Markdown spacing
@@ -59,7 +60,7 @@
 - Merge pull request #96 from johnsonjh/deepsource-transform-fba48e62
   - Format code with standardrb, standardjs, autopep8, isort, rubocop,
     prettier, black, gofmt and yapf
-- Update READNE.md: Enhance readability, fix headers
+- Update README.md: Enhance readability, fix headers
 - Remove TODO: Closes #70
 - Update TODO: Refer to #95
 - Update TODO: Refer to #94
@@ -145,9 +146,9 @@
   - Restyled by prettier-markdown
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
-- Added cmake targets install and uninstall
-- Add initial cmake support +fixes
-- Update README.md: Fixup conversion, correct typos
+- Added CMake targets install and uninstall
+- Add initial CMake support +fixes
+- Update README.md: Fix-up conversion, correct typos
 - Rename: Attic/README.txt -> Attic/README_orig.txt
 - Update GNUmakefile: Install Markdown-ified doc
 - Merge pull request #49 from johnsonjh/restyled/pull-48
@@ -161,7 +162,7 @@
   - Restyled by astyle
 - Fix compilation warnings with gcc-9.3; changes in createconf on addr
 - Update README.md
-- Stow old comparions to make way for overhaul.
+- Stow old comparisons to make way for overhaul.
 - Update CHANGELOG: Document Attic
 - Merge pull request #46 from johnsonjh/deepsource-transform-c20ce809
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
@@ -257,8 +258,8 @@
   - Added make section for OSTYPE=msys-sh, which uses mingw32-gcc/g++
 - Use USE_WIN32_CRIT_SECT implementation for Cygwin, fixes testoperator
   (2009-05-23, HA)
-- Remove CVS subdirectories from packaging
-- Removed debian subdirectory from CVS
+- Remove CVS sub-directories from packaging
+- Removed debian sub-directory from CVS
   (2009-06-07, HA)
 - Fixed "Wrong LD_PRELOAD path in duma.sh". see
   https://sf.net/tracker/?func=detail&aid=2800139&group_id=149725&atid=775376
@@ -308,8 +309,8 @@
     special protected piece of memory for malloc(0)
   - Moved malloc/SHOW_ALLOC printouts before all abort checks
   (2008-04-20, Philip Mucci, HA)
-- Remove some warnings for "-Wall -Wextra" especially for cygwin
-- Detailed some messages when source filename and lineno were available
+- Remove some warnings for "-Wall -Wextra" especially for Cygwin
+- Detailed some messages when source file-name and line no were available
   (2008-04-21, HA)
 - Removed environment variable "DUMA_ALLOW_MALLOC_0",
   "DUMA_MALLOC_0_STRATEGY = 0" is equivalent to previous
@@ -328,10 +329,10 @@
 - PATCH(es) from [Philip Mucci](mailto:mucci@cs.utk.edu)
   of [SiCortex](http://sicortex.com):
   - Fix for pthread_self() and hang of testoperators test case on 64 bit
-    linux platforms (x86_64 and MIPS64)
+    Linux platforms (x86_64 and MIPS64)
   - Added -Wall to Makefile
   - Properly versioned symbolic library to have the version triple 0.0.0
-  - Removed control-M's from the sources. Please do not ship unix sources
+  - Removed control-M's from the sources. Please do not ship UNIX sources
     with control-M's (stop editing on Windows)
   - Make sure ranlib is run on the static library, various platforms
     require this
@@ -343,7 +344,7 @@
     usage
   - Added 'distclean clobber' targets to remove configuration
   - Added 'reconfig' target to regenerate duma_config.h
-  - Changed makefile flow to recursively run if duma_config.h doesn't
+  - Changed Makefile flow to recursively run if duma_config.h doesn't
     exist
   - Fixed return value error in testmt.c
   - Fixed args in thread-test.c
@@ -352,7 +353,7 @@
 
 ## 2.5.12
 
-- Enhancement: added environment variable 'DUMA_CHECK_FREQ' to autmatically
+- Enhancement: added environment variable 'DUMA_CHECK_FREQ' to automatically
   check all memories no man's land at each n'th allocation/deallocation,
   n=0 to deactivate automatic checks.
   (2008-01-24, HA)
@@ -363,12 +364,12 @@
 ## 2.5.11
 
 - Bugfix on thread safety in sem_inc.c, thanks to Andrew Kornev writing the
-    right hint as bugreport: "[ 1875926 ] non-thread safe lock() implementation"
+    right hint as bug-report: "[ 1875926 ] non-thread safe lock() implementation"
   (2008-01-20, HA)
 
 ## 2.5.10
 
-- Added small test program to demonstrate crashing on multithreaded
+- Added small test program to demonstrate crashing on multi-threaded
   programs from
   http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=67838
   (2008-01-15, HA)
@@ -394,12 +395,12 @@
 - Tested on powerpc-apple-darwin8.0.0 inside of PearPC 0.4 (Windows):
   - Compiles and passes all confidence tests. trying to debug example1
     from within gdb crashes whole PearPC; running without gdb creates a
-    core dump one can analyse afterwards with gdb.
+    core dump one can analyze afterwards with gdb.
     (2007-09-02, HA)
 - Bugfix for \_duma_strncpy(): no more call to strlen(), reported by
   [Kamall Neet](mailto:kamalneet@gmail.com)
 - Applied patch from [Eddy Pronk](mailto:epronk@users.sourceforge.net)
-  submitted to sourceforge with title "libduma.so on Solaris"
+  submitted to SourceForge with title "libduma.so on Solaris"
   (2007-11-13, HA)
 - Added minor error check in print.c about DUMA_OUTPUT_FILE
 - Some comments in duma.h and dumapp.h
@@ -407,7 +408,7 @@
 
 ## 2.5.8
 
-- Fix: set DUMA_PREFER_GETENV for osx; it doesn't link with environ
+- Fix: set DUMA_PREFER_GETENV for OS X; it doesn't link with environ
 - Fix: MinGW wanted exact declaration as in definition for
   function DUMA_strerror in print.h
 - Fix: workaround testmt.c to compile on Windows
@@ -425,7 +426,7 @@
   (2007-08-18, HA)
 - Add single line function 'duma_alloc_return()'; all memory allocated from
   DUMA is returned through this function. This allows you to set a
-  conditional breakpoint on this function to catch a specific allocation
+  conditional break-point on this function to catch a specific allocation
   (2007-08-19, HA)
 
 ## 2.5.7
@@ -456,21 +457,21 @@
 
 ## 2.5.6
 
-- Modified example Makefiles for not linking to pthreads on Windows
+- Modified example Makefile for not linking to pthreads on Windows
   (2007-08-12, HA)
 - Added win32-msvc.net project file for testoperators.cpp
 - Bugfix: obey for option DUMA_NO_LEAKDETECTION; check for this option
   before calling any non-existing operators with leak parameters
 - Enhanced comments in Makefile for DUMA_SO\_\_ and DUMA_LIB\_\_ options
-- Changes in Makefile to build dynamic library on osx
-- Preloading duma library now works on osx
+- Changes in Makefile to build dynamic library on OS CX
+- Preloading duma library now works on OS C
 - Added Debian Bug report logs - #241156 as testmt.c
   (2007-08-14, HA)
 
 ## 2.5.5
 
-- Support for Solaris (Solaris 10 with the GNU toolchain from Companion CD)
-- Fix for solaris: strerror() calls calloc() leading to recursion; added
+- Support for Solaris (Solaris 10 with the GNU tool-chain from Companion CD)
+- Fix for Solaris: strerror() calls calloc() leading to recursion; added
   preprocessor option DUMA_NO_STRERROR
 - Internal redesign:
   - Collected several global static variables to one structure and several
@@ -489,11 +490,11 @@
 
 ## 2.5.3
 
-- Added simple Makefiles for examples in subdir example_makes/ex\*/
+- Added simple Makefile for examples in subdir example_makes/ex\*/
 - Modified Makefile to avoid build of shared libs/executables specific to OS
 - dumapp.h now keeps C macro definitions
-- Support for max osx when calling make with OS=osx
-- Support for win32 cygwin when calling make with OSTYPE=cygwin
+- Support for max OS CX when calling make with OS=OS X
+- Support for win32 Cygwin when calling make with OSTYPE=cygwin
   (2007-07-14, HA)
 - Bugfix in createconf.c for Win32 but non Visual C++
 - Cygwin work:
@@ -527,8 +528,8 @@
 - Documentation updates. Now using Natural Docs
   - Win32-specific fixes:
     - Detours support for using DUMA with just binaries
-    - Compile a duma dll
-    - DUMA can perform stacktraces of each allocation
+    - Compile a duma DLL
+    - DUMA can perform stack traces of each allocation
     - Support for Visual Studio 2005
     - Support for output to debug console
 - Support for output to a file
@@ -536,16 +537,16 @@
 
 ## 2.4.28
 
-- Enhancement: reworked initialization for RequestID 1458083 on SF
+- Enhancement: reworked initialization for Request-ID 1458083 on SF
   checks for recursive calls in \_duma_init() and duma_init()
   (2006-06-17, HA)
-- Bugfix in new[] operators occured on alpha-linux1 on sf compile farm
+- Bugfix in new[] operators occurred on alpha-linux1 on sf compile farm
   (2006-06-18, HA)
 - Fix in Makefile: DUMA_OPTIONS was not used when compiling createconf.o
 - Fix compile error when DUMA_NO_LEAKDETECTION was set in testoperators.cpp
 - Fix to obey EXPLICIT_INIT in testoperators.cpp
   (2006-06-18, HA)
-- Fix: as in RequestID 1482267 on SF: updated install directory for manual:
+- Fix: as in Request-ID 1482267 on SF: updated install directory for manual:
   $prefix/share/man/man3 should fit the Filesystem Hierarchy Standard 2.3
   for /usr and /usr/local
   (2006-06-18, HA)
@@ -556,8 +557,8 @@
 
 ## 2.4.27
 
-- Published a german article on DUMA on http://duma.sourceforge.net/
-- Bugfix: Removed buffer overflow in DUMA_sprintf() for long filenames:
+- Published a German article on DUMA on http://duma.sourceforge.net/
+- Bugfix: Removed buffer overflow in DUMA_sprintf() for long file names:
   - Added parameter maxsize for output buffers in some functions.
   - Incremented STRING_BUFFER_SIZE to reduce this risk.
     This bug was reported by <mailto:loigu@volny.cz>
@@ -580,7 +581,7 @@
 - Bugfix: semaphores were not initialized correctly; this lead to a hang.
   Thanks for reporting and providing a test environment to
   [Tim Braun](mailto:braun@informatik.uni-kl.de)
-- Updated project files for Dev-C++ 4.9.9.2 / GCC 3.3.1 and bugfixed compiler
+- Updated project files for Dev-C++ 4.9.9.2 / GCC 3.3.1 and bug-fixed compiler
   error for Dev-C++/gcc both reported from
   [Benjamin Berkels](mailto:benjamin.berkels@ins.uni-bonn.de)
 - Modified delete macros
@@ -590,7 +591,7 @@
 ## 2.4.24
 
 - New program testoperators: writes its own member new/delete operator with
-  filename and line number forwarding to DUMA
+  file-name and line number forwarding to DUMA
 - Reworked Makefile: added tstheap_so which runs with shared library output
   in banner now shows which library (static/shared) is used
   (2005-10-09, HA)
@@ -640,12 +641,12 @@
   - Replaced calls to EF_Exit() by EF_Abort()
   - Modified README
     (2005-09-19 - 2005-09-23, ZV)
-  - Reworked Zbynek's patch to use long in internal adress calculations:
-    - Autodetect compatible integer types DUMA_ADDR and DUMA_SIZE in
-      createconf. Write them to duma_config.h autodetect
+  - Reworked Zbynek's patch to use long in internal address calculations:
+    - Auto-detect compatible integer types DUMA_ADDR and DUMA_SIZE in
+      createconf. Write them to duma_config.h auto-detect
       DUMA_MIN_ALIGNMENT in createconf, write value to duma_config.h
-    - Use autodetected values in code reworked DUMA_sprintf() and its format
-      specifier bugfixed Makefile: DUMA_SO_OPTIONS also used DUMA_OPTIONS
+    - Use auto-detected values in code reworked DUMA_sprintf() and its format
+      specifier bug-fixed Makefile: DUMA_SO_OPTIONS also used DUMA_OPTIONS
       removed '-DDUMA_NO_CPP_SUPPORT', as LD_PRELOAD works for
       C++ new, new[], delete and delete[] operators
       (2005-09-24, HA)
@@ -665,7 +666,7 @@
 
 - Fixed compile error in duma.c introduced in 2.4.18 fixed/enhanced Makefile
   (2005-09-19, HA)
-- Added runtime check for DUMA_PAGE_SIZE from duma_config.h
+- Added run-time check for DUMA_PAGE_SIZE from duma_config.h
   (2005-09-17, HA)
 - Added check for initialization function "\_\_attribute ((constructor))"
   (2005-09-18, HA)
@@ -751,7 +752,7 @@
   other effect, just makes debugging easier."
   (2005-07-11, HA)
 - Bugfix for internal slot mode EFST_DEALLOCATED reported by Mikolas Patocka
-  error occured when userSpace memory region of freed memory is reused from
+  error occurred when userSpace memory region of freed memory is reused from
   system and freed again: efence claimed freeing already freed memory.
   (2005-03-02, HA)
 - Defining macros/functions also for str[n]cpy() and str[n]cat() checking for
@@ -768,11 +769,11 @@
 ## 2.4.13
 
 - Added internal flag saving the source (allocation/deallocation) for
-  filename and lineno.
+  file name and lineno.
 - Added EF_OLD_NEW_MACRO preprocessor flag to keep compatibility to old
   NEW_ELEM() / NEW_ARRAY() macros. When not defined a macro for "new" is
   defined which has standard conform syntax. Unfortunately, you have to
-  use DEL_ELEM/DEL_ARRAY further to utilize filename and linenumber
+  use DEL_ELEM/DEL_ARRAY further to utilize file name and line number
   of deallocation calls.
   (2005-02-10, HA)
 - Reworked/revised ALL internal functions !!!
@@ -783,7 +784,7 @@
 - Added EF_USE_FRAMENO preprocessor flag. changed not to support
   EF_newFrame() and EF_delFrame() by default.
   (2005-02-07, HA)
-- Applied bugfix posted by Luis Gonzalez. Bug was occuring under SuSE Linux
+- Applied bug-fix posted by Luis Gonzalez. Bug was occurring under SuSE Linux
   9.1 when calling eftest with a higher number (such as 10000.)
   (2005-02-02, HA)
 - Bugfixed memalign() which was not exported as extern "C". this bug lead to
@@ -796,12 +797,12 @@
 
 - Added EF_NO_GLOBAL_MALLOC_FREE preprocessor flag to workaround buggy
   environments: no malloc(), free(), realloc(), calloc() are put into the
-  global namespace of the efence library, thus only files which include
+  global name-space of the efence library, thus only files which include
   efence.h call the efence malloc(),.. replacement functions. This flag
   is also helpful where linking order cannot get controlled e.g. when
   memory is allocated from a library not using efence but free is
   called from efence using efence. this is a problem when using
-  dll libraries which are linked against msvcrt.dll and its
+  DLL libraries which are linked against msvcrt.dll and its
   malloc/free under MS Windows. The same problem applies
   when libstdc++ / libgcc is not linked in correct order.
   (2005-01-04, HA)
@@ -809,7 +810,7 @@
 ## 2.4.11
 
 - Bugfixed signal handling in confidence test (eftest), which lead to false
-  errors with my newly installed MandrakeLinux 10.1
+  errors with my newly installed Mandrake Linux 10.1
   (2005-01-03, HA)
 - Bugfixed checking at free(), when EF_PROTECT_BELOW flag changed which lead
   to false positives.
@@ -827,7 +828,7 @@
 - Precompiled headers have to be switched off in MS Visual C++ to get all the
   C++ operators to work, but don't ask me why!
 - Implemented all the various new/delete/new[]/delete[] C++ operators. The
-  implementations are not C++ conform concerning their behaviour added type
+  implementations are not C++ conform concerning their behavior added type
   mismatch detection between malloc()/free(), new/delete, new[]/delete[].
   This is deactivated when EF_NO_LEAKDETECTION is set.
 - Added EF_MALLOC_FAILEXIT parameter. (for now not implemented)
@@ -838,7 +839,7 @@
 - Bugfix: EF_PROTECT_FREE did exactly the opposite of that, what it should
   do up from Bruce's version 2.2.2 maybe earlier.
   (2004-07-16, HA)
-- Confidence test now PASSes again
+- Confidence test now PASS again
 - Removed problems when used EF_NO_LEAKDETECTION preprocessor flag
 - Makefile to work again, also included automatic generation of
   efence_config.h
@@ -847,7 +848,7 @@
   (2004-07-15, HA)
 - Added code for thread safety: Only one thread at once is allowed to enter
   some internal functions. This can be deactivated using the
-  EF_NO_THREAD_SAFETY preprocessor flag. There may be flaws concering
+  EF_NO_THREAD_SAFETY preprocessor flag. There may be flaws concerning
   threads, when using the c++ operators for leak detection: use the
   EF_NO_LEAKDETECTION preprocessor flag if you encounter problems!
 - Some files (page.c and print.c) have turned to header files, the needed
@@ -874,7 +875,7 @@
 
 ## 2.4.7
 
-- Support Borland Free Commandline Tools: Borland C++ Builder 5.5
+- Support Borland Free Command-line Tools: Borland C++ Builder 5.5
   - Throw away unnecessary declarations of malloc(), free(), ..
     Borland didn't like them, and neither MS-Visual C++ 6.0 nor gcc
     (Dev-C++) needs them.
@@ -900,7 +901,7 @@
 
 ## 2.4.4
 
-- Seperation of c++ files: efencepp.h, efencepp.cpp
+- Separation of c++ files: efencepp.h, efencepp.cpp
 - Rename EF_push()/EF_pop() to EF_newFrame()/EF_delFrame()
 - Add new compile option "EF_NO_LEAKDETECTION"
 - Add new compile option "EF_NO_CPP"
@@ -911,13 +912,13 @@
 
 ## 2.4.3
 
-- Added following PreProcessor Macros for Release and Debug Mode
+- Added following preprocessor Macros for Release and Debug Mode
   - #define NEW_ELEM(TYPE) new TYPE
   - #define NEW_ARRAY(TYPE,COUNT) new (TYPE)[COUNT]
   - #define DEL_ELEM(PTR) delete PTR
   - #define DEL_ARRAY(PTR) delete []PTR
     which are mapped to malloc() and free() in Debug Mode.
-- Use these macros to get filename and linenumber of a C++ style memory leak.
+- Use these macros to get file name and line number of a C++ style memory leak.
   (2002-10-07, HA)
 
 ## 2.4.2
@@ -952,7 +953,7 @@
 ## 2.2.0
 
 - Merge in bug-fixes, multi-thread patch, shared library patch, debian/
-  subdirectory used for building the Debian package
+  sub-directory used for building the Debian package
 
 ## 2.0.5
 
