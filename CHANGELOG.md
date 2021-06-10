@@ -793,7 +793,7 @@
 ## 2.0.4 (1994-09-30)
 
 - When `realloc` is passed a zero address, it should work the same way as
-  `malloc()`. Fix forward declaration of `mprotect()` in `page.c` to use `void \*`,
+  `malloc()`. Fix forward declaration of `mprotect()` in `page.c` to use `void *`,
   not `caddr_t`, for addresses; _IRIX_ 5.0.1 complained about that
   (1994-09-30)
 
@@ -810,7 +810,7 @@
 
 - Add support for _DEC Alpha_
 - Add `%a` pattern for printing addresses, which assumes they are passed in
-  a `void \*`
+  a `void *`
 
 ## 2.0.1
 
