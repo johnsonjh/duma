@@ -8,10 +8,10 @@
 - Convert CHANGELOG to Markdown, fix spelling, add dates
 - Update SECURITY.md: Clarify document, reformat, add PGP details
 - Reorganization of source tree
-- GNU Make: Fix OS X default installation prefix, also allow override 
+- GNU Make: Fix OS X default installation prefix, also allow override
 - CMake: Generate `duma.sh` to have absolute path to installed shared library
 - Update shell scripts to improve styling, tune redirection, add
-    pedantic error checking, better POSIX compliance
+  pedantic error checking, better POSIX compliance
 - Update GNUmakefile
   - Remove `shar` target
   - Fix `dos2unix` target
@@ -22,7 +22,7 @@
 - Create Attic for outdated/deprecated components
   - Store detours and kduma for now
 - Remove `a.out` during `gmake clean`
-- Overhaul README.md: Integrate and update all README information 
+- Overhaul README.md: Integrate and update all README information
 - Add .gitattributes to configure GitHub Linguist
 - Normalize some code styling with clang-format
 - Switch to git-changelog generated CHANGELOG (manually triggered for now)
