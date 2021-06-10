@@ -25,7 +25,7 @@
   - Update SECURITY.md: Clearer PGP fingerprints
     - Merge pull request #116 from johnsonjh/deepsource-transform-4e534d61
       - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-	    standardjs, prettier and rubocop
+        standardjs, prettier and rubocop
 - Update README.md: Single to double quote include
 - Restyle source
   - Restyled by whitespace
@@ -748,7 +748,7 @@
   - New EF_SHOW_ALLOC environment variable, which prints allocations and
     deallocation when variable set check if malloc() and free() are bound
     to efence
-  (2005-07-15, HA)
+    (2005-07-15, HA)
 - Integrated a patch from [Zbynek Vyskovsky](mailto:kvr@centrum.cz) in his
   words: "I modified Electric Efence a little, to be able to catch free-ing
   memory via watch point in debugger. The patch (attached) solves the
