@@ -20,13 +20,15 @@
 - Merge pull request #113 from johnsonjh/deepsource-transform-62cab989
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
-- Update README.md, SECURITY.md: Normalize docs
+- Update README.md and SECURITY.md: Normalize docs
 - Update GNUmakefile: Simplify comments, line length
 - Reorganize source: mkclean.bat -> Attic
 - Merge pull request #111 from johnsonjh/deepsource-transform-49792d92
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
 - Update SECURITY.md: Reformatting
+  - Update SECURITY.md: Expand contacts, add PGP info
+    - Update SECURITY.md: Fix indentation
   - Update SECURITY.md: Clearer PGP fingerprints
     - Merge pull request #116 from johnsonjh/deepsource-transform-4e534d61
       - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
@@ -41,7 +43,6 @@
 - Merge pull request #110 from johnsonjh/deepsource-transform-e6cd354a
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
-- Update SECURITY.md: Expand contacts, add PGP info
 - GNUmakefile: Allow overriding OS X default prefix
 - GNUmakefile: For OS X, use prefix of "/opt/duma"
 - Merge pull request #104 from johnsonjh/README/X002-Simplify
@@ -50,12 +51,12 @@
 - Update README.md
 - Merge pull request #100 from johnsonjh/restyled/pull-99
 - Merge pull request #99 from hayguen/shell_script
-- Merge pull request #102 from johnsonjh/SECURITY/X00-C
-- Merge pull request #103 from johnsonjh/restyled/SECURITY/X00-C
-- Restyled by prettier-markdown
-  - Format code with standardrb, standardjs, gofmt, yapf, autopep8, isort,
-    rubocop, prettier and black
 - Update SECURITY.md
+  - Merge pull request #102 from johnsonjh/SECURITY/X00-C
+  - Merge pull request #103 from johnsonjh/restyled/SECURITY/X00-C
+    - Restyled by prettier-markdown
+    - Format code with standardrb, standardjs, gofmt, yapf, autopep8, isort,
+      rubocop, prettier and black
 - Generate duma.sh, to have absolute path to installed shared library
   - Restyle duma.sh with shfmt
 - Update make_git_source_version.sh: Styling
@@ -64,16 +65,16 @@
 - Update make_git_source_version.sh: Pedantic error checks
 - Update make_git_source_version.sh: error checking; POSIX
 - Update README.md: Restore GitLab link, close #73
-- Update README.md: ‑ (use non-breaking dash)
+- Update README.md: Use non-breaking dash
 - Update README.md: Display `0` as mono-space
 - Update README.md: Fix spacing
 - Update README.md: Indent FOSSAbot scan item
 - Update README.md: Normalize Markdown spacing
 - Update README.md: `_` -> `﹎`
 - Update README.md: Hide GitLab until closing #73
-- Merge pull request #96 from johnsonjh/deepsource-transform-fba48e62
-  - Format code with standardrb, standardjs, autopep8, isort, rubocop,
-    prettier, black, gofmt and yapf
+  - Merge pull request #96 from johnsonjh/deepsource-transform-fba48e62
+    - Format code with standardrb, standardjs, autopep8, isort, rubocop,
+      prettier, black, gofmt and yapf
 - Update README.md: Enhance readability, fix headers
 - Remove TODO: Closes #70
 - Update TODO: Refer to #95
