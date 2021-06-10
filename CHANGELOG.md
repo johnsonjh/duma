@@ -90,7 +90,7 @@
 - Remove CVS sub-directories from packaging
 - Removed debian sub-directory from CVS
   (2009-06-07, HA)
-- Fixed "Wrong LD_PRELOAD path in duma.sh". see
+- Fixed "Wrong LD_PRELOAD path in `duma.sh`". see
   https://sf.net/tracker/?func=detail&aid=2800139&group_id=149725&atid=775376
   (2009-06-12, HA)
 - Fixed "GNUmakefile is missing DESTDIR" using submitted patch:
@@ -124,10 +124,10 @@
 
 ## 2.5.14 (2008-04-27)
 
-- Added suggested ~/.gdbinit as gdbinit.rc
+- Added suggested `~/.gdbinit` as `gdbinit.rc`
 - Added hint in mprotectFailed()
 - Removed (gcc) compiler warnings
-- Rename of sem_inc.h to duma_sem.h, cause needed by dumapp.h
+- Rename of `sem_inc.h` to `duma_sem.h`, cause needed by `dumapp.h`
   (2008-03-12, HA)
 - Update of README for Microsoft's pageheap.exe, a heap debugging tool
   (2008-04-20, HA)
@@ -172,11 +172,11 @@
   - Added proper install target that also refers to GNU standard DESTDIR
     usage
   - Added 'distclean clobber' targets to remove configuration
-  - Added 'reconfig' target to regenerate duma_config.h
+  - Added 'reconfig' target to regenerate `duma_config.h`
   - Changed Makefile flow to recursively run if duma_config.h doesn't
     exist
-  - Fixed return value error in testmt.c
-  - Fixed args in thread-test.c
+  - Fixed return value error in `testmt.c`
+  - Fixed args in `thread-test.c`
 - Updated Makefile: updated PACKAGE_SOURCE and added target dos2unix
   (2008-03-09, HA)
 
@@ -232,7 +232,7 @@
   submitted to SourceForge with title "libduma.so on Solaris"
   (2007-11-13, HA)
 - Added minor error check in print.c about DUMA_OUTPUT_FILE
-- Some comments in duma.h and dumapp.h
+- Some comments in `duma.h` and `dumapp.h`
   (2007-12-23, HA)
 
 ## 2.5.8 (2007-08-19)
@@ -254,7 +254,7 @@
   added section 'COMPILATION NOTES FOR RELEASE/PRODUCTION'
   (2007-08-18, HA)
 - Add single line function 'duma_alloc_return()'; all memory allocated from
-  DUMA is returned through this function. This allows you to set a
+  **DUMA** is returned through this function. This allows you to set a
   conditional break-point on this function to catch a specific allocation
   (2007-08-19, HA)
 
@@ -270,7 +270,7 @@
   memory got allocated. Meanwhile I think leak-checking without further
   information is quite useless! Too many correct programs don't free
   all memory, cause the system frees memory up at program end. Thus,
-  too many platforms/environments are reported "broken" from DUMA
+  too many platforms/environments are reported "broken" from **DUMA**
 - Output allocator type (malloc, strdup, ..) with leak report for each
   non freed memory block
 - Removed option DUMA_USE_FRAMENO and the frameno variable; I suppose nobody
@@ -293,7 +293,7 @@
   before calling any non-existing operators with leak parameters
 - Enhanced comments in Makefile for DUMA_SO\_\_ and DUMA_LIB\_\_ options
 - Changes in Makefile to build dynamic library on OS X
-- Preloading duma library now works on OS X
+- Preloading **DUMA** library now works on OS X
 - Added Debian Bug report logs - #241156 as testmt.c
   (2007-08-14, HA)
 
@@ -356,9 +356,9 @@
 
 - Documentation updates. Now using Natural Docs
   - Win32-specific fixes:
-    - Detours support for using DUMA with just binaries
-    - Compile a duma DLL
-    - DUMA can perform stack traces of each allocation
+    - Detours support for using **DUMA** with just binaries
+    - Compile a **DUMA** DLL
+    - **DUMA** can perform stack traces of each allocation
     - Support for Visual Studio 2005
     - Support for output to debug console
 - Support for output to a file
@@ -382,7 +382,7 @@
 
 ## 2.4.27 (2006-04-23)
 
-- Published a German article on DUMA on http://duma.sourceforge.net/
+- Published a German article on **DUMA** on http://duma.sourceforge.net/
 - Bugfix: Removed buffer overflow in DUMA_sprintf() for long file names:
   - Added parameter maxsize for output buffers in some functions
   - Incremented STRING_BUFFER_SIZE to reduce this risk
@@ -416,7 +416,7 @@
 ## 2.4.24 (2005-10-10)
 
 - New program testoperators: writes its own member new/delete operator with
-  file-name and line number forwarding to DUMA
+  file-name and line number forwarding to **DUMA**
 - Reworked Makefile: added tstheap_so which runs with shared library output
   in banner now shows which library (static/shared) is used
   (2005-10-09, HA)
@@ -435,7 +435,7 @@
   size==0 now returns non 0 pointer
 - New option 'DUMA_SUPPRESS_ATEXIT' as environment variable from
   [Tim Braun](mailto:braun@informatik.uni-kl.de): suppress call to C
-  library's atexit() function for DUMA's leak checking function in buggy
+  library's atexit() function for **DUMA**'s leak checking function in buggy
   environments, where atexit() hangs
 - Implemented alternative for C library's atexit() using GNU C compiler's
   'destructor' function attribute
@@ -489,7 +489,7 @@
 
 ## 2.4.19 (2005-09-20)
 
-- Fixed compile error in duma.c introduced in 2.4.18 fixed/enhanced Makefile
+- Fixed compile error in `duma.c` introduced in 2.4.18 fixed/enhanced Makefile
   (2005-09-19, HA)
 - Added run-time check for DUMA_PAGE_SIZE from duma_config.h
   (2005-09-17, HA)
@@ -522,9 +522,9 @@
 - Forked Electric Fence cause Bruce Perens wrote:
   > Hayati Ayguen must choose another name for his program
   > "Electric Fence" is a trademark he is not permitted to use
-- Opened a "new" project DUMA - Detect Unintended Memory Access:
-  - Rename efence to duma
-  - Rename Electric Fence to DUMA
+- Opened a "*new*" project **DUMA** - *Detect Unintended Memory Access*:
+  - Rename *efence* to **duma**
+  - Rename *Electric Fence* to **DUMA**
   - Rename EF\_ to DUMA\_
   - Rename ef\_ to duma\_
   - Rename eff\_ to duma\_ \* (and so on ...)
