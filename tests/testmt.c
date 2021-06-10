@@ -1,6 +1,5 @@
-
 /*
- * test program from
+ * Test program from:
  * Debian Bug report logs - #241156
  * electric-fence (2.1.13-0.1) breaks with 2.6.x kernel
  *
