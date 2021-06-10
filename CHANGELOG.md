@@ -21,6 +21,7 @@
   - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
     standardjs, prettier and rubocop
 - Update SECURITY.md: Reformatting
+  - Update SECURITY.md: Clearer PGP fingerprints
 - Update README.md: Single to double quote include
 - Restyle source
   - Restyled by whitespace
