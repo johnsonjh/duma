@@ -308,7 +308,7 @@
   - Added environment switch DUMA_MALLOC_0_STRATEGY, which may return a
     special protected piece of memory for malloc(0)
   - Moved malloc/SHOW_ALLOC printouts before all abort checks
-  (2008-04-20, Philip Mucci, HA)
+    (2008-04-20, Philip Mucci, HA)
 - Remove some warnings for "-Wall -Wextra" especially for Cygwin
 - Detailed some messages when source file-name and line no were available
   (2008-04-21, HA)
@@ -364,7 +364,7 @@
 ## 2.5.11
 
 - Bugfix on thread safety in sem_inc.c, thanks to Andrew Kornev writing the
-    right hint as bug-report: "[ 1875926 ] non-thread safe lock() implementation"
+  right hint as bug-report: "[ 1875926 ] non-thread safe lock() implementation"
   (2008-01-20, HA)
 
 ## 2.5.10
