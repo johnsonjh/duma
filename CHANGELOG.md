@@ -2,6 +2,7 @@
 
 ## 2.6xx
 
+- Make all scripts pass shfmt and shellcheck.
 - Update README.md: Add DeepSource analysis status badge
 - Update GNUmakefile: CHANGELOG → CHANGELOG.md
 - Update CHANGELOG.md: Normalize punctuation
