@@ -1,46 +1,48 @@
-# CHANGELOG:
+# CHANGELOG
 
 ## 2.6xx
 
+- Update CHANGELOG.md: Indentation
 - Update CHANGELOG.md: Fix conversion errors, minor updates
 - Convert CHANGELOG to Markdown
 - Update .deepsource.toml: Exclude Attic from checks
 - Merge pull request #113 from johnsonjh/deepsource-transform-62cab989
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update README.md, SECURITY.md: Nornalize docs
 - Update GNUmakefile: Simplify comments, line length
-- Reorg: mkclean.bat -> Attic
+- Reorganize source: mkclean.bat -> Attic
 - Merge pull request #111 from johnsonjh/deepsource-transform-49792d92
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update SECURITY.md: Reformatting
 - Update README.md: Single to double quote include
-- Restyled by whitespace
-- Restyled by clang-format
-- Restyled by astyle
+- Restyle source
+  - Restyled by whitespace
+  - Restyled by clang-format
+  - Restyled by astyle
 - Move library sources into subdir src/
 - Move example sources and example_make into subdir examples/
 - Merge pull request #110 from johnsonjh/deepsource-transform-e6cd354a
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update SECURITY.md: Expand contacts, add PGP info
 - GNUmakefile: Allow overriding OSX default prefix
 - GNUmakefile: For OSX, use prefix of "/opt/duma"
 - Merge pull request #104 from johnsonjh/README/X002-Simplify
 - Merge pull request #105 from johnsonjh/restyled/README/X002-Simplify
-- Restyled by prettier-markdown
+  - Restyled by prettier-markdown
 - Update README.md
 - Merge pull request #100 from johnsonjh/restyled/pull-99
 - Merge pull request #99 from hayguen/shell_script
 - Merge pull request #102 from johnsonjh/SECURITY/X00-C
 - Merge pull request #103 from johnsonjh/restyled/SECURITY/X00-C
 - Restyled by prettier-markdown
-- Format code with standardrb, standardjs, gofmt, yapf, autopep8, isort,
-  rubocop, prettier and black
+  - Format code with standardrb, standardjs, gofmt, yapf, autopep8, isort,
+    rubocop, prettier and black
 - Update SECURITY.md
-- Restyled by shfmt
 - Generate duma.sh, to have absolute path to installed shared library
+  - Restyle duma.sh with shfmt
 - Update make_git_source_version.sh: Styling
 - Update make_git_source_version.sh: Don't redirect rm
 - Update make_git_source_version.sh: emacs & vim settings
@@ -55,8 +57,8 @@
 - Update README.md: `_` -> `﹎`
 - Update README.md: Hide GitLab until closing #73
 - Merge pull request #96 from johnsonjh/deepsource-transform-fba48e62
-- Format code with standardrb, standardjs, autopep8, isort, rubocop,
-  prettier, black, gofmt and yapf
+  - Format code with standardrb, standardjs, autopep8, isort, rubocop,
+    prettier, black, gofmt and yapf
 - Update READNE.md: Enhance readability, fix headers
 - Remove TODO: Closes #70
 - Update TODO: Refer to #95
@@ -80,14 +82,14 @@
 - Merge pull request #80 from hayguen/master
 - Fix warning: https://github.com/johnsonjh/duma/issues/76
 - Merge pull request #79 from johnsonjh/restyled/pull-78
-- Restyled by clang-format
-- Restyled by astyle
+  - Restyled by clang-format
+  - Restyled by astyle
 - Fix warning: https://github.com/johnsonjh/duma/issues/77
 - Update README.md: Clarify text
 - Update GNUmakefile: Remove shar target
 - Merge pull request #74 from johnsonjh/deepsource-transform-162cfcd9
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update README.md: Simplify header section titles
 - Update TODO: Reference GitHub #70
 - Update TODO: Remove verified completed items
@@ -104,13 +106,13 @@
 - Update README.md: Remove comment newlines
 - Merge pull request #68 from johnsonjh/deepsource-transform-de75b352
 - Merge pull request #67 from johnsonjh/deepsource-transform-769b82fe
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update README.md: Remove redundant header emphasis
 - Update README.md: Process with markdown-toc
 - Update README.md: Small reorganization
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update README.md: Process with markdown-toc
 - Update README.md: Prepare for markdown-toc
 - Rename: docs-data -> docs; builddocs.bat to Attic
@@ -124,46 +126,46 @@
   johnsonjh/restyled/deepsource-transform-6eb76d71
 - Merge pull request #60 from
   johnsonjh/restyled/deepsource-transform-80543723
-- Restyled by prettier-markdown
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Restyled by prettier-markdown
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Rebase and merge - Restyling by prettier-markdown
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
-- Restyled by prettier-markdown
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
+  - Restyled by prettier-markdown
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update README.md: Incorporate #52 and #53.
 - Update README.md: Incorporate #52 and #53.
-- Restyled by whitespace
-- Restyled by shfmt
-- Restyled by shellharden
-- Restyled by clang-format
-- Restyled by astyle
-- Restyled by prettier-markdown
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Restyled by whitespace
+  - Restyled by shfmt
+  - Restyled by shellharden
+  - Restyled by clang-format
+  - Restyled by astyle
+  - Restyled by prettier-markdown
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Added cmake targets install and uninstall
 - Add initial cmake support +fixes
 - Update README.md: Fixup conversion, correct typos
 - Rename: Attic/README.txt -> Attic/README_orig.txt
 - Update GNUmakefile: Install Markdown-ified doc
 - Merge pull request #49 from johnsonjh/restyled/pull-48
-- Restyled by prettier-markdown
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Restyled by prettier-markdown
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update CHANGELOG
 - Update README.md: Commit first attempt at (mostly automated)
   Markdown-ification.
-- Restyled by clang-format
-- Restyled by astyle
+  - Restyled by clang-format
+  - Restyled by astyle
 - Fix compilation warnings with gcc-9.3; changes in createconf on addr
 - Update README.md
 - Stow old comparions to make way for overhaul.
 - Update CHANGELOG: Document Attic
 - Merge pull request #46 from johnsonjh/deepsource-transform-c20ce809
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - Update 42Crunch/api-security-audit-action action to v2
 - Update codacy/codacy-analysis-cli-action action to v3.0.3
 - Update codacy/codacy-analysis-cli-action action to v3.0.2
@@ -181,23 +183,23 @@
 - Update README.md: Add links to GitLab mirror.
 - Add .gitattributes to configure GitHub Linguist.
 - Merge pull request #34 from johnsonjh/deepsource-transform-3b52b849
-- Format code with black, gofmt, yapf, autopep8, isort, standardrb,
-  standardjs, prettier and rubocop
+  - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+    standardjs, prettier and rubocop
 - README.md: Remove duplicated Codacy badging.
 - Merge pull request #33 from
   johnsonjh/renovate/codacy-codacy-analysis-cli-action-2.x
-- Update codacy/codacy-analysis-cli-action action to v2.0.1
+  - Update codacy/codacy-analysis-cli-action action to v2.0.1
 - Merge pull request #32 from
   johnsonjh/renovate/codacy-codacy-analysis-cli-action-2.x
 - Normalize some code styling with clang-format.
-- scripts: Reformat
+- Scripts: Reformat
 - Update codacy/codacy-analysis-cli-action action to v2
 - README: Correct link title
 - Update contact info and documentation.
 - Switch to git-changelog generated CHANGELOG (manually triggered for now)
   (2021-05-30, JJ)
 - Stow README.txt, add initial Markdown conversion.
-- Create Attic, store Detours and kduma for now.
+- Create Attic: Store Detours and kduma for now.
   (2021-05-28, JJ)
 - Stow away old comparison data; prepare for overhaul.
   (2021-05-28, JJ)
@@ -253,8 +255,7 @@
 - Fixed "Broken build in Msys and C++ tests fail"
   - Fixed USE_WIN32_CRIT_SECT implementation in sem_inc.c
   - Added make section for OSTYPE=msys-sh, which uses mingw32-gcc/g++
-- Use USE_WIN32_CRIT_SECT implementation also for cygwin,
-  fixes testoperator
+- Use USE_WIN32_CRIT_SECT implementation for Cygwin, fixes testoperator
   (2009-05-23, HA)
 - Remove CVS subdirectories from packaging
 - Removed debian subdirectory from CVS
@@ -302,10 +303,10 @@
   (2008-04-20, HA)
 - PATCH from [Philip Mucci](mailto:mucci@cs.utk.edu) on behalf
   of SiCortex
-- Fix for malloc(0) which previously always returned NULL.
-- Added environment switch DUMA_MALLOC_0_STRATEGY, which may return a
-  special protected piece of memory for malloc(0)
-- Moved malloc/SHOW_ALLOC printouts before all abort checks
+  - Fix for malloc(0) which previously always returned NULL.
+  - Added environment switch DUMA_MALLOC_0_STRATEGY, which may return a
+    special protected piece of memory for malloc(0)
+  - Moved malloc/SHOW_ALLOC printouts before all abort checks
   (2008-04-20, Philip Mucci, HA)
 - Remove some warnings for "-Wall -Wextra" especially for cygwin
 - Detailed some messages when source filename and lineno were available
@@ -361,9 +362,8 @@
 
 ## 2.5.11
 
-- Bugfix on thread safety in sem_inc.c,
-  thanks to Andrew Kornev writing the right hint as bugreport:
-  "[ 1875926 ] non-thread safe lock() implementation"
+- Bugfix on thread safety in sem_inc.c, thanks to Andrew Kornev writing the
+    right hint as bugreport: "[ 1875926 ] non-thread safe lock() implementation"
   (2008-01-20, HA)
 
 ## 2.5.10
