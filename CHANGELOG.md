@@ -45,7 +45,7 @@
 
 - Other minor changes
 - Updated shell scripts
-- Fixed *Debian* release info
+- Fixed _Debian_ release info
 
 ## 2.5.18 (2020-12-18)
 
@@ -206,13 +206,13 @@
   (2008-01-15, HA)
 - Added HTML comparison charts / text with C source code examples from
   http://www.cs.utexas.edu/~jpmartin/memCheckers.html
-  into sub-directory comparisons with kind permission of *Jean-Philippe Martin*
+  into sub-directory comparisons with kind permission of _Jean-Philippe Martin_
 - Update `Makefile` for all C source files
   (2008-01-14, HA)
 - Bugfix for `Makefile` target `install` when `DUMASO` is empty; bug was reported
   by _Louis Strous_
   (2008-01-09, HA)
-- Added hint where *No-Mans-Land* was overwritten (below or above user-space)
+- Added hint where _No-Mans-Land_ was overwritten (below or above user-space)
   (2008-01-03, HA)
 
 ## 2.5.9 (2007-12-23)
@@ -252,8 +252,8 @@
 - Added empty definitions for macro functions `DUMA_SET_ALIGNMENT()`,
   `DUMA_SET_PROTECT_BELOW()`, and `DUMA_SET_FILL()`
 - Updated `README` on shell environment variable options, added some entries
-  to section *"OTHER ALTERNATIVE / ADDITIONAL DEBUGGING SOFTWARE / TOOLS"* and
-  added section *"COMPILATION NOTES FOR RELEASE / PRODUCTION"*
+  to section _"OTHER ALTERNATIVE / ADDITIONAL DEBUGGING SOFTWARE / TOOLS"_ and
+  added section _"COMPILATION NOTES FOR RELEASE / PRODUCTION"_
   (2007-08-18, HA)
 - Add single-line function `duma_alloc_return()`; all memory allocated from
   **DUMA** is returned through this function. This allows you to set a
@@ -270,10 +270,10 @@
 - Switched off leak detection in shared library for all platforms; use the
   static library for finding leaks, with information where the memory was
   allocated
-  - *NOTE*: Full leak checking without further information is quite useless. Too many
-    "*correct*" programs don't free all memory, causing the system to free the
+  - _NOTE_: Full leak checking without further information is quite useless. Too many
+    "_correct_" programs don't free all memory, causing the system to free the
     memory at program termination. As a result, many platforms / environments
-    are reported as "*broken*" by **DUMA**
+    are reported as "_broken_" by **DUMA**
 - Output allocator type (`malloc`, `strdup`, `…`) with leak reporting for each
   non-free'd memory block
 - Removed option `DUMA_USE_FRAMENO` and the `frameno` variable; I suppose nobody
@@ -281,7 +281,7 @@
 - Added option `DUMA_PREFER_GETENV`; if you prefer standard C library `getenv()`
   over global char `**environ`
 - Added function `duma_check(void*)` and macro `DUMA_CHECK()`; it checks the
-  *No-Mans-Land* - especially the unprotected end - of the memory block
+  _No-Mans-Land_ - especially the unprotected end - of the memory block
 - Added function `duma_checkAll()` and macro `DUMA_CHECKALL()`; it checks
   the _No-Mans-Land_ - especially the unprotected end - of all allocated
   memory blocks
@@ -341,8 +341,8 @@
 - Other minor corrections
 - Added preprocessor option `DUMA_SEMAPHORES` to select pthreads locking
   mechanism: semaphores or mutexes
-- Removed automatically generated *Visual C++* file `detoursexample1.ncb`
-  from *CVS* and archives
+- Removed automatically generated _Visual C++_ file `detoursexample1.ncb`
+  from _CVS_ and archives
   (2007-07-12, HA)
 
 ## 2.5.1 (2007-07-08)
@@ -360,9 +360,9 @@
 ## 2.5.0 (2006-07-01)
 
 - Documentation updates
-  - Use *Natural Docs*
-- *Win32*-specific fixes
-  - *Detours* support for using **DUMA** (*with just binaries*)
+  - Use _Natural Docs_
+- _Win32_-specific fixes
+  - _Detours_ support for using **DUMA** (_with just binaries_)
   - Compile a **DUMA** DLL
   - **DUMA** can perform stack traces of each allocation
   - Support for _Visual Studio 2005_
@@ -381,9 +381,9 @@
 - Fix compile error when `DUMA_NO_LEAKDETECTION` was set in `testoperators.cpp`
 - Fix to obey `EXPLICIT_INIT` in `testoperators.cpp`
   (2006-06-18, HA)
-- Fix: As in Request-ID *1482267* on *SF*: Updated install directory for manual:
-  `$prefix/share/man/man3` should fit the *Filesystem Hierarchy Standard*
-  (*FHS*) 2.3 for `/usr` and `/usr/local`
+- Fix: As in Request-ID _1482267_ on _SF_: Updated install directory for manual:
+  `$prefix/share/man/man3` should fit the _Filesystem Hierarchy Standard_
+  (_FHS_) 2.3 for `/usr` and `/usr/local`
   (2006-06-18, HA)
 
 ## 2.4.27 (2006-04-23)
@@ -392,8 +392,8 @@
 - Bugfix: Removed buffer overflow in `DUMA_sprintf()` for long file names
   - Added parameter `maxsize` for output buffers in some functions
   - Incremented `STRING_BUFFER_SIZE` to reduce this risk; bug reported
-    by *<loigu@volny.cz>*
-  (2006-01-09, HA)
+    by _<loigu@volny.cz>_
+    (2006-01-09, HA)
 
 ## 2.4.26 (2005-10-28)
 
@@ -410,8 +410,8 @@
 ## 2.4.25 (2005-10-21)
 
 - Bugfix: semaphores were not initialized correctly; this lead to a hang
-  - Thanks for reporting (*and providing a test environment*) go to
-  [Tim Braun](mailto:braun@informatik.uni-kl.de)
+  - Thanks for reporting (_and providing a test environment_) go to
+    [Tim Braun](mailto:braun@informatik.uni-kl.de)
 - Fixes for _Dev-C++_ from [Benjamin Berkels](mailto:benjamin.berkels@ins.uni-bonn.de)
   - Updated project files for _Dev-C++_ 4.9.9.2 / _GCC_ 3.3.1
   - Fixed compiler errors affecting _Dev-C++_ 4.9.9.2 / _GCC_ 3.3.1
@@ -435,7 +435,7 @@
 
 ## 2.4.22 (2005-10-06)
 
-- C++ `new` operators are now (*more*) standard conforming; allocations of
+- C++ `new` operators are now (_more_) standard conforming; allocations of
   size equal to zero (`0`) now returns a non-zero (`!0`) pointer
 - New option `DUMA_SUPPRESS_ATEXIT` as environment variable from
   [Tim Braun](mailto:braun@informatik.uni-kl.de) that suppress calls to the C
@@ -526,7 +526,7 @@
 
 ## 2.4.17 (2005-09-10)
 
-- Forked *Electric Fence*, because *Bruce Perens* wrote:
+- Forked _Electric Fence_, because _Bruce Perens_ wrote:
   > … Hayati Ayguen must choose another name for his program
   > … "Electric Fence" is a trademark he is not permitted to use …
 - Opened a "_new_" project for **DUMA** (_Detect Unintended Memory Access_)
@@ -557,9 +557,9 @@
 
 ## 2.4.15 (2005-07-24)
 
-- Bugfixed page management under *Microsoft Windows*; virtual address space was never
-  released. Unfortunately, this "quick" fix avoids memory pooling on *Windows*
-- Remove double "*Electric Fence:*" messages when calling `EF_Abort()`
+- Bugfixed page management under _Microsoft Windows_; virtual address space was never
+  released. Unfortunately, this "quick" fix avoids memory pooling on _Windows_
+- Remove double "_Electric Fence:_" messages when calling `EF_Abort()`
   or `EF_Exit()`
   (2005-07-24, HA)
 - Added parameter `ExitOnFail` to `Page_Create()`
@@ -575,11 +575,11 @@
     to _efence_
     (2005-07-15, HA)
 - Integrated a patch from [Zbynek Vyskovsky](mailto:kvr@centrum.cz) in his
-  words: "*I modified Electric Fence a little, to be able to catch free-ing
+  words: "_I modified Electric Fence a little, to be able to catch free-ing
   memory via watch point in debugger. The patch (attached) solves the
   problem when you are watching expression for change and suddenly
   realize the memory containing expression disappeared. It has no
-  other effect, just makes debugging easier.*"
+  other effect, just makes debugging easier._"
   (2005-07-11, HA)
 - Bugfix for internal slot mode `EFST_DEALLOCATED` reported by _Mikolas Patocka_
   error occurred when user-space memory region of freed memory is reused from
@@ -606,8 +606,8 @@
   use `DEL_ELEM` / `DEL_ARRAY` further to utilize file name and line number
   of deallocation calls
   (2005-02-10, HA)
-- Reworked / revised *ALL* internal functions (*!!!*)
-- Free-ing already freed memory is now (*better*) detected
+- Reworked / revised _ALL_ internal functions (_!!!_)
+- Free-ing already freed memory is now (_better_) detected
 - Disallows coalescing memory regions and also stores
   `__FILE__` and `__LINE__` of `free()` to be able to print position
   of first free
@@ -627,13 +627,13 @@
 
 - Added `EF_NO_GLOBAL_MALLOC_FREE` preprocessor flag to work-around buggy
   environments: no `malloc()`, `free()`, `realloc()`, `calloc()` are put into the
-  global name-space of the *efence* library, thus only files which include
-  `efence.h` call the *efence* `malloc()`, `…` replacement functions. This flag
+  global name-space of the _efence_ library, thus only files which include
+  `efence.h` call the _efence_ `malloc()`, `…` replacement functions. This flag
   is also helpful where linking order cannot get controlled e.g. when
   memory is allocated from a library not using _efence_, but `free` is
   called from _efence_ using _efence_. This is a problem when using
   DLL libraries, which are linked against `msvcrt.dll` and its
-  `malloc()` / `free()` under *Microsoft Windows*. The same problem applies
+  `malloc()` / `free()` under _Microsoft Windows_. The same problem applies
   when `libstdc++` / `libgcc` is not linked in correct order
   (2005-01-04, HA)
 
@@ -661,7 +661,7 @@
   implementations are not C++ conforming concerning their behavior added type
   mismatch detection between `malloc()` / `free()`, `new` / `delete`, `new[]` / `delete[]`;
   this is deactivated when `EF_NO_LEAKDETECTION` is set
-- Added `EF_MALLOC_FAILEXIT` parameter (*for now, not implemented*)
+- Added `EF_MALLOC_FAILEXIT` parameter (_for now, not implemented_)
 - Extended semantics of `EF_PROTECT_FREE`
 - Added `EF_MAX_ALLOC` parameter
 - Bugfix: Why should we ever use `Page_Delete()` when setting up the
@@ -710,14 +710,14 @@
     (_Dev-C++_) needs them
   - Added project files in sub-dirextory `win32-vide` for _VIDE_ 1.24 using
     _Borland C++ Builder_ 5.5 (_see http://www.objectcentral.com_)
-  (2002-11-22, HA)
+    (2002-11-22, HA)
 
 ## 2.4.6 (2002-11-18)
 
 - Remove memory leak in eftest
 - Allow re-inclusion of `efence.h` after inclusion of `efenceint.h`
-- Added some project files in sub-directory `win32-devcpp` for *Dev-C++* 4.9.6
-  using *gcc* (*See http://www.bloodshed.net/*) and saved its generated
+- Added some project files in sub-directory `win32-devcpp` for _Dev-C++_ 4.9.6
+  using _gcc_ (_See http://www.bloodshed.net/_) and saved its generated
   `Makefile`'s; left `tstheap`'s memory leaks
   (2002-11-18, HA)
 
@@ -761,7 +761,7 @@
 
 ## 2.4.1 (2002-10-06)
 
-- Port to *Windows NT* (*2000* / *XP*) by adding sections to following functions:
+- Port to _Windows NT_ (_2000_ / _XP_) by adding sections to following functions:
   - `Page_AllowAccess()`
   - `Page_Create()`
   - `Page_Delete()`
