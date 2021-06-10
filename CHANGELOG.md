@@ -2,36 +2,35 @@
 
 ## 2.6xx
 
-- Squash some details for generated CHANGELOG.md
-- Make all scripts pass shfmt and shellcheck
-- Update README.md: Add DeepSource analysis status badge
-- Convert CHANGELOG to Markdown, fix spelling, add dates
-- Update SECURITY.md: Clarify document, reformat, add PGP details
-- Reorganization of source tree
-- GNU Make: Fix OS X default installation prefix, also allow override 
-- CMake: Generate `duma.sh` to have absolute path to installed shared library
-- Update shell scripts to improve styling, tune redirection, add
-    pedantic error checking, better POSIX compliance
+- Squash details in generated `CHANGELOG.md`
+- Update SECURITY.md
+  - Clarify purpose of document, update, reformat, add PGP details
+- Reorganization of files in source tree
+- Update shell scripts to improve styling (shfmt), tune redirection, add
+    pedantic error checking, better POSIX compliance, appease shellcheck
 - Update GNUmakefile
   - Remove `shar` target
   - Fix `dos2unix` target
   - Use C++-11 compilation mode w/g++
-- Update duma.c: Adjust include ordering
-- New CMake build support
-- Fix compilation warnings with gcc-9.3; changes in createconf on addr
-- Create Attic for outdated/deprecated components
-  - Store detours and kduma for now
-- Remove `a.out` during `gmake clean`
-- Overhaul README.md: Integrate and update all README information 
-- Add .gitattributes to configure GitHub Linguist
-- Normalize some code styling with clang-format
-- Switch to git-changelog generated CHANGELOG (manually triggered for now)
+  - Fix OS X default installation prefix
+    - also, allow user to override prefix
+  - Remove `a.out` during `gmake clean`
+- Update `duma.c`: Adjust ordering of included headers
+- **New CMake build support**
+  - Generate `duma.sh` to have absolute path to installed shared library
+- Fix compilation warnings with GCC 9.3
+- Create Attic for outdated / deprecated components
+  - Store '*detours*' and '*kduma*'
+- **Overhaul and consolidate documentation** into `README.md`
+  - Optimize for both web browser and plain-text viewing
+  - Integrate all `README.txt` information
+  - Update status badge image links
+- Add `.gitattributes` to configure GitHub Linguist
+- Normalize source code styling with `clang-format`
+- Convert `CHANGELOG` to Markdown
+  - Normalize format, fix spelling, add dates
+- Switch to `git-changelog` generated `CHANGELOG`
   (2021-05-30, JJ)
-- Stow README.txt, add initial Markdown conversion
-- Create Attic: Store Detours and kduma for now
-  (2021-05-28, JJ)
-- Stow away old comparison data; prepare for overhaul
-  (2021-05-28, JJ)
 
 ## 2.5.21 (2021-02-14)
 
