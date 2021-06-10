@@ -2,8 +2,12 @@
 
 ## 2.6xx
 
+- Update GNUmakefile: Fix "dos2unix" target
 - Convert CHANGELOG to Markdown
   - Update CHANGELOG.md: Fix spelling with hunspell
+  - Merge pull request #115 from johnsonjh/deepsource-transform-1d6981d0
+    - Format code with black, gofmt, yapf, autopep8, isort, standardrb,
+      standardjs, prettier and rubocop
   - Update CHANGELOG.md: Indentation
   - Update CHANGELOG.md: Fix conversion errors, minor updates
 - Update .deepsource.toml: Exclude Attic from checks

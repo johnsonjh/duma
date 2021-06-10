@@ -546,7 +546,7 @@ reconfig: createconf$(EXEPOSTFIX) createconf.o createconf.c
 	- $(CURPATH)createconf$(EXEPOSTFIX)
 
 dos2unix:
-	dos2unix --d2u $(PACKAGE_SOURCE)
+	dos2unix -- $(PACKAGE_SOURCE)
 
 createconf$(EXEPOSTFIX): createconf.o
 	- $(RMFORCE) createconf$(EXEPOSTFIX)
