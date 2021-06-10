@@ -272,15 +272,15 @@
   allocated
   - Full leak checking without further information is quite useless! Too many
     "*correct*" programs don't free all memory, causinf the system to free the
-	memory up at program teemination. As a result, too many platforms / environments
-	are reported "*broken*" by **DUMA**
+    memory up at program teemination. As a result, too many platforms / environments
+    are reported "*broken*" by **DUMA**
 - Output allocator type (`malloc`, `strdup`, `…`) with leak reporting for each
   non-free'd memory block
 - Removed option `DUMA_USE_FRAMENO` and the `frameno` variable; I suppose nobody
   is using it, but, additionally, it is not thread-safe
 - Added option `DUMA_PREFER_GETENV`; if you prefer standard C library `getenv()`
-  over global `char **environ`
-- Added function `duma_check(void*)` and macro `DUMA_CHECK()`; it checks the
+  over global char `\*\*environ`
+- Added function `duma_check(void\*)` and macro `DUMA_CHECK()`; it checks the
   *No-Mans-Land* - especially the unprotected end - of the memory block
 - Added function `duma_checkAll()` and macro `DUMA_CHECKALL()`; it checks
   the *No-Mans-Land* - especially the unprotected end - of all allocated
@@ -322,17 +322,17 @@
 
 ## 2.5.3 (2007-07-15)
 
-- Added simple `Makefile` for examples in sub-directory `example_makes/ex*`
+- Added simple `Makefile` for examples in sub-directory `example_makes/ex\*`
 - Modified `Makefile` to avoid build of shared libs / executables specific to OS
 - `dumapp.h` now keeps C macro definitions
 - Support for *Mac OS X* when calling *make* with `OS=osx`
 - Support for *Win32* using *Cygwin* when calling *make* with `OSTYPE=cygwin`
   (2007-07-14, HA)
 - Bugfix in `createconf.c` for *Win32* when ***not*** using *Visual C++*
-- *Cygwin* work:
+- *Cygwin* fixes
   - Switch off stacktrace (*before trying to integrate in `Makefile`*)
   - `caddr_t` and `u_int` were already defined
-  - Use signals on *Linux*/*UNIX* in `dumatest.c`
+  - Use signals on *Linux* / *UNIX* in `dumatest.c`
   - Update `Makefile`
   (2007-07-13, HA)
 
@@ -348,10 +348,10 @@
 ## 2.5.1 (2007-07-08)
 
 - Turned global variables `DUMA_PROTECT_BELOW`, `DUMA_ALIGNMENT`, and `DUMA_FILL`
-  to thread local variables
+  into thread local variables
   - Access with new function macros:
     - `DUMA_SET_ALIGNMENT()`
-	- `DUMA_SET_PROTECT_BELOW()`
+    - `DUMA_SET_PROTECT_BELOW()`
     - `DUMA_SET_FILL()`
 - Support for `posix_memalign()`
 - Add `pthread_mutex` implementation (*as an alternative to semaphores*)
@@ -382,8 +382,8 @@
 - Fix to obey `EXPLICIT_INIT` in `testoperators.cpp`
   (2006-06-18, HA)
 - Fix: As in Request-ID *1482267* on *SF*: Updated install directory for manual:
-  `${prefix}/share/man/man3` should fit the *Filesystem Hierarchy Standard* (*FHS*) 2.3
-  for `/usr` and `/usr/local`
+  `${prefix}/share/man/man3` should fit the *Filesystem Hierarchy Standard*
+  (*FHS*) 2.3 for `/usr` and `/usr/local`
   (2006-06-18, HA)
 
 ## 2.4.27 (2006-04-23)
@@ -474,9 +474,9 @@
   - Reworked *Zbynek*'s patch to use `long` in internal address calculations
     - Auto-detect compatible integer types `DUMA_ADDR` and `DUMA_SIZE` in
       `createconf`
-	  - Write them to `duma_config.h`
-	- Auto-detect `DUMA_MIN_ALIGNMENT` in `createconf`, write value to `duma_config.h`
-      - Use auto-detected values in code
+    - Auto-detect `DUMA_MIN_ALIGNMENT` in `createconf`
+    - Write values to `duma_config.h`
+    - Use auto-detected values in code
 - Reworked `DUMA_sprintf()` and it's format specifier 
 - Bugfixed `Makefile`: `DUMA_SO_OPTIONS` also used `DUMA_OPTIONS`
   - Removed `-DDUMA_NO_CPP_SUPPORT`, as `LD_PRELOAD` works for C++ `new`,
@@ -584,7 +584,7 @@
   (2005-07-11, HA)
 - Bugfix for internal slot mode `EFST_DEALLOCATED` reported by *Mikolas Patocka*
   error occurred when user-space memory region of freed memory is reused from
-  system and free'd again: *efence* claimed free-ing already free'd memory
+  system and free'd again: *efence* claimed it was freeing already free'd memory
   (2005-03-02, HA)
 - Defining macros / functions, also for `str[n]cpy()` and `str[n]cat()`, checking for
   overlapping memory regions
@@ -604,7 +604,7 @@
 - Added `EF_OLD_NEW_MACRO` preprocessor flag to keep compatibility to old
   `NEW_ELEM()` / `NEW_ARRAY()` macros.  When not defined, a macro for `new` is
   defined, which has standards conforming syntax.  Unfortunately, you have to
-  use `DEL_ELEM`/`DEL_ARRAY` further to utilize file name and line number
+  use `DEL_ELEM` / `DEL_ARRAY` further to utilize file name and line number
   of deallocation calls
   (2005-02-10, HA)
 - Reworked / revised *ALL* internal functions (*!!!*)
@@ -660,8 +660,8 @@
   C++ operators to work, but don't ask me why!
 - Implemented all the various `new`/`delete`/`new[]`/`delete[]` C++ operators. The
   implementations are not C++ conforming concerning their behavior added type
-  mismatch detection between `malloc()`/`free()`, `new`/`delete`, `new[]`/`delete[]`; this
-  is deactivated when `EF_NO_LEAKDETECTION` is set
+  mismatch detection between `malloc()`/`free()`, `new`/`delete`, `new[]`/`delete[]`;
+  this is deactivated when `EF_NO_LEAKDETECTION` is set
 - Added `EF_MALLOC_FAILEXIT` parameter (for now, not implemented)
 - Extended semantics of `EF_PROTECT_FREE`
 - Added `EF_MAX_ALLOC` parameter
@@ -692,8 +692,8 @@
 ## 2.4.9 (2002-12-05)
 
 - Added checks for No-Mans-Land (*space which cannot get protected from the MMU*);
-    this area gets filled with `EF_FILL` on allocation, and gets checked
-      on deallocation
+    this area gets filled with `EF_FILL` on allocation, and gets checked on
+	deallocation
   (2002-12-05, HA)
 
 ## 2.4.8 (2002-12-04)
@@ -773,7 +773,8 @@
 ## 2.4.0 (2002-10-03)
 
 - Added support for C++ operators `new`, `new[]`, `delete` and `delete[]`
-- Added some project files in sub-directory `win32-msvc/` for Microsoft Visual C++ 6.0
+- Added some project files in sub-directory `win32-msvc/` for
+  *Microsoft Visual C++* 6.0
   (2002-10-03, HA)
 
 ## 2.2.2
@@ -793,7 +794,7 @@
 ## 2.0.4 (1994-09-30)
 
 - When `realloc` is passed a zero address, it should work the same way as
-  `malloc()`. Fix forward declaration of `mprotect()` in `page.c` to use `void *`,
+  `malloc()`. Fix forward declaration of `mprotect()` in `page.c` to use `void \*`,
   not `caddr_t`, for addresses; *IRIX* 5.0.1 complained about that
   (1994-09-30)
 
@@ -809,9 +810,11 @@
 ## 2.0.2
 
 - Add support for *DEC Alpha*
-- Add `%a` pattern for printing addresses, which assumes they are passed in a `void *`
+- Add `%a` pattern for printing addresses, which assumes they are passed in
+  a `void \*`
 
 ## 2.0.1
 
 - Add work-arounds for kernel and library bugs under *HP-UX*
   - *HP* has been notified and will repair these soon
+
