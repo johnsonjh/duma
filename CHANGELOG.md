@@ -2,6 +2,7 @@
 
 ## 2.6xx
 
+- Update GNUmakefile: CHANGELOG → CHANGELOG.md
 - Update CHANGELOG.md: Normalize punctuation
 - Update CHANGELOG.md: Add dates, fix some typos, formatting
   - Merge pull request #117 from johnsonjh/deepsource-transform-1ff996fc
