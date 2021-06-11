@@ -52,7 +52,7 @@
 - [C++ Memory Operators and Leak Detection](#c-memory-operators-and-leak-detection)
 - [Definition of own member new/delete Operators](#definition-of-own-member-newdelete-operators)
 - [Compilation Notes for Release/Production](#compilation-notes-for-releaseproduction)
-- [No Warranty](#no-warranty)
+- [NO WARRANTY](#no-warranty)
 - [Diagnostics](#diagnostics)
 - [Bugs](#bugs)
 - [Comparison with other tools](#comparison-with-other-tools)
@@ -62,6 +62,7 @@
 - [Issue Tracking](#issue-tracking)
 - [Security Policy](#security-policy)
 - [License](#license)
+- [History](#history)
 
 <!-- tocstop -->
 
@@ -777,5 +778,11 @@ operator delete[](ptr, file,line);  // vector delete
 - [GNU General Public License v2.0 (GPLv2)](https://tldrlegal.com/license/gnu-general-public-license-v2)
 - [GNU Lesser General Public License v2.1 (LGPLv2.1)](<https://tldrlegal.com/license/gnu-lesser-general-public-license-v2.1-(lgpl-2.1)>)
   - [![FOSSASmallStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_small)
+
+---
+
+### History
+
+- [Change Log](https://github.com/johnsonjh/duma/blob/master/CHANGELOG.md)
 
 ---
