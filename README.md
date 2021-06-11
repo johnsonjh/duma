@@ -229,6 +229,7 @@ consideration.
 
 - **DUMA** is tested on _Solaris_ using the GNU toolchain
   (_GNU CC, G++, ld, binutils, etc._)
+
   - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from
     the _Companion CD_ should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to
     the `PATH`.
@@ -242,14 +243,14 @@ consideration.
 ##### BSD
 
 - **FreeBSD**
+
   - On _FreeBSD_ 6.2 it is necessary to set `DUMA_DISABLE_BANNER=1`
     before running any programs linked with **DUMA**.
-
 
 - **NetBSD**
   - On _NetBSD_ 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`)
     memory leak is always detected.
-  - Installation on *NetBSD* is untested.
+  - Installation on _NetBSD_ is untested.
 
 ---
 
@@ -590,7 +591,6 @@ To get the line in you sources where an error occurs:
 4. Set your program arguments with `'set args …'`
 5. Run and wait for the segmentation fault
 
-
 #### Post-mortem (core analysis)
 
 1. Compile your program (**_with_** debugging information).
@@ -616,7 +616,6 @@ To get the line in you sources where an error occurs:
 6. Quit the debugger.
 7. Optionally, read and install `gdbinit.rc` as `~/.gdbinit` if you are using
    the `gdb` debugger
-
 
 #### Word-Alignment and Overrun Detection
 
@@ -764,7 +763,6 @@ operator delete[](ptr, file,line);  // vector delete
 #### Releases
 
 - [GitHub Releases](https://github.com/johnsonjh/duma/releases)
-
 
 #### Git Repositories
 
