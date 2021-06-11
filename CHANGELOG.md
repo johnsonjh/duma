@@ -2,33 +2,32 @@
 
 ## 2.6xx
 
-- Squash details in generated `CHANGELOG.md`
 - Update `SECURITY.md`
   - Clarify purpose of document, update, reformat, add _PGP_ details
 - Reorganization of files in source tree
 - Update shell scripts to improve styling (`shfmt`), tune redirection, add
-  pedantic error checking, better POSIX compliance, appease shellcheck
+  pedantic error checking, better POSIX compliance, and appease shellcheck
 - Update `GNUmakefile`
   - Remove `shar` target
   - Fix `dos2unix` target
-  - Use C++-11 compilation mode w/g++
-  - Fix OS X default installation prefix
+  - Use C++11 compilation mode w/G++
+  - Fix macOS X default installation prefix
     - also, allow user to override default prefix
   - Remove `a.out` during `gmake clean`
 - Update `duma.c`: Adjust ordering of included headers
 - New CMake build support
-  - Generate `duma.sh` to have absolute path to installed shared library
+  - Generate `duma.sh` to use absolute path to installed shared library
+  - Require C++-11 compilation standard
 - Fix compilation warnings with GCC 9.3
+- Fix compilation on macOS X (ARM64 and Intel processors)
 - Create _Attic_ for outdated / deprecated components
-  - Store '_detours_' and '_kduma_'
 - Overhaul and consolidate documentation into `README.md`
   - Optimize for both web browser and plain-text viewing
-  - Integrate all `README.txt` information
-  - Update status badge image links
-- Add `.gitattributes` to configure _GitHub Linguist_
-- Normalize source code styling with `clang-format`
+  - Integrate `README.txt` and `INSTALL` information
+- Normalize source code styling (`clang-format` + `uncrustify`)
 - Convert `CHANGELOG` to Markdown
   - Normalize format, fix spelling, wording, add dates
+  - Squash details of generated `CHANGELOG.md`
 - Switch to `git-changelog` generated `CHANGELOG`
 
 ## 2.5.21 (2021-02-14)

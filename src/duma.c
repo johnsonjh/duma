@@ -366,7 +366,7 @@ static struct _DUMA_GlobalStaticVars {
    *   0 - like having former ALLOW_MALLOC_0 = 0  ==> abort program with
    * segfault 1 - return NULL pointer 2 - return always the same pointer to some
    * protected page 3 - return unique protected page (=default) ATTENTION: only
-   * 1 and 3 are ANSI conform. But value 1 will break most programs, cause value
+   * 1 and 3 are ANSI compliant. But value 1 will break most programs, cause value
    * 3 is the usual one, the system libraries implement
    */
   int MALLOC_0_STRATEGY;
@@ -377,7 +377,7 @@ static struct _DUMA_GlobalStaticVars {
    *   with size 0
    *   2 - return always the same pointer to some protected page
    *   3 - return unique protected page (=default)
-   * ATTENTION: only 3 is standard conform. Value 2 may break some but will
+   * ATTENTION: only 3 is standard conforming. Value 2 may break some but will
    * work for most programs. With value 2 you may reduce the memory consumption.
    */
   int NEW_0_STRATEGY;
@@ -996,12 +996,12 @@ static
    */
   testAlloc = malloc(123);
   if (_duma_s.numAllocs == 0)
-    DUMA_Abort("malloc() is not bound to duma.\nDUMA Aborting: Preload lib "
+    DUMA_Abort("malloc() is not bound to DUMA.\nDUMA Aborting: Preload lib "
                "with 'LD_PRELOAD=libduma.so <prog>'.\n");
 
   free(testAlloc);
   if (_duma_s.numDeallocs == 0)
-    DUMA_Abort("free() is not bound to duma.\nDUMA Aborting: Preload lib with "
+    DUMA_Abort("free() is not bound to DUMA.\nDUMA Aborting: Preload lib with "
                "'LD_PRELOAD=libduma.so <prog>'.\n");
 #endif
 
@@ -1301,14 +1301,14 @@ void *_duma_allocate(size_t alignment, size_t userSize, int protectBelow,
   _duma_s.numAllocs++;
   if (_duma_s.SHOW_ALLOC) {
 #ifndef DUMA_NO_LEAKDETECTION
-    DUMA_Print("\nDUMA: Allocating %d bytes at %s(%i).", (DUMA_SIZE)userSize,
+    DUMA_Print("\nDUMA: Allocating %d byte(s) at %s(%i).", (DUMA_SIZE)userSize,
                filename, lineno);
 #else
-    DUMA_Print("\nDUMA: Allocating %d bytes.", (DUMA_SIZE)userSize);
+    DUMA_Print("\nDUMA: Allocating %d byte(s).", (DUMA_SIZE)userSize);
 #endif
     if (0 == userSize)
       DUMA_Print(
-          " This is ANSI conform but probably a bug. See DUMA_ALLOW_MALLOC_0.");
+          " This is ANSI compliant but probably a bug. See DUMA_ALLOW_MALLOC_0.");
   }
 
   /* check userSize */
@@ -1359,7 +1359,7 @@ void *_duma_allocate(size_t alignment, size_t userSize, int protectBelow,
 
     if ((int)alignment != ((int)alignment & -(int)alignment)) {
 #ifndef DUMA_NO_LEAKDETECTION
-      DUMA_Abort("Alignment (=%d) is not a power of 2 requested from %s(%i)",
+      DUMA_Abort("Alignment (=%d) is not a power of 2; requested from %s(%i)",
                  (DUMA_SIZE)alignment, filename, lineno);
 #else
       DUMA_Abort("Alignment (=%d) is not a power of 2", (DUMA_SIZE)alignment);
@@ -1751,7 +1751,7 @@ void _duma_deallocate(void *address, int protectAllocList,
       DUMAST_BEGIN_PROTECTED == slot->state) {
 #ifndef DUMA_NO_LEAKDETECTION
     if (DUMAFS_ALLOCATION == slot->fileSource)
-      DUMA_Abort("free(%a): memory already freed. allocated from %s(%i)",
+      DUMA_Abort("free(%a): memory already freed; allocated from %s(%i)",
                  (DUMA_ADDR)address, slot->filename, slot->lineno);
     else if (DUMAFS_DEALLOCATION == slot->fileSource)
       DUMA_Abort("free(%a): memory already freed at %s(%i)", (DUMA_ADDR)address,
@@ -1789,11 +1789,11 @@ void _duma_deallocate(void *address, int protectAllocList,
   _duma_s.numDeallocs++;
   if (_duma_s.SHOW_ALLOC)
 #ifndef DUMA_NO_LEAKDETECTION
-    DUMA_Print("\nDUMA: Freeing %d bytes at %s(%i) (Allocated from %s(%i)).",
+    DUMA_Print("\nDUMA: Freeing %d byte(s) at %s(%i) (Allocated from %s(%i)).",
                (DUMA_SIZE)slot->userSize, filename, lineno, slot->filename,
                slot->lineno);
 #else
-    DUMA_Print("\nDUMA: Freeing %d bytes.", (DUMA_SIZE)slot->userSize);
+    DUMA_Print("\nDUMA: Freeing %d byte(s).", (DUMA_SIZE)slot->userSize);
 #endif
 
   /* CHECK INTEGRITY OF NO MANS LAND */
@@ -1912,7 +1912,7 @@ void duma_check(void *address) {
       DUMAST_BEGIN_PROTECTED == slot->state) {
 #ifndef DUMA_NO_LEAKDETECTION
     if (DUMAFS_ALLOCATION == slot->fileSource)
-      DUMA_Abort("check(%a): memory already freed. allocated from %s(%i)",
+      DUMA_Abort("check(%a): memory already freed; allocated from %s(%i)",
                  (DUMA_ADDR)address, slot->filename, slot->lineno);
     else if (DUMAFS_DEALLOCATION == slot->fileSource)
       DUMA_Abort("check(%a): memory already freed at %s(%i)",
@@ -2489,12 +2489,12 @@ void DUMA_delFrame(void) {
   iExtraLeaks = nonFreedTotal - nonFreedReported;
 
   if (nonFreedReported)
-    DUMA_Print("DUMA: Reported %i leaks. There are %i extra leaks without "
-               "allocation information\n",
+    DUMA_Print("DUMA: Reported %i leak(s). There are %i extra leak(s) without "
+               "allocation information.\n",
                nonFreedReported, iExtraLeaks);
   else if (nonFreedReported < nonFreedTotal)
-    DUMA_Print("DUMA: Reported %i leaks. There are %i extra leaks without "
-               "allocation information\n",
+    DUMA_Print("DUMA: Reported %i leak(s). There are %i extra leak(s) without "
+               "allocation information.\n",
                nonFreedReported, iExtraLeaks);
 
   Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
@@ -2504,7 +2504,7 @@ void DUMA_delFrame(void) {
 
   if (_duma_s.SHOW_ALLOC)
     DUMA_Print(
-        "\nDUMA: Processed %l allocations and %l deallocations in total.\n",
+        "\nDUMA: Processed %l allocation(s) and %l deallocation(s) in total.\n",
         _duma_s.numAllocs, _duma_s.numDeallocs);
 }
 

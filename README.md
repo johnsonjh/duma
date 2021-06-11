@@ -422,8 +422,7 @@ important that you know how to use them.
 * `DUMA_MALLOC_0_STRATEGY` - This environment variable controls **DUMA**'s
   behavior on `malloc(0)`:
 
-  - `0` - like having former `ALLOW_MALLOC_0 = 0` ==> abort program with
-    segfault
+  - `0` - abort program with segfault (previously `ALLOW_MALLOC_0 = 0`)
   - `1` - return NULL pointer
   - `2` - return always the same pointer to some protected page
   - `3` - return mid address of a unique protected page (**_default_**)
