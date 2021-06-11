@@ -242,8 +242,6 @@ consideration.
     - This seems to be caused by an initialization problem in the
       pthread library.
 
----
-
 - NetBSD
   - On _NetBSD_ 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`)
     memory leak is always detected.
