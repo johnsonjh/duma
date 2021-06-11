@@ -37,7 +37,7 @@
     - [Solaris](#solaris)
     - [BSD](#bsd)
     - [ARM CPU's](#arm-cpus)
-	- [RISC-V CPU's](#riscv-cpus)
+  - [RISC-V CPU's](#riscv-cpus)
 - [Usage](#usage)
 - [Global and Environment Variables](#global-and-environment-variables)
 - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
@@ -121,18 +121,18 @@ memory-leak, some source modification is necessary - at the minimum, adding
 
 ##### GNU Make
 
-**DUMA** may be built using ***GNU*** **Make**.
+**DUMA** may be built using **_GNU_** **Make**.
 
-***GNU*** **Make** is available for many operating systems,
+**_GNU_** **Make** is available for many operating systems,
 including _SunOS_ / _Solaris_, _GNU/Hurd_, _AIX_, _HP-UX_, _BSD_, _GNU/Linux_, and
 _Microsoft Windows_ (using _Cygwin_ or _UWIN_ for POSIX compatibility, or natively with the
 _MSYS_ / _MINGW_ environment.)
 
-***GNU*** **Make** is often installed as `gmake`, but may be installed under a different name, such
-as `mingw32-make`, `mingw64-gmake`, or simply `make` (*especially on* ***GNU*** *systems such as
-Linux*).
+**_GNU_** **Make** is often installed as `gmake`, but may be installed under a different name, such
+as `mingw32-make`, `mingw64-gmake`, or simply `make` (_especially on_ **_GNU_** _systems such as
+Linux_).
 
-Some **_non_**-***GNU*** **Make** systems **_may_** work, but are **_untested_** and **not** **recommended**. 
+Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are **_untested_** and **not** **recommended**.
 
 - Inside the unpacked **DUMA** source directory, create and change to a new `build` directory
   - `mkdir build && cd build`
@@ -226,7 +226,7 @@ additional configuration or warrant special consideration.
 
 ##### ARM CPUs
 
-- On systems with *ARM* processors, it may be necessary to set the `DUMA_MEMCPY_OVERLAP`
+- On systems with _ARM_ processors, it may be necessary to set the `DUMA_MEMCPY_OVERLAP`
   variable, which allows overlapping of `memcpy()` regions when the destination address is
   less than the source address.
 
@@ -234,22 +234,22 @@ additional configuration or warrant special consideration.
 
 ##### MIPS CPUs
 
-- On systems with 64-bit *MIPS* processors, it may be necessary to set the `DUMA_ALIGNMENT`
+- On systems with 64-bit _MIPS_ processors, it may be necessary to set the `DUMA_ALIGNMENT`
   environment variable to a value of eight (`8`) bytes.
 
 ---
 
 ##### RISC-V CPUs
 
-- On systems using *RISC-V* processors, the base instruction set uses only fixed-length 32-bit
-  instructions that must be aligned on four (`4`) byte (*32-bit*) boundaries. However, the
-  standard encoding scheme supports *compressed* and *variable-length* instructions. These
-  instructions can be any number of 16-bit *"instruction parcels"* in length, and are always
-  aligned on two (`2`) byte (*16-bit*) boundaries.
-- The *RISC-V* processor will not fault when accessing an invalid (unaligned) address. Instead, it
+- On systems using _RISC-V_ processors, the base instruction set uses only fixed-length 32-bit
+  instructions that must be aligned on four (`4`) byte (_32-bit_) boundaries. However, the
+  standard encoding scheme supports _compressed_ and _variable-length_ instructions. These
+  instructions can be any number of 16-bit _"instruction parcels"_ in length, and are always
+  aligned on two (`2`) byte (_16-bit_) boundaries.
+- The _RISC-V_ processor will not fault when accessing an invalid (unaligned) address. Instead, it
   will use the next nearest valid address.
   - For this reason, the `DUMA_ALIGNMENT` environment variable should not be set to a value of
-    one (`1`) on systems using *RISC-V* processors.
+    one (`1`) on systems using _RISC-V_ processors.
 
 ---
 
