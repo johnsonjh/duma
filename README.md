@@ -33,10 +33,10 @@
     - [Compiling with GNU Make](#gnu-make)
 	- [Compiling with CMake](#cmake)
 	- [Compiling with Visual Studio](#visual-studio)
-  - [Build Environment Notes](#environment-notes)
+  - [Environment Notes](#environment-notes)
     - [Solaris](#solaris)
 	- [BSD](#bsd)
-	- [ARM CPUs](#arm-cpus)
+	- [ARM CPU's](#arm-cpus)
 - [Usage](#usage)
 - [Global and Environment Variables](#global-and-environment-variables)
 - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
@@ -90,7 +90,7 @@ segmentation fault.
 
 Simply linking your application with `libduma.a` will allow you to detect most,
 but not all, `malloc` buffer overruns and accesses of free memory. If you want
-to be reasonably sure that you've found all catchable bugs of this type, you'll
+to be reasonably sure that you've found all catch-able bugs of this type, you'll
 have to read and understand the rest of the documentation.
 
 Besides catching these kind of memory bugs, **DUMA** also provides a means to
@@ -102,17 +102,21 @@ memory-leak, some source modification is necessary - at the minimum, adding
 
 ### Installation
 
-**DUMA** may be installed via binary pacakages or from source code.
+**DUMA** may be installed via binary packages or from source code.
 
 #### Binary Packages
 
 - [***TODO: explain and link to binary packages***]
 - [***TODO: explain installing various distro packages***]
 
+---
+
 #### Building from source
 
 - [***TODO: explain downloading and verifying a release archive***]
 - [***TODO: explain using git to checkout a release tag (and HEAD)***]
+
+---
 
 ##### GNU Make
 
@@ -142,8 +146,10 @@ Some ***non***-**GNU Make** systems ***may*** work, but are ***untested*** and *
     - It may be necessary to prefix this command with ***su***, ***sudo***, ***doas***, *etc.* to elevate privileges, depending on the specified `DESTDIR` or `prefix`
 - Test **DUMA** installation
   - `gmake installcheck`
-- Uninstallation may be similarly performed
+- Un-installation may be similarly performed
   - `gmake uninstall`
+
+---
 
 ##### CMake
 
@@ -152,7 +158,7 @@ Some ***non***-**GNU Make** systems ***may*** work, but are ***untested*** and *
 - (*Optionally*) interactively configure compilation and installation options
   - `ccmake ..` *or*
   - `ccmake-gui ..`
-- Generate the nevessary build files
+- Generate the necessary build files
   - `cmake ..`
     - You may also specify options non-interactively, for example
 	  - `cmake -DCMAKE_BUILD_TYPE="Debug" ..`
@@ -168,8 +174,10 @@ Some ***non***-**GNU Make** systems ***may*** work, but are ***untested*** and *
 - Install **DUMA**
   - `cmake --build . --target "install"`
     - It may be necessary to prefix this command with ***su***, ***sudo***, ***doas***, *etc.* to elevate privileges, depending on the configured `CMAKE_INSTALL_PREFIX`
-- Uninstallation may be similarly performed
+- Un-installation may be similarly performed
   - `cmake --build . --target "uninstall"`
+
+---
 
 ##### Visual Studio
 
@@ -178,7 +186,12 @@ Some ***non***-**GNU Make** systems ***may*** work, but are ***untested*** and *
 - Compile `dumalib`
   - Customize your project's `INCLUDE` and `LIBS` variables, as required for your environment.
 
+---
+
 #### Environment Notes
+
+While **DUMA** should work out of the box on most systems, some environments may require
+some additional configuration.
 
 ##### Solaris
 
@@ -186,8 +199,10 @@ Some ***non***-**GNU Make** systems ***may*** work, but are ***untested*** and *
   - Older *Solaris* systems, such as *Solaris 10*, using the GNU tools from the *Companion CD*
     should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to the `PATH`
   - Newer *Solaris* systems, such as *Solaris 11.next* or *OpenIndiana*, require similar
-    configurarion.
+    configuration.
 - The *Solaris Studio* compiler and toolchain has not been tested.
+
+---
 
 ##### BSD
 
@@ -200,6 +215,8 @@ Some ***non***-**GNU Make** systems ***may*** work, but are ***untested*** and *
   - On *NetBSD* 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`) memory leak is always
     detected.
   - Installation on NetBSD is untested.
+
+---
 
 ##### ARM CPUs
 
@@ -293,13 +310,13 @@ important that you know how to use them.
 
 * `DUMA_SKIPCOUNT_INIT` - **DUMA** usually does its initialization with the
   first memory allocation. On some systems this may collide with initialization
-  of pthreads or other libaries and produce a hang. To get **DUMA** work even in
+  of pthreads or other libraries and produce a hang. To get **DUMA** work even in
   these situations you can control (with this environment variable) after how
   many allocations the full internal initialization of **DUMA** is done. Default
   is `0`.
 
 * `DUMA_REPORT_ALL_LEAKS` - **DUMA** usually reports only memory leaks where the
-  source filename with line number of the allocating instruction is known.
+  source file-name with line number of the allocating instruction is known.
   Setting this variable to `1` in shell environment reports all memory leaks.
   The default is `0` to avoid reporting of irrelevant memory leaks from
   system/compiler environment: there are many standard libraries leaking memory,
@@ -308,18 +325,18 @@ important that you know how to use them.
 
 * `DUMA_FILL` - When set to a value between `0` and `255`, every byte of
   allocated memory is initialized to that value. This can help detect reads of
-  uninitialized memory. When set to `-1`, **DUMA** does not initialise memory on
+  uninitialized memory. When set to `-1`, **DUMA** does not initialize memory on
   allocation, so some memory may filled with zeroes (the operating system
   default on most systems) and some memory will retain the values written to it
   during its last use.
 
-  Per default, **DUMA** will initialise all allocated bytes to `255` (`0xFF`).
+  Per default, **DUMA** will initialize all allocated bytes to `255` (`0xFF`).
   To change this value, set `DUMA_FILL` in the shell environment to an integer
   value, or call the macro function `DUMA_SET_FILL()` from your code.
 
 * `DUMA_SLACKFILL` - As **DUMA** internally allocates memory in whole pages,
   there retains an unused and unprotectable piece of memory: the slack or
-  _no-mans-land_. Per default **DUMA** will initialise this area to `170`
+  _no-mans-land_. Per default **DUMA** will initialize this area to `170`
   (`0xAA`), which is `10101010` in binary representation.
 
   To change this value, set `DUMA_SLACKFILL` in the shell environment to an
@@ -346,7 +363,7 @@ important that you know how to use them.
   `DUMA_ALLOC_MALLOC_0` in the shell environment to an integer value.
 
 * `DUMA_MALLOC_0_STRATEGY` - This environment variable controls **DUMA**'s
-  behaviour on `malloc(0)`:
+  behavior on `malloc(0)`:
 
   - `0` - like having former `ALLOW_MALLOC_0 = 0` ==> abort program with
     segfault
@@ -358,7 +375,7 @@ important that you know how to use them.
       use/implement. All returned pointers can be passed to `free()`.
 
 * `DUMA_NEW_0_STRATEGY` - This environment variable controls **DUMA**'s
-  behaviour on C++ operator new with size zero:
+  behavior on C++ operator new with size zero:
 
   - `2` - return always the same pointer to some protected page
   - `3` - return mid address of a unique protected page (**_default_**)
@@ -376,9 +393,9 @@ important that you know how to use them.
   free memory, set `DUMA_PROTECT_FREE` shell environment to `-1`. This is the
   default and will cause **DUMA** not to re-allocate any memory.
 
-  For programs with many allocations and deallocations this may lead to the
+  For programs with many allocations and de-allocations this may lead to the
   consumption of the full address space and thus to the failure of `malloc()`.
-  It is important to discriminate between _address space_ and _pyhsical memory_;
+  It is important to discriminate between _address space_ and _physical memory_;
   **DUMA** does free the _physical memory_; but the _address space_ is not
   freed. Thus, the _address space_ may be exhausted despite available _physical
   memory_. This is especially important on 32-bit systems. To avoid such
@@ -401,7 +418,7 @@ important that you know how to use them.
   is disabled.
 
 * `DUMA_SHOW_ALLOC` - Set this shell environment variable to non-zero to let
-  DUMA print all allocations and deallocations to the console. Although this
+  DUMA print all allocations and de-allocations to the console. Although this
   generates a lot of messages, this option can be useful to detect inefficient
   code containing many (de)allocations. This is switched off by default.
 
@@ -413,7 +430,7 @@ important that you know how to use them.
   library's `atexit()`-function hangs.
 
 * `DUMA_DISABLE_BANNER` - Set this shell environment variable to non-zero to
-  suppress the usual startup message on console. Default is `0`.
+  suppress the usual start-up message on console. Default is `0`.
 
 * `DUMA_OUTPUT_DEBUG` - Set this shell environment variable to non-zero to
   output all DUMA messages to the debugging console. This option is only
@@ -425,11 +442,11 @@ important that you know how to use them.
 * `DUMA_OUTPUT_STDERR` - Set this shell environment variable to non-zero to
   output all DUMA messages to _STDERR_. This option is on by default.
 
-* `DUMA_OUTPUT_FILE` - Set this shell environment variable to a filename where
+* `DUMA_OUTPUT_FILE` - Set this shell environment variable to a file-name where
   all DUMA messages should be written to. This option is off by default.
 
 * `DUMA_OUTPUT_STACKTRACE` - Set this shell environment variable to non-zero to
-  output a stacktrace of the allocation that is not free'd. This option is
+  output a stacktrace of the allocation that is not freed. This option is
   available only on Windows and is off by default. This option also requires a
   map file generated by the linker.
 
@@ -534,7 +551,7 @@ To get the line in you sources where an error occurs:
    memory.
 3. Quit the debugger.
 4. Set `DUMA_PROTECT_BELOW = 1` in the shell environment.
-5. Repeat step 2, this time repairing underruns if they occur.
+5. Repeat step 2, this time repairing under-runs if they occur.
 6. Quit the debugger.
 7. Optionally, read and install `gdbinit.rc` as `~/.gdbinit` if you are using
    the `gdb` debugger
@@ -551,7 +568,7 @@ To get the line in you sources where an error occurs:
 ### Memory Usage and Execution Speed
 
 - Since **DUMA** uses at least two virtual memory pages for each of its
-  allocations, it's a terrible memory hog. It may be neccessary to configure a
+  allocations, it's a terrible memory hog. It may be necessary to configure a
   swap file so the system will have enough virtual memory available. Also, the
   way **DUMA** manipulates memory results in various cache and translation
   buffer entries being flushed with each call to `malloc()` or `free()`. The end
@@ -571,13 +588,13 @@ To get the line in you sources where an error occurs:
 
 ### Memory Leak Detection
 
-- All memory allocation is protocoled from **DUMA** together with the filename
-  and linenumber of the calling function. The `atexit()` function checks if each
+- All memory allocation is protocol-ed from **DUMA** together with the file-name
+  and line number of the calling function. The `atexit()` function checks if each
   allocated memory block was freed. To disable leak detection add the
   preprocessor definition `DUMA_SO_NO_LEAKDETECTION` or
   `DUMA_LIB_NO_LEAKDETECTION` to `DUMA_OPTIONS` in the Makefile.
 
-  - If a leak is reported without a source filename or line number, but is
+  - If a leak is reported without a source file-name or line number, but is
     reproducible with the same pointer, set a conditional breakpoint on the
     function `void * duma_alloc_return( void * address)`, for example, using the
     **gdb** command `'break duma_alloc_return if address==0x123'`
@@ -587,7 +604,7 @@ To get the line in you sources where an error occurs:
 ### C++ Memory Operators and Leak Detection
 
 - Macros for "`new`" and "`delete`" are defined in `dumapp.h`. These macros give
-  filename and linenumber of the calling functions to **DUMA**, thus allowing
+  file-name and line number of the calling functions to **DUMA**, thus allowing
   the same leak detection reports as for malloc and free. `dumapp.h` needs to be
   included l from your source file(s).
 
@@ -601,7 +618,7 @@ To get the line in you sources where an error occurs:
 
 - Definition of own member `new`/`delete` operators for a class will fail
   because the `new`/`delete` keywords are defined as macros from **DUMA**. You
-  will have to undefine **DUMA**'s macros with following line:
+  will have to un-define **DUMA**'s macros with following line:
   `#include "noduma.h"` Then you have to call **DUMA**'s operators directly
   inside your own definition.
 
