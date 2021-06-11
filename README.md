@@ -239,11 +239,14 @@ consideration.
 
 - **FreeBSD**
 
-  - On _FreeBSD_ 6.2 it is necessary to set `DUMA_DISABLE_BANNER=1`
-    before running any programs linked with **DUMA**.
+  - On _FreeBSD_ 6.2, it is necessary to set `DUMA_DISABLE_BANNER=1`
+    before running any program linked with **DUMA**.
+
+---
 
 - **NetBSD**
-  - On _NetBSD_ 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`)
+
+  - On _NetBSD_ 3.1 (`HOSTTYPE=i386` / `OSTYPE=netbsdelf`), one (`1`)
     memory leak is always detected.
   - Installation on _NetBSD_ is untested.
 
@@ -259,9 +262,9 @@ consideration.
 
 ##### MIPS CPUs
 
-- On systems with 64-bit _MIPS_ processors (_MIPS_-III*/*IV*/*V*, *MIPS64*,
-  *КОМДИВ-64*, *OCTEON*, *VR43xx*, *ICE9\*), it may be necessary to explicitly
-  set the `DUMA_ALIGNMENT` environment variable to a value of eight (`8`) bytes.
+- On systems with 64-bit _MIPS_ processors (_MIPS_-*III*/*IV*/*V*, *MIPS64*,
+  *КОМДИВ-64*, *OCTEON*, *VR43xx*, *ICE9*), it may be necessary to explicitly
+  set the `DUMA_ALIGNMENT` environment variable to eight (`8`) bytes.
 
 ---
 
@@ -269,13 +272,16 @@ consideration.
 
 - On systems using _RISC-V_ processors, the base instruction set uses only
   fixed-length 32-bit instructions that must be aligned on four (`4`) byte
-  (_32-bit_) boundaries. However, the standard encoding scheme supports
-  _compressed_ and _variable-length_ instructions. These instructions can be any
-  number of 16-bit _"instruction parcels"_ in length, and are always aligned on
-  two (`2`) byte (_16-bit_) boundaries.
+  (_32-bit_) boundaries.
 
-- The _RISC-V_ processor will not fault when accessing an invalid unaligned
-  address. Instead, it will use the next nearest valid address.
+  - However, the standard *RISC-V* encoding scheme supports _compressed_
+    and _variable-length_ instructions. These instructions can be any
+	number of 16-bit _"instruction parcels"_ in length, and are always
+	aligned on two (`2`) byte (_16-bit_) boundaries.
+
+- The _RISC-V_ processor will not fault when accessing an invalid (*unaligned*)
+  address. Instead, it will simply use the next valid address.
+
   - For this reason, the `DUMA_ALIGNMENT` environment variable should not be set
     to a value of one (`1`) on systems using _RISC-V_ processors.
 
