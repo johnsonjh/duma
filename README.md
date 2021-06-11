@@ -37,7 +37,7 @@
     - [Solaris](#solaris)
     - [BSD](#bsd)
     - [ARM CPUs](#arm-cpus)
-	- [MIPS CPUs](#mips-cpus)
+  - [MIPS CPUs](#mips-cpus)
     - [RISC-V CPUs](#risc-v-cpus)
 - [Usage](#usage)
   - [Global and Environment Variables](#global-and-environment-variables)
