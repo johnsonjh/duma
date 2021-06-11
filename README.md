@@ -137,12 +137,10 @@ natively with the _MSYS_ / _MINGW_ environment.)
 a different name, such as `mingw32-make`, `mingw64-gmake`, or simply `make`
 (_especially on_ **_GNU_** _systems such as Linux_).
 
-Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
-**_untested_** and **not** **recommended**.
+Some **_non_**-**_GNU_** "**Make**" systems **_may_** work, but are
+**_untested_** and **not** **recommended** for building **DUMA**.
 
-- Inside the unpacked **DUMA** source directory, create and change to a
-  new `build` directory
-  - `mkdir build && cd build`
+- Change your current working directory to the unpacked **DUMA** source tree
 - (_Optionally_) review `GNUmakefile` for configuration, compilation,
   and installation options
   - Check the `OS` and `OSTYPE` options
