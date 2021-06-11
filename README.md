@@ -103,7 +103,8 @@ memory-leak, some source modification is necessary - at the minimum, adding
 
 ### Installation
 
-**DUMA** may be installed via binary packages or from source code.
+**DUMA** may be installed from compiled binary packages or built
+from source code.
 
 #### Binary Packages
 
@@ -154,11 +155,11 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
 - Install **DUMA**
   - `gmake install`
     - It may be necessary to prefix this command with
-	  **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
-	  depending on the specified `DESTDIR` or `prefix`
+    **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
+    depending on the specified `DESTDIR` or `prefix`
 - Test **DUMA** installation
   - `gmake installcheck`
-- Un-installation may be similarly performed
+- Un-installation of **DUMA** may be similarly performed
   - `gmake uninstall`
 
 ---
@@ -180,8 +181,8 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
     - `cmake -DCMAKE_TOOLCHAIN_FILE=/opt/gcc/toolchain_gcc-8.cmake ..`
     - `cmake -G "Visual Studio 16 2019" -A "x64" ..`
       - _Refer to the
-	    [CMake Manual](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)
-		for full details_
+        [CMake Manual](https://cmake.org/cmake/help/latest/manual)
+        for full details_
 - Build **DUMA**
   - `cmake --build .`
 - Test **DUMA**
@@ -189,9 +190,9 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
 - Install **DUMA**
   - `cmake --build . --target "install"`
     - It may be necessary to prefix this command with
-	  **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
-	  depending on the configured `CMAKE_INSTALL_PREFIX`
-- Un-installation may be similarly performed
+      **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
+      depending on the configured `CMAKE_INSTALL_PREFIX`
+- Un-installation of **DUMA** may be similarly performed
   - `cmake --build . --target "uninstall"`
 
 ---
@@ -214,14 +215,15 @@ consideration.
 
 ##### Solaris
 
+- Both **SPARC** and **Intel** processors are supported.
 - **DUMA** is tested on *Solaris* using the GNU toolchain
   (_GNU CC, G++, ld, binutils, etc._)
   - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from 
     the _Companion CD_ should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to
-	the `PATH`
+    the `PATH`.
   - Newer _Solaris_ systems, such as _Solaris 11.next_ or _OpenIndiana_,
-    require similar configuration
-- The _Solaris Studio_ compiler and toolchain has not been tested
+    require similar configuration.
+- The _Solaris Studio_ toolchain has not been tested.
 
 ---
 
@@ -229,9 +231,9 @@ consideration.
 
 - FreeBSD
   - On _FreeBSD_ 6.2 it is necessary to `export DUMA_DISABLE_BANNER=1`
-    before running any programs linked with **DUMA**
+    before running any programs linked with **DUMA**.
     - This seems to be caused by an initialization problem in the
-	  pthread library
+      pthread library.
 
 - NetBSD
   - On _NetBSD_ 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`)
