@@ -262,8 +262,8 @@ consideration.
 
 ##### MIPS CPUs
 
-- On systems with 64-bit _MIPS_ processors (_MIPS_-*III*/*IV*/*V*, *MIPS64*,
-  *КОМДИВ-64*, *OCTEON*, *VR43xx*, *ICE9*), it may be necessary to explicitly
+- On systems with 64-bit _MIPS_ processors (_MIPS_-_III_/_IV_/_V_, _MIPS64_,
+  _КОМДИВ-64_, _OCTEON_, _VR43xx_, _ICE9_), it may be necessary to explicitly
   set the `DUMA_ALIGNMENT` environment variable to eight (`8`) bytes.
 
 ---
@@ -274,12 +274,12 @@ consideration.
   fixed-length 32-bit instructions that must be aligned on four (`4`) byte
   (_32-bit_) boundaries.
 
-  - However, the standard *RISC-V* encoding scheme supports _compressed_
+  - However, the standard _RISC-V_ encoding scheme supports _compressed_
     and _variable-length_ instructions. These instructions can be any
-	number of 16-bit _"instruction parcels"_ in length, and are always
-	aligned on two (`2`) byte (_16-bit_) boundaries.
+    number of 16-bit _"instruction parcels"_ in length, and are always
+    aligned on two (`2`) byte (_16-bit_) boundaries.
 
-- The _RISC-V_ processor will not fault when accessing an invalid (*unaligned*)
+- The _RISC-V_ processor will not fault when accessing an invalid (_unaligned_)
   address. Instead, it will simply use the next valid address.
 
   - For this reason, the `DUMA_ALIGNMENT` environment variable should not be set
