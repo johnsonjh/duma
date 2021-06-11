@@ -1,14 +1,9 @@
 
 # duma specific
-
 duma_config.h
 verinfo.h
 build
 build_gcc*
-
-
-# Created by https://www.toptal.com/developers/gitignore/api/vim,visualstudiocode,linux,macos,cvs,git,c,c++
-# Edit at https://www.toptal.com/developers/gitignore?templates=vim,visualstudiocode,linux,macos,cvs,git,c,c++
 
 ### C ###
 # Prerequisites
@@ -149,7 +144,6 @@ Temporary Items
 .apdisk
 
 ### Vim ###
-# Swap
 [._]*.s[a-v][a-z]
 !*.svg  # comment out if you don't need vector files
 [._]*.sw[a-p]
@@ -163,8 +157,10 @@ Sessionx.vim
 
 # Temporary
 .netrwhist
+
 # Auto-generated tag files
 tags
+
 # Persistent undo
 [._]*.un~
 
@@ -175,12 +171,7 @@ tags
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
 .history
-
-# End of https://www.toptal.com/developers/gitignore/api/vim,visualstudiocode,linux,macos,cvs,git,c,c++
 
 # The following have been imported from .cvsignore
 *.ncb

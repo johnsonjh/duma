@@ -167,6 +167,11 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
 
 ##### CMake
 
+**CMake** is a portable suite of tools to automate the configuration,
+building, testing, packaging, and installation of software.
+
+**DUMA** can be built using **CMake** 3.1 (*December 2014*) or later.
+
 - Inside the unpacked **DUMA** source directory, create and change to a
   new `build` directory
   - `mkdir build && cd build`

@@ -1,7 +1,10 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 project(DUMA)
 
 # see INSTALL on how to build DUMA
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 option( DUMA_WITH_GLOBAL_MALLOC_FREE "export malloc/free" ON)  # NOT DUMA_NO_GLOBAL_MALLOC_FREE
 option( DUMA_WITH_EXPLICIT_INIT      "duma_init() is to be called from user" OFF)  # DUMA_EXPLICIT_INIT
