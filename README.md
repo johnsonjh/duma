@@ -261,8 +261,8 @@ consideration.
 
 ##### MIPS CPUs
 
-- On systems with 64-bit _MIPS_ processors (*MIPS*-III*/*IV*/*V*, *MIPS64*,
-  *КОМДИВ-64*, *OCTEON*, *VR43xx*, *ICE9*), it may be necessary to explicitly
+- On systems with 64-bit _MIPS_ processors (_MIPS_-III*/*IV*/*V*, *MIPS64*,
+  *КОМДИВ-64*, *OCTEON*, *VR43xx*, *ICE9\*), it may be necessary to explicitly
   set the `DUMA_ALIGNMENT` environment variable to a value of eight (`8`) bytes.
 
 ---
