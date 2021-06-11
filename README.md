@@ -236,7 +236,6 @@ consideration.
 ##### BSD
 
 - FreeBSD
-
   - On _FreeBSD_ 6.2 it is necessary to `export DUMA_DISABLE_BANNER=1`
     before running any programs linked with **DUMA**.
     - This seems to be caused by an initialization problem in the
