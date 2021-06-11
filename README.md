@@ -37,7 +37,7 @@
     - [Solaris](#solaris)
     - [BSD](#bsd)
     - [ARM CPU's](#arm-cpus)
-    - [RISC-V CPU's](#riscv-cpus)
+    - [RISC-V CPU's](#risc-v-cpus)
 - [Usage](#usage)
 - [Global and Environment Variables](#global-and-environment-variables)
 - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
