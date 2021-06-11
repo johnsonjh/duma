@@ -37,7 +37,7 @@
     - [Solaris](#solaris)
     - [BSD](#bsd)
     - [ARM CPU's](#arm-cpus)
-  - [RISC-V CPU's](#riscv-cpus)
+    - [RISC-V CPU's](#riscv-cpus)
 - [Usage](#usage)
 - [Global and Environment Variables](#global-and-environment-variables)
 - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
@@ -123,32 +123,39 @@ memory-leak, some source modification is necessary - at the minimum, adding
 
 **DUMA** may be built using **_GNU_** **Make**.
 
-**_GNU_** **Make** is available for many operating systems,
-including _SunOS_ / _Solaris_, _GNU/Hurd_, _AIX_, _HP-UX_, _BSD_, _GNU/Linux_, and
-_Microsoft Windows_ (using _Cygwin_ or _UWIN_ for POSIX compatibility, or natively with the
-_MSYS_ / _MINGW_ environment.)
+**_GNU_** **Make** is available for many operating systems, including
+_SunOS_ / _Solaris_, _GNU/Hurd_, _AIX_, _HP-UX_, _BSD_, _GNU/Linux_, and
+_Microsoft Windows_ (using _Cygwin_ or _UWIN_ for POSIX compatibility, or
+natively with the _MSYS_ / _MINGW_ environment.)
 
-**_GNU_** **Make** is often installed as `gmake`, but may be installed under a different name, such
-as `mingw32-make`, `mingw64-gmake`, or simply `make` (_especially on_ **_GNU_** _systems such as
-Linux_).
+**_GNU_** **Make** is often installed as `gmake`, but may be installed under
+a different name, such as `mingw32-make`, `mingw64-gmake`, or simply `make`
+(_especially on_ **_GNU_** _systems such as Linux_).
 
-Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are **_untested_** and **not** **recommended**.
+Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
+**_untested_** and **not** **recommended**.
 
-- Inside the unpacked **DUMA** source directory, create and change to a new `build` directory
+- Inside the unpacked **DUMA** source directory, create and change to a
+  new `build` directory
   - `mkdir build && cd build`
-- (_Optionally_) review `GNUmakefile` for configuration, compilation, and installation options
-  - Check the `OS` and `OSTYPE` options (_necessary if automated detection is unsuccessful_)
+- (_Optionally_) review `GNUmakefile` for configuration, compilation,
+  and installation options
+  - Check the `OS` and `OSTYPE` options
+    (_necessary if automated detection is unsuccessful_)
   - Check any other options or variables that may be available
 - Build **DUMA**
   - `gmake` (_for automatic OS detection and defaults_)
   - `gmake OSTYPE=cygwin` (_for Microsoft Windows with Cygwin_)
-  - `mingw32-make OSTYPE=msys` (_for Microsoft Windows with MSYS / MINGW via Command Prompt_)
+  - `mingw32-make OSTYPE=msys`
+    (_for Microsoft Windows with MSYS / MINGW via Command Prompt_)
   - `make OS=linux` (_for most GNU/Linux systems_)
 - Test **DUMA**
   - `gmake check`
 - Install **DUMA**
   - `gmake install`
-    - It may be necessary to prefix this command with **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges, depending on the specified `DESTDIR` or `prefix`
+    - It may be necessary to prefix this command with
+	  **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
+	  depending on the specified `DESTDIR` or `prefix`
 - Test **DUMA** installation
   - `gmake installcheck`
 - Un-installation may be similarly performed
@@ -158,7 +165,8 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are **_untested_**
 
 ##### CMake
 
-- Inside the unpacked **DUMA** source directory, create and change to a new `build` directory
+- Inside the unpacked **DUMA** source directory, create and change to a
+  new `build` directory
   - `mkdir build && cd build`
 - (_Optionally_) interactively configure compilation and installation options
   - `ccmake ..` _or_
@@ -171,14 +179,18 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are **_untested_**
     - `cmake -DCMAKE_INSTALL_PREFIX="/opt/duma" ..`
     - `cmake -DCMAKE_TOOLCHAIN_FILE=/opt/gcc/toolchain_gcc-8.cmake ..`
     - `cmake -G "Visual Studio 16 2019" -A "x64" ..`
-      - _Refer to the [CMake Manual](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for full details_
+      - _Refer to the
+	    [CMake Manual](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)
+		for full details_
 - Build **DUMA**
   - `cmake --build .`
 - Test **DUMA**
   - `ctest` (_add_ `-V` _or_ `-VV` _for more verbose output_)
 - Install **DUMA**
   - `cmake --build . --target "install"`
-    - It may be necessary to prefix this command with **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges, depending on the configured `CMAKE_INSTALL_PREFIX`
+    - It may be necessary to prefix this command with
+	  **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
+	  depending on the configured `CMAKE_INSTALL_PREFIX`
 - Un-installation may be similarly performed
   - `cmake --build . --target "uninstall"`
 
@@ -189,67 +201,72 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are **_untested_**
 - Compile and execute `createconf`
   - Verify the `duma_config.h` header file generated by `createconf`
 - Compile `dumalib`
-  - Customize your project's `INCLUDE` and `LIBS` variables, as required for your environment
+  - Customize your project's `INCLUDE` and `LIBS` variables, as required
+    for your environment
 
 ---
 
 #### Environment Notes
 
-**DUMA** should work out of the box on most systems, however, specific environments may require
-additional configuration or warrant special consideration.
+**DUMA** should work out of the box on most systems, however, specific
+environments may require additional configuration or warrant special
+consideration.
 
 ##### Solaris
 
-- **DUMA** is tested using the GNU toolchain (_GNU CC, G++, ld, binutils, etc._)
-  - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from the _Companion CD_
-    should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to the `PATH`
-  - Newer _Solaris_ systems, such as _Solaris 11.next_ or _OpenIndiana_, require similar
-    configuration
-- The _Solaris Studio_ compiler and toolchain has not been tested.
+- **DUMA** is tested on *Solaris* using the GNU toolchain
+  (_GNU CC, G++, ld, binutils, etc._)
+  - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from 
+    the _Companion CD_ should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to
+	the `PATH`
+  - Newer _Solaris_ systems, such as _Solaris 11.next_ or _OpenIndiana_,
+    require similar configuration
+- The _Solaris Studio_ compiler and toolchain has not been tested
 
 ---
 
 ##### BSD
 
 - FreeBSD
-
-  - On _FreeBSD_ 6.2 it is necessary to `export DUMA_DISABLE_BANNER=1` before running any programs
-    linked with **DUMA**.
-    - This seems to be caused by an initialization problem in the pthreads library.
+  - On _FreeBSD_ 6.2 it is necessary to `export DUMA_DISABLE_BANNER=1`
+    before running any programs linked with **DUMA**
+    - This seems to be caused by an initialization problem in the
+	  pthread library
 
 - NetBSD
-  - On _NetBSD_ 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`) memory leak is always
-    detected.
+  - On _NetBSD_ 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`)
+    memory leak is always detected.
   - Installation on NetBSD is untested.
 
 ---
 
 ##### ARM CPUs
 
-- On systems with _ARM_ processors, it may be necessary to set the `DUMA_MEMCPY_OVERLAP`
-  variable, which allows overlapping of `memcpy()` regions when the destination address is
-  less than the source address.
+- On systems with _ARM_ processors, it may be necessary to set the
+  `DUMA_MEMCPY_OVERLAP` variable, which allows overlapping of `memcpy()`
+  regions when the destination address is less than the source address.
 
 ---
 
 ##### MIPS CPUs
 
-- On systems with 64-bit _MIPS_ processors, it may be necessary to set the `DUMA_ALIGNMENT`
-  environment variable to a value of eight (`8`) bytes.
+- On systems with 64-bit _MIPS_ processors, it may be necessary to set
+  the `DUMA_ALIGNMENT` environment variable to a value of eight (`8`) bytes.
 
 ---
 
 ##### RISC-V CPUs
 
-- On systems using _RISC-V_ processors, the base instruction set uses only fixed-length 32-bit
-  instructions that must be aligned on four (`4`) byte (_32-bit_) boundaries. However, the
-  standard encoding scheme supports _compressed_ and _variable-length_ instructions. These
-  instructions can be any number of 16-bit _"instruction parcels"_ in length, and are always
-  aligned on two (`2`) byte (_16-bit_) boundaries.
-- The _RISC-V_ processor will not fault when accessing an invalid (unaligned) address. Instead, it
-  will use the next nearest valid address.
-  - For this reason, the `DUMA_ALIGNMENT` environment variable should not be set to a value of
-    one (`1`) on systems using _RISC-V_ processors.
+- On systems using _RISC-V_ processors, the base instruction set uses only
+  fixed-length 32-bit instructions that must be aligned on four (`4`) byte
+  (_32-bit_) boundaries. However, the standard encoding scheme supports
+  _compressed_ and _variable-length_ instructions. These instructions can be any
+  number of 16-bit _"instruction parcels"_ in length, and are always aligned on
+  two (`2`) byte (_16-bit_) boundaries.
+- The _RISC-V_ processor will not fault when accessing an invalid unaligned
+  address. Instead, it will use the next nearest valid address.
+  - For this reason, the `DUMA_ALIGNMENT` environment variable should not be set
+    to a value of one (`1`) on systems using _RISC-V_ processors.
 
 ---
 
