@@ -155,8 +155,8 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
 - Install **DUMA**
   - `gmake install`
     - It may be necessary to prefix this command with
-    **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
-    depending on the specified `DESTDIR` or `prefix`
+      **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
+      depending on the specified `DESTDIR` or `prefix`
 - Test **DUMA** installation
   - `gmake installcheck`
 - Un-installation of **DUMA** may be similarly performed
@@ -216,9 +216,9 @@ consideration.
 ##### Solaris
 
 - Both **SPARC** and **Intel** processors are supported.
-- **DUMA** is tested on *Solaris* using the GNU toolchain
+- **DUMA** is tested on _Solaris_ using the GNU toolchain
   (_GNU CC, G++, ld, binutils, etc._)
-  - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from 
+  - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from
     the _Companion CD_ should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to
     the `PATH`.
   - Newer _Solaris_ systems, such as _Solaris 11.next_ or _OpenIndiana_,
@@ -230,6 +230,7 @@ consideration.
 ##### BSD
 
 - FreeBSD
+
   - On _FreeBSD_ 6.2 it is necessary to `export DUMA_DISABLE_BANNER=1`
     before running any programs linked with **DUMA**.
     - This seems to be caused by an initialization problem in the
