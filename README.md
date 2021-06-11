@@ -51,11 +51,11 @@
 - [Memory Usage and Execution Speed](#memory-usage-and-execution-speed)
 - [Memory Leak Detection](#memory-leak-detection)
 - [C++ Memory Operators and Leak Detection](#c-memory-operators-and-leak-detection)
-  - [Definition of own member new/delete Operators](#definition-of-own-member-newdelete-operators)
-- [Compilation Notes for Release/Production](#compilation-notes-for-releaseproduction)
+  - [Definition of own member new / delete Operators](#definition-of-own-member-newdelete-operators)
+- [Compilation Notes for Release / Production](#compilation-notes-for-releaseproduction)
 - [NO WARRANTY](#no-warranty)
 - [Diagnostics](#diagnostics)
-- [Bugs](#bugs)
+  - [Bugs](#bugs)
 - [Comparison with other tools](#comparison-with-other-tools)
 - [Availability](#availability)
   - [Releases](#releases)
@@ -735,7 +735,7 @@ operator delete[](ptr, file,line);  // vector delete
 
 ---
 
-### Bugs
+#### Bugs
 
 - Explanation of alignment issues could be improved.
 

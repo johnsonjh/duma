@@ -95,7 +95,7 @@
 - Update `duma.c`: Adjust ordering of included headers
 - New CMake build support
   - Generate `duma.sh` to use absolute path to installed shared library
-  - Require C++-11 compilation standard
+  - Require C++11 compilation standard
 - Fix compilation warnings with GCC 9.3
 - Fix compilation on macOS X (ARM64 and Intel processors)
 - Create _Attic_ for outdated / deprecated components
@@ -162,7 +162,7 @@
   (2009-05-21, HA)
 - Fixed "_Broken build in MSYS_" and "_C++ tests fail_"
   - Fixed `USE_WIN32_CRIT_SECT` implementation in `sem_inc.c`
-  - Added _make_ section for `OSTYPE=msys-sh`, which uses _mingw32-gcc_ / _g++_
+  - Added _make_ section for `OSTYPE=msys-sh`, which uses _mingw32-gcc_ / _G++_
 - Use `USE_WIN32_CRIT_SECT` implementation for _Cygwin_, fixes `testoperator`
   (2009-05-23, HA)
 - Remove CVS sub-directories from packaging
@@ -390,9 +390,9 @@
 
 ## 2.5.4 (2007-07-31)
 
-- Support for _Win32_ using _MSYS/MINGW_ when calling _make_ with `OSTYPE=msys`; call
-  `mingw32-make OSTYPE=msys` from the _Windows_ _Command Prompt_, after adding
-  MINGW's `bin` to the _PATH_
+- Support for _Win32_ using _MSYS_ / _MINGW_ when calling _make_ with
+  `OSTYPE=msys`; call `mingw32-make OSTYPE=msys` from the _Windows_
+  _Command Prompt_, after adding _MINGW_'s `bin` to the _PATH_
   (2007-07-28, HA)
 - Echo a single dot (`.`) for _Windows_ _Command Prompt_
   (2007-07-31, HA)
@@ -465,7 +465,7 @@
 
 ## 2.4.27 (2006-04-23)
 
-- Published a German-language article about **DUMA** on http://duma.sourceforge.net/
+- Published a German-language article about **DUMA** on http://duma.sourceforge.net
 - Bugfix: Removed buffer overflow in `DUMA_sprintf()` for long file names
   - Added parameter `maxsize` for output buffers in some functions
   - Incremented `STRING_BUFFER_SIZE` to reduce this risk; bug reported
