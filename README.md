@@ -37,7 +37,7 @@
     - [Solaris](#solaris)
     - [BSD](#bsd)
     - [ARM CPUs](#arm-cpus)
-  - [MIPS CPUs](#mips-cpus)
+    - [MIPS CPUs](#mips-cpus)
     - [RISC-V CPUs](#risc-v-cpus)
 - [Usage](#usage)
   - [Global and Environment Variables](#global-and-environment-variables)
@@ -63,7 +63,7 @@
 - [Issue Tracking](#issue-tracking)
 - [Security Policy](#security-policy)
 - [License](#license)
-- [History](#history)
+- [Version History](#version-history)
 
 <!-- tocstop -->
 
@@ -792,8 +792,8 @@ operator delete[](ptr, file,line);  // vector delete
 
 ---
 
-### History
+### Version History
 
-- [Change Log](https://github.com/johnsonjh/duma/blob/master/CHANGELOG.md)
+- [Version History](https://github.com/johnsonjh/duma/blob/master/CHANGELOG.md)
 
 ---
