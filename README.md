@@ -36,11 +36,12 @@
   - [Environment Notes](#environment-notes)
     - [Solaris](#solaris)
     - [BSD](#bsd)
-    - [ARM CPU's](#arm-cpus)
-    - [RISC-V CPU's](#risc-v-cpus)
+    - [ARM CPUs](#arm-cpus)
+	- [MIPS CPUs](#mips-cpus)
+    - [RISC-V CPUs](#risc-v-cpus)
 - [Usage](#usage)
-- [Global and Environment Variables](#global-and-environment-variables)
-- [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
+  - [Global and Environment Variables](#global-and-environment-variables)
+  - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
 - [Catching the Erroneous Line](#catching-the-erroneous-line)
   - [Live (debugger control)](#live-debugger-control)
   - [Post-mortem (core analysis)](#post-mortem-core-analysis)
@@ -311,7 +312,7 @@ consideration.
 
 ---
 
-### Global and Environment Variables
+#### Global and Environment Variables
 
 **DUMA** has several configuration switches that can be enabled via the shell
 environment. These switches change what bugs **DUMA** will detect, so it's
@@ -516,7 +517,7 @@ important that you know how to use them.
 
 ---
 
-### Word-Alignment and Overrun Detection
+#### Word-Alignment and Overrun Detection
 
 There is a conflict between the alignment restrictions that `malloc()` operates
 under and the debugging strategy used by **DUMA**. When detecting overruns,
