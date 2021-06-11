@@ -705,11 +705,12 @@ operator delete[](ptr, file,line);  // vector delete
 ### NO WARRANTY
 
 - This software has **_NO WARRANTY_**.
+
   - See the [license](#license) for full details.
 
 - Much effort has been expended to ensure the correctness and reliability
   of **DUMA**, however, it is not theoretically possible to make software
-  of this nature ***bug-free***.
+  of this nature **_bug-free_**.
 
 - **DUMA** may _not_ detect some bugs that you could expect it to detect;
   likewise, it may also indicate that some **non-bugs** _are_ bugs.
@@ -731,10 +732,10 @@ operator delete[](ptr, file,line);  // vector delete
 - Explanation of alignment issues could be improved.
 
 - Some **Sun** systems running **SunOS** **4.1** were reported to signal an
-  access to a protected page with `SIGBUS` rather than `SIGSEGV`.  This is
-  most likely an undocumented "*feature*" of particular *Sun* hardware
+  access to a protected page with `SIGBUS` rather than `SIGSEGV`. This is
+  most likely an undocumented "_feature_" of particular _Sun_ hardware
   versions, and not an operating system anomaly.
-  - On these systems **DUMA** tests will fail with a *bus error* unless the
+  - On these systems **DUMA** tests will fail with a _bus error_ unless the
     `Makefile` is modified to define `PAGE_PROTECTION_VIOLATED_SIGNAL`
     as `SIGBUS`.
 
