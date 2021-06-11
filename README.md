@@ -107,6 +107,8 @@ memory-leak, some source modification is necessary - at the minimum, adding
 **DUMA** may be installed from compiled binary packages or built
 from source code.
 
+---
+
 #### Binary Packages
 
 - [***TODO: explain and link to binary packages***]
@@ -219,9 +221,12 @@ building, testing, packaging, and installation of software.
 environments may require additional configuration or warrant special
 consideration.
 
+---
+
 ##### Solaris
 
 - Both **SPARC** and **Intel** processors are supported.
+
 - **DUMA** is tested on _Solaris_ using the GNU toolchain
   (_GNU CC, G++, ld, binutils, etc._)
   - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from
@@ -229,24 +234,22 @@ consideration.
     the `PATH`.
   - Newer _Solaris_ systems, such as _Solaris 11.next_ or _OpenIndiana_,
     require similar configuration.
+
 - The _Solaris Studio_ toolchain has not been tested.
 
 ---
 
 ##### BSD
 
-- FreeBSD
-
-  - On _FreeBSD_ 6.2 it is necessary to `export DUMA_DISABLE_BANNER=1`
+- **FreeBSD**
+  - On _FreeBSD_ 6.2 it is necessary to set `DUMA_DISABLE_BANNER=1`
     before running any programs linked with **DUMA**.
-    - This seems to be caused by an initialization problem in the
-      pthread library.
 
-- NetBSD
 
+- **NetBSD**
   - On _NetBSD_ 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`)
     memory leak is always detected.
-  - Installation on NetBSD is untested.
+  - Installation on *NetBSD* is untested.
 
 ---
 
@@ -273,6 +276,7 @@ consideration.
   _compressed_ and _variable-length_ instructions. These instructions can be any
   number of 16-bit _"instruction parcels"_ in length, and are always aligned on
   two (`2`) byte (_16-bit_) boundaries.
+
 - The _RISC-V_ processor will not fault when accessing an invalid unaligned
   address. Instead, it will use the next nearest valid address.
   - For this reason, the `DUMA_ALIGNMENT` environment variable should not be set
@@ -586,6 +590,7 @@ To get the line in you sources where an error occurs:
 4. Set your program arguments with `'set args …'`
 5. Run and wait for the segmentation fault
 
+
 #### Post-mortem (core analysis)
 
 1. Compile your program (**_with_** debugging information).
@@ -611,6 +616,7 @@ To get the line in you sources where an error occurs:
 6. Quit the debugger.
 7. Optionally, read and install `gdbinit.rc` as `~/.gdbinit` if you are using
    the `gdb` debugger
+
 
 #### Word-Alignment and Overrun Detection
 
@@ -749,7 +755,7 @@ operator delete[](ptr, file,line);  // vector delete
 
 ### Comparison with other tools
 
-- **_[in progress]_**
+- **_[coming soon]_**
 
 ---
 
@@ -757,7 +763,8 @@ operator delete[](ptr, file,line);  // vector delete
 
 #### Releases
 
-- [GitHub Releases](https://github.com/johnsonjh/duma/releases/)
+- [GitHub Releases](https://github.com/johnsonjh/duma/releases)
+
 
 #### Git Repositories
 
