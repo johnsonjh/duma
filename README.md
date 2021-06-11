@@ -162,8 +162,6 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
       depending on the specified `DESTDIR` or `prefix`
 - Test **DUMA** installation
   - `gmake installcheck`
-- Un-installation of **DUMA** may be similarly performed
-  - `gmake uninstall`
 
 ---
 
@@ -172,7 +170,7 @@ Some **_non_**-**_GNU_** **Make** systems **_may_** work, but are
 **CMake** is a portable suite of tools to automate the configuration,
 building, testing, packaging, and installation of software.
 
-**DUMA** can be built using **CMake** 3.1 (_December 2014_) or later.
+**DUMA** may be built using **CMake** 3.1 (_December 2014_) or later.
 
 - Inside the unpacked **DUMA** source directory, create and change to a
   new `build` directory
@@ -200,8 +198,6 @@ building, testing, packaging, and installation of software.
     - It may be necessary to prefix this command with
       **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
       depending on the configured `CMAKE_INSTALL_PREFIX`
-- Un-installation of **DUMA** may be similarly performed
-  - `cmake --build . --target "uninstall"`
 
 ---
 
