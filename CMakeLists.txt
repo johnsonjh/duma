@@ -3,8 +3,27 @@ project(DUMA)
 
 # see INSTALL on how to build DUMA
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED on)
+set(CMAKE_CXX_STANDARD 98)
+set(CMAKE_CXX_STANDARD_REQUIRED off)
+
+if(POLICY CMP0063)
+  cmake_policy(SET CMP0063 NEW)
+endif()
+
+if(POLICY CMP0065)
+  cmake_policy(SET CMP0065 NEW)
+endif()
+
+if(POLICY CMP0083)
+  cmake_policy(SET CMP0083 NEW)
+endif()
+include(CheckPIESupported OPTIONAL RESULT_VARIABLE CHECK_PIE_SUPPORTED)
+if(CHECK_PIE_SUPPORTED)
+  check_pie_supported(LANGUAGES CXX)
+  if(CMAKE_CXX_LINK_PIE_SUPPORTED)
+    set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+  endif()
+endif()
 
 option( DUMA_WITH_GLOBAL_MALLOC_FREE "export malloc/free" ON)  # NOT DUMA_NO_GLOBAL_MALLOC_FREE
 option( DUMA_WITH_EXPLICIT_INIT      "duma_init() is to be called from user" OFF)  # DUMA_EXPLICIT_INIT

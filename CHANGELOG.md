@@ -84,18 +84,19 @@
   - Clarify purpose of document, update, reformat, add _PGP_ details
 - Reorganization of files in source tree
 - Update shell scripts to improve styling (`shfmt`), tune redirection, add
-  pedantic error checking, better POSIX compliance, and appease shellcheck
+  pedantic error checking, better POSIX compliance, and appease ShellCheck
 - Update `GNUmakefile`
   - Remove `shar` target
   - Fix `dos2unix` target
-  - Use C++11 compilation mode w/G++
+  - Use C++98 compilation mode w/G++
   - Fix macOS X default installation prefix
     - also, allow user to override default prefix
   - Remove `a.out` during `gmake clean`
 - Update `duma.c`: Adjust ordering of included headers
 - New CMake build support
   - Generate `duma.sh` to use absolute path to installed shared library
-  - Require C++11 compilation standard
+  - Use C++98 standard mode if available
+  - Explicitly request position independent code
 - Fix compilation warnings with GCC 9.3
 - Fix compilation on macOS X (ARM64 and Intel processors)
 - Create _Attic_ for outdated / deprecated components
@@ -352,7 +353,7 @@
     memory at program termination. As a result, many platforms / environments
     are reported as "_broken_" by **DUMA**
 - Output allocator type (`malloc`, `strdup`, `…`) with leak reporting for each
-  non-free'd memory block
+  non-freed memory block
 - Removed option `DUMA_USE_FRAMENO` and the `frameno` variable; I suppose nobody
   is using it, but, additionally, it is not thread-safe
 - Added option `DUMA_PREFER_GETENV`; if you prefer standard C library `getenv()`
@@ -660,7 +661,7 @@
   (2005-07-11, HA)
 - Bugfix for internal slot mode `EFST_DEALLOCATED` reported by _Mikolas Patocka_
   error occurred when user-space memory region of freed memory is reused from
-  system and free'd again: _efence_ claimed it was freeing already free'd memory
+  system and freed again: _efence_ claimed it was freeing already freed memory
   (2005-03-02, HA)
 - Defining macros / functions, also for `str[n]cpy()` and `str[n]cat()`, checking for
   overlapping memory regions
@@ -785,7 +786,7 @@
   - Throw away unnecessary declarations of `malloc()`, `free()`, `…`
     _Borland_ didn't like them, and neither _Microsoft Visual C++_ 6.0, nor _gcc_
     (_Dev-C++_) needs them
-  - Added project files in sub-dirextory `win32-vide` for _VIDE_ 1.24 using
+  - Added project files in sub-directory `win32-vide` for _VIDE_ 1.24 using
     _Borland C++ Builder_ 5.5 (_see http://www.objectcentral.com_)
     (2002-11-22, HA)
 
