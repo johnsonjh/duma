@@ -27,6 +27,16 @@
 <!-- toc -->
 
 - [Description](#description)
+- [Installation](#installation)
+  - [Binary Packages](#binary-packages)
+  - [Building from source](#building-from-source)
+    - [Compiling with GNU Make](#gnu-make)
+	- [Compiling with CMake](#cmake)
+	- [Compiling with Visual Studio](#visual-studio)
+  - [Build Environment Notes](#environment-notes)
+    - [Solaris](#solaris)
+	- [BSD](#bsd)
+	- [ARM CPUs](#arm-cpus)
 - [Usage](#usage)
 - [Global and Environment Variables](#global-and-environment-variables)
 - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
@@ -87,6 +97,113 @@ Besides catching these kind of memory bugs, **DUMA** also provides a means to
 detect memory leaks. When using **DUMA** to pinpoint the source of a
 memory-leak, some source modification is necessary - at the minimum, adding
 `#include "duma.h"` to your source.
+
+---
+
+### Installation
+
+**DUMA** may be installed via binary pacakages or from source code.
+
+#### Binary Packages
+
+- [***TODO: explain and link to binary packages***]
+- [***TODO: explain installing various distro packages***]
+
+#### Building from source
+
+- [***TODO: explain downloading and verifying a release archive***]
+- [***TODO: explain using git to checkout a release tag (and HEAD)***]
+
+##### GNU Make
+
+**DUMA** may be built using **GNU Make**. **GNU Make** is available on many operating systems,
+including *Solaris*, *AIX*, *HP-UX*, *BSD*, *Linux*, and *Microsoft Windows* (with the *Cygwin*
+*UWIN*, or *MSYS* / *MINGW* environments.)
+
+**GNU Make** is most often installed as `gmake`, but may be installed under a different name, such
+as `mingw32-make`, `mingw64-gmake`, or simply `make`.
+
+Some ***non***-**GNU Make** systems ***may*** work, but are ***untested*** and **not** recommended.
+
+- Inside the unpacked **DUMA** source directory, create and change to a new `build` directory
+  - `mkdir build && cd build`
+- (*Optionally*) review `GNUmakefile` for configuration, compilation, and installation options
+  - Check the `OS` and `OSTYPE` options (*necessary if automated detection is unsuccessful*)
+  - Check any other options or variables that may be available
+- Build **DUMA**
+  - `gmake` (*for automatic OS detection and defaults*)
+  - `gmake OSTYPE=cygwin` (*for Microsoft Windows with Cygwin*)
+  - `mingw32-make OSTYPE=msys` (*for Microsoft Windows with MSYS / MINGW via Command Prompt*)
+  - `make OS=linux` (*for most GNU/Linux systems*)
+- Test **DUMA**
+  - `gmake check`
+- Install **DUMA**
+  - `gmake install`
+    - It may be necessary to prefix this command with ***su***, ***sudo***, ***doas***, *etc.* to elevate privileges, depending on the specified `DESTDIR` or `prefix`
+- Test **DUMA** installation
+  - `gmake installcheck`
+- Uninstallation may be similarly performed
+  - `gmake uninstall`
+
+##### CMake
+
+- Inside the unpacked **DUMA** source directory, create and change to a new `build` directory
+  - `mkdir build && cd build`
+- (*Optionally*) interactively configure compilation and installation options
+  - `ccmake ..` *or*
+  - `ccmake-gui ..`
+- Generate the nevessary build files
+  - `cmake ..`
+    - You may also specify options non-interactively, for example
+	  - `cmake -DCMAKE_BUILD_TYPE="Debug" ..`
+	  - `cmake -DCMAKE_BUILD_TYPE="Release" ..`
+	  - `cmake -DCMAKE_INSTALL_PREFIX="/opt/duma" ..`
+	  - `cmake -DCMAKE_TOOLCHAIN_FILE=/opt/gcc/toolchain_gcc-8.cmake ..`
+	  - `cmake -G "Visual Studio 16 2019" -A "x64" ..`
+	    - *Refer to the [CMake Manual](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for full details*
+- Build **DUMA**
+  - `cmake --build .`
+- Test **DUMA**
+  - `ctest` (*add* `-V` *or* `-VV` *for more verbose output*)
+- Install **DUMA**
+  - `cmake --build . --target "install"`
+    - It may be necessary to prefix this command with ***su***, ***sudo***, ***doas***, *etc.* to elevate privileges, depending on the configured `CMAKE_INSTALL_PREFIX`
+- Uninstallation may be similarly performed
+  - `cmake --build . --target "uninstall"`
+
+##### Visual Studio
+
+- Compile and execute `createconf`
+  - Verify the generated `duma_config.h` header
+- Compile `dumalib`
+  - Customize your project's `INCLUDE` and `LIBS` variables, as required for your environment.
+
+#### Environment Notes
+
+##### Solaris
+
+- **DUMA** is tested using the GNU toolchain (*GNU CC, G++, ld, binutils, etc.*)
+  - Older *Solaris* systems, such as *Solaris 10*, using the GNU tools from the *Companion CD*
+    should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to the `PATH`
+  - Newer *Solaris* systems, such as *Solaris 11.next* or *OpenIndiana*, require similar
+    configurarion.
+- The *Solaris Studio* compiler and toolchain has not been tested.
+
+##### BSD
+
+- FreeBSD
+  - On *FreeBSD* 6.2 it is necessary to `export DUMA_DISABLE_BANNER=1` before running any programs
+  linked with **DUMA**.
+    - This seems to be caused by an initialization problem in the pthreads library.
+
+- NetBSD
+  - On *NetBSD* 3.1 (`HOSTTYPE=i386`; `OSTYPE=netbsdelf`), one (`1`) memory leak is always
+    detected.
+  - Installation on NetBSD is untested.
+
+##### ARM CPUs
+
+- ***[add ARM notes]***
 
 ---
 
