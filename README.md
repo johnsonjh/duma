@@ -303,10 +303,15 @@ consideration.
   able to use the `-lduma` argument to the linker, otherwise you'll have to put
   the path-name for `libduma.a` in the linker's command line.
 
-- You can also use dynamic linking. If you're using a Bourne-style shell, the
-  statement `export LD_PRELOAD=libduma.so` will cause **DUMA** to be loaded to
-  run all dynamic executables. The helper command `duma.sh <command>` runs a
-  single command under **DUMA**.
+- You can also use dynamic linking. If you're using a Bourne-style shell on
+  most *UNIX* systems, the statement `export LD_PRELOAD=libduma.so` will cause
+  **DUMA** to be loaded to run all dynamic executables. On *Darwin*-based
+  systems such as macOS X, use `export DYLD_INSERT_LIBRARIES=libduma.dylib`
+  and `export DYLD_FORCE_FLAT_NAMESPACE=1`. The helper command
+  `duma.sh <command>` runs a single command under **DUMA**.
+
+    - For more specific details, review the documentation for the dynamic linker
+      facility provided by your operating system vendor.
 
 - Some systems will require special arguments to the linker to assure that you
   are using the **DUMA** `malloc()` and not the one from your C library.
