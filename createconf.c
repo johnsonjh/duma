@@ -1,6 +1,7 @@
 /*
  * DUMA - Red-Zone memory allocator.
  *
+ * Copyright (C) 2010-2011 Jeffrey H. Johnson <trnsz@pobox.com>
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
  * Copyright (C) 2002-2008 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
@@ -281,19 +282,19 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
 
 #if defined(WIN32)
 #if defined(_MSC_VER)
-  fprintf(f, " * using Microsoft Visual C++ under MS Windows(TM) the %s\n",
+  fprintf(f, " * using Microsoft Visual C++ under MS Windows(TM) on %s\n",
           __DATE__);
 #else
-  fprintf(f, " * under MS Windows(TM) the %s\n", __DATE__);
+  fprintf(f, " * under MS Windows(TM) on %s\n", __DATE__);
 #endif
 #elif (defined(sgi))
-  fprintf(f, " * under sgi the %s\n", __DATE__);
+  fprintf(f, " * under sgi on %s\n", __DATE__);
 #elif (defined(_AIX))
-  fprintf(f, " * under AIX the %s\n", __DATE__);
+  fprintf(f, " * under AIX on %s\n", __DATE__);
 #elif (defined(__linux__))
-  fprintf(f, " * under Linux the %s\n", __DATE__);
+  fprintf(f, " * under Linux on %s\n", __DATE__);
 #else
-  fprintf(f, " * the %s \n", __DATE__);
+  fprintf(f, " * on %s \n", __DATE__);
 #endif
 
   fprintf(f, " */\n");

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(DUMA)
+project(DUMA C CXX)
 
 # See README.md for help building and using DUMA
 
