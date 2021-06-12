@@ -1,5 +1,6 @@
 /*
  * DUMA - Red-Zone memory allocator.
+ * Copyright (C) 2020-2021 Jeffrey H. Johnson <trnsz@pobox.com>
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
  * Copyright (C) 2002-2009 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
@@ -134,6 +135,7 @@ static const char version[] =
     ", PREFER_GETENV"
 #endif
     ")\n"
+    "Copyright (C) 2020-2021 Jeffrey H. Johnson <trnsz@pobox.com>\n"
     "Copyright (C) 2006 Michael Eddington <meddington@gmail.com>\n"
     "Copyright (C) 2002-2009 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH\n"
     "Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>\n\n";

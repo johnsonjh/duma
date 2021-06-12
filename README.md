@@ -62,6 +62,7 @@
   - [Git Repositories](#git-repositories)
 - [Issue Tracking](#issue-tracking)
 - [Security Policy](#security-policy)
+- [Authors](#authors)
 - [License](#license)
 - [Version History](#version-history)
 
@@ -140,27 +141,32 @@ a different name, such as `mingw32-make`, `mingw64-gmake`, or simply `make`
 Some **_non_**-**_GNU_** "**Make**" systems **_may_** work, but are
 **_untested_** and **not** **recommended** for building **DUMA**.
 
-- Change your current working directory to the unpacked **DUMA** source tree
+- Inside the unpacked **DUMA** source directory, create and change to a
+  new `build` directory
+  - `mkdir build && cd build`
 - (_Optionally_) review `GNUmakefile` for configuration, compilation,
   and installation options
   - Check the `OS` and `OSTYPE` options
     (_necessary if automated detection is unsuccessful_)
   - Check any other options or variables that may be available
 - Build **DUMA**
-  - `gmake` (_for automatic OS detection and defaults_)
-  - `gmake OSTYPE=cygwin` (_for Microsoft Windows with Cygwin_)
-  - `mingw32-make OSTYPE=msys`
-    (_for Microsoft Windows with MSYS / MINGW via Command Prompt_)
-  - `make OS=linux` (_for most GNU/Linux systems_)
+  - `gmake -f ../GNUmakefile`
+    (_for automatic OS detection and defaults_)
+  - `gmake -f ../GNUmakefile OSTYPE=cygwin`
+    (_for Microsoft Windows with Cygwin_)
+  - `mingw32-make -f ../GNUmakefile OSTYPE=msys`
+    (_for Microsoft Windows with MSYS / MINGW via Command Prompt (CMD)_)
+  - `make -fb../GNUmakefile OS=linux`
+    (_for most GNU/Linux systems_)
 - Test **DUMA**
-  - `gmake check`
+  - `gmake -f ../GNUmakefile check`
 - Install **DUMA**
-  - `gmake install`
+  - `gmake -f ../GNUmakefile install`
     - It may be necessary to prefix this command with
       **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
       depending on the specified `DESTDIR` or `prefix`
 - Test **DUMA** installation
-  - `gmake installcheck`
+  - `gmake -f ../GNUmakefile installcheck`
 
 ---
 
@@ -786,6 +792,17 @@ operator delete[](ptr, file,line);  // vector delete
 ### Security Policy
 
 - [Security Policy and Vulnerability Reporting](https://github.com/johnsonjh/duma/security/policy)
+
+---
+
+### Authors
+
+```text
+ Copyright © 2020‑2021 Jeffrey H. Johnson <trnsz@pobox.com>
+ Copyright © 2006 Michael Eddington <meddington@gmail.com>
+ Copyright © 2002‑2007 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ Copyright © 1987‑1999 Bruce Perens <bruce@perens.com>
+```
 
 ---
 

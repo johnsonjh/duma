@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(DUMA)
 
-# see INSTALL on how to build DUMA
+# See README.md for help building and using DUMA
 
 set(CMAKE_CXX_STANDARD 98)
 set(CMAKE_CXX_STANDARD_REQUIRED off)
@@ -23,6 +23,10 @@ if(CHECK_PIE_SUPPORTED)
   if(CMAKE_CXX_LINK_PIE_SUPPORTED)
     set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
   endif()
+endif()
+
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 option( DUMA_WITH_GLOBAL_MALLOC_FREE "export malloc/free" ON)  # NOT DUMA_NO_GLOBAL_MALLOC_FREE
@@ -400,3 +404,5 @@ if (BUILD_EXAMPLES)
   target_link_libraries(example8_shared DUMA_SHARED)
 
 endif()
+
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
