@@ -229,7 +229,7 @@ consideration.
 
 ##### Solaris
 
-- Both **SPARC** and **Intel** processors are supported.
+- Both *SPARC* and *Intel* processors are supported.
 
 - **DUMA** is tested on _Solaris_ using the GNU toolchain
   (_GNU CC, G++, ld, binutils, etc._)
@@ -271,7 +271,7 @@ consideration.
 
 ##### MIPS CPUs
 
-- On systems with 64-bit _MIPS_ processors (_MIPS_-_III_/_IV_/_V_, _MIPS64_,
+- On systems with 64-bit _MIPS_ processors (_MIPS_-_III_ / _IV_ / _V_, _MIPS64_,
   _КОМДИВ-64_, _OCTEON_, _VR43xx_, _ICE9_), it may be necessary to explicitly
   set the `DUMA_ALIGNMENT` environment variable to eight (`8`) bytes.
 
@@ -283,16 +283,13 @@ consideration.
   fixed-length 32-bit instructions that must be aligned on four (`4`) byte
   (_32-bit_) boundaries.
 
-  - However, the standard _RISC-V_ encoding scheme supports _compressed_
-    and _variable-length_ instructions. These instructions can be any
-    number of 16-bit _"instruction parcels"_ in length, and are always
-    aligned on two (`2`) byte (_16-bit_) boundaries.
+- However, the standard _RISC-V_ encoding scheme supports _compressed_
+  and _variable-length_ instructions. These instructions can be any
+  number of 16-bit _"instruction parcels"_ in length, and are always
+  aligned on two (`2`) byte (_16-bit_) boundaries.
 
 - The _RISC-V_ processor will not fault when accessing an invalid (_unaligned_)
-  address. Instead, it will simply use the next valid address.
-
-  - For this reason, the `DUMA_ALIGNMENT` environment variable should not be set
-    to a value of one (`1`) on systems using _RISC-V_ processors.
+  address. Instead, it will simply use the next valid address.  The `DUMA_ALIGNMENT` environment variable should be set to a value greater than one (`1`) on systems using _RISC-V_ processors.
 
 ---
 
@@ -339,9 +336,9 @@ consideration.
   operating systems will not create usable core files from programs that are
   linked with **DUMA**.
 
-  - If your program has one of the errors detected by **DUMA**, it will get a
-    segmentation fault (`SIGSEGV`) at the offending instruction. Use the debugger
-    to locate the erroneous statement, and repair it.
+- If your program has one of the errors detected by **DUMA**, it will get a
+  segmentation fault (`SIGSEGV`) at the offending instruction. Use the debugger
+  to locate the erroneous statement, and repair it.
 
 ---
 

@@ -122,6 +122,7 @@
 
 ## 2.5.19 (2021-01-02)
 
+- Build tests
 - Other minor changes
 - Updated shell scripts
 - Fixed _Debian_ release info
