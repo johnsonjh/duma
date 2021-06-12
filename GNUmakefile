@@ -599,30 +599,32 @@ check test: tstheap$(EXEPOSTFIX) \
 			testoperators$(EXEPOSTFIX) \
 			$(DUMA_DYN_DEPS)
 	@ $(ECHOLF)
-	@ $(ECHO) "Testing DUMA (static library):"
-	"$(CURPATH)dumatest$(EXEPOSTFIX)"
+	@ $(ECHO) "*** Testing DUMA (static library):"
+	@ "$(CURPATH)dumatest$(EXEPOSTFIX)"
 	@ $(ECHOLF)
-	"$(CURPATH)tstheap$(EXEPOSTFIX)" 3072
+	@ "$(CURPATH)tstheap$(EXEPOSTFIX)" 3072
 	@ $(ECHOLF)
-	"$(CURPATH)testoperators$(EXEPOSTFIX)"
+	@ "$(CURPATH)testoperators$(EXEPOSTFIX)"
 	@ $(ECHOLF)
-	@ $(ECHO) "DUMA static confidence test PASSED."
+	@ $(ECHO) "*** DUMA static confidence test PASSED."
 ifdef DUMASO
 	@ $(ECHOLF)
 	@ $(ECHO) "*** Testing DUMA (dynamic library)."
 ifeq ($(OS), solaris)
-	LD_PRELOAD="./$(DUMASO)" \
+	@ LD_PRELOAD="./$(DUMASO)" \
 		DYLD_INSERT_LIBRARIES="./$(DUMASO)" \
 		DYLD_FORCE_FLAT_NAMESPACE=1 \
 		exec "$(CURPATH)tstheap_so" 3072
 else
-	(export LD_PRELOAD="./$(DUMASO)"; \
+	@ (export LD_PRELOAD="./$(DUMASO)"; \
 		export DYLD_INSERT_LIBRARIES="./$(DUMASO)"; \
 		export DYLD_FORCE_FLAT_NAMESPACE=1 ; \
 		exec "$(CURPATH)tstheap_so" 3072)
 endif
 	@ $(ECHOLF)
+	@ $(ECHOLF)
 	@ $(ECHO) "*** DUMA dynamic confidence test PASSED."
+	@ $(ECHOLF)
 	@ $(ECHOLF)
 	@ $(ECHO) "*** You may now run \"$(MAKE) install\""
 	@ $(ECHO) "***   and then \"$(MAKE) installcheck\""
@@ -637,8 +639,10 @@ endif
 installcheck installtest:
 ifdef DUMASO
 	@ $(ECHOLF)
+	@ $(ECHOLF)
 	@ $(ECHO) "*** Testing installed DUMA (dynamic library)."
-	"$(bindir)/duma" "$(CURPATH)tstheap_so" 3072
+	@ "$(bindir)/duma" "$(CURPATH)tstheap_so" 3072
+	@ $(ECHOLF)
 	@ $(ECHOLF)
 	@ $(ECHO) "*** DUMA installcheck test PASSED."
 	@ $(ECHOLF)
@@ -646,11 +650,10 @@ endif
 
 ##############################################################################
 
-# Target: "printvars" (display variables of GNUmakefile)
+# Target: "printvars" / "printenv" (display variables of GNUmakefile)
 
-.PHONY: printvars
-printvars:
-	@echo MAKEFILE        [$(MAKEFILE)]
+.PHONY: printvars printenv
+printvars printenv:
 	@echo OS              [$(OS)]
 	@echo OSTYPE          [$(OSTYPE)]
 	@echo bswitch         [$(BSWITCH)]

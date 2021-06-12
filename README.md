@@ -40,6 +40,9 @@
     - [MIPS CPUs](#mips-cpus)
     - [RISC-V CPUs](#risc-v-cpus)
 - [Usage](#usage)
+  - [Static linking](#static-linking)
+  - [Dynamic linking](#dynamic-linking)
+  - [Recommended Usage](#recommended-usage)
   - [Global and Environment Variables](#global-and-environment-variables)
   - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
   - [Catching the Erroneous Line](#catching-the-erroneous-line)
@@ -156,12 +159,12 @@ Some **_non_**-**_GNU_** "**Make**" systems **_may_** work, but are
     (_for Microsoft Windows with Cygwin_)
   - `mingw32-make -f ../GNUmakefile OSTYPE=msys`
     (_for Microsoft Windows with MSYS / MINGW via Command Prompt (CMD)_)
-  - `make -fb../GNUmakefile OS=linux`
+  - `make -f ../GNUmakefile OS=linux`
     (_for most GNU/Linux systems_)
 - Test **DUMA**
   - `gmake -f ../GNUmakefile check`
 - Install **DUMA**
-  - `gmake -f ../GNUmakefile install`
+  - `gmake -f ../GNUmakefile install DESTDIR=/opt/duma`
     - It may be necessary to prefix this command with
       **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
       depending on the specified `DESTDIR` or `prefix`
@@ -295,6 +298,8 @@ consideration.
 
 ### Usage
 
+#### Static linking
+
 - Link your program with the library `libduma.a`. Make sure you are not linking
   with `-lmalloc`, `-lmallocdebug`, or with other `malloc()` debugger or
   enhancer libraries. You can only use one at a time.
@@ -303,15 +308,27 @@ consideration.
   able to use the `-lduma` argument to the linker, otherwise you'll have to put
   the path-name for `libduma.a` in the linker's command line.
 
-- You can also use dynamic linking. If you're using a Bourne-style shell on
-  most _UNIX_ systems, the statement `export LD_PRELOAD=libduma.so` will cause
-  **DUMA** to be loaded to run all dynamic executables. On _Darwin_-based
-  systems such as macOS X, use `export DYLD_INSERT_LIBRARIES=libduma.dylib`
-  and `export DYLD_FORCE_FLAT_NAMESPACE=1`. The helper command
-  `duma.sh <command>` runs a single command under **DUMA**.
+---
 
-  - For more specific details, review the documentation for the dynamic linker
-    facility provided by your operating system vendor.
+#### Dynamic linking
+
+- If you're using a Bourne-style shell on
+  most _UNIX_ systems, the statement `export LD_PRELOAD=libduma.so` will cause
+  **DUMA** to be loaded to run all dynamic executables.
+
+- For _Darwin_-based
+  systems such as macOS X, use `export DYLD_INSERT_LIBRARIES=libduma.dylib`
+  and `export DYLD_FORCE_FLAT_NAMESPACE=1`.
+
+- The included helper command `duma <command>` will run a single command
+  under **DUMA**.
+
+- For more details, review the documentation for the dynamic linking
+  facility provided by your operating system vendor.
+
+---
+
+#### Recommended Usage
 
 - Some systems will require special arguments to the linker to assure that you
   are using the **DUMA** `malloc()` and not the one from your C library.
@@ -322,9 +339,9 @@ consideration.
   operating systems will not create usable core files from programs that are
   linked with **DUMA**.
 
-- If your program has one of the errors detected by **DUMA**, it will get a
-  segmentation fault (`SIGSEGV`) at the offending instruction. Use the debugger
-  to locate the erroneous statement, and repair it.
+  - If your program has one of the errors detected by **DUMA**, it will get a
+    segmentation fault (`SIGSEGV`) at the offending instruction. Use the debugger
+    to locate the erroneous statement, and repair it.
 
 ---
 

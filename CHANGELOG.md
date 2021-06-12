@@ -85,7 +85,9 @@
 - Reorganization of files in source tree
 - Update shell scripts to improve styling (`shfmt`), tune redirection, add
   pedantic error checking, better POSIX compliance, and appease ShellCheck
+- Default to `DUMA_NO_STRERROR=1` on *GNU/Linux* systems
 - Update `GNUmakefile`
+  - Support out-of-tree compilation
   - Remove `shar` target
   - Fix `dos2unix` target
   - Use C++98 compilation mode w/G++
