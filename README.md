@@ -229,7 +229,7 @@ consideration.
 
 ##### Solaris
 
-- Both *SPARC* and *Intel* processors are supported.
+- Both _SPARC_ and _Intel_ processors are supported.
 
 - **DUMA** is tested on _Solaris_ using the GNU toolchain
   (_GNU CC, G++, ld, binutils, etc._)
@@ -289,7 +289,7 @@ consideration.
   aligned on two (`2`) byte (_16-bit_) boundaries.
 
 - The _RISC-V_ processor will not fault when accessing an invalid (_unaligned_)
-  address. Instead, it will simply use the next valid address.  The `DUMA_ALIGNMENT` environment variable should be set to a value greater than one (`1`) on systems using _RISC-V_ processors.
+  address. Instead, it will simply use the next valid address. The `DUMA_ALIGNMENT` environment variable should be set to a value greater than one (`1`) on systems using _RISC-V_ processors.
 
 ---
 
