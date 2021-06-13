@@ -808,7 +808,7 @@ clean:
 	   dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) \
 	   dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
 	   thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) \
-	   libduma.a $(DUMASO) libduma.cat
+	   libduma.a $(DUMASO) thread-test_so.o libduma.cat
 
 ############################################################################
 # Target: "distclean" / "realclean" / "clobber" (deletes all make output)
@@ -853,7 +853,7 @@ libduma.a: duma_config.h \
 ############################################################################
 # Target: "verinfo.h"
 
-verinfo.h:
+verinfo.h: FORCE
 	- "$(srcdir)make_git_source_version.sh" || \
 	    $(ENV) sh "$(srcdir)make_git_source_version.sh" || \
 	     $(SHELL) "$(srcdir)make_git_source_version.sh"
