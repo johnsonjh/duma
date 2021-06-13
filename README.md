@@ -87,7 +87,7 @@ writes, and it will pinpoint the exact instruction that causes an error.
 since 1987, and at many other sites for years.
 
 **DUMA** uses the virtual memory hardware of your computer to place an
-inaccessible memory page immediately after (*or before, at the user's option*)
+inaccessible memory page immediately after (_or before, at the user's option_)
 each memory allocation. When software reads or writes this inaccessible page,
 the hardware issues a segmentation fault, stopping the program at the offending
 instruction. It is then trivial to find the erroneous statement using your
