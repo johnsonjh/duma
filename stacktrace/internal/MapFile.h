@@ -12,7 +12,7 @@
  * without express or implied warranty.
  */
 
-// $Id$
+/* $Id$ */
 
 #ifndef _DEV_MAPFILE_H
 #define _DEV_MAPFILE_H
@@ -47,7 +47,7 @@ public:
 	/** Reads a map file. */
 	explicit MapFile( const char* filename );
 
-	///
+	/***/
 	~MapFile();
 
 	/** Returns preferred load address. */
@@ -86,8 +86,6 @@ private:
 };
 
 
-} // dev
+} /* dev */
 
-
-
-#endif // _DEV_MAPFILE_H
+#endif /* _DEV_MAPFILE_H */

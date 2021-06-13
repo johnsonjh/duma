@@ -39,7 +39,7 @@ public:
 	/** Opens a file. */
 	explicit TextFile( const char* filename );
 
-	///
+	/***/
 	~TextFile();
 
 	/**
@@ -95,8 +95,6 @@ private:
 };
 
 
-} // dev
+} /* dev */
 
-
-
-#endif // _DEV_TEXTFILE_H
+#endif /* _DEV_TEXTFILE_H */

@@ -1,4 +1,3 @@
-
 /*
  * KDUMA - Kernel Mode Red-Zone memory allocator.
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
@@ -1349,6 +1348,5 @@ _duma_exit(void)
 	while (-1 != frameno)
 		DUMA_delFrame();
 }
-
 
 /* end */

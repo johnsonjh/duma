@@ -2,7 +2,7 @@
  * DUMA - Red-Zone memory allocator.
  * Copyright (C) 2020-2021 Jeffrey H. Johnson <trnsz@pobox.com>
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
- * Copyright (C) 2002-2008 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2021 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
  *
@@ -61,9 +61,9 @@ typedef void *LPVOID;
 #if (defined(caddr_t) && defined(daddr_t))
 #ifndef __USE_MISC
 typedef LPVOID caddr_t;
-#endif // __USE_MISC
-#endif // (defined(caddr_t) && defined(daddr_t))
-#endif // (defined(__MINGW32__) || defined(__MINGW64__) || defined(__CYGWIN__))
+#endif /* __USE_MISC */
+#endif /* (defined(caddr_t) && defined(daddr_t)) */
+#endif /* (defined(__MINGW32__) || defined(__MINGW64__) || defined(__CYGWIN__)) */
 
 #ifdef _MSC_VER
 #include <crtdbg.h>

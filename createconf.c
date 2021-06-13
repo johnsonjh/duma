@@ -1,9 +1,9 @@
 /*
  * DUMA - Red-Zone memory allocator.
  *
- * Copyright (C) 2010-2011 Jeffrey H. Johnson <trnsz@pobox.com>
+ * Copyright (C) 2010-2021 Jeffrey H. Johnson <trnsz@pobox.com>
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
- * Copyright (C) 2002-2008 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
+ * Copyright (C) 2002-2021 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
  *
  * License: GNU GPL (GNU General Public License, see COPYING-GPL)
@@ -36,243 +36,282 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if defined(__STDC__) && (__STDC_VERSION__ >= 199901L)
+#if defined( __STDC__ ) && ( __STDC_VERSION__ >= 199901L )
 #define HAVE_C99
 #include <stdint.h>
-#endif
+#endif /* if defined( __STDC__ ) && ( __STDC_VERSION__ >= 199901L ) */
 
 #ifdef _MSC_VER
 #include <direct.h>
-#endif
+#endif /* ifdef _MSC_VER */
 
 #ifndef WIN32
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
-#else
+
+#else  /* ifndef WIN32 */
 #define WIN32_LEAN_AND_MEAN 1
 #include <winbase.h>
 #include <windows.h>
 
 #ifndef __CYGWIN__
-/* already defined in cygwin headers */
+/* Already defined in cygwin headers */
 typedef LPVOID caddr_t;
 typedef unsigned u_int;
-#endif
+#endif /* ifndef __CYGWIN__ */
 
-#endif
+#endif /* ifndef WIN32 */
 
 /*
- * retrieve page size
+ * Retrieve page size
  * size_t  Page_Size(void)
  */
-static size_t Page_Size(void) {
-#if defined(WIN32)
+
+static size_t
+Page_Size(void)
+{
+#if defined( WIN32 )
   SYSTEM_INFO SystemInfo;
   GetSystemInfo(&SystemInfo);
-  return (size_t)SystemInfo.dwPageSize;
-#elif defined(_SC_PAGESIZE)
-  return (size_t)sysconf(_SC_PAGESIZE);
-#elif defined(_SC_PAGE_SIZE)
-  return (size_t)sysconf(_SC_PAGE_SIZE);
-#else
+  return ((size_t)SystemInfo.dwPageSize );
+
+#elif defined( _SC_PAGESIZE )
+  return ((size_t)sysconf(_SC_PAGESIZE));
+
+#elif defined( _SC_PAGE_SIZE )
+  return ((size_t)sysconf(_SC_PAGE_SIZE));
+
+#else  /* if defined( WIN32 ) */
   /* extern int getpagesize(); */
-  return getpagesize();
-#endif
+  return ( getpagesize());
+
+#endif /* if defined( WIN32 ) */
 }
 
 int initattr_ok = 0;
 
 void
 #ifdef __GNUC__
-    __attribute((constructor))
-#endif
-    init_function(void) {
+__attribute(( constructor ))
+#endif /* ifdef __GNUC__ */
+init_function(void)
+{
   initattr_ok = 1;
 }
 
-typedef struct {
+typedef struct
+{
   int id;
   unsigned size;
   char *type;
   int c99;
 } DataType_T;
 
-DataType_T sIntTypes[] = {
-    {0, sizeof(unsigned long int), "unsigned long int", 0}
-/* add additional compiler specific types here */
-#if defined(HAVE_C99)
-    ,
-    {1, sizeof(uint_fast32_t), "uint_fast32_t", 1},
-    {2, sizeof(uint_fast64_t), "uint_fast64_t", 1}
-#endif
+DataType_T sIntTypes[]
+  = { { 0, sizeof ( unsigned long int ),      "unsigned long int",
+        0 }
+/* Add additional compiler specific types here */
+#if defined( HAVE_C99 )
+      ,
+      { 1, sizeof ( uint_fast32_t ),          "uint_fast32_t",
+        1 },
+      { 2, sizeof ( uint_fast64_t ),          "uint_fast64_t",
+        1 }
+#endif /* if defined( HAVE_C99 ) */
 #ifdef _MSC_VER
-    ,
-    {3, sizeof(unsigned __int64), "unsigned __int64", 0}
-#endif
+      ,
+      { 3, sizeof ( unsigned __int64 ),       "unsigned __int64",
+        0 }
+#endif /* ifdef _MSC_VER */
 #ifdef __GNUC__
-    ,
-    {4, sizeof(unsigned long long int), "unsigned long long int", 0}
-#endif
-};
+      ,
+      { 4, sizeof ( unsigned long long int ), "unsigned long long int",
+        0 }
+#endif /* ifdef __GNUC__ */
+  };
 
-/* test access to each data type */
-void testAlignment(int addrIdx, char *buffer, unsigned alignment,
-                   unsigned max_sizeof) {
+/* Test access to each data type */
+void
+testAlignment(int addrIdx, char *buffer, unsigned alignment,
+              unsigned max_sizeof)
+{
   unsigned offset;
 
-  switch (sIntTypes[addrIdx].id) {
-
+  switch (sIntTypes[addrIdx].id)
+  {
   case 0:
 #define TYPE long int
-    for (offset = 0; offset < max_sizeof; ++offset) {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if (addr % alignment == 0) {
-        *((unsigned char *)addr) = 0;
-        *((unsigned short int *)addr) = 0;
-        *((unsigned int *)addr) = 0;
-        *((unsigned long int *)addr) = 0L;
-        *((float *)addr) = 0.0F;
-        *((double *)addr) = 0.0;
-        *((long double *)addr) = 0.0;
-#if defined(HAVE_C99)
-        *((int_fast32_t *)addr) = 0;
-        *((int_fast64_t *)addr) = 0;
-#endif
+    for (offset = 0; offset < max_sizeof; ++offset)
+    {
+      TYPE addr = (TYPE)( buffer ) + offset;
+      if (addr % alignment == 0)
+      {
+        *((unsigned char *)addr ) = 0;
+        *((unsigned short int *)addr ) = 0;
+        *((unsigned int *)addr ) = 0;
+        *((unsigned long int *)addr ) = 0L;
+        *((float *)addr ) = 0.0F;
+        *((double *)addr ) = 0.0;
+        *((long double *)addr ) = 0.0;
+#if defined( HAVE_C99 )
+        *((int_fast32_t *)addr ) = 0;
+        *((int_fast64_t *)addr ) = 0;
+#endif /* if defined( HAVE_C99 ) */
 #ifdef _MSC_VER
-        *((unsigned __int64 *)addr) = 0L;
-#endif
+        *((unsigned __int64 *)addr ) = 0L;
+#endif /* ifdef _MSC_VER */
 #ifdef __GNUC__
-        *((unsigned long long int *)addr) = 0L;
-#endif
+        *((unsigned long long int *)addr ) = 0L;
+#endif /* ifdef __GNUC__ */
       }
     }
+
     break;
 #undef TYPE
 
-#if defined(HAVE_C99)
+#if defined( HAVE_C99 )
   case 1:
 #define TYPE int_fast32_t
-    for (offset = 0; offset < max_sizeof; ++offset) {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if (addr % alignment == 0) {
-        *((unsigned char *)addr) = 0;
-        *((unsigned short int *)addr) = 0;
-        *((unsigned int *)addr) = 0;
-        *((unsigned long int *)addr) = 0L;
-        *((float *)addr) = 0.0F;
-        *((double *)addr) = 0.0;
-        *((long double *)addr) = 0.0;
-#if defined(HAVE_C99)
-        *((int_fast32_t *)addr) = 0;
-        *((int_fast64_t *)addr) = 0;
-#endif
+    for (offset = 0; offset < max_sizeof; ++offset)
+    {
+      TYPE addr = (TYPE)( buffer ) + offset;
+      if (addr % alignment == 0)
+      {
+        *((unsigned char *)addr ) = 0;
+        *((unsigned short int *)addr ) = 0;
+        *((unsigned int *)addr ) = 0;
+        *((unsigned long int *)addr ) = 0L;
+        *((float *)addr ) = 0.0F;
+        *((double *)addr ) = 0.0;
+        *((long double *)addr ) = 0.0;
+#if defined( HAVE_C99 )
+        *((int_fast32_t *)addr ) = 0;
+        *((int_fast64_t *)addr ) = 0;
+#endif /* if defined( HAVE_C99 ) */
 #ifdef _MSC_VER
-        *((unsigned __int64 *)addr) = 0L;
-#endif
+        *((unsigned __int64 *)addr ) = 0L;
+#endif /* ifdef _MSC_VER */
 #ifdef __GNUC__
-        *((unsigned long long int *)addr) = 0L;
-#endif
+        *((unsigned long long int *)addr ) = 0L;
+#endif /* ifdef __GNUC__ */
       }
     }
+
     break;
 #undef TYPE
 
   case 2:
 #define TYPE int_fast64_t
-    for (offset = 0; offset < max_sizeof; ++offset) {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if (addr % alignment == 0) {
-        *((unsigned char *)addr) = 0;
-        *((unsigned short int *)addr) = 0;
-        *((unsigned int *)addr) = 0;
-        *((unsigned long int *)addr) = 0L;
-        *((float *)addr) = 0.0F;
-        *((double *)addr) = 0.0;
-        *((long double *)addr) = 0.0;
-#if defined(HAVE_C99)
-        *((int_fast32_t *)addr) = 0;
-        *((int_fast64_t *)addr) = 0;
-#endif
+    for (offset = 0; offset < max_sizeof; ++offset)
+    {
+      TYPE addr = (TYPE)( buffer ) + offset;
+      if (addr % alignment == 0)
+      {
+        *((unsigned char *)addr ) = 0;
+        *((unsigned short int *)addr ) = 0;
+        *((unsigned int *)addr ) = 0;
+        *((unsigned long int *)addr ) = 0L;
+        *((float *)addr ) = 0.0F;
+        *((double *)addr ) = 0.0;
+        *((long double *)addr ) = 0.0;
+#if defined( HAVE_C99 )
+        *((int_fast32_t *)addr ) = 0;
+        *((int_fast64_t *)addr ) = 0;
+#endif /* if defined( HAVE_C99 ) */
 #ifdef _MSC_VER
-        *((unsigned __int64 *)addr) = 0L;
-#endif
+        *((unsigned __int64 *)addr ) = 0L;
+#endif /* ifdef _MSC_VER */
 #ifdef __GNUC__
-        *((unsigned long long int *)addr) = 0L;
-#endif
+        *((unsigned long long int *)addr ) = 0L;
+#endif /* ifdef __GNUC__ */
       }
     }
+
     break;
 #undef TYPE
-#endif
+#endif /* if defined( HAVE_C99 ) */
 
 #ifdef _MSC_VER
   case 3:
 #undef TYPE
 #define TYPE unsigned __int64
-    for (offset = 0; offset < max_sizeof; ++offset) {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if (addr % alignment == 0) {
-        *((unsigned char *)addr) = 0;
-        *((unsigned short int *)addr) = 0;
-        *((unsigned int *)addr) = 0;
-        *((unsigned long int *)addr) = 0L;
-        *((float *)addr) = 0.0F;
-        *((double *)addr) = 0.0;
-        *((long double *)addr) = 0.0;
-#if defined(HAVE_C99)
-        *((int_fast32_t *)addr) = 0;
-        *((int_fast64_t *)addr) = 0;
-#endif
+    for (offset = 0; offset < max_sizeof; ++offset)
+    {
+      TYPE addr = (TYPE)( buffer ) + offset;
+      if (addr % alignment == 0)
+      {
+        *((unsigned char *)addr ) = 0;
+        *((unsigned short int *)addr ) = 0;
+        *((unsigned int *)addr ) = 0;
+        *((unsigned long int *)addr ) = 0L;
+        *((float *)addr ) = 0.0F;
+        *((double *)addr ) = 0.0;
+        *((long double *)addr ) = 0.0;
+#if defined( HAVE_C99 )
+        *((int_fast32_t *)addr ) = 0;
+        *((int_fast64_t *)addr ) = 0;
+#endif /* if defined( HAVE_C99 ) */
 #ifdef _MSC_VER
-        *((unsigned __int64 *)addr) = 0L;
-#endif
+        *((unsigned __int64 *)addr ) = 0L;
+#endif /* ifdef _MSC_VER */
 #ifdef __GNUC__
-        *((unsigned long long int *)addr) = 0L;
-#endif
+        *((unsigned long long int *)addr ) = 0L;
+#endif /* ifdef __GNUC__ */
       }
     }
+
     break;
 #undef TYPE
-#endif
+#endif /* ifdef _MSC_VER */
 
 #ifdef __GNUC__
   case 4:
 #define TYPE unsigned long long int
-    for (offset = 0; offset < max_sizeof; ++offset) {
-      TYPE addr = (TYPE)(buffer) + offset;
-      if (addr % alignment == 0) {
-        *((unsigned char *)addr) = 0;
-        *((unsigned short int *)addr) = 0;
-        *((unsigned int *)addr) = 0;
-        *((unsigned long int *)addr) = 0L;
-        *((float *)addr) = 0.0F;
-        *((double *)addr) = 0.0;
-        *((long double *)addr) = 0.0;
-#if defined(HAVE_C99)
-        *((int_fast32_t *)addr) = 0;
-        *((int_fast64_t *)addr) = 0;
-#endif
+    for (offset = 0; offset < max_sizeof; ++offset)
+    {
+      TYPE addr = (TYPE)( buffer ) + offset;
+      if (addr % alignment == 0)
+      {
+        *((unsigned char *)addr ) = 0;
+        *((unsigned short int *)addr ) = 0;
+        *((unsigned int *)addr ) = 0;
+        *((unsigned long int *)addr ) = 0L;
+        *((float *)addr ) = 0.0F;
+        *((double *)addr ) = 0.0;
+        *((long double *)addr ) = 0.0;
+#if defined( HAVE_C99 )
+        *((int_fast32_t *)addr ) = 0;
+        *((int_fast64_t *)addr ) = 0;
+#endif /* if defined( HAVE_C99 ) */
 #ifdef _MSC_VER
-        *((unsigned __int64 *)addr) = 0L;
-#endif
+        *((unsigned __int64 *)addr ) = 0L;
+#endif /* ifdef _MSC_VER */
 #ifdef __GNUC__
-        *((unsigned long long int *)addr) = 0L;
-#endif
+        *((unsigned long long int *)addr ) = 0L;
+#endif /* ifdef __GNUC__ */
       }
     }
+
     break;
 #undef TYPE
-#endif
+#endif /* ifdef __GNUC__ */
     ;
   }
 }
 
-void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
-               int sizeIdx, unsigned alignment, int malloc0strategy) {
+void
+writeFile(const char *filename, unsigned long pagesize, int addrIdx,
+          int sizeIdx, unsigned alignment, int malloc0strategy)
+{
   FILE *f = fopen(filename, "w");
-  if (!f) {
-    fprintf(stderr, "createconf: Error: could not open file '%s'\n", filename);
+
+  if (!f)
+  {
+    fprintf(
+      stderr,
+      "createconf: Error: could not open file '%s'\n",
+      filename);
     return;
   }
 
@@ -280,22 +319,24 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, " * WARNING: DO NOT CHANGE THIS FILE!\n");
   fprintf(f, " * This file is automatically generated from createconf\n");
 
-#if defined(WIN32)
-#if defined(_MSC_VER)
-  fprintf(f, " * using Microsoft Visual C++ under MS Windows(TM) on %s\n",
-          __DATE__);
-#else
+#if defined( WIN32 )
+#if defined( _MSC_VER )
+  fprintf(
+    f,
+    " * using Microsoft Visual C++ under MS Windows(TM) on %s\n",
+    __DATE__);
+#else  /* if defined( _MSC_VER ) */
   fprintf(f, " * under MS Windows(TM) on %s\n", __DATE__);
-#endif
-#elif (defined(sgi))
+#endif /* if defined( _MSC_VER ) */
+#elif ( defined( sgi ))
   fprintf(f, " * under sgi on %s\n", __DATE__);
-#elif (defined(_AIX))
+#elif ( defined( _AIX ))
   fprintf(f, " * under AIX on %s\n", __DATE__);
-#elif (defined(__linux__))
+#elif ( defined( __linux__ ))
   fprintf(f, " * under Linux on %s\n", __DATE__);
-#else
+#else  /* if defined( WIN32 ) */
   fprintf(f, " * on %s \n", __DATE__);
-#endif
+#endif /* if defined( WIN32 ) */
 
   fprintf(f, " */\n");
   fprintf(f, "\n");
@@ -307,7 +348,7 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, " * Configuration of DUMA:\n");
   fprintf(f, " */\n");
 
-  // DUMA_SO_LIBRARY
+  /* DUMA_SO_LIBRARY */
 
   fprintf(f, "#ifdef DUMA_SO_LIBRARY\n");
   fprintf(f, "\n");
@@ -328,51 +369,51 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "#ifdef DUMA_SEMAPHORES\n");
   fprintf(f, "#undef DUMA_SEMAPHORES\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SEMAPHORES */
   fprintf(f, "#ifndef DUMA_SEMAPHORES\n");
   fprintf(f, "#define DUMA_SEMAPHORES\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SEMAPHORES */
 
 #ifndef DUMA_SO_NO_CPP_SUPPORT
   fprintf(f, "#ifdef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#undef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_CPP_SUPPORT */
   fprintf(f, "#ifndef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#define DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_CPP_SUPPORT */
 
 #ifndef DUMA_SO_NO_LEAKDETECTION
   fprintf(f, "#ifdef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#undef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_LEAKDETECTION */
   fprintf(f, "#ifndef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#define DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_LEAKDETECTION */
 
 #ifndef DUMA_SO_PREFER_ATEXIT
   fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_PREFER_ATEXIT */
   fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_PREFER_ATEXIT */
 
 #ifndef DUMA_SO_PREFER_GETENV
   fprintf(f, "#ifdef DUMA_PREFER_GETENV\n");
   fprintf(f, "#undef DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_PREFER_GETENV */
   fprintf(f, "#ifndef DUMA_PREFER_GETENV\n");
   fprintf(f, "#define DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_PREFER_GETENV */
 
   fprintf(f, "#ifdef DUMA_OLD_NEW_MACRO\n");
   fprintf(f, "#undef DUMA_OLD_NEW_MACRO\n");
@@ -386,23 +427,23 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "#ifdef DUMA_NO_STRERROR\n");
   fprintf(f, "#undef DUMA_NO_STRERROR\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_NO_STRERROR */
   fprintf(f, "#ifndef DUMA_NO_STRERROR\n");
   fprintf(f, "#define DUMA_NO_STRERROR\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_NO_STRERROR */
 
 #ifndef DUMA_SO_NO_HANG_MSG
   fprintf(f, "#ifdef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#undef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_HANG_MSG */
   fprintf(f, "#ifndef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#define DUMA_NO_HANG_MSG\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_HANG_MSG */
 
-  // DUMA_DLL_LIBRARY
+  /* DUMA_DLL_LIBRARY */
 
   fprintf(f, "#elif defined(DUMA_DLL_LIBRARY)\n");
   fprintf(f, "\n");
@@ -419,41 +460,41 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "#ifdef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#undef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_CPP_SUPPORT */
   fprintf(f, "#ifndef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#define DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_CPP_SUPPORT */
 
 #ifndef DUMA_SO_NO_LEAKDETECTION
   fprintf(f, "#ifdef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#undef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_LEAKDETECTION */
   fprintf(f, "#ifndef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#define DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_LEAKDETECTION */
 
 #ifndef DUMA_SO_PREFER_ATEXIT
   fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_PREFER_ATEXIT */
   fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_PREFER_ATEXIT */
 
 #ifndef DUMA_SO_PREFER_GETENV
   fprintf(f, "#ifdef DUMA_PREFER_GETENV\n");
   fprintf(f, "#undef DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_PREFER_GETENV */
   fprintf(f, "#ifndef DUMA_PREFER_GETENV\n");
   fprintf(f, "#define DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_PREFER_GETENV */
 
   fprintf(f, "#ifdef DUMA_OLD_NEW_MACRO\n");
   fprintf(f, "#undef DUMA_OLD_NEW_MACRO\n");
@@ -467,13 +508,13 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "#ifdef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#undef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_HANG_MSG */
   fprintf(f, "#ifndef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#define DUMA_NO_HANG_MSG\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_HANG_MSG */
 
-  // DUMA_DETOURS
+  /* DUMA_DETOURS */
 
   fprintf(f, "#elif defined(DUMA_DETOURS)\n");
   fprintf(f, "\n");
@@ -490,41 +531,41 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "#ifdef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#undef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_CPP_SUPPORT */
   fprintf(f, "#ifndef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#define DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_CPP_SUPPORT */
 
 #ifndef DUMA_SO_NO_LEAKDETECTION
   fprintf(f, "#ifdef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#undef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_LEAKDETECTION */
   fprintf(f, "#ifndef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#define DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_LEAKDETECTION */
 
 #ifndef DUMA_SO_PREFER_ATEXIT
   fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_PREFER_ATEXIT */
   fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_PREFER_ATEXIT */
 
 #ifndef DUMA_SO_PREFER_GETENV
   fprintf(f, "#ifdef DUMA_PREFER_GETENV\n");
   fprintf(f, "#undef DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_PREFER_GETENV */
   fprintf(f, "#ifndef DUMA_PREFER_GETENV\n");
   fprintf(f, "#define DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_PREFER_GETENV */
 
   fprintf(f, "#ifdef DUMA_OLD_NEW_MACRO\n");
   fprintf(f, "#undef DUMA_OLD_NEW_MACRO\n");
@@ -538,13 +579,13 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "#ifdef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#undef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_SO_NO_HANG_MSG */
   fprintf(f, "#ifndef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#define DUMA_NO_HANG_MSG\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_SO_NO_HANG_MSG */
 
-  // REGULAR CONFIG
+  /* REGULAR CONFIG */
 
   fprintf(f, "#else\n");
   fprintf(f, "\n");
@@ -553,111 +594,111 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "#ifdef DUMA_NO_GLOBAL_MALLOC_FREE\n");
   fprintf(f, "#undef DUMA_NO_GLOBAL_MALLOC_FREE\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_NO_GLOBAL_MALLOC_FREE */
   fprintf(f, "#ifndef DUMA_NO_GLOBAL_MALLOC_FREE\n");
   fprintf(f, "#define DUMA_NO_GLOBAL_MALLOC_FREE\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_NO_GLOBAL_MALLOC_FREE */
 
 #ifndef DUMA_EXPLICIT_INIT
   fprintf(f, "#ifdef DUMA_EXPLICIT_INIT\n");
   fprintf(f, "#undef DUMA_EXPLICIT_INIT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_EXPLICIT_INIT */
   fprintf(f, "#ifndef DUMA_EXPLICIT_INIT\n");
   fprintf(f, "#define DUMA_EXPLICIT_INIT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_EXPLICIT_INIT */
 
 #ifndef DUMA_NO_THREAD_SAFETY
   fprintf(f, "#ifdef DUMA_NO_THREAD_SAFETY\n");
   fprintf(f, "#undef DUMA_NO_THREAD_SAFETY\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_NO_THREAD_SAFETY */
   fprintf(f, "#ifndef DUMA_NO_THREAD_SAFETY\n");
   fprintf(f, "#define DUMA_NO_THREAD_SAFETY\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_NO_THREAD_SAFETY */
 
 #ifndef DUMA_LIB_NO_CPP_SUPPORT
   fprintf(f, "#ifdef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#undef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_LIB_NO_CPP_SUPPORT */
   fprintf(f, "#ifndef DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#define DUMA_NO_CPP_SUPPORT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_LIB_NO_CPP_SUPPORT */
 
 #ifndef DUMA_LIB_NO_LEAKDETECTION
   fprintf(f, "#ifdef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#undef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_LIB_NO_LEAKDETECTION */
   fprintf(f, "#ifndef DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#define DUMA_NO_LEAKDETECTION\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_LIB_NO_LEAKDETECTION */
 
 #ifndef DUMA_LIB_PREFER_ATEXIT
   fprintf(f, "#ifdef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#undef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_LIB_PREFER_ATEXIT */
   fprintf(f, "#ifndef DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#define DUMA_PREFER_ATEXIT\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_LIB_PREFER_ATEXIT */
 
 #ifndef DUMA_LIB_PREFER_GETENV
   fprintf(f, "#ifdef DUMA_PREFER_GETENV\n");
   fprintf(f, "#undef DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_LIB_PREFER_GETENV */
   fprintf(f, "#ifndef DUMA_PREFER_GETENV\n");
   fprintf(f, "#define DUMA_PREFER_GETENV\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_LIB_PREFER_GETENV */
 
 #ifndef DUMA_OLD_NEW_MACRO
   fprintf(f, "#ifdef DUMA_OLD_NEW_MACRO\n");
   fprintf(f, "#undef DUMA_OLD_NEW_MACRO\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_OLD_NEW_MACRO */
   fprintf(f, "#ifndef DUMA_OLD_NEW_MACRO\n");
   fprintf(f, "#define DUMA_OLD_NEW_MACRO\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_OLD_NEW_MACRO */
 
 #ifndef DUMA_OLD_DEL_MACRO
   fprintf(f, "#ifdef DUMA_OLD_DEL_MACRO\n");
   fprintf(f, "#undef DUMA_OLD_DEL_MACRO\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_OLD_DEL_MACRO */
   fprintf(f, "#ifndef DUMA_OLD_DEL_MACRO\n");
   fprintf(f, "#define DUMA_OLD_DEL_MACRO\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_OLD_DEL_MACRO */
 
 #ifndef DUMA_NO_STRERROR
   fprintf(f, "#ifdef DUMA_NO_STRERROR\n");
   fprintf(f, "#undef DUMA_NO_STRERROR\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_NO_STRERROR */
   fprintf(f, "#ifndef DUMA_NO_STRERROR\n");
   fprintf(f, "#define DUMA_NO_STRERROR\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_NO_STRERROR */
 
 #ifndef DUMA_LIB_NO_HANG_MSG
   fprintf(f, "#ifdef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#undef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#endif\n\n");
-#else
+#else  /* ifndef DUMA_LIB_NO_HANG_MSG */
   fprintf(f, "#ifndef DUMA_NO_HANG_MSG\n");
   fprintf(f, "#define DUMA_NO_HANG_MSG\n");
   fprintf(f, "#endif\n\n");
-#endif
+#endif /* ifndef DUMA_LIB_NO_HANG_MSG */
 
   fprintf(f, "#endif\n");
   fprintf(f, "\n");
@@ -665,11 +706,14 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "\n");
 
   if (addrIdx >= 0 && sIntTypes[addrIdx].c99)
+  {
     fprintf(f, "#include <stdint.h>\n\n");
+  }
 
   fprintf(f, "/*\n");
-  fprintf(f, " * Number of bytes per virtual-memory page, as returned by "
-             "Page_Size().\n");
+  fprintf(f,
+    " * Number of bytes per virtual-memory page, as returned by "
+    "Page_Size().\n");
   fprintf(f, " */\n");
   fprintf(f, "#define DUMA_PAGE_SIZE %lu\n", pagesize);
 
@@ -682,36 +726,50 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
   fprintf(f, "\n");
   fprintf(f, "/*\n");
   fprintf(f,
-          " * Build environment supports the '__attribute ((constructor))'?\n");
+    " * Build environment supports the '__attribute ((constructor))'?\n");
   fprintf(f, " */\n");
   if (initattr_ok)
+  {
     fprintf(f, "#define DUMA_GNU_INIT_ATTR 1\n");
+  }
   else
+  {
     fprintf(f, "/* #define DUMA_GNU_INIT_ATTR 0 */\n");
+  }
 
   fprintf(f, "\n");
   fprintf(f, "/*\n");
   fprintf(f, " * An integer type with same size as 'void *'\n");
   fprintf(f, " */\n");
   if (addrIdx >= 0)
+  {
     fprintf(f, "typedef %s DUMA_ADDR;\n", sIntTypes[addrIdx].type);
+  }
   else
+  {
     fprintf(f, "/* Error: No datatype for DUMA_ADDR found! */\n");
+  }
 
   fprintf(f, "\n");
   fprintf(f, "/*\n");
   fprintf(f, " * An integer type with same size as 'size_t'\n");
   fprintf(f, " */\n");
   if (sizeIdx >= 0)
+  {
     fprintf(f, "typedef %s DUMA_SIZE;\n", sIntTypes[sizeIdx].type);
+  }
   else
+  {
     fprintf(f, "/* No datatype for DUMA_SIZE found! */\n");
+  }
 
   fprintf(f, "\n");
   fprintf(f, "/*\n");
   fprintf(f, " * Default behaviour on malloc(0).\n");
   fprintf(f, " */\n");
-  fprintf(f, "#define DUMA_DEFAULT_MALLOC_0_STRATEGY %d\n", malloc0strategy);
+  fprintf(f,
+    "#define DUMA_DEFAULT_MALLOC_0_STRATEGY %d\n",
+    malloc0strategy);
 
   fprintf(f, "\n");
   fprintf(f, "#endif /* _DUMA_CONFIG_H_ */\n");
@@ -721,11 +779,13 @@ void writeFile(const char *filename, unsigned long pagesize, int addrIdx,
 
 #ifdef __cplusplus
 #define DUMA_EXTERN_C extern "C"
-#else
+#else  /* ifdef __cplusplus */
 #define DUMA_EXTERN_C extern
-#endif
+#endif /* ifdef __cplusplus */
 
-int main() {
+int
+main()
+{
   int iNumIntTypes, iIt;
   int addrIdx, sizeIdx;
   unsigned alignment;
@@ -736,62 +796,84 @@ int main() {
 
   unsigned long pagesize = Page_Size();
 
-#if defined(__MINGW32__) || defined(__MINGW64__)
+#if defined( __MINGW32__ ) || defined( __MINGW64__ )
   fprintf(stderr, "createconf: Platform is MINGW\n");
-#endif
-#if defined(__CYGWIN__)
+#endif /* if defined( __MINGW32__ ) || defined( __MINGW64__ ) */
+#if defined( __CYGWIN__ )
   fprintf(stderr, "createconf: Platform is CYGWIN\n");
-#endif
-#if defined(WIN32)
+#endif /* if defined( __CYGWIN__ ) */
+#if defined( WIN32 )
   fprintf(stderr, "createconf: WIN32 is set\n");
-#endif
-#if defined(_MSC_VER)
+#endif /* if defined( WIN32 ) */
+#if defined( _MSC_VER )
   fprintf(stderr, "createconf: Compiler is MS Visual C++ (_MSC_VER set)\n");
-#endif
+#endif /* if defined( _MSC_VER ) */
 
-  iNumIntTypes = sizeof(sIntTypes) / sizeof(sIntTypes[0]);
+  iNumIntTypes = sizeof ( sIntTypes ) / sizeof ( sIntTypes[0] );
 
-  // detect compatible type for ADDRESS
+  /* Detect compatible type for ADDRESS */
   addrIdx = -1;
-  for (iIt = 0; iIt < iNumIntTypes; ++iIt) {
-    if (sIntTypes[iIt].size >= sizeof(void *)) {
+  for (iIt = 0; iIt < iNumIntTypes; ++iIt)
+  {
+    if (sIntTypes[iIt].size >= sizeof ( void * ))
+    {
       addrIdx = iIt;
       break;
     }
   }
 
-  // detect compatible type for SIZE_T
+  /* Detect compatible type for SIZE_T */
   sizeIdx = -1;
-  for (iIt = 0; iIt < iNumIntTypes; ++iIt) {
-    if (sIntTypes[iIt].size >= sizeof(size_t)) {
+  for (iIt = 0; iIt < iNumIntTypes; ++iIt)
+  {
+    if (sIntTypes[iIt].size >= sizeof ( size_t ))
+    {
       sizeIdx = iIt;
       break;
     }
   }
 
-  /* detect maximum data type, which should be maximum alignment */
+  /* Detect maximum data type, which should be maximum alignment */
   max_sizeof = 0;
-  for (iIt = 0; iIt < iNumIntTypes; ++iIt) {
+  for (iIt = 0; iIt < iNumIntTypes; ++iIt)
+  {
     if (max_sizeof < sIntTypes[iIt].size)
+    {
       max_sizeof = sIntTypes[iIt].size;
+    }
   }
-  if (max_sizeof < (int)sizeof(float))
-    max_sizeof = sizeof(float);
-  if (max_sizeof < (int)sizeof(double))
-    max_sizeof = sizeof(double);
-  if (max_sizeof < (int)sizeof(long double))
-    max_sizeof = sizeof(long double);
+
+  if (max_sizeof < (int)sizeof ( float ))
+  {
+    max_sizeof = sizeof ( float );
+  }
+
+  if (max_sizeof < (int)sizeof ( double ))
+  {
+    max_sizeof = sizeof ( double );
+  }
+
+  if (max_sizeof < (int)sizeof ( long double ))
+  {
+    max_sizeof = sizeof ( long double );
+  }
 
   /* test for behaviour on malloc(0) */
   {
     char *pcNullPtrA = (char *)malloc(0);
     char *pcNullPtrB = (char *)malloc(0);
     if (!pcNullPtrA)
+    {
       malloc0strategy = 1;
+    }
     else if (pcNullPtrA == pcNullPtrB)
+    {
       malloc0strategy = 2;
+    }
     else
+    {
       malloc0strategy = 3;
+    }
   }
 
 #ifdef _MSC_VER
@@ -800,28 +882,40 @@ int main() {
     char directory[1024];
     char *start;
 
-    _getcwd(directory, 1024); /* get current directory */
-    if ((start = strstr(directory, "win32-msvc"))) {
+    _getcwd(directory, 1024);  /* get current directory */
+    if (( start = strstr(directory, "win32-msvc")))
+    {
       *start = 0;
       strcpy(filename, directory);
       strcat(filename, "duma_config.h");
-    } else
+    }
+    else
+    {
       strcpy(filename, "duma_config.h");
+    }
   }
-#else
+#else  /* ifdef _MSC_VER */
   strcpy(filename, "duma_config.h");
-#endif
+#endif /* ifdef _MSC_VER */
 
   /* detect minimum alignment */
   alignment = max_sizeof;
-  do {
+  do
+  {
     /* do the alignment access tests */
     testAlignment(addrIdx, buffer, alignment, max_sizeof);
     /* write whole config file. next test may crash ! */
-    writeFile(filename, pagesize, addrIdx, sizeIdx, alignment, malloc0strategy);
+    writeFile(
+      filename,
+      pagesize,
+      addrIdx,
+      sizeIdx,
+      alignment,
+      malloc0strategy);
     /* try next lower alignment */
     alignment >>= 1;
-  } while (alignment > 0);
+  }
+  while ( alignment > 0 );
 
-  return 0;
+  return ( 0 );
 }

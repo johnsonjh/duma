@@ -3,9 +3,9 @@
 # vim: filetype=sh:tabstop=4:tw=76
 
 # shellcheck disable=SC2006,SC2046,SC2065
-test _`printf '%s' "asdf" 2>/dev/null` != "_asdf" >/dev/null && \
+test _$(printf '%s' "asdf" 2> /dev/null) != "_asdf" > /dev/null &&
 	printf '%s\n' \
-		"Error: This shell seems to be csh, which is not supported." && \
+		"Error: This shell seems to be csh, which is not supported." &&
 	exit 1
 
 set +e > /dev/null 2>&1
@@ -44,24 +44,18 @@ fi
 for as_var in BASH_ENV ENV MAIL MAILPATH; do
 	# shellcheck disable=SC1083,SC2015
 	eval test x\${"${as_var:?}"+set} = xset &&
-		( (unset "${as_var:-}") ||
-			{
-				printf >&2 '%s\n' \
-					"Error: clear environment failed."
-				exit 1
-			}
+		( 
+			(unset "${as_var:-}") ||
+				{
+					printf >&2 '%s\n' \
+						"Error: clear environment failed."
+					exit 1
+				}
 		) &&
 		unset "${as_var:-}" || true
 done
 
-if [ -f "./.release" ]; then
-	RELEASED=1 && export RELEASED
-	RELENG="prepared" && export RELENG
-else
-	unset RELEASED > /dev/null 2>&1 || true
-	RELENG="built" && export RELENG
-fi
-rm -f ./.release
+TZ="UTC" && export TZ > /dev/null 2>&1
 
 set -u > /dev/null 2>&1
 set -e > /dev/null 2>&1
@@ -75,30 +69,33 @@ get_git_info()
 			if [ -n "${GITTEST:-}" ] &&
 				[ ! -z "${GITTEST:-}" ]; then
 				BRANCH=$(git branch --show-current 2> /dev/null)
-				if [ -n "${RELEASED:-}" ] && [ ! -z "${RELEASED:-}" ]; then
-					GITVER=$(git describe --tags --always 2> /dev/null |
-						cut -d "-" -f 1 2> /dev/null)
-				else
-					GITVER=$(git describe \
-						--tags --dirty --broken --long --always \
-						2> /dev/null)
-				fi
-
+				CDDATE=" "$(git show -s --format="%cd" \
+					--date="format:%Y-%m-%d" 2> /dev/null)
+				GITVER=$(git describe --long --dirty --tags --always \
+					2> /dev/null)
 				if [ ! -n "${BRANCH:-}" ] ||
 					[ -z "${BRANCH:-}" ]; then
 					BRANCH="nobranch"
 				fi
-
-				if [ ! -n "${RELEASED:-}" ] &&
-					[ -z "${RELEASED:-}" ]; then
+				if [ "${BRANCH:-}" = "master" ] ||
+					[ "${BRANCH:-}" = "main" ] ||
+					[ "${BRANCH:-}" = "trunk" ] ||
+					[ "${BRANCH:-}" = "nobranch" ]; then
 					if [ -n "${GITVER:-}" ] &&
 						[ ! -z "${GITVER:-}" ]; then
-						GIT_OUT=" ${GITVER:?}-${BRANCH:?}"
+						GIT_OUT=$(printf '%s' \
+							"${GITVER:?}${CDDATE:?}" |
+								sed -e 's/[0-9]-0-g.* / /' \
+									-e 's/-[0-9]\+-g/+-g/')
 					fi
-				fi
-				if [ -n "${GITVER:-}" ] &&
-					[ ! -z "${GITVER:-}" ]; then
-					GIT_OUT=" ${GITVER:?}"
+				else
+					if [ -n "${GITVER:-}" ] &&
+						[ ! -z "${GITVER:-}" ]; then
+						GIT_OUT=$(printf '%s' \
+							"${GITVER:?}-${BRANCH:?}${CDDATE:?}" |
+								sed -e 's/[0-9]-0-g.* / /' \
+									-e 's/-[0-9]\+-g/+-g/')
+					fi
 				fi
 			fi
 		else
@@ -112,8 +109,8 @@ get_git_info()
 		exit 1
 	fi
 
-	GIT_SOURCE_INFO="DUMA${GIT_OUT:?}"
-	GIT_SOURCE_XFRM=$(printf '%s\n' "${GIT_SOURCE_INFO:?}" |
+	GIT_SOURCE_INFO="${GIT_OUT:-0.0.0} "
+	GIT_SOURCE_XFRM=$(printf '%s\n' "${GIT_SOURCE_INFO:?}" | \
 		sed -e 's/\VERSION_//' -e 's/_/\./g' 2> /dev/null) ||
 		{
 			printf >&2 '%s\n' \
@@ -127,28 +124,32 @@ get_git_info()
 		printf '%s\n' \
 			"${GIT_SOURCE_XFRM:?}"
 	else
+
 		printf '%s\n' \
 			"${GIT_SOURCE_INFO:?}"
 	fi
+
 }
 
 get_utc_date()
 {
-	UTC_DATE=$(TZ=UTC date -u "+%D %T" 2> /dev/null) ||
+	UTC_BLD_DATE=$(TZ=UTC date -u "+%Y-%m-%d" 2> /dev/null) ||
 		{
 			printf >&2 '%s\n' \
 				"Error: date failed."
 			exit 1
 		}
 	# shellcheck disable=SC2236
-	if [ -n "${UTC_DATE:-}" ] &&
-		[ ! -z "${UTC_DATE:-}" ]; then
-		UTC_DATE_INFO=", ${RELENG:?} ${UTC_DATE:?}"
+	if [ -n "${UTC_BLD_DATE:-}" ] &&
+		[ ! -z "${UTC_BLD_DATE:-}" ]; then
+		UTC_BLD_DATE_INFO="(compiled ${UTC_BLD_DATE:?})"
 	else
-		UTC_DATE_INFO=""
+
+		UTC_BLD_DATE_INFO=""
 	fi
+
 	printf '%s\n' \
-		"${UTC_DATE_INFO:?}"
+		"${UTC_BLD_DATE_INFO:?}"
 }
 
 BUILD_VER="$(get_git_info)" ||
@@ -173,10 +174,10 @@ printf '%s\n' \
 	"#define GIT_SOURCE_VERSION_VERINFO_H" \
 	"" \
 	'#define GIT_SOURCE_VERSION \' \
-	"    \"${BUILD_VER:?}${BUILD_UTC:?} (\"" \
+	"    \"${BUILD_VER:?}${BUILD_UTC:?}\"" \
 	"" \
 	"#endif /* GIT_SOURCE_VERSION_VERINFO_H */" \
-	> ./verinfo.h ||
+	> "./verinfo.h" ||
 	{
 		printf >&2 '%s\n' \
 			"Error: writing verinfo.h failed."

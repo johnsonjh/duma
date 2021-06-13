@@ -85,5 +85,4 @@ static inline int ilog2(int val)
  * Fake variable to make docs work right :(
  */
 
-
-// end
+/* end */

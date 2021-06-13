@@ -42,8 +42,6 @@ public:
 };
 
 
-} // dev
+} /* dev */
 
-
-
-#endif // _DEV_STACKTRACE_H
+#endif /* _DEV_STACKTRACE_H */

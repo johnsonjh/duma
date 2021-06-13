@@ -15,8 +15,7 @@
 #ifndef _PRINTSTACKTRACE_H
 #define _PRINTSTACKTRACE_H
 
-
-/**
+/*
  * Prints formatted call stack to the user defined buffer,
  * always terminating the buffer with 0.
  * Uses stack frame to find out the caller function address and
@@ -25,6 +24,4 @@
 extern "C" void printStackTrace( char* buffer, int bufferSize, char* mapFilename );
 extern "C" void StackTraceCleanup();
 
-
-
-#endif // _PRINTSTACKTRACE_H
+#endif /* _PRINTSTACKTRACE_H */

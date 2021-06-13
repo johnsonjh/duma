@@ -12,7 +12,7 @@
  * without express or implied warranty.
  */
 
-// $Id$
+/* $Id$ */
 
 #include "MapFile.h"
 #include "MapFileEntry.h"
@@ -25,15 +25,15 @@
 #include <windows.h>
 #endif
 
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 
 namespace dev
 {
 
-// Lots of changes from origional to fix bugs
-// improve spead, and clean things up.
-// We are only parsing function entries now, but
-// should add support for line numbers.
+/* Lots of changes from origional to fix bugs    */
+/* improve spead, and clean things up.           */
+/* We are only parsing function entries now, but */
+/* should add support for line numbers.          */
 class MapFile::MapFileImpl
 {
 public:
@@ -176,16 +176,16 @@ private:
 			if(!strcmp(lib, "f"))
 				m_file.readString( lib, sizeof(lib) );
 
-			// chop entry name at @@
+			/* chop entry name at @@ */
 			str = strstr( entryname, "@@" );
 			if ( str )
 				*str = 0;
 
-			// skip preceding ?01..
+			/* skip preceding ?01.. */
 			while ( isdigit(*entryname) || *entryname == '?' || *entryname == '$' )
 				++entryname;
 
-			// conv @ -> .
+			/* conv @ -> . */
 			for ( str = entryname ; *str ; ++str )
 				if ( *str == '@' )
 					*str = '.';

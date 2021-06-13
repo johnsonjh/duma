@@ -36,7 +36,7 @@ public:
 		setSize( size );
 	}
 
-	///
+	/***/
 	~Array()
 	{
 		delete[] m_data;
@@ -123,8 +123,6 @@ private:
 };
 
 
-} // dev
+} /* dev */
 
-
-
-#endif // _DEV_ARRAY_H
+#endif /* _DEV_ARRAY_H */

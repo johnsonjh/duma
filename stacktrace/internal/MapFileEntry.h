@@ -12,7 +12,7 @@
  * without express or implied warranty.
  */
 
-// $Id$
+/* $Id$ */
 
 #ifndef _DEV_MAPFILEENTRY_H
 #define _DEV_MAPFILEENTRY_H
@@ -33,7 +33,7 @@ public:
 		MAX_NAME = 256
 	};
 
-	///
+	/***/
 	MapFileEntry();
 
 	/** Creates an entry with specified section, offset, length and name. */
@@ -71,8 +71,6 @@ private:
 };
 
 
-} // dev
+} /* devc*/
 
-
-
-#endif // _DEV_MAPFILEENTRY_H
+#endif /* _DEV_MAPFILEENTRY_H */

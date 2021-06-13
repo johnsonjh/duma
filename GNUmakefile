@@ -1,4 +1,5 @@
 ############################################################################
+# vim: filetype=sh:tabstop=4:tw=76
 #
 # DUMA Configuration:
 #
@@ -43,7 +44,7 @@
 #    Set this if you want to suppress the extra messages around atexit().
 #
 # Add "-DDUMA_NO_STRERROR"  (no quotes)
-#    Set this if you want to suppress calls to strerror() to avoid recursion
+#    Set this if you want to suppress calling strerror() to avoid recursion
 #    on specific platforms.
 #
 #  Preprocessor flags for building the shared library (DUMA_SO_LIBRARY):
@@ -94,17 +95,26 @@ PIC=-fPIC -DPIC
 DUMA_SO_OPTIONS=$(PIC) -DDUMA_SO_LIBRARY
 DUMA_SO_VERSION=.0.0.0
 INSTALL=install
+MKDIR=mkdir -p
 RM=rm
 RMFORCE=rm -f
 RMDIR=rmdir
-ECHO=echo
+ECHO=printf '%s\n'
 ECHOLF=printf '%s\n' ""
+ENV=env
+LN=ln -s
 CC=cc
 CXX=c++
 LD=ld
 AR=ar
 RANLIB=ranlib
 INSTALL=install
+DOS2UNIX=dos2unix
+UNAME=uname
+TR=tr
+GREP=grep
+TSTVAL=3072
+DEVNULL=/dev/null
 
 ############################################################################
 # Define: V / VERBOSE
@@ -125,16 +135,26 @@ endif
 # Define: VERBAN
 
 ifneq ($(VERBOSE), 1)
-VERBAN=DUMA_DISABLE_BANNER=1
+ VERBAN=DUMA_DISABLE_BANNER=1
 else
-VERBAN=
+ VERBAN=
+endif
+
+############################################################################
+# Define: VECHO
+
+ifneq ($(VERBOSE), 1)
+ VECHO=$(ECHO)
+else
+ VECHO=true
 endif
 
 ############################################################################
 # Define: Automatic OS detection
 
 ifndef $(OS)
- OS=$(shell uname -s 2> /dev/null | tr '[:upper:]' '[:lower:]' 2> /dev/null)
+OS=$(shell $(UNAME) -s 2> $(DEVNULL) | \
+	  $(TR) '[:upper:]' '[:lower:]' 2> $(DEVNULL))
 endif
 
 ############################################################################
@@ -146,179 +166,172 @@ mkfile_path := $(dir $(mkfile_name))
 ############################################################################
 # Define: DUMA dynamic dependencies
 
-DUMA_DYN_DEPS=$(DUMASO) tstheap_so$(EXEPOSTFIX) dumatestpp_so$(EXEPOSTFIX)
+DUMA_DYN_DEPS=$(DUMASO) \
+	          tstheap_so$(EXEPOSTFIX) \
+	          dumatestpp_so$(EXEPOSTFIX) \
+	          thread-test_so$(EXEPOSTFIX)
 
 ############################################################################
-# Configuration: Windows (MSYS) - CMD
+# Configuration: Windows (MSYS) - Command Prompt
 
 ifeq ($(OS), windows_nt)
-  ifeq ($(OSTYPE), msys)
-	$(info *** Using configuration: OS=windows_nt, OSTYPE=msys)
-    # call mingw32-make OSTYPE=msys from Windows command prompt
-    # after having added the PATH for MINGW/bin
-    # using explicit initialization to avoid leak report
-    # from __w32_sharedptr_initialize() function
-    BSWITCH=101
-    DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
-    RM=del
-    RMFORCE=del /F 2>nul
-    RMDIR=rd /q
-    ECHO=echo
-    ECHOLF=echo .
-    CURPATH=
-    DUMA_DYN_DEPS=
-    DUMASO=
-    CFLAGS=-g -O0
-    CPPFLAGS=-g -O0
-    LIBS=
-    EXEPOSTFIX=.exe
-  endif
+ ifeq ($(OSTYPE), msys)
+  $(info *** Using configuration: OS=windows_nt, OSTYPE=msys)
+  # DUMA_EXPLICIT_INIT avoid leak reports from __w32_sharedptr_initialize()
+  BSWITCH=101
+  DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+  MKDIR=md
+  RM=del
+  RMFORCE=del /F 2>nul
+  RMDIR=rd /q
+  ECHO=echo
+  ECHOLF=echo .
+  CURPATH=
+  DUMA_DYN_DEPS=
+  DUMASO=
+  CFLAGS=-g -O0
+  CPPFLAGS=-g -O0
+  LIBS=
+  EXEPOSTFIX=.exe
+ endif
 
 ############################################################################
 # Configuration: Windows (MSYS) - Bourne Shell
 
-  ifeq ($(OSTYPE), msys-sh)
-	$(info *** Using configuration: OS=windows_nt, OSTYPE=msys-sh)
-    # call mingw32-make OSTYPE=msyssh from MSYS shell
-    # after having added the PATH for MINGW/bin
-    # using explicit initialization to avoid leak report
-    # from __w32_sharedptr_initialize() function
-    BSWITCH=102
-    DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
-    CC=mingw32-gcc
-    CXX=mingw32-g++ -std=c++98
-    RM=rm
-    RMFORCE=rm -f
-    RMDIR=rmdir
-    CURPATH=./
-    DUMA_DYN_DEPS=
-    DUMASO=
-    CFLAGS=-g -O0
-    CPPFLAGS=-g -O0
-    LIBS=
-    EXEPOSTFIX=.exe
-  endif
+ ifeq ($(OSTYPE), msys-sh)
+  $(info *** Using configuration: OS=windows_nt, OSTYPE=msys-sh)
+  # DUMA_EXPLICIT_INIT avoid leak reports from __w32_sharedptr_initialize()
+  BSWITCH=102
+  DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+  CC=mingw32-gcc
+  CXX=mingw32-g++ -std=c++98
+  CURPATH=./
+  DUMA_DYN_DEPS=
+  DUMASO=
+  CFLAGS=-g -O0
+  CPPFLAGS=-g -O0
+  LIBS=
+  EXEPOSTFIX=.exe
+ endif
 
 ############################################################################
 # Configuration: Windows (Cygwin)
 
-  ifeq ($(OSTYPE), cygwin)
-	$(info *** Using configuration: OS=windows_nt, OSTYPE=cygwin)
-    # call make OSTYPE=cygwin
-    BSWITCH=103
-    DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
-    CURPATH=./
-    DUMA_DYN_DEPS=
-    DUMASO=
-    CFLAGS=-g -O0 -DWIN32 -Wall -Wextra
-    CPPFLAGS=-g -O0 -DWIN32 -Wall -Wextra
-    LIBS=
-    EXEPOSTFIX=.exe
-  endif
+ ifeq ($(OSTYPE), cygwin)
+  $(info *** Using configuration: OS=windows_nt, OSTYPE=cygwin)
+  BSWITCH=103
+  DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+  CURPATH=./
+  DUMA_DYN_DEPS=
+  DUMASO=
+  CFLAGS=-g -O0 -DWIN32
+  CPPFLAGS=-g -O0 -DWIN32
+  LIBS=
+  EXEPOSTFIX=.exe
+ endif
 
 ############################################################################
 # Configuration: Windows NT
 
-  ifndef BSWITCH
-	$(info *** Using configuration: OS=windows_nt)
-    BSWITCH=100
-    DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
-    CURPATH=./
-    DUMA_DYN_DEPS=
-    DUMASO=
-    CFLAGS=-g -O0 -DWIN32
-    CPPFLAGS=-g -O0 -DWIN32
-    LIBS=
-    EXEPOSTFIX=.exe
-  endif
+ ifndef BSWITCH
+  $(info *** Using configuration: OS=windows_nt)
+  BSWITCH=100
+  DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+  CURPATH=./
+  DUMA_DYN_DEPS=
+  DUMASO=
+  CFLAGS=-g -O0 -DWIN32
+  CPPFLAGS=-g -O0 -DWIN32
+  LIBS=
+  EXEPOSTFIX=.exe
+ endif
 endif
 
 ############################################################################
 # Configuration: Darwin (macOS X)
 
 ifeq ($(OS), darwin)
-  $(info *** Using configuration: OS=darwin)
-  # call: make OS=darwin
-  BSWITCH=210
-  DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
-  DUMA_OPTIONS += -DDUMA_SO_PREFER_GETENV
-# DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
-  CURPATH=./
-# DUMA_DYN_DEPS=
-  DUMASO=libduma.dylib
-  DUMASO_LINK1=libduma.dylib
-  CFLAGS=-g -O0
-  CPPFLAGS=-g -O0
-  LIBS=-lpthread
-  EXEPOSTFIX=
-  prefix?=/opt/duma
+ $(info *** Using configuration: OS=darwin)
+ BSWITCH=210
+ DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
+ DUMA_OPTIONS += -DDUMA_SO_PREFER_GETENV
+ # DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
+ CURPATH=./
+ # DUMA_DYN_DEPS=
+ DUMASO=libduma.dylib
+ DUMASO_LINK1=libduma.dylib
+ CFLAGS=-g -O0
+ CPPFLAGS=-g -O0
+ LIBS=-lpthread
+ EXEPOSTFIX=
+ prefix?=/opt/duma
 endif
 
 ############################################################################
 # Configuration: FreeBSD
 
 ifeq ($(OS), freebsd)
-  $(info *** Using configuration: OS=freebsd)
-  BSWITCH=310
-  DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
-  DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
-  CURPATH=./
-  DUMA_DYN_DEPS=
-  DUMASO=
-  DUMASO_LINK1=
-  CFLAGS=-g -O0
-  CPPFLAGS=-g -O0
-  LIBS=-lpthread
-  EXEPOSTFIX=
+ $(info *** Using configuration: OS=freebsd)
+ BSWITCH=310
+ DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
+ DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+ CURPATH=./
+ DUMA_DYN_DEPS=
+ DUMASO=
+ DUMASO_LINK1=
+ CFLAGS=-g -O0
+ CPPFLAGS=-g -O0
+ LIBS=-lpthread
+ EXEPOSTFIX=
 endif
 
 ############################################################################
 # Configuration: NetBSD
 
 ifeq ($(OS), netbsd)
-  $(info *** Using configuration: OS=netbsd)
-  BSWITCH=320
-  CURPATH=./
-  DUMASO=libduma.so$(DUMA_SO_VERSION)
-  DUMASO_LINK1=libduma.so.0
-  DUMASO_LINK2=libduma.so
-  CFLAGS=-g -O0
-  CPPFLAGS=-g -O0
-  LIBS=-lpthread
-  EXEPOSTFIX=
+ $(info *** Using configuration: OS=netbsd)
+ BSWITCH=320
+ CURPATH=./
+ DUMASO=libduma.so$(DUMA_SO_VERSION)
+ DUMASO_LINK1=libduma.so.0
+ DUMASO_LINK2=libduma.so
+ CFLAGS=-g -O0
+ CPPFLAGS=-g -O0
+ LIBS=-lpthread
+ EXEPOSTFIX=
 endif
 
 ############################################################################
 # Configuration: Solaris
 
 ifeq ($(OS), solaris)
-  $(info *** Using configuration: OS=solaris)
-  BSWITCH=410
-  DUMA_OPTIONS += -DDUMA_NO_STRERROR
-  CURPATH=./
-  DUMA_DYN_DEPS=
-  DUMASO=libduma.so$(DUMA_SO_VERSION)
-  DUMASO_LINK1=libduma.so.0
-  DUMASO_LINK2=libduma.so
-  CFLAGS=-g -O0
-  CPPFLAGS=-g -O0
-  LDFLAGS += -lgcc_s
-  LDOPTIONS += -lgcc_s
-  LIBS=-Wl,-R/opt/sfw/lib -lpthread
-  EXEPOSTFIX=
+ $(info *** Using configuration: OS=solaris)
+ BSWITCH=410
+ DUMA_OPTIONS += -DDUMA_NO_STRERROR
+ CURPATH=./
+ DUMA_DYN_DEPS=
+ DUMASO=libduma.so$(DUMA_SO_VERSION)
+ DUMASO_LINK1=libduma.so.0
+ DUMASO_LINK2=libduma.so
+ CFLAGS=-g -O0
+ CPPFLAGS=-g -O0
+ LDFLAGS += -lgcc_s
+ LDOPTIONS += -lgcc_s
+ LIBS=-Wl,-R/opt/sfw/lib -lpthread
+ EXEPOSTFIX=
 endif
 
 ############################################################################
 # Configuration: Linux (detect compiler)
 
 ifeq ($(OS), linux)
- ifeq ($(shell $(CXX) -v 2>&1 | grep -c "clang version" 2> /dev/null), 1)
+ifeq ($(shell $(CXX) -v 2>&1 | $(GREP) -c "clang version" 2> $(DEVNULL)), 1)
   COMPILERX := clang++
  else
   COMPILERX := g++ -std=c++98
  endif
  export COMPILERX
- ifeq ($(shell $(CC) -v 2>&1 | grep -c "clang version" 2> /dev/null), 1)
+ ifeq ($(shell $(CC) -v 2>&1 | $(GREP) -c "clang version" 2> $(DEVNULL)), 1)
   COMPILER := clang
  else
   COMPILER := gcc
@@ -334,77 +347,73 @@ ifeq ($(OS), linux)
 # Configuration: Linux (PIE)
 
   $(info *** Using configuration: OS=linux, OSTYPE=pie)
-  # Linux PIE-mode with GNU compiler and GNU tools.
   CC=${COMPILER} -fpie -fPIE
   CXX=${COMPILERX} -fpie -fPIE
   BSWITCH=510
-  else
+ else
 
 ############################################################################
 # Configuration: Linux (common, glibc)
 
-   $(info *** Using configuration: OS=linux)
-   CC=${COMPILER}
-   CXX=${COMPILERX}
-   BSWITCH=610
-  endif
-  DUMA_OPTIONS += -DDUMA_NO_STRERROR
-  CURPATH=./
-  DUMASO=libduma.so$(DUMA_SO_VERSION)
-  DUMASO_LINK1=libduma.so.0
-  DUMASO_LINK2=libduma.so
-  CFLAGS=-g -O0 -Wall -Wextra
-  CFLAGS+=-U_FORTIFY_SOURCE
-  CPPFLAGS=-g -O0 -Wall -Wextra
-  CPPFLAGS+=-U_FORTIFY_SOURCE
-  LIBS=-lpthread
-  EXEPOSTFIX=
-  RM=rm
-  RMFORCE=rm -f
-  RMDIR=rmdir
+  $(info *** Using configuration: OS=linux)
+  CC=${COMPILER}
+  CXX=${COMPILERX}
+  BSWITCH=610
+ endif
+ DUMA_OPTIONS += -DDUMA_NO_STRERROR
+ CURPATH=./
+ DUMASO=libduma.so$(DUMA_SO_VERSION)
+ DUMASO_LINK1=libduma.so.0
+ DUMASO_LINK2=libduma.so
+ CFLAGS=-g -O0 -Wall -Wextra
+ CFLAGS+=-U_FORTIFY_SOURCE
+ CPPFLAGS=-g -O0 -Wall -Wextra
+ CPPFLAGS+=-U_FORTIFY_SOURCE
+ LIBS=-lpthread
+ EXEPOSTFIX=
 endif
 
 ############################################################################
 # Configuration: Generic UNIX
 
 ifndef BSWITCH
-  BSWITCH=810
-  $(warning ****** Using generic UNIX fallback configuration ******)
-  ifndef OS
-    $(warning ****** OS unset ******)
-  else
-    $(warning ****** Unknown OS ******)
-  endif
-  CURPATH=./
-  DUMASO=libduma.so$(DUMA_SO_VERSION)
-  DUMASO_LINK1=libduma.so.0
-  DUMASO_LINK2=libduma.so
-  CFLAGS=-g -O0
-  CPPFLAGS=-g -O0
-  LIBS=-lpthread
-  EXEPOSTFIX=
+ BSWITCH=810
+ $(warning ****** Using generic UNIX fallback configuration ******)
+ ifndef OS
+  $(warning ****** OS unset ******)
+ else
+  $(warning ****** Unknown OS ******)
+ endif
+ CURPATH=./
+ DUMASO=libduma.so$(DUMA_SO_VERSION)
+ DUMASO_LINK1=libduma.so.0
+ DUMASO_LINK2=libduma.so
+ CFLAGS=-g -O0
+ CPPFLAGS=-g -O0
+ LIBS=-lpthread
+ EXEPOSTFIX=
 endif
 
 ############################################################################
 # Define: HOST_CFLAGS
 
 ifndef HOST_CFLAGS
-  HOST_CFLAGS=$(CFLAGS)
+ HOST_CFLAGS=$(CFLAGS)
 endif
 
 ############################################################################
 # Define: CC_FOR_BUILD
 
 ifndef CC_FOR_BUILD
-  CC_FOR_BUILD=$(CC)
+ CC_FOR_BUILD=$(CC)
 endif
 
 ############################################################################
 # Define: Default prefix
 
 ifndef prefix
-  prefix=/usr
-  $(info *** Using default prefix [$(prefix)])
+ prefix=/usr
+ $(info *** Using default prefix [$(prefix)])
 endif
 
 ############################################################################
@@ -417,15 +426,15 @@ DOC_INSTALL_DIR=$(prefix)/share/doc/duma
 # Define: Default srcdir
 
 ifndef srcdir
-  ifdef mkfile_path
-    srcdir=$(mkfile_path)
-    $(info *** Using default srcdir [$(srcdir)])
-  endif
+ ifdef mkfile_path
+  srcdir=$(mkfile_path)
+  $(info *** Using default srcdir [$(srcdir)])
+ endif
 endif
 
 ifndef srcdir
-  srcdir=./
-  $(info *** Using fallback srcdir [$(srcdir)])
+ srcdir=./
+ $(info *** Using fallback srcdir [$(srcdir)])
 endif
 
 ############################################################################
@@ -443,43 +452,43 @@ vpath %.c              $(srcdir) $(srcdir)src $(srcdir)tests $(CURDIR)
 # Define: Default exec_prefix
 
 ifndef exec_prefix
-  exec_prefix=$(prefix)
-  $(info *** Using default exec_prefix [$(exec_prefix)])
+ exec_prefix=$(prefix)
+ $(info *** Using default exec_prefix [$(exec_prefix)])
 endif
 
 ############################################################################
 # Define: Default bindir
 
 ifndef bindir
-  bindir=$(exec_prefix)/bin
+ bindir=$(exec_prefix)/bin
 endif
 
 ############################################################################
 # Define: Default datadir
 
 ifndef datadir
-  datadir=$(prefix)/share
+ datadir=$(prefix)/share
 endif
 
 ############################################################################
 # Define: Default sysconfdir
 
 ifndef sysconfdir
-  sysconfdir=$(prefix)/etc
+ sysconfdir=$(prefix)/etc
 endif
 
 ############################################################################
 # Define: Default libdir
 
 ifndef libdir
-  libdir=$(exec_prefix)/lib
+ libdir=$(exec_prefix)/lib
 endif
 
 ############################################################################
 # Define: Default includedir
 
 ifndef includedir
-  includedir=$(prefix)/include
+ includedir=$(prefix)/include
 endif
 
 ############################################################################
@@ -491,7 +500,7 @@ PACKAGE_SOURCE=$(srcdir)README.md \
 			   $(srcdir)COPYING-GPL \
 			   $(srcdir)COPYING-LGPL \
 			   $(srcdir)duma.3 \
-               $(srcdir)GNUmakefile \
+			   $(srcdir)GNUmakefile \
 			   $(srcdir)gdbinit.rc \
 			   $(srcdir)duma.h \
 			   $(srcdir)dumapp.h \
@@ -536,45 +545,88 @@ SO_OBJECTS=dumapp_so.o \
 all: verinfo.h \
 	 libduma.a \
 	 $(DUMA_DYN_DEPS)
+	@ $(ECHOLF)
 	@ $(ECHO) "*** Build complete"
 
 ############################################################################
 # Target: "check" / "test"
 
 .PHONY: check test
-check test: tstheap$(EXEPOSTFIX) \
+check test: libduma.a \
+	        tstheap$(EXEPOSTFIX) \
 	        dumatest$(EXEPOSTFIX) \
-			thread-test$(EXEPOSTFIX) \
-			testmt$(EXEPOSTFIX) \
-			dumatestpp$(EXEPOSTFIX) \
-			testoperators$(EXEPOSTFIX) \
-			$(DUMA_DYN_DEPS)
+	        thread-test$(EXEPOSTFIX) \
+	        testmt$(EXEPOSTFIX) \
+	        dumatestpp$(EXEPOSTFIX) \
+	        testoperators$(EXEPOSTFIX) \
+	        testmemlimit$(EXEPOSTFIX) \
+	        $(DUMA_DYN_DEPS)
 	@ $(ECHOLF)
 	@ $(ECHO) "*** Testing DUMA (static library)"
-	@ $(ECHOLF)
+	@ $(VECHO) "	*** Test: dumatest"
 	@ $(VERBAN) "$(CURPATH)dumatest$(EXEPOSTFIX)"
-	@ $(VERBAN) "$(CURPATH)tstheap$(EXEPOSTFIX)" 3072
+	@ $(VECHO) "	*** Test: dumatestpp"
+	@ $(VERBAN) "$(CURPATH)dumatestpp$(EXEPOSTFIX)"
+	@ $(VECHO) "	*** Test: tstheap $(TSTVAL)"
+	@ $(VERBAN) "$(CURPATH)tstheap$(EXEPOSTFIX)" "$(TSTVAL)"
+	@ $(VECHO) "	*** Test: thread-test"
+	@ $(VERBAN) "$(CURPATH)thread-test$(EXEPOSTFIX)" > $(DEVNULL)
+#	@ $(VECHO) "	*** Test: testmt"
+#	@ $(VERBAN) "$(CURPATH)testmt$(EXEPOSTFIX)"
+	@ $(VECHO) "	*** Test: testoperators"
 	@ $(VERBAN) "$(CURPATH)testoperators$(EXEPOSTFIX)"
+	@ $(VECHO) "	*** Test: testmemlimit"
+	@ $(VERBAN) "$(CURPATH)testmemlimit$(EXEPOSTFIX)"
 	@ $(ECHOLF)
 	@ $(ECHO) "*** DUMA static confidence test PASSED."
 ifdef DUMASO
-	@ $(ECHOLF)
-	@ $(ECHO) "*** Testing DUMA (dynamic library)"
-	@ $(ECHOLF)
-ifeq ($(OS), solaris)
-	@ LD_PRELOAD="./$(DUMASO)" \
-		DYLD_INSERT_LIBRARIES="./$(DUMASO)" \
-		DYLD_FORCE_FLAT_NAMESPACE=1 \
-		$(VERBAN) exec "$(CURPATH)tstheap_so" 3072
-else
-	@ (export LD_PRELOAD="./$(DUMASO)"; \
-		export DYLD_INSERT_LIBRARIES="./$(DUMASO)"; \
-		export DYLD_FORCE_FLAT_NAMESPACE=1 ; \
-		$(VERBAN) exec "$(CURPATH)tstheap_so" 3072)
-endif
-	@ $(ECHOLF)
-	@ $(ECHO) "*** DUMA confidence test PASSED."
-	@ $(ECHOLF)
+	 @ $(ECHOLF)
+	 @ $(ECHO) "*** Testing DUMA (dynamic library)"
+	 @ $(VECHO) "	*** Test: dumatestpp_so"
+ ifeq ($(OS), solaris)
+	  @ LD_PRELOAD="./$(DUMASO)" \
+		  DYLD_INSERT_LIBRARIES="./$(DUMASO)" \
+		  DYLD_FORCE_FLAT_NAMESPACE=1 \
+		  $(VERBAN) exec "$(CURPATH)dumatestpp_so$(EXEPOSTFIX)" \
+	      "$(TSTVAL)"
+ else
+	  @ (export LD_PRELOAD="./$(DUMASO)"; \
+		  export DYLD_INSERT_LIBRARIES="./$(DUMASO)"; \
+		  export DYLD_FORCE_FLAT_NAMESPACE=1 ; \
+		  $(VERBAN) exec "$(CURPATH)dumatestpp_so$(EXEPOSTFIX)" \
+	      "$(TSTVAL)")
+ endif
+	 @ $(VECHO) "	*** Test: tstheap_so $(TSTVAL)"
+ ifeq ($(OS), solaris)
+	  @ LD_PRELOAD="./$(DUMASO)" \
+		  DYLD_INSERT_LIBRARIES="./$(DUMASO)" \
+		  DYLD_FORCE_FLAT_NAMESPACE=1 \
+		  $(VERBAN) exec "$(CURPATH)tstheap_so$(EXEPOSTFIX)" \
+	      "$(TSTVAL)"
+ else
+	  @ (export LD_PRELOAD="./$(DUMASO)"; \
+		  export DYLD_INSERT_LIBRARIES="./$(DUMASO)"; \
+		  export DYLD_FORCE_FLAT_NAMESPACE=1 ; \
+		  $(VERBAN) exec "$(CURPATH)tstheap_so$(EXEPOSTFIX)" \
+	      "$(TSTVAL)")
+ endif
+	 @ $(VECHO) "	*** Test: thread-test_so"
+ ifeq ($(OS), solaris)
+	  @ LD_PRELOAD="./$(DUMASO)" \
+		  DYLD_INSERT_LIBRARIES="./$(DUMASO)" \
+		  DYLD_FORCE_FLAT_NAMESPACE=1 \
+		  $(VERBAN) exec "$(CURPATH)thread-test_so$(EXEPOSTFIX)" \
+	      > $(DEVNULL)
+ else
+	  @ (export LD_PRELOAD="./$(DUMASO)"; \
+		  export DYLD_INSERT_LIBRARIES="./$(DUMASO)"; \
+		  export DYLD_FORCE_FLAT_NAMESPACE=1 ; \
+		  $(VERBAN) exec "$(CURPATH)thread-test_so$(EXEPOSTFIX)") \
+		  > $(DEVNULL)
+ endif
+	 @ $(ECHOLF)
+	 @ $(ECHO) "*** DUMA confidence test PASSED."
+	 @ $(ECHOLF)
 endif
 
 ############################################################################
@@ -583,13 +635,14 @@ endif
 .PHONY: installcheck installtest
 installcheck installtest: test
 ifdef DUMASO
-	@ $(ECHOLF)
-	@ $(ECHO) "*** Testing installed DUMA (dynamic library):"
-	@ $(ECHOLF)
-	@ $(VERBAN) "$(bindir)/duma" "$(CURPATH)tstheap_so" 3072
-	@ $(ECHOLF)
-	@ $(ECHO) "*** DUMA installcheck test PASSED."
-	@ $(ECHOLF)
+	 @ $(ECHOLF)
+	 @ $(ECHO) "*** Testing installed DUMA (dynamic library):"
+	 @ $(ECHOLF)
+	 @ $(VECHO) "	*** Test: tstheap_so $(TSTVAL)"
+	 @ $(VERBAN) "$(bindir)/duma" "$(CURPATH)tstheap_so" "$(TSTVAL)"
+	 @ $(ECHOLF)
+	 @ $(ECHO) "*** DUMA installcheck test PASSED."
+	 @ $(ECHOLF)
 endif
 
 ############################################################################
@@ -597,72 +650,74 @@ endif
 
 .PHONY: printvars printenv
 printvars printenv:
-	@echo OS              [$(OS)]
-	@echo OSTYPE          [$(OSTYPE)]
-	@echo bswitch         [$(BSWITCH)]
-	@echo srcdir          [$(srcdir)]
-	@echo prefix          [$(prefix)]
-	@echo exec_prefix     [$(exec_prefix)]
-	@echo bindir          [$(bindir)]
-	@echo datadir         [$(datadir)]
-	@echo sysconfdir      [$(sysconfdir)]
-	@echo libdir          [$(libdir)]
-	@echo includedir      [$(includedir)]
-	@echo oldincludedir   [$(oldincludedir)]
-	@echo CURDIR          [$(CURDIR)]
-	@echo MAN_INSTALL_DIR [$(MAN_INSTALL_DIR)]
-	@echo DOC_INSTALL_DIR [$(DOC_INSTALL_DIR)]
-	@echo VERBOSE         [$(VERBOSE)]
-	@echo V               [$(V)]
-	@echo VERBAN          [$(VERBAN)]
-	@echo MAKE            [$(MAKE)]
-	@echo CC              [$(CC)]
-	@echo CFLAGS          [$(CFLAGS)]
-	@echo CXX             [$(CXX)]
-	@echo CPPFLAGS        [$(CPPFLAGS)]
-	@echo LD              [$(LD)]
-	@echo AR              [$(AR)]
-	@echo LIBS            [$(LIBS)]
-	@echo RANLIB          [$(RANLIB)]
-	@echo INSTALL         [$(INSTALL)]
-	@echo RM              [$(RM)]
-	@echo RMFORCE         [$(RMFORCE)]
-	@echo RMDIR           [$(RMDIR)]
-	@echo ECHO            [$(ECHO)]
-	@echo ECHOLF          [$(ECHOLF)]
-	@echo PIC             [$(PIC)]
-	@echo EXEPOSTFIX      [$(EXEPOSTFIX)]
-	@echo CURPATH         [$(CURPATH)]
-	@echo DUMA_OPTIONS    [$(DUMA_OPTIONS)]
-	@echo DUMA_SO_OPTIONS [$(DUMA_SO_OPTIONS)]
-	@echo OBJECTS         [$(OBJECTS)]
-	@echo SO_OBJECTS      [$(SO_OBJECTS)]
-	@echo DUMASO          [$(DUMASO)]
-	@echo DUMASO_LINK1    [$(DUMASO_LINK1)]
-	@echo DUMASO_LINK2    [$(DUMASO_LINK2)]
-	@echo DUMA_DYN_DEPS   [$(DUMA_DYN_DEPS)]
-	@echo PACKAGE_SOURCE  [$(PACKAGE_SOURCE)]
-
-############################################################################
-# Target: "fail" / "false"
-
-.PHONY: fail false
-fail false:
-	@ false > /dev/null 2>&1
+	@echo "OS              	[$(OS)]"
+	@echo "OSTYPE          	[$(OSTYPE)]"
+	@echo "bswitch         	[$(BSWITCH)]"
+	@echo "srcdir          	[$(srcdir)]"
+	@echo "prefix          	[$(prefix)]"
+	@echo "exec_prefix     	[$(exec_prefix)]"
+	@echo "bindir          	[$(bindir)]"
+	@echo "datadir         	[$(datadir)]"
+	@echo "sysconfdir      	[$(sysconfdir)]"
+	@echo "libdir          	[$(libdir)]"
+	@echo "includedir      	[$(includedir)]"
+	@echo "oldincludedir   	[$(oldincludedir)]"
+	@echo "CURDIR          	[$(CURDIR)]"
+	@echo "MAN_INSTALL_DIR 	[$(MAN_INSTALL_DIR)]"
+	@echo "DOC_INSTALL_DIR 	[$(DOC_INSTALL_DIR)]"
+	@echo "VERBOSE         	[$(VERBOSE)]"
+	@echo "V               	[$(V)]"
+	@echo "VERBAN          	[$(VERBAN)]"
+	@echo "MKDIR           	[$(MKDIR)]"
+	@echo "MAKE            	[$(MAKE)]"
+	@echo "CC              	[$(CC)]"
+	@echo "CFLAGS          	[$(CFLAGS)]"
+	@echo "CXX             	[$(CXX)]"
+	@echo "CPPFLAGS        	[$(CPPFLAGS)]"
+	@echo "LD              	[$(LD)]"
+	@echo "AR              	[$(AR)]"
+	@echo "LIBS            	[$(LIBS)]"
+	@echo "RANLIB          	[$(RANLIB)]"
+	@echo "INSTALL         	[$(INSTALL)]"
+	@echo "RM              	[$(RM)]"
+	@echo "RMFORCE         	[$(RMFORCE)]"
+	@echo "RMDIR           	[$(RMDIR)]"
+	@echo "VECHO           	[$(VECHO)]"
+	@echo "ECHO            	[$(ECHO)]"
+	@echo "ECHOLF          	[$(ECHOLF)]"
+	@echo "PIC             	[$(PIC)]"
+	@echo "EXEPOSTFIX      	[$(EXEPOSTFIX)]"
+	@echo "CURPATH         	[$(CURPATH)]"
+	@echo "DUMA_OPTIONS    	[$(DUMA_OPTIONS)]"
+	@echo "DUMA_SO_OPTIONS 	[$(DUMA_SO_OPTIONS)]"
+	@echo "OBJECTS         	[$(OBJECTS)]"
+	@echo "SO_OBJECTS      	[$(SO_OBJECTS)]"
+	@echo "DUMA_SO_VERSION 	[$(DUMA_SO_VERSION)]"
+	@echo "DUMASO          	[$(DUMASO)]"
+	@echo "DUMASO_LINK1    	[$(DUMASO_LINK1)]"
+	@echo "DUMASO_LINK2    	[$(DUMASO_LINK2)]"
+	@echo "DUMA_DYN_DEPS   	[$(DUMA_DYN_DEPS)]"
+	@echo "PACKAGE_SOURCE  	[$(PACKAGE_SOURCE)]"
 
 ############################################################################
 # Target "printuk" (display files unknown to git)
 
 .PHONY: printuk
 printuk:
-	@ git status -s --untracked-files=all 2> /dev/null | grep '^? ' || true
+	@ $(ECHO) "*** Begin printuk (git untracked files):"
+	@ git status -s --untracked-files="all" 2> $(DEVNULL) | \
+	    $(GREP) '^? ' || true
+	@ $(ECHO) "*** End printuk"
 
 ############################################################################
 # Target: "printmod" (display files known to git but not up-to-date)
 
 .PHONY: printmod
 printmod:
-	@ git status -s 2> /dev/null | grep '^\ \?M ' || true
+	@ $(ECHO) "*** Begin printmod (git tracked modified files)"
+	@ git status -s 2> $(DEVNULL) | \
+	    $(GREP) '^\ \?M ' || true
+	@ $(ECHO) "*** End printmod"
 
 ############################################################################
 # Target: "install" (installs DUMA, respecting DESTDIR variable)
@@ -670,14 +725,12 @@ printmod:
 .PHONY: install
 install: libduma.a \
 	     duma.3 \
-		 $(DUMASO)
-	- mkdir -p \
-		"$(DESTDIR)$(DOC_INSTALL_DIR)"
+	     $(DUMASO)
+	- $(MKDIR) "$(DESTDIR)$(DOC_INSTALL_DIR)"
 	$(INSTALL) -m 644 \
 		"$(srcdir)README.md" \
 		"$(DESTDIR)$(DOC_INSTALL_DIR)"
-	- mkdir -p \
-		"$(DESTDIR)$(includedir)"
+	- $(MKDIR) "$(DESTDIR)$(includedir)"
 	$(INSTALL) -m 644 \
 		"$(srcdir)noduma.h" \
 		"$(srcdir)duma.h" \
@@ -686,39 +739,36 @@ install: libduma.a \
 		"$(CURDIR)/duma_config.h" \
 		"$(DESTDIR)$(includedir)"
 ifdef DUMASO
-	- mkdir -p \
-		"$(DESTDIR)$(bindir)"
-	$(INSTALL) -m 755 \
-		"$(srcdir)duma.sh" \
-		"$(DESTDIR)$(bindir)/duma"
+	 - $(MKDIR) "$(DESTDIR)$(bindir)"
+	 $(INSTALL) -m 755 \
+		 "$(srcdir)duma.sh" \
+		 "$(DESTDIR)$(bindir)/duma"
 endif
-	- mkdir -p \
-		"$(DESTDIR)$(libdir)"
+	- $(MKDIR) "$(DESTDIR)$(libdir)"
 	$(INSTALL) -m 644 \
 		"$(CURDIR)/libduma.a" \
 		"$(DESTDIR)$(libdir)"
 ifdef DUMASO
-	$(INSTALL) -m 755 \
-		"$(CURDIR)/$(DUMASO)" \
-		"$(DESTDIR)$(libdir)"
+	 $(INSTALL) -m 755 \
+		 "$(CURDIR)/$(DUMASO)" \
+		 "$(DESTDIR)$(libdir)"
 endif
 ifdef DUMASO_LINK1
-	- $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK1)"
-	ln -s \
-		"$(CURDIR)/$(DUMASO)" \
-		"$(DESTDIR)$(libdir)/$(DUMASO_LINK1)"
+	 - $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK1)"
+	 $(LN) \
+		 "$(CURDIR)/$(DUMASO)" \
+		 "$(DESTDIR)$(libdir)/$(DUMASO_LINK1)"
 endif
 ifdef DUMASO_LINK2
-	- $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK2)"
-	ln -s \
-		"$(CURDIR)/$(DUMASO)" \
-		"$(DESTDIR)$(libdir)/$(DUMASO_LINK2)"
+	 - $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK2)"
+	 $(LN) \
+		 "$(CURDIR)/$(DUMASO)" \
+		 "$(DESTDIR)$(libdir)/$(DUMASO_LINK2)"
 endif
-	- mkdir -p \
-		"$(DESTDIR)$(MAN_INSTALL_DIR)"
-	$(INSTALL) -m 644 \
-		"$(srcdir)duma.3" \
-		"$(DESTDIR)/$(MAN_INSTALL_DIR)/duma.3"
+	 - $(MKDIR) "$(DESTDIR)$(MAN_INSTALL_DIR)"
+	 $(INSTALL) -m 644 \
+		 "$(srcdir)duma.3" \
+		 "$(DESTDIR)/$(MAN_INSTALL_DIR)/duma.3"
 
 ############################################################################
 # Target: "uninstall" (uninstalls DUMA, respects DESTDIR variable)
@@ -734,13 +784,13 @@ uninstall:
 	- $(RMFORCE) "$(DESTDIR)$(bindir)/duma"
 	- $(RMFORCE) "$(DESTDIR)$(libdir)/libduma.a"
 ifdef DUMASO
-	- $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO)"
+	 - $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO)"
 endif
 ifdef DUMASO_LINK1
-	- $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK1)"
+	 - $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK1)"
 endif
 ifdef DUMASO_LINK2
-	- $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK2)"
+	 - $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK2)"
 endif
 	- $(RMFORCE) "$(DESTDIR)$(MAN_INSTALL_DIR)/duma.3"
 
@@ -749,15 +799,16 @@ endif
 
 .PHONY: clean
 clean:
-	- $(RMFORCE) a.out $(OBJECTS) \
-		$(SO_OBJECTS) \
-		tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o \
-		tstheap_so.o dumatestpp_so.o testoperators.o libduma.cat \
-		tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) \
-		dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) \
-		dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
-		thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) \
-		libduma.a $(DUMASO)
+	- $(RMFORCE) core a.out $(OBJECTS) \
+	   $(SO_OBJECTS) \
+	   tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o \
+	   tstheap_so.o dumatestpp_so.o testoperators.o testmemlimit.o \
+	   testmemlimit$(EXEPOSTFIX) thread-test_so$(EXEPOSTFIX) \
+	   tstheap$(EXEPOSTFIX) tstheap_so$(EXEPOSTFIX) \
+	   dumatest$(EXEPOSTFIX) dumatestpp$(EXEPOSTFIX) \
+	   dumatestpp_so$(EXEPOSTFIX) testoperators$(EXEPOSTFIX) \
+	   thread-test$(EXEPOSTFIX) testmt$(EXEPOSTFIX) \
+	   libduma.a $(DUMASO) libduma.cat
 
 ############################################################################
 # Target: "distclean" / "realclean" / "clobber" (deletes all make output)
@@ -765,10 +816,10 @@ clean:
 .PHONY: distclean realclean clobber clean
 distclean realclean clobber: clean
 	- $(RMFORCE) duma_config.h verinfo.h createconf.o \
-		createconf$(EXEPOSTFIX) CMakeCache.txt CMakeFiles/cmake.*cache \
-		"$(srcdir)CMakeFiles/"cmake.*cache
-	@ $(RMDIR) "$(srcdir)CMakeFiles" > /dev/null 2>&1 || true
-	@ $(RMDIR) "$(CURDIR)/CMakeFiles" > /dev/null 2>&1 || true
+	   createconf$(EXEPOSTFIX) CMakeCache.txt CMakeFiles/cmake.*cache \
+	   "$(srcdir)CMakeFiles/"cmake.*cache
+	@ $(RMDIR) "$(srcdir)CMakeFiles" > $(DEVNULL) 2>&1 || true
+	@ $(RMDIR) "$(CURDIR)/CMakeFiles" > $(DEVNULL) 2>&1 || true
 
 ############################################################################
 # Target: "libduma.cat"
@@ -779,7 +830,7 @@ libduma.cat: roff
 # Target: "roff" (renders catman documentation from roff source)
 
 .PHONY: roff
-roff:
+roff: duma.3
 	nroff -man < "$(srcdir)duma.3" > "$(CURDIR)/libduma.cat"
 
 ############################################################################
@@ -787,11 +838,11 @@ roff:
 
 libduma.a: duma_config.h \
 	       verinfo.h \
-		   $(OBJECTS)
+	       $(OBJECTS)
 	- $(RMFORCE) libduma.a
 	$(AR) crv \
-		libduma.a \
-		$(OBJECTS)
+	 libduma.a \
+	 $(OBJECTS)
 	$(RANLIB) libduma.a
 
 ############################################################################
@@ -802,10 +853,10 @@ libduma.a: duma_config.h \
 ############################################################################
 # Target: "verinfo.h"
 
-verinfo.h: FORCE
+verinfo.h:
 	- "$(srcdir)make_git_source_version.sh" || \
-		env sh "$(srcdir)make_git_source_version.sh" || \
-		$(SHELL) "$(srcdir)make_git_source_version.sh"
+	    $(ENV) sh "$(srcdir)make_git_source_version.sh" || \
+	     $(SHELL) "$(srcdir)make_git_source_version.sh"
 
 ############################################################################
 # Target: "duma_config.h"
@@ -819,7 +870,7 @@ duma_config.h:
 .PHONY: reconfig
 reconfig: createconf$(EXEPOSTFIX) \
 	      createconf.o \
-		  createconf.c
+	      createconf.c
 	- "$(CURPATH)createconf$(EXEPOSTFIX)"
 
 ############################################################################
@@ -827,7 +878,7 @@ reconfig: createconf$(EXEPOSTFIX) \
 
 .PHONY: dos2unix
 dos2unix:
-	dos2unix $(PACKAGE_SOURCE)
+	$(DOS2UNIX) $(PACKAGE_SOURCE)
 
 ############################################################################
 # Target: "createconf"
@@ -835,8 +886,8 @@ dos2unix:
 createconf$(EXEPOSTFIX): createconf.o
 	- $(RMFORCE) createconf$(EXEPOSTFIX)
 	$(CC_FOR_BUILD) $(HOST_CFLAGS) $(DUMA_OPTIONS) \
-		createconf.o \
-		-o createconf$(EXEPOSTFIX)
+	  createconf.o \
+	  -o createconf$(EXEPOSTFIX)
 
 ############################################################################
 # Target: "tstheap"
@@ -845,8 +896,8 @@ tstheap$(EXEPOSTFIX): libduma.a \
 	                  tstheap.o
 	- $(RMFORCE) tstheap$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) \
-		tstheap.o libduma.a \
-		-o tstheap$(EXEPOSTFIX) $(LIBS)
+	  tstheap.o libduma.a \
+	  -o tstheap$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "dumatest"
@@ -855,19 +906,20 @@ dumatest$(EXEPOSTFIX): libduma.a \
 	                   dumatest.o
 	- $(RMFORCE) dumatest$(EXEPOSTFIX)
 	$(CC) $(CFLAGS) \
-		dumatest.o libduma.a \
-		-o dumatest$(EXEPOSTFIX) $(LIBS)
+	  dumatest.o libduma.a \
+	  -o dumatest$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "dumatestpp"
 
 dumatestpp$(EXEPOSTFIX): libduma.a \
 	                     dumatestpp.o \
-						 duma_sem.h \
-						 dumapp.h
+                         duma_sem.h \
+                         dumapp.h
 	- $(RMFORCE) dumatestpp$(EXEPOSTFIX)
-	$(CXX) $(CPPFLAGS) dumatestpp.o libduma.a \
-		-o dumatestpp$(EXEPOSTFIX) $(LIBS)
+	$(CXX) $(CPPFLAGS) \
+	  dumatestpp.o libduma.a \
+	  -o dumatestpp$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "thread-test"
@@ -875,8 +927,18 @@ dumatestpp$(EXEPOSTFIX): libduma.a \
 thread-test$(EXEPOSTFIX): libduma.a \
 	                      thread-test.o
 	- $(RMFORCE) thread-test$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) thread-test.o libduma.a \
-		-o thread-test$(EXEPOSTFIX) $(LIBS)
+	$(CC) $(CFLAGS) \
+	  thread-test.o libduma.a \
+	  -o thread-test$(EXEPOSTFIX) $(LIBS)
+
+############################################################################
+# Target: "thread-test_so"
+
+thread-test_so$(EXEPOSTFIX): thread-test_so.o
+	- $(RMFORCE) thread-test_so$(EXEPOSTFIX)
+	$(CC) $(CFLAGS) \
+	  thread-test_so.o \
+	  -o thread-test_so$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "testmt"
@@ -884,19 +946,21 @@ thread-test$(EXEPOSTFIX): libduma.a \
 testmt$(EXEPOSTFIX): libduma.a \
 	                 testmt.o
 	- $(RMFORCE) testmt$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) testmt.o libduma.a \
-		-o testmt$(EXEPOSTFIX) $(LIBS)
+	$(CC) $(CFLAGS) \
+      testmt.o libduma.a \
+	  -o testmt$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "testoperators"
 
 testoperators$(EXEPOSTFIX): libduma.a \
 	                        testoperators.o \
-							duma_sem.h \
-							dumapp.h
+	                        duma_sem.h \
+	                        dumapp.h
 	- $(RMFORCE) testoperators$(EXEPOSTFIX)
-	$(CXX) $(CPPFLAGS) testoperators.o libduma.a \
-		-o testoperators$(EXEPOSTFIX) $(LIBS)
+	$(CXX) $(CPPFLAGS) \
+	  testoperators.o libduma.a \
+	  -o testoperators$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "testmemlimit"
@@ -904,32 +968,36 @@ testoperators$(EXEPOSTFIX): libduma.a \
 testmemlimit$(EXEPOSTFIX): libduma.a \
 	                       testmemlimit.o
 	- $(RMFORCE) testmemlimit$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) testmemlimit.o libduma.a \
-		-o testmemlimit$(EXEPOSTFIX) $(LIBS)
+	$(CC) $(CFLAGS) \
+	  testmemlimit.o libduma.a \
+	  -o testmemlimit$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "tstheap_so"
 
 tstheap_so$(EXEPOSTFIX): tstheap_so.o
 	- $(RMFORCE) tstheap_so$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) tstheap_so.o \
-		-o tstheap_so$(EXEPOSTFIX) $(LIBS)
+	$(CC) $(CFLAGS) \
+	  tstheap_so.o \
+	  -o tstheap_so$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "dumatestpp_so"
 
 dumatestpp_so$(EXEPOSTFIX): dumatestpp_so.o
 	- $(RMFORCE) dumatestpp_so$(EXEPOSTFIX)
-	$(CXX) $(CPPFLAGS) dumatestpp_so.o \
-		-o dumatestpp_so$(EXEPOSTFIX) $(LIBS)
+	$(CXX) $(CPPFLAGS) \
+	  dumatestpp_so.o \
+	  -o dumatestpp_so$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "testmemlimit_so"
 
 testmemlimit_so$(EXEPOSTFIX): testmemlimit_so.o
 	- $(RMFORCE) testmemlimit_so$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) testmemlimit_so.o \
-		-o testmemlimit_so$(EXEPOSTFIX) $(LIBS)
+	$(CC) $(CFLAGS) \
+	  testmemlimit_so.o \
+	  -o testmemlimit_so$(EXEPOSTFIX) $(LIBS)
 
 ############################################################################
 # Target: "$(OBJECTS)"
@@ -940,35 +1008,33 @@ $(OBJECTS) tstheap.o dumatest.o thread-test.o testmt.o dumatestpp.o: duma.h
 # Target: "$(DUMASO)" (Windows NT)
 
 ifeq ($(OS), windows_nt)
-  # do nothing
+ # do nothing
 else
-  ifeq ($(OS), darwin)
+ ifeq ($(OS), darwin)
 
 ############################################################################
 # Target: "$(DUMASO)" (Darwin / macOS / OS X)
 
-$(DUMASO): duma_config.h \
-	       verinfo.h \
-		   $(SO_OBJECTS)
-	$(CXX) -g -dynamiclib -Wl \
-		-o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
-	$(CXX) -g -dynamiclib \
-		-o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
-
-  else
+  $(DUMASO): duma_config.h \
+	         verinfo.h \
+	         $(SO_OBJECTS)
+	  $(CXX) -g -dynamiclib -Wl \
+	    -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+	  $(CXX) -g -dynamiclib \
+	    -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+ else
 
 ############################################################################
 # Target: "$(DUMASO)" (UNIX default)
 
-$(DUMASO): duma_config.h \
-	       verinfo.h \
-		   $(SO_OBJECTS)
-	$(CXX) -g -shared -Wl,-soname,$(DUMASO) \
-		-o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
-#	$(CXX) -g -shared \
-#		-o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
-
-  endif
+  $(DUMASO): duma_config.h \
+	         verinfo.h \
+		     $(SO_OBJECTS)
+	  $(CXX) -g -shared -Wl,-soname,$(DUMASO) \
+	    -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+#	  $(CXX) -g -shared \
+#	    -o $(DUMASO) $(SO_OBJECTS) -lpthread -lc
+ endif
 endif
 
 ############################################################################
@@ -976,30 +1042,30 @@ endif
 
 createconf.o:
 	$(CC_FOR_BUILD) $(HOST_CFLAGS) $(DUMA_OPTIONS) \
-		-c "$(srcdir)createconf.c" \
-		-o $@
+	  -c "$(srcdir)createconf.c" \
+	  -o $@
 
 ############################################################################
 # Target: "dumapp_so.o"
 
 dumapp_so.o: src/dumapp.cpp \
 	         duma.h \
-			 duma_sem.h \
-			 dumapp.h
+	         duma_sem.h \
+	         dumapp.h
 	$(CXX) -I"$(srcdir)" -I"./" $(CPPFLAGS) $(DUMA_SO_OPTIONS) \
-		-c "$(srcdir)src/dumapp.cpp" \
-		-o $@
+	  -c "$(srcdir)src/dumapp.cpp" \
+	  -o $@
 
 ############################################################################
 # Target: "duma_so.o"
 
 duma_so.o: src/duma.c \
 	       duma.h \
-		   duma_config.h \
-		   verinfo.h
+	       duma_config.h \
+	       verinfo.h
 	$(CC) -I"$(srcdir)" -I"./" $(CFLAGS) $(DUMA_SO_OPTIONS) \
-		-c "$(srcdir)src/duma.c" \
-		-o $@
+	  -c "$(srcdir)src/duma.c" \
+	  -o $@
 
 ############################################################################
 # Target: "sem_inc_so.o"
@@ -1007,8 +1073,8 @@ duma_so.o: src/duma.c \
 sem_inc_so.o: src/sem_inc.c \
 	          duma_sem.h
 	$(CC) -I"$(srcdir)" -I"./" $(CFLAGS) $(DUMA_SO_OPTIONS) \
-		-c "$(srcdir)src/sem_inc.c" \
-		-o $@
+	  -c "$(srcdir)src/sem_inc.c" \
+	  -o $@
 
 ############################################################################
 # Target: "print_so.o"
@@ -1016,54 +1082,62 @@ sem_inc_so.o: src/sem_inc.c \
 print_so.o:	src/print.c \
 	        print.h
 	$(CC) -I"$(srcdir)" -I"./" $(CFLAGS) $(DUMA_SO_OPTIONS) \
-		-c "$(srcdir)src/print.c" \
-		-o $@
+	  -c "$(srcdir)src/print.c" \
+	  -o $@
 
 ############################################################################
 # Target: "tstheap_so.o"
 
 tstheap_so.o:
 	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) \
-		-c "$(srcdir)tests/tstheap.c" \
-		-o $@
+	  -c "$(srcdir)tests/tstheap.c" \
+	  -o $@
 
 ############################################################################
 # Target: "dumatestpp_so.o"
 
 dumatestpp_so.o:
 	$(CXX) $(CPPFLAGS) $(DUMA_SO_OPTIONS) \
-		-c "$(srcdir)tests/dumatestpp.cpp" \
-		-o $@
+	  -c "$(srcdir)tests/dumatestpp.cpp" \
+	  -o $@
 
 ############################################################################
 # Target: "testmemlimit_so.o"
 
 testmemlimit_so.o:
 	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) \
-		-c "$(srcdir)tests/testmemlimit.c" \
-		-o $@
+	  -c "$(srcdir)tests/testmemlimit.c" \
+	  -o $@
+
+############################################################################
+# Target: "testmemlimit.o"
+
+testmemlimit.o:
+	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) \
+	  -c "$(srcdir)tests/experimental/testmemlimit.c" \
+	  -o $@
 
 ############################################################################
 # Target: "dumapp.o"
 
 dumapp.o: src/dumapp.cpp \
 	      duma.h \
-		  duma_sem.h \
-		  dumapp.h
+	      duma_sem.h \
+	      dumapp.h
 	$(CXX) -I"$(srcdir)" -I"./" $(CPPFLAGS) \
-		-c "$(srcdir)src/dumapp.cpp" \
-		-o $@
+	  -c "$(srcdir)src/dumapp.cpp" \
+	  -o $@
 
 ############################################################################
 # Target: "duma.o"
 
 duma.o:	src/duma.c \
 	    duma.h \
-		duma_config.h \
-		verinfo.h
+	    duma_config.h \
+	    verinfo.h
 	$(CC) -I"$(srcdir)" -I"./" $(CFLAGS) \
-		-c "$(srcdir)src/duma.c" \
-		-o $@
+	  -c "$(srcdir)src/duma.c" \
+	  -o $@
 
 ############################################################################
 # Target: "sem_inc.o"
@@ -1071,8 +1145,8 @@ duma.o:	src/duma.c \
 sem_inc.o: src/sem_inc.c \
 	       duma_sem.h
 	$(CC) -I"$(srcdir)" -I"./" $(CFLAGS) \
-		-c "$(srcdir)src/sem_inc.c" \
-		-o $@
+	  -c "$(srcdir)src/sem_inc.c" \
+	  -o $@
 
 ############################################################################
 # Target: "print.o"
@@ -1080,78 +1154,89 @@ sem_inc.o: src/sem_inc.c \
 print.o: src/print.c \
 	     print.h
 	$(CC) -I"$(srcdir)" -I"./" $(CFLAGS) \
-		-c "$(srcdir)src/print.c" \
-		-o $@
+	  -c "$(srcdir)src/print.c" \
+	  -o $@
 
 ############################################################################
 # Target: "dumatest.o"
 
 dumatest.o: tests/dumatest.c \
 	        duma.h \
-			duma_config.h \
-			verinfo.h
+	        duma_config.h \
+	        verinfo.h
 	$(CC) $(CFLAGS) \
-		-c "$(srcdir)tests/dumatest.c" \
-		-o $@
+	  -c "$(srcdir)tests/dumatest.c" \
+	  -o $@
 
 ############################################################################
 # Target: "dumatestpp.o"
 
 dumatestpp.o: tests/dumatestpp.cpp \
 	          duma.h \
-			  duma_sem.h \
-			  dumapp.h \
-			  duma_config.h \
-			  verinfo.h
+	          duma_sem.h \
+	          dumapp.h \
+	          duma_config.h \
+	          verinfo.h
 	$(CXX) $(CPPFLAGS) \
-		-c "$(srcdir)tests/dumatestpp.cpp" \
-		-o $@
+	  -c "$(srcdir)tests/dumatestpp.cpp" \
+	  -o $@
 
 ############################################################################
 # Target: "tstheap.o"
 
 tstheap.o: tests/tstheap.c \
 	       duma.h \
-		   duma_config.h \
-		   verinfo.h
+	       duma_config.h \
+	       verinfo.h
 	$(CC) $(CFLAGS) \
-		-c "$(srcdir)tests/tstheap.c" \
-		-o $@
+	  -c "$(srcdir)tests/tstheap.c" \
+	  -o $@
 
 ############################################################################
 # Target: "testoperators.o"
 
 testoperators.o: tests/testoperators.cpp \
 	             duma.h \
-				 duma_sem.h \
-				 dumapp.h \
-				 duma_config.h \
-				 verinfo.h
+	             duma_sem.h \
+	             dumapp.h \
+	             duma_config.h \
+	             verinfo.h
 	$(CXX) $(CPPFLAGS) \
-		-c "$(srcdir)tests/testoperators.cpp" \
-		-o $@
+	  -c "$(srcdir)tests/testoperators.cpp" \
+	  -o $@
 
 ############################################################################
 # Target: "thread-test.o"
 
 thread-test.o: tests/thread-test.c \
 	           duma.h \
-			   duma_config.h \
-			   verinfo.h
+	           duma_config.h \
+	           verinfo.h
 	$(CC) $(CFLAGS) \
-		-c "$(srcdir)tests/thread-test.c" \
-		-o $@
+	  -c "$(srcdir)tests/thread-test.c" \
+	  -o $@
+
+############################################################################
+# Target: "thread-test.o"
+
+thread-test_so.o: tests/thread-test.c \
+	              duma.h \
+	              duma_config.h \
+	              verinfo.h
+	$(CC) $(CFLAGS) \
+	  -c "$(srcdir)tests/thread-test.c" \
+	  -o $@
 
 ############################################################################
 # Target: "testmt.o"
 
 testmt.o: tests/testmt.c \
 	      duma.h \
-		  duma_config.h \
-		  verinfo.h
+	      duma_config.h \
+	      verinfo.h
 	$(CC) $(CFLAGS) \
-		-c "$(srcdir)tests/testmt.c" \
-		-o $@
+	  -c "$(srcdir)tests/testmt.c" \
+	  -o $@
 
 ############################################################################
 # Target: FORCE
@@ -1160,3 +1245,8 @@ testmt.o: tests/testmt.c \
 FORCE:
 
 ############################################################################
+
+# Local Variables:
+# mode: makefile
+# tab-width: 4
+# End:

@@ -87,7 +87,7 @@ writes, and it will pinpoint the exact instruction that causes an error.
 since 1987, and at many other sites for years.
 
 **DUMA** uses the virtual memory hardware of your computer to place an
-inaccessible memory page immediately after (or before, at the user's option)
+inaccessible memory page immediately after (*or before, at the user's option*)
 each memory allocation. When software reads or writes this inaccessible page,
 the hardware issues a segmentation fault, stopping the program at the offending
 instruction. It is then trivial to find the erroneous statement using your
@@ -96,7 +96,7 @@ favorite debugger. In a similar manner, memory that has been released by
 segmentation fault.
 
 Simply linking your application with `libduma.a` will allow you to detect most,
-but not all, `malloc` buffer overruns and accesses of free memory. If you want
+but not all, `malloc()` buffer overruns and accesses of free memory. If you want
 to be reasonably sure that you've found all catch-able bugs of this type, you'll
 have to read and understand the rest of the documentation.
 
@@ -122,6 +122,8 @@ from source code.
 ---
 
 #### Building from source
+
+- The latest release is available to download in compressed tar format from [GitHub](https://github.com/johnsonjh/duma/releases/latest), [GitLab](https://gitlab.com/johnsonjh/duma/-/releases), and [other mirrors](https://github.com/johnsonjh/duma#releases).
 
 - [***TODO: explain downloading and verifying a release archive***]
 - [***TODO: explain using git to checkout a release tag (and HEAD)***]
@@ -669,7 +671,7 @@ To get the line in you sources where an error occurs:
 
 - **Don't** leave `libduma.a` enabled and linked in production software. Use it
   only for debugging. See the section '_Compilation Notes for
-  Release/Production_' below.
+  Release / Production_' below.
 
 ---
 
@@ -692,8 +694,8 @@ To get the line in you sources where an error occurs:
 
 - Macros for "`new`" and "`delete`" are defined in `dumapp.h`. These macros give
   file-name and line number of the calling functions to **DUMA**, thus allowing
-  the same leak detection reports as for malloc and free. `dumapp.h` needs to be
-  included l from your source file(s).
+  the same leak detection reports as for `malloc()` and `free()`. `dumapp.h` needs to be
+  included from your source file(s).
 
   - To disable the C++ `new`, `delete`, `new[]`, and `delete[]` operators, add
     the preprocessor definition `DUMA_NO_CPP_SUPPORT` to `DUMA_OPTIONS` in
