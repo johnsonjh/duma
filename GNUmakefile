@@ -723,6 +723,7 @@ printmod:
 .PHONY: install
 install: libduma.a \
 	     duma.3 \
+	     duma_config.h \
 	     $(DUMASO)
 	- $(MKDIR) "$(DESTDIR)$(DOC_INSTALL_DIR)"
 	$(INSTALL) -m 644 \
@@ -766,7 +767,7 @@ endif
 	 - $(MKDIR) "$(DESTDIR)$(MAN_INSTALL_DIR)"
 	 $(INSTALL) -m 644 \
 		 "$(srcdir)duma.3" \
-		 "$(DESTDIR)/$(MAN_INSTALL_DIR)/duma.3"
+		 "$(DESTDIR)$(MAN_INSTALL_DIR)/duma.3"
 
 ############################################################################
 # Target: "uninstall" (uninstalls DUMA, respects DESTDIR variable)

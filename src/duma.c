@@ -963,6 +963,8 @@ static void duma_getenvvars(DUMA_TLSVARS_T *duma_tls) {
     DUMA_Print(duma_version);
 #ifdef DUMA_HAS_VEROPTS
 	DUMA_Print(duma_veropts);
+#else
+	(void)duma_veropts;
 #endif
 	DUMA_Print(duma_copyright);
   }
