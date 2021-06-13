@@ -80,6 +80,7 @@
 
 ## 2.6xx
 
+- Reformat banner and messages
 - Update `SECURITY.md`
   - Clarify purpose of document, update, reformat, add _PGP_ details
 - Reorganization of files in source tree
@@ -91,8 +92,8 @@
   - Fix `dos2unix` target
   - Use C++98 compilation mode w/G++
   - Fix macOS X default installation prefix
-    - also, allow user to override default prefix
-  - Remove `a.out` during `gmake clean`
+    - Allow user to override default prefix
+  - Remove `core` and a.out` during `gmake clean`
 - Update `duma.c`: Adjust ordering of included headers
 - New CMake build support
   - Generate `duma.sh` to use absolute path to installed shared library
