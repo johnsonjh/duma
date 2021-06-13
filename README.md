@@ -123,10 +123,14 @@ from source code.
 
 #### Building from source
 
-- The latest release is available to download in compressed tar format from [GitHub](https://github.com/johnsonjh/duma/releases/latest), [GitLab](https://gitlab.com/johnsonjh/duma/-/releases), and [other mirrors](https://github.com/johnsonjh/duma#releases).
+- The latest release version of ***DUMA*** is available to download from
+  [GitHub](https://github.com/johnsonjh/duma/releases/latest)
+  and [other mirrors](https://github.com/johnsonjh/duma#releases).
 
-- [***TODO: explain downloading and verifying a release archive***]
-- [***TODO: explain using git to checkout a release tag (and HEAD)***]
+- You can use the ***Git*** distributed version control tool to
+  download the latest release version, the current development version,
+  or the entire history from any of several
+  [source code repositories](https://github.com/johnsonjh/duma#git-repositories).
 
 ---
 
