@@ -1,89 +1,98 @@
 ############################################################################
 # vim: filetype=sh:tabstop=4:tw=76
 #
-# DUMA Configuration:
+# ************  Make Variables  ************
 #
-# Add "-DDUMA_NO_GLOBAL_MALLOC_FREE"  (no quotes)
-#   For not defining malloc/free in global namespace
+# - "VERBOSE" -or- "V"  (example: 'gmake test VERBOSE=1')
+#   Set to '1' to enable verbose build output
 #
-# Add "-DDUMA_EXPLICIT_INIT"  (no quotes)
-#    To do all the "risky" stuff: getenv(), sem_init(), write() ...
-#      explicitly from main(). You must call duma_init() explicitly
-#      from main() as well. This option avoids leak error messages for
-#      allocations before duma_init() got called. This helps avoid
-#      "spurious" warnings caused by leaky standard environments.
+# **********  DUMA Configuration  **********
 #
-# Add "-DDUMA_NO_THREAD_SAFETY"  (no quotes)
-#    For not supporting multi-threading
+# - Add "-DDUMA_NO_GLOBAL_MALLOC_FREE"  (no quotes)
+#     For not defining malloc / free in global namespace
 #
-# Add "-DDUMA_SO_NO_CPP_SUPPORT"  -or-
-#  "-DDUMA_LIB_NO_CPP_SUPPORT"  (no quotes)
-#    For not directing new/delete to malloc/free
+# - Add "-DDUMA_EXPLICIT_INIT"  (no quotes)
+#     To do all the "risky" stuff: getenv(), sem_init(), write() ...
+#       explicitly from main(). You must call duma_init() explicitly
+#       from main() as well. This option avoids leak report messages
+#       from allocations made before calling duma_init(). This helps
+#       avoid leak warnings caused by the standard system environment.
 #
-# Add "-DDUMA_SO_NO_LEAKDETECTION"  -or-
-#  "-DDUMA_LIB_NO_LEAKDETECTION"  (no quotes)
-#    If you don't want support for leak detection
+# - Add "-DDUMA_NO_THREAD_SAFETY"  (no quotes)
+#     For not supporting multi-threading
 #
-# Add "-DDUMA_SO_PREFER_ATEXIT"  -or-
-#  "-DDUMA_LIB_PREFER_ATEXIT"  (no quotes)
-#    If you prefer atexit() over GNU compiler's function attribute
-#      "destructor"
+# - Add "-DDUMA_SO_NO_CPP_SUPPORT"  -or-
+#     "-DDUMA_LIB_NO_CPP_SUPPORT"  (no quotes)
+#       For not directing new / delete to malloc / free
 #
-# Add "-DDUMA_SO_PREFER_GETENV"  -or-
-#  "-DDUMA_LIB_PREFER_GETENV"  (no quotes)
-#    If you prefer standard C library getenv() over global char **environ
+# - Add "-DDUMA_SO_NO_LEAKDETECTION"  -or-
+#     "-DDUMA_LIB_NO_LEAKDETECTION"  (no quotes)
+#       If you want to disable support for leak detection
+#         (set by default when building the shared library)
 #
-# Add "-DDUMA_OLD_NEW_MACRO"  (no quotes)
-#    If you want to use DUMA's old style NEW_ELEM() / NEW_ARRAY() macros.
-#    When not defining this option, a standards conforming new syntax can
-#      be used. Unfortunately you have to use DEL_ELEM / DEL_ARRAY further
-#      to utilize filename and line number of deallocation calls
+# - Add "-DDUMA_SO_PREFER_ATEXIT"  -or-
+#     "-DDUMA_LIB_PREFER_ATEXIT"  (no quotes)
+#       If you prefer atexit() over the GNU compiler's function
+#         attribute "destructor"
 #
-# Add "-DDUMA_SO_NO_HANG_MSG"  -or-
-#  "-DDUMA_LIB_NO_HANG_MSG"  (no quotes)
-#    Set this if you want to suppress the extra messages around atexit().
+# - Add "-DDUMA_SO_PREFER_GETENV"  -or-
+#     "-DDUMA_LIB_PREFER_GETENV"  (no quotes)
+#       If you prefer standard C library getenv() over the global
+#         'char **environ'
 #
-# Add "-DDUMA_NO_STRERROR"  (no quotes)
-#    Set this if you want to suppress calling strerror() to avoid recursion
-#    on specific platforms.
+# - Add "-DDUMA_OLD_NEW_MACRO"  (no quotes)
+#     If you want to use DUMA's old-style NEW_ELEM and NEW_ARRAY macros
+#     When not defining this option, a standards conforming "new" syntax
+#       can be used. Unfortunately, you have to use DEL_ELEM / DEL_ARRAY
+#       further to utilize filename and line number of deallocation calls
 #
-#  Preprocessor flags for building the shared library (DUMA_SO_LIBRARY):
-#    - DUMA_SO_NO_CPP_SUPPORT
-#    - DUMA_SO_NO_LEAKDETECTION
-#    - DUMA_SO_PREFER_ATEXIT
-#    - DUMA_SO_PREFER_GETENV
-#    - DUMA_SO_NO_HANG_MSG
+# - Add "-DDUMA_SO_NO_HANG_MSG"  -or-
+#     "-DDUMA_LIB_NO_HANG_MSG"  (no quotes)
+#       Set this if you want to suppress the output from around atexit()
 #
-#  Preprocessor flags for building the static library:
-#    - DUMA_LIB_NO_CPP_SUPPORT
-#    - DUMA_LIB_NO_LEAKDETECTION
-#    - DUMA_LIB_PREFER_ATEXIT
-#    - DUMA_LIB_PREFER_GETENV
-#    - DUMA_LIB_NO_HANG_MSG
-#    - DUMA_NO_GLOBAL_MALLOC_FREE
-#    - DUMA_EXPLICIT_INIT
-#    - DUMA_NO_THREAD_SAFETY
-#    - DUMA_OLD_NEW_MACRO
-#    - DUMA_OLD_DEL_MACRO
-#    - DUMA_NO_STRERROR
+# - Add "-DDUMA_NO_STRERROR"  (no quotes)
+#     Set this if you want to suppress calling strerror(), which avoids
+#       recursion on specific platforms
 #
-# OS Examples:
-#  FreeBSD 5.4:
-#   DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
+#  - Preprocessor flags for building the shared library (DUMA_SO_LIBRARY):
+#     * DUMA_SO_NO_CPP_SUPPORT
+#     * DUMA_SO_NO_LEAKDETECTION
+#     * DUMA_SO_PREFER_ATEXIT
+#     * DUMA_SO_PREFER_GETENV
+#     * DUMA_SO_NO_HANG_MSG
 #
-#  FreeBSD 5.4 (with DUMA_EXPLICIT_INIT unset):
-#   DUMA_OPTIONS += -DDUMA_NO_LEAKDETECTION
+#  - Preprocessor flags for building the static library:
+#     * DUMA_LIB_NO_CPP_SUPPORT
+#     * DUMA_LIB_NO_LEAKDETECTION
+#     * DUMA_LIB_PREFER_ATEXIT
+#     * DUMA_LIB_PREFER_GETENV
+#     * DUMA_LIB_NO_HANG_MSG
+#     * DUMA_NO_GLOBAL_MALLOC_FREE
+#     * DUMA_EXPLICIT_INIT
+#     * DUMA_NO_THREAD_SAFETY
+#     * DUMA_OLD_NEW_MACRO
+#     * DUMA_OLD_DEL_MACRO
+#     * DUMA_NO_STRERROR
 #
-#  Cygwin (also define 'WIN32'):
-#   DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
-#    also define 'WIN32'
+#  **********  Additional DUMA Configuration  **********
 #
-# Option Examples:
-# DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
-# DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
-# DUMA_OPTIONS += -DDUMA_NO_CPP_SUPPORT
+#   - FreeBSD 5.4:
+#       DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
 #
-# See the README.md for more information.
+#   - FreeBSD 5.4 (with DUMA_EXPLICIT_INIT unset):
+#       DUMA_OPTIONS += -DDUMA_NO_LEAKDETECTION
+#
+#   - Cygwin (also define 'WIN32'):
+#       DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
+#         also define 'WIN32'
+#
+#  **********  Option Examples  **********
+#
+#     *  DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
+#     *  DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
+#     *  DUMA_OPTIONS += -DDUMA_NO_CPP_SUPPORT
+#
+#  **************  See the README.md for more information  **************
 
 DUMA_OPTIONS=
 DUMA_OPTIONS += -DDUMA_SO_NO_LEAKDETECTION
@@ -94,6 +103,7 @@ DUMA_OPTIONS += -DDUMA_SO_NO_LEAKDETECTION
 PIC=-fPIC -DPIC
 DUMA_SO_OPTIONS=$(PIC) -DDUMA_SO_LIBRARY
 DUMA_SO_VERSION=.0.0.0
+CURPATH=$(CURDIR)
 INSTALL=install
 MKDIR=mkdir -p
 RM=rm
@@ -205,7 +215,6 @@ ifeq ($(OS), windows_nt)
   DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
   CC=mingw32-gcc
   CXX=mingw32-g++ -std=c++98
-  CURPATH=./
   DUMA_DYN_DEPS=
   DUMASO=
   CFLAGS=-g -O0
@@ -221,7 +230,6 @@ ifeq ($(OS), windows_nt)
   $(info *** Using configuration: OS=windows_nt, OSTYPE=cygwin)
   BSWITCH=103
   DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
-  CURPATH=./
   DUMA_DYN_DEPS=
   DUMASO=
   CFLAGS=-g -O0 -DWIN32
@@ -237,7 +245,6 @@ ifeq ($(OS), windows_nt)
   $(info *** Using configuration: OS=windows_nt)
   BSWITCH=100
   DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
-  CURPATH=./
   DUMA_DYN_DEPS=
   DUMASO=
   CFLAGS=-g -O0 -DWIN32
@@ -256,7 +263,6 @@ ifeq ($(OS), darwin)
  DUMA_OPTIONS += -DPAGE_PROTECTION_VIOLATED_SIGNAL=SIGBUS
  DUMA_OPTIONS += -DDUMA_SO_PREFER_GETENV
  # DUMA_OPTIONS += -DDUMA_LIB_NO_LEAKDETECTION
- CURPATH=./
  # DUMA_DYN_DEPS=
  DUMASO=libduma.dylib
  DUMASO_LINK1=libduma.dylib
@@ -275,7 +281,6 @@ ifeq ($(OS), freebsd)
  BSWITCH=310
  DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
  DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
- CURPATH=./
  DUMA_DYN_DEPS=
  DUMASO=
  DUMASO_LINK1=
@@ -291,7 +296,6 @@ endif
 ifeq ($(OS), netbsd)
  $(info *** Using configuration: OS=netbsd)
  BSWITCH=320
- CURPATH=./
  DUMASO=libduma.so$(DUMA_SO_VERSION)
  DUMASO_LINK1=libduma.so.0
  DUMASO_LINK2=libduma.so
@@ -308,7 +312,6 @@ ifeq ($(OS), solaris)
  $(info *** Using configuration: OS=solaris)
  BSWITCH=410
  DUMA_OPTIONS += -DDUMA_NO_STRERROR
- CURPATH=./
  DUMA_DYN_DEPS=
  DUMASO=libduma.so$(DUMA_SO_VERSION)
  DUMASO_LINK1=libduma.so.0
@@ -361,7 +364,6 @@ ifeq ($(shell $(CXX) -v 2>&1 | $(GREP) -c "clang version" 2> $(DEVNULL)), 1)
   BSWITCH=610
  endif
  DUMA_OPTIONS += -DDUMA_NO_STRERROR
- CURPATH=./
  DUMASO=libduma.so$(DUMA_SO_VERSION)
  DUMASO_LINK1=libduma.so.0
  DUMASO_LINK2=libduma.so
@@ -384,7 +386,6 @@ ifndef BSWITCH
  else
   $(warning ****** Unknown OS ******)
  endif
- CURPATH=./
  DUMASO=libduma.so$(DUMA_SO_VERSION)
  DUMASO_LINK1=libduma.so.0
  DUMASO_LINK2=libduma.so
@@ -856,7 +857,8 @@ libduma.a: duma_config.h \
 verinfo.h: FORCE
 	- "$(srcdir)make_git_source_version.sh" || \
 	    $(ENV) sh "$(srcdir)make_git_source_version.sh" || \
-	     $(SHELL) "$(srcdir)make_git_source_version.sh"
+	     $(SHELL) "$(srcdir)make_git_source_version.sh" || \
+		  touch "$(CURPATH)/verinfo.h"
 
 ############################################################################
 # Target: "duma_config.h"
