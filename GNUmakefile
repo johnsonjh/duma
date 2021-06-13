@@ -103,7 +103,7 @@ DUMA_OPTIONS += -DDUMA_SO_NO_LEAKDETECTION
 PIC=-fPIC -DPIC
 DUMA_SO_OPTIONS=$(PIC) -DDUMA_SO_LIBRARY
 DUMA_SO_VERSION=.0.0.0
-CURPATH=$(CURDIR)
+CURPATH=$(CURDIR)/
 INSTALL=install
 MKDIR=mkdir -p
 RM=rm
@@ -578,7 +578,6 @@ check test: libduma.a \
 	@ $(VERBAN) "$(CURPATH)testoperators$(EXEPOSTFIX)"
 	@ $(VECHO) "	*** Test: testmemlimit"
 	@ $(VERBAN) "$(CURPATH)testmemlimit$(EXEPOSTFIX)"
-	@ $(ECHOLF)
 	@ $(ECHO) "*** DUMA static confidence test PASSED."
 ifdef DUMASO
 	 @ $(ECHOLF)
@@ -625,7 +624,6 @@ ifdef DUMASO
 		  $(VERBAN) exec "$(CURPATH)thread-test_so$(EXEPOSTFIX)") \
 		  > $(DEVNULL)
  endif
-	 @ $(ECHOLF)
 	 @ $(ECHO) "*** DUMA confidence test PASSED."
 	 @ $(ECHOLF)
 endif
@@ -641,7 +639,6 @@ ifdef DUMASO
 	 @ $(ECHOLF)
 	 @ $(VECHO) "	*** Test: tstheap_so $(TSTVAL)"
 	 @ $(VERBAN) "$(bindir)/duma" "$(CURPATH)tstheap_so" "$(TSTVAL)"
-	 @ $(ECHOLF)
 	 @ $(ECHO) "*** DUMA installcheck test PASSED."
 	 @ $(ECHOLF)
 endif
@@ -855,10 +852,10 @@ libduma.a: duma_config.h \
 # Target: "verinfo.h"
 
 verinfo.h: FORCE
-	- "$(srcdir)make_git_source_version.sh" || \
-	    $(ENV) sh "$(srcdir)make_git_source_version.sh" || \
-	     $(SHELL) "$(srcdir)make_git_source_version.sh" || \
-		  touch "$(CURPATH)/verinfo.h"
+	"$(srcdir)make_git_source_version.sh" || \
+	  $(ENV) sh "$(srcdir)make_git_source_version.sh" || \
+	   $(SHELL) "$(srcdir)make_git_source_version.sh" || \
+	    touch "$(CURPATH)verinfo.h"
 
 ############################################################################
 # Target: "duma_config.h"
@@ -870,7 +867,8 @@ duma_config.h:
 # Target: "reconfig"
 
 .PHONY: reconfig
-reconfig: createconf$(EXEPOSTFIX) \
+reconfig: verinfo.h \
+	      createconf$(EXEPOSTFIX) \
 	      createconf.o \
 	      createconf.c
 	- "$(CURPATH)createconf$(EXEPOSTFIX)"

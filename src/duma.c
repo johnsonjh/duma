@@ -168,6 +168,8 @@ static const char duma_veropts[] =
 static const char duma_version[] =
 #ifdef GIT_SOURCE_VERSION
     GIT_SOURCE_VERSION
+#else
+   "Detect Unintended Memory Access"
 #endif
     "";
 
