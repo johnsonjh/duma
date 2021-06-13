@@ -243,6 +243,7 @@ consideration.
   - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from
     the _Companion CD_ should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to
     the `PATH`.
+
   - Newer _Solaris_ systems, such as _Solaris 11.next_ or _OpenIndiana_,
     require similar configuration.
 
@@ -263,6 +264,7 @@ consideration.
 
   - On _NetBSD_ 3.1 (`HOSTTYPE=i386` / `OSTYPE=netbsdelf`), one (`1`)
     memory leak is always detected.
+
   - Installation on _NetBSD_ is untested.
 
 ---
@@ -463,7 +465,8 @@ important that you know how to use them.
   - `1` - return NULL pointer
   - `2` - return always the same pointer to some protected page
   - `3` - return mid address of a unique protected page (**_default_**)
-    - **_ATTENTION_**: Only `1` and `3` are _ANSI_ conforming. But value `1`
+
+      **_ATTENTION_**: Only `1` and `3` are _ANSI_ conforming. But value `1`
       will break most programs, and value `3` strategy most system libraries
       use/implement. All returned pointers can be passed to `free()`.
 
@@ -472,7 +475,8 @@ important that you know how to use them.
 
   - `2` - return always the same pointer to some protected page
   - `3` - return mid address of a unique protected page (**_default_**)
-    - **_ATTENTION_**: Only `3` is standard conforming. Value `2` may break
+
+      **_ATTENTION_**: Only `3` is standard conforming. Value `2` may break
       some, but will work for most programs. With value `2` you may reduce the
       memory consumption.
 
@@ -598,19 +602,20 @@ If word references are made to un-aligned buffers, you will see a bus error
 re-write the offending code to make byte references or not make odd-sized
 allocations, or to set `DUMA_ALIGNMENT` to the word size.
 
-Another example of software incompatible with `DUMA_ALIGNMENT` set less than the
-system _word-size_ is the `strcmp()` function and other string functions on
-_SunOS_ (and probably _Solaris_), which make _word-sized_ accesses to character
-strings, and may attempt to access up to three bytes **_beyond_** the end of a
-string. These result in a segmentation fault (`SIGSEGV`). The only way around
-this is to use versions of the string functions that perform _byte references_
-instead of _word references_.
+Another example of software incompatible with `DUMA_ALIGNMENT` set less than
+the system _word-size_ is the `strcmp()` function and other string functions
+on _SunOS_ 4, which make _word-sized_ accesses to character strings, and may
+attempt to access up to three bytes **_beyond_** the end of a string. These
+result in a segmentation fault (`SIGSEGV`). The only way around this is to use
+versions of the string functions that perform _byte references_ instead of
+_word references_.
 
 ---
 
 ### Catching the Erroneous Line
 
-To get the line in you sources where an error occurs:
+Using **DUMA** - and one of the following strategies - you can determine the
+offending line(s) of your source code responsible for causing an error.
 
 #### Live (debugger control)
 
@@ -618,7 +623,7 @@ To get the line in you sources where an error occurs:
    DUMA. On some systems, including some Linux distributions, the linking order
    is crucial - **DUMA** must be the last library passed to the linker.
 2. Start your program from debugger e.g. with `gdb <program>`
-3. Set program environment variables like
+3. Set program environment variables such as
    `'set environment DUMA_PROTECT_BELOW 1'`
 4. Set your program arguments with `'set args …'`
 5. Run and wait for the segmentation fault
@@ -749,14 +754,15 @@ operator delete[](ptr, file,line);  // vector delete
 
 - This software has **_NO WARRANTY_**.
 
-  - See the [license](#license) for full details.
+  - ***See the [license](#license) for complete details.***
 
-- Much effort has been expended to ensure the correctness and reliability
-  of **DUMA**, however, it is not theoretically possible to make software
-  of this nature **_bug-free_**.
+- Much effort has been expended to ensure the correctness of **DUMA**,
+  however, it is (in all likelyhood) not theoretically possible to make
+  software of this nature **_bug-free_**.
 
-- **DUMA** may _not_ detect some bugs that you could expect it to detect;
-  likewise, it may also indicate that some **non-bugs** _are_ bugs.
+  - **DUMA** ***may not*** report all bugs that exist in your code.
+
+  - It may also ***incorrectly*** report bugs that do not exist.
 
 ---
 
@@ -786,7 +792,7 @@ operator delete[](ptr, file,line);  // vector delete
 
 ### Comparison with other tools
 
-- **_[coming soon]_**
+- **_[pendinf]_**
 
 ---
 
