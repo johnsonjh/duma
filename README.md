@@ -727,13 +727,23 @@ offending line(s) of your source code responsible for causing an error.
 // const char * file  or  __FILE__ macro
 // int          line  or  __LINE__ macro
 
-ptr = new(file,line) type;          // scalar new throwing bad_alloc() on error
-ptr = new(std::nothrow,file,line) type;  // scalar new returning 0 on error
-operator delete(ptr,file,line);     // scalar delete
+// scalar new throwing bad_alloc() on error
+ptr = new(file,line) type;
 
-ptr = new(file,line) type[n];       // vector new throwing bad_alloc() on error
-ptr = new(std::nothrow,file,line) type[n];  // vector new returning 0 on error
-operator delete[](ptr, file,line);  // vector delete
+// scalar new returning 0 on error
+ptr = new(std::nothrow,file,line) type;
+
+// scalar delete
+operator delete(ptr,file,line);
+
+// vector new throwing bad_alloc() on error
+ptr = new(file,line) type[n];
+
+// vector new returning 0 on error
+ptr = new(std::nothrow,file,line) type[n];
+
+// vector delete
+operator delete[](ptr, file,line);
 ```
 
 ---
@@ -757,7 +767,7 @@ operator delete[](ptr, file,line);  // vector delete
   - **_See the [license](#license) for complete details._**
 
 - Much effort has been expended to ensure the correctness of **DUMA**,
-  however, it is (in all likelyhood) not theoretically possible to make
+  however, it is (in all likelihood) not theoretically possible to make
   software of this nature **_bug-free_**.
 
   - **DUMA** **_may not_** report all bugs that exist in your code.
@@ -792,7 +802,7 @@ operator delete[](ptr, file,line);  // vector delete
 
 ### Comparison with other tools
 
-- **_[pendinf]_**
+- **_[pending]_**
 
 ---
 
