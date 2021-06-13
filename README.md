@@ -127,7 +127,7 @@ from source code.
   [GitHub](https://github.com/johnsonjh/duma/releases/latest)
   and [other mirrors](https://github.com/johnsonjh/duma#releases).
 
-- You can use the *Git* distributed version control tool to download
+- You can use the _Git_ distributed version control tool to download
   the latest release version, the current development version, or the
   entire history, from any of several
   [source code repositories](https://github.com/johnsonjh/duma#git-repositories).
@@ -466,9 +466,9 @@ important that you know how to use them.
   - `2` - return always the same pointer to some protected page
   - `3` - return mid address of a unique protected page (**_default_**)
 
-      **_ATTENTION_**: Only `1` and `3` are _ANSI_ conforming. But value `1`
-      will break most programs, and value `3` strategy most system libraries
-      use/implement. All returned pointers can be passed to `free()`.
+    **_ATTENTION_**: Only `1` and `3` are _ANSI_ conforming. But value `1`
+    will break most programs, and value `3` strategy most system libraries
+    use/implement. All returned pointers can be passed to `free()`.
 
 * `DUMA_NEW_0_STRATEGY` - This environment variable controls **DUMA**'s
   behavior on C++ operator new with size zero:
@@ -476,9 +476,9 @@ important that you know how to use them.
   - `2` - return always the same pointer to some protected page
   - `3` - return mid address of a unique protected page (**_default_**)
 
-      **_ATTENTION_**: Only `3` is standard conforming. Value `2` may break
-      some, but will work for most programs. With value `2` you may reduce the
-      memory consumption.
+    **_ATTENTION_**: Only `3` is standard conforming. Value `2` may break
+    some, but will work for most programs. With value `2` you may reduce the
+    memory consumption.
 
 * `DUMA_MALLOC_FAILEXIT` - Many programs do not check for allocation failure.
   This often leads to delayed errors, no more understandable. Set this variable
@@ -754,15 +754,15 @@ operator delete[](ptr, file,line);  // vector delete
 
 - This software has **_NO WARRANTY_**.
 
-  - ***See the [license](#license) for complete details.***
+  - **_See the [license](#license) for complete details._**
 
 - Much effort has been expended to ensure the correctness of **DUMA**,
   however, it is (in all likelyhood) not theoretically possible to make
   software of this nature **_bug-free_**.
 
-  - **DUMA** ***may not*** report all bugs that exist in your code.
+  - **DUMA** **_may not_** report all bugs that exist in your code.
 
-  - It may also ***incorrectly*** report bugs that do not exist.
+  - It may also **_incorrectly_** report bugs that do not exist.
 
 ---
 
