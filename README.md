@@ -123,11 +123,11 @@ from source code.
 
 #### Building from source
 
-- The latest release version of ***DUMA*** is available to download from
+- The latest release version of **_DUMA_** is available to download from
   [GitHub](https://github.com/johnsonjh/duma/releases/latest)
   and [other mirrors](https://github.com/johnsonjh/duma#releases).
 
-- You can use the ***Git*** distributed version control tool to
+- You can use the **_Git_** distributed version control tool to
   download the latest release version, the current development version,
   or the entire history from any of several
   [source code repositories](https://github.com/johnsonjh/duma#git-repositories).
