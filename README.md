@@ -22,6 +22,8 @@
 
 ## Detect Unintended Memory Access
 
+A Red-Zone memory allocator
+
 ---
 
 <!-- toc -->
