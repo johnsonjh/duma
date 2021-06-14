@@ -10,7 +10,7 @@
  *
  * Small test program to demonstrate efence crashing on multithreaded
  * programs.
-
+ *
  * Link it like this, and it crashes with segfault.
  *  cc -o efence-thread-test efence-thread-test.c  -lpthread -lefence
  * Remove the -lefence, and it work as it should.
@@ -29,73 +29,75 @@
  */
 
 /* check for pthread library */
-#if (!defined(WIN32) || defined(__CYGWIN__))
+#if ( !defined( WIN32 ) || defined( __CYGWIN__ ))
 #define HAVE_PTHREADS 1
-#else
+#else  /* if ( !defined( WIN32 ) || defined( __CYGWIN__ )) */
 #define HAVE_PTHREADS 0
-#endif
+#endif /* if ( !defined( WIN32 ) || defined( __CYGWIN__ )) */
 
-
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #if HAVE_PTHREADS
 
-#include <pthread.h>
 #include "../duma.h"
+#include <pthread.h>
 
 static pthread_mutex_t mutex;
 static volatile int threads_left = 2;
 
-
-static void* thread_func(void *arg)
+static void *
+thread_func(void *arg)
 {
   int i = 2000;
-  char *name = (char*)arg;
+  char *name = (char *)arg;
 
   while (--i)
   {
-	if (pthread_mutex_lock(&mutex))
-	{
-	  fprintf(stderr, "error: %s failed to lock mutex.\n", name);
-	  exit(1);
-	}
-	printf ("%s : %d\n", name, i);
-	if (pthread_mutex_unlock(&mutex))
-	{
-	  fprintf(stderr, "error: %s failed to unlock mutex.\n", name);
-	  exit(1);
-	}
+    if (pthread_mutex_lock(&mutex))
+    {
+      fprintf(stderr, "error: %s failed to lock mutex.\n", name);
+      exit(1);
+    }
 
-	{
-	  /* Try to trigger efence error */
-	  FILE *fp = fopen("/etc/resolv.conf", "r");
-	  if (NULL != fp)
-	  {
-		char buf[1024];
-		fread(buf, sizeof(buf), 1, fp);
-		fclose(fp);
-	  }
-	}
+    printf("%s : %d\n", name, i);
+    if (pthread_mutex_unlock(&mutex))
+    {
+      fprintf(stderr, "error: %s failed to unlock mutex.\n", name);
+      exit(1);
+    }
+
+    {
+      /* Try to trigger efence error */
+      FILE *fp = fopen("/etc/resolv.conf", "r");
+      if (NULL != fp)
+      {
+        char buf[1024];
+        fread(buf, sizeof ( buf ), 1, fp);
+        fclose(fp);
+      }
+    }
   }
   --threads_left;
-  return NULL;
+  return ( NULL );
 }
 
-
-static void*
-idle_func(void* arg)
+static void *
+idle_func(void *arg)
 {
   (void)arg;
 
-  while (threads_left) ;
+  while (threads_left)
+  {
+    ;
+  }
 
   /* NOTREACHED */
-  return NULL;
+  return ( NULL );
 }
 
-
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
   pthread_t hello_thread, goodbye_thread;
 
@@ -104,16 +106,16 @@ int main(int argc, char **argv)
 
   pthread_mutex_init(&mutex, NULL);
 
-  if (pthread_create(&hello_thread, NULL, thread_func, (void*)"hello"))
+  if (pthread_create(&hello_thread, NULL, thread_func, (void *)"hello"))
   {
-	fprintf(stderr, "Failed to create hello thread\n");
-	exit(1);
+    fprintf(stderr, "Failed to create hello thread\n");
+    exit(1);
   }
 
-  if (pthread_create(&goodbye_thread, NULL, thread_func, (void*)"goodbye"))
+  if (pthread_create(&goodbye_thread, NULL, thread_func, (void *)"goodbye"))
   {
-	fprintf(stderr, "Failed to create goodbye thread\n");
-	exit(1);
+    fprintf(stderr, "Failed to create goodbye thread\n");
+    exit(1);
   }
 
   idle_func(NULL);
@@ -121,18 +123,19 @@ int main(int argc, char **argv)
   pthread_mutex_destroy(&mutex);
 
   /* NOTREACHED */
-  return 0;
+  return ( 0 );
 }
 
-#else
+#else  /* if HAVE_PTHREADS */
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
   (void)argc;
   (void)argv;
 
   printf("Test not implemented for Win32 and Mingw\n");
-  return 0;
+  return ( 0 );
 }
 
-#endif
+#endif /* if HAVE_PTHREADS */
