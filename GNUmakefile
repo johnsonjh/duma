@@ -547,7 +547,6 @@ SO_OBJECTS=dumapp_so.o \
 all: verinfo.h \
 	 libduma.a \
 	 $(DUMA_DYN_DEPS)
-	@ $(ECHOLF)
 	@ $(ECHO) "*** Build complete"
 
 ############################################################################
@@ -853,7 +852,7 @@ libduma.a: duma_config.h \
 ############################################################################
 # Target: "verinfo.h"
 
-verinfo.h: FORCE
+verinfo.h:
 	"$(srcdir)make_git_source_version.sh" || \
 	  $(ENV) sh "$(srcdir)make_git_source_version.sh" || \
 	   $(SHELL) "$(srcdir)make_git_source_version.sh" || \
