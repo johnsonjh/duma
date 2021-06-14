@@ -755,13 +755,13 @@ endif
 ifdef DUMASO_LINK1
 	 - $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK1)"
 	 $(LN) \
-		 "$(CURDIR)/$(DUMASO)" \
+		 "$(DUMASO)" \
 		 "$(DESTDIR)$(libdir)/$(DUMASO_LINK1)"
 endif
 ifdef DUMASO_LINK2
 	 - $(RMFORCE) "$(DESTDIR)$(libdir)/$(DUMASO_LINK2)"
 	 $(LN) \
-		 "$(CURDIR)/$(DUMASO)" \
+		 "$(DUMASO)" \
 		 "$(DESTDIR)$(libdir)/$(DUMASO_LINK2)"
 endif
 	 - $(MKDIR) "$(DESTDIR)$(MAN_INSTALL_DIR)"
