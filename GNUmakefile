@@ -279,7 +279,7 @@ endif
 ifeq ($(OS), freebsd)
  $(info *** Using configuration: OS=freebsd)
  BSWITCH=310
- DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
+ # DUMA_OPTIONS += -DDUMA_NO_THREAD_SAFETY
  DUMA_OPTIONS += -DDUMA_EXPLICIT_INIT
  DUMA_DYN_DEPS=
  DUMASO=
@@ -896,7 +896,7 @@ createconf$(EXEPOSTFIX): createconf.o
 tstheap$(EXEPOSTFIX): libduma.a \
 	                  tstheap.o
 	- $(RMFORCE) tstheap$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) \
+	$(CC) $(CFLAGS) -I"./" \
 	  tstheap.o libduma.a \
 	  -o tstheap$(EXEPOSTFIX) $(LIBS)
 
@@ -906,7 +906,7 @@ tstheap$(EXEPOSTFIX): libduma.a \
 dumatest$(EXEPOSTFIX): libduma.a \
 	                   dumatest.o
 	- $(RMFORCE) dumatest$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) \
+	$(CC) $(CFLAGS) -I"./" \
 	  dumatest.o libduma.a \
 	  -o dumatest$(EXEPOSTFIX) $(LIBS)
 
@@ -918,7 +918,7 @@ dumatestpp$(EXEPOSTFIX): libduma.a \
                          duma_sem.h \
                          dumapp.h
 	- $(RMFORCE) dumatestpp$(EXEPOSTFIX)
-	$(CXX) $(CPPFLAGS) \
+	$(CXX) -I"./" $(CPPFLAGS) \
 	  dumatestpp.o libduma.a \
 	  -o dumatestpp$(EXEPOSTFIX) $(LIBS)
 
@@ -928,7 +928,7 @@ dumatestpp$(EXEPOSTFIX): libduma.a \
 thread-test$(EXEPOSTFIX): libduma.a \
 	                      thread-test.o
 	- $(RMFORCE) thread-test$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) \
 	  thread-test.o libduma.a \
 	  -o thread-test$(EXEPOSTFIX) $(LIBS)
 
@@ -937,7 +937,7 @@ thread-test$(EXEPOSTFIX): libduma.a \
 
 thread-test_so$(EXEPOSTFIX): thread-test_so.o
 	- $(RMFORCE) thread-test_so$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) \
 	  thread-test_so.o \
 	  -o thread-test_so$(EXEPOSTFIX) $(LIBS)
 
@@ -947,7 +947,7 @@ thread-test_so$(EXEPOSTFIX): thread-test_so.o
 testmt$(EXEPOSTFIX): libduma.a \
 	                 testmt.o
 	- $(RMFORCE) testmt$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) \
       testmt.o libduma.a \
 	  -o testmt$(EXEPOSTFIX) $(LIBS)
 
@@ -959,7 +959,7 @@ testoperators$(EXEPOSTFIX): libduma.a \
 	                        duma_sem.h \
 	                        dumapp.h
 	- $(RMFORCE) testoperators$(EXEPOSTFIX)
-	$(CXX) $(CPPFLAGS) \
+	$(CXX) -I"./" $(CPPFLAGS) \
 	  testoperators.o libduma.a \
 	  -o testoperators$(EXEPOSTFIX) $(LIBS)
 
@@ -969,7 +969,7 @@ testoperators$(EXEPOSTFIX): libduma.a \
 testmemlimit$(EXEPOSTFIX): libduma.a \
 	                       testmemlimit.o
 	- $(RMFORCE) testmemlimit$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) \
 	  testmemlimit.o libduma.a \
 	  -o testmemlimit$(EXEPOSTFIX) $(LIBS)
 
@@ -978,7 +978,7 @@ testmemlimit$(EXEPOSTFIX): libduma.a \
 
 tstheap_so$(EXEPOSTFIX): tstheap_so.o
 	- $(RMFORCE) tstheap_so$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) \
+	$(CC) $(CFLAGS) -I"./" \
 	  tstheap_so.o \
 	  -o tstheap_so$(EXEPOSTFIX) $(LIBS)
 
@@ -987,7 +987,7 @@ tstheap_so$(EXEPOSTFIX): tstheap_so.o
 
 dumatestpp_so$(EXEPOSTFIX): dumatestpp_so.o
 	- $(RMFORCE) dumatestpp_so$(EXEPOSTFIX)
-	$(CXX) $(CPPFLAGS) \
+	$(CXX) -I"./" $(CPPFLAGS) \
 	  dumatestpp_so.o \
 	  -o dumatestpp_so$(EXEPOSTFIX) $(LIBS)
 
@@ -996,7 +996,7 @@ dumatestpp_so$(EXEPOSTFIX): dumatestpp_so.o
 
 testmemlimit_so$(EXEPOSTFIX): testmemlimit_so.o
 	- $(RMFORCE) testmemlimit_so$(EXEPOSTFIX)
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) \
 	  testmemlimit_so.o \
 	  -o testmemlimit_so$(EXEPOSTFIX) $(LIBS)
 
@@ -1090,7 +1090,7 @@ print_so.o:	src/print.c \
 # Target: "tstheap_so.o"
 
 tstheap_so.o:
-	$(CC) $(CFLAGS) $(DUMA_SO_OPTIONS) \
+	$(CC) $(CFLAGS) -I"./" $(DUMA_SO_OPTIONS) \
 	  -c "$(srcdir)tests/tstheap.c" \
 	  -o $@
 
@@ -1165,7 +1165,7 @@ dumatest.o: tests/dumatest.c \
 	        duma.h \
 	        duma_config.h \
 	        verinfo.h
-	$(CC) $(CFLAGS) \
+	$(CC) $(CFLAGS) -I"./" \
 	  -c "$(srcdir)tests/dumatest.c" \
 	  -o $@
 
@@ -1178,7 +1178,7 @@ dumatestpp.o: tests/dumatestpp.cpp \
 	          dumapp.h \
 	          duma_config.h \
 	          verinfo.h
-	$(CXX) $(CPPFLAGS) \
+	$(CXX) -I"./" $(CPPFLAGS) \
 	  -c "$(srcdir)tests/dumatestpp.cpp" \
 	  -o $@
 
@@ -1189,7 +1189,7 @@ tstheap.o: tests/tstheap.c \
 	       duma.h \
 	       duma_config.h \
 	       verinfo.h
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) -I"./" \
 	  -c "$(srcdir)tests/tstheap.c" \
 	  -o $@
 
@@ -1202,7 +1202,7 @@ testoperators.o: tests/testoperators.cpp \
 	             dumapp.h \
 	             duma_config.h \
 	             verinfo.h
-	$(CXX) $(CPPFLAGS) \
+	$(CXX) -I"./" $(CPPFLAGS) \
 	  -c "$(srcdir)tests/testoperators.cpp" \
 	  -o $@
 
@@ -1213,7 +1213,7 @@ thread-test.o: tests/thread-test.c \
 	           duma.h \
 	           duma_config.h \
 	           verinfo.h
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) \
 	  -c "$(srcdir)tests/thread-test.c" \
 	  -o $@
 
@@ -1224,7 +1224,7 @@ thread-test_so.o: tests/thread-test.c \
 	              duma.h \
 	              duma_config.h \
 	              verinfo.h
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) \
 	  -c "$(srcdir)tests/thread-test.c" \
 	  -o $@
 
@@ -1235,7 +1235,7 @@ testmt.o: tests/testmt.c \
 	      duma.h \
 	      duma_config.h \
 	      verinfo.h
-	$(CC) $(CFLAGS) \
+	$(CC) -I"./" $(CFLAGS) \
 	  -c "$(srcdir)tests/testmt.c" \
 	  -o $@
 

@@ -24,8 +24,17 @@
  * Make sure all of the various functions of DUMA work correctly.
  */
 
+#ifdef __GLIBC__
 #ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 1
+#define _XOPEN_SOURCE 700
+#define _ISOC99_SOURCE
+#define _POSIX_C_SOURCE 199309L
+#endif
+#endif
+
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE 1
 #endif
 
 #include <stdio.h>

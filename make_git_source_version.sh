@@ -111,7 +111,7 @@ get_git_info()
 
 	GIT_SOURCE_INFO="${GIT_OUT:-0.0.0} "
 	GIT_SOURCE_XFRM=$(printf '%s\n' "${GIT_SOURCE_INFO:?}" | \
-		sed -e 's/\VERSION_//' -e 's/_/\./g' 2> /dev/null) ||
+		sed -e 's/VERSION_//' -e 's/_/\./g' 2> /dev/null) ||
 		{
 			printf >&2 '%s\n' \
 				"Error: sed failed."
