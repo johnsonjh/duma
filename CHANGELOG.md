@@ -93,7 +93,7 @@
   - Use C++98 compilation mode w/G++
   - Fix macOS X default installation prefix
     - Allow user to override default prefix
-  - Remove `core` and a.out`during`gmake clean`
+  - Update clean target to remove `core` and `a.out`
 - Update `duma.c`: Adjust ordering of included headers
 - New CMake build support
   - Generate `duma.sh` to use absolute path to installed shared library
