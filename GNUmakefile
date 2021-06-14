@@ -109,6 +109,7 @@ MKDIR=mkdir -p
 RM=rm
 RMFORCE=rm -f
 RMDIR=rmdir
+ROFF=nroff
 ECHO=printf '%s\n'
 ECHOLF=printf '%s\n' ""
 ENV=env
@@ -830,7 +831,7 @@ libduma.cat: roff
 
 .PHONY: roff
 roff: duma.3
-	nroff -man < "$(srcdir)duma.3" > "$(CURDIR)/libduma.cat"
+	$(ROFF)  -man < "$(srcdir)duma.3" > "$(CURDIR)/libduma.cat"
 
 ############################################################################
 # Target: "libduma.a"
