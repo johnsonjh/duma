@@ -85,7 +85,7 @@ get_git_info()
 						[ ! -z "${GITVER:-}" ]; then
 						GIT_OUT=$(printf '%s' \
 							"${GITVER:?}${CDDATE:?}" |
-								sed -e 's/[0-9]-0-g.* / /' \
+								sed -e 's/-0-g.* / /' \
 									-e 's/-[0-9]\+-g/+-g/')
 					fi
 				else
@@ -93,7 +93,7 @@ get_git_info()
 						[ ! -z "${GITVER:-}" ]; then
 						GIT_OUT=$(printf '%s' \
 							"${GITVER:?}-${BRANCH:?}${CDDATE:?}" |
-								sed -e 's/[0-9]-0-g.* / /' \
+								sed -e 's/-0-g.* / /' \
 									-e 's/-[0-9]\+-g/+-g/')
 					fi
 				fi
@@ -149,7 +149,7 @@ get_utc_date()
 	fi
 
 	printf '%s\n' \
-		"${UTC_BLD_DATE_INFO:?}"
+		"${UTC_BLD_DATE_INFO:-}"
 }
 
 BUILD_VER="$(get_git_info)" ||
@@ -174,7 +174,7 @@ printf '%s\n' \
 	"#define GIT_SOURCE_VERSION_VERINFO_H" \
 	"" \
 	'#define GIT_SOURCE_VERSION \' \
-	"    \"${BUILD_VER:?}${BUILD_UTC:?}\"" \
+	"    \"${BUILD_VER:?}${BUILD_UTC:-}\"" \
 	"" \
 	"#endif /* GIT_SOURCE_VERSION_VERINFO_H */" \
 	> "./verinfo.h" ||
