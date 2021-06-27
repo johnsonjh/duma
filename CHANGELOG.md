@@ -162,7 +162,7 @@
 ## 2.5.16 (2009-06-14)
 
 - Add `memmove()` implementation based on `memove()` from `klibc` by _Andris Zeila_:
-  http://sf.net/tracker/?func=detail&aid=2792252&group_id=149725&atid=775376
+  <http://sf.net/tracker/?func=detail&aid=2792252&group_id=149725&atid=775376>
   (2009-05-21, HA)
 - Fixed "_Broken build in MSYS_" and "_C++ tests fail_"
   - Fixed `USE_WIN32_CRIT_SECT` implementation in `sem_inc.c`
@@ -173,10 +173,10 @@
 - Remove `debian` sub-directory from CVS
   (2009-06-07, HA)
 - Fixed "Wrong `LD_PRELOAD` path in `duma.sh`". see
-  https://sf.net/tracker/?func=detail&aid=2800139&group_id=149725&atid=775376
+  <https://sf.net/tracker/?func=detail&aid=2800139&group_id=149725&atid=775376>
   (2009-06-12, HA)
 - Fixed "_GNUmakefile is missing DESTDIR_" using submitted patch:
-  https://sf.net/tracker/?func=detail&aid=2800137&group_id=149725&atid=775376
+  <https://sf.net/tracker/?func=detail&aid=2800137&group_id=149725&atid=775376>
 - Moved definition of `MAN_INSTALL_DIR` and `DOC_INSTALL_DIR` in `GNUmakefile`
   after definition of `prefix`
   (2009-06-15, HA)
@@ -187,7 +187,7 @@
 
 - Added alternative locking implementation in `sem_inc.c` using critical
   sections. Code from _Peter Harris_, see:
-  http://code.google.com/p/electric-fence-win32/
+  <http://code.google.com/p/electric-fence-win32/>
 - Added _Windows_ threading to `testmt.c`
 - Added _win32-msvc.net_ project file
 - Use of `WIN32_SEMAPHORES` on _Win32_ / _Cygwin_ in `sem_inc.c`
@@ -239,7 +239,7 @@
 - Apply patches from [Philip Mucci](mailto:mucci@cs.utk.edu)
   of [SiCortex](http://sicortex.com):
   - Fix for `pthread_self()` and hang of `testoperators` test case on 64-bit
-    _Linux_ platforms (_x86_64_ and _MIPS64_)
+    _Linux_ platforms (_x86_64_and_MIPS64_)
   - Added `-Wall` to Makefile
   - Properly version symbolic library to have the version triple (`0.0.0`)
   - Removed `Control-M`'s from the source files
@@ -283,10 +283,10 @@
 
 - Added a small test program to demonstrate crashing on multi-threaded
   programs from
-  http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=67838
+  <http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=67838>
   (2008-01-15, HA)
 - Added HTML comparison charts / text with C source code examples from
-  http://www.cs.utexas.edu/~jpmartin/memCheckers.html
+  <http://www.cs.utexas.edu/~jpmartin/memCheckers.html>
   into sub-directory comparisons with kind permission of _Jean-Philippe Martin_
 - Update `Makefile` for all C source files
   (2008-01-14, HA)
@@ -327,7 +327,7 @@
 - Fix: Call `duma_init()` (`#ifdef DUMA_EXPLICIT_INIT`) in `testoperators.cpp`
 - Added notes on pre-packaged `.rpm` files, provided by
   [Dries Verachtert](mailto:dries@ulyssis.org) at
-  http://dries.ulyssis.org/apt/packages/duma/info.html
+  <http://dries.ulyssis.org/apt/packages/duma/info.html>
   (2007-08-17, HA)
 - Added environment variable `DUMA_REPORT_ALL_LEAKS` defaulting to zero (`0`)
 - Added empty definitions for macro functions `DUMA_SET_ALIGNMENT()`,
@@ -469,7 +469,7 @@
 
 ## 2.4.27 (2006-04-23)
 
-- Published a German-language article about **DUMA** on http://duma.sourceforge.net
+- Published a German-language article about **DUMA** on <http://duma.sourceforge.net>
 - Bugfix: Removed buffer overflow in `DUMA_sprintf()` for long file names
   - Added parameter `maxsize` for output buffers in some functions
   - Incremented `STRING_BUFFER_SIZE` to reduce this risk; bug reported
@@ -790,7 +790,7 @@
     _Borland_ didn't like them, and neither _Microsoft Visual C++_ 6.0, nor _gcc_
     (_Dev-C++_) needs them
   - Added project files in sub-directory `win32-vide` for _VIDE_ 1.24 using
-    _Borland C++ Builder_ 5.5 (_see http://www.objectcentral.com_)
+    _Borland C++ Builder_ 5.5 (_see <http://www.objectcentral.com>_)
     (2002-11-22, HA)
 
 ## 2.4.6 (2002-11-18)
@@ -798,7 +798,7 @@
 - Remove memory leak in eftest
 - Allow re-inclusion of `efence.h` after inclusion of `efenceint.h`
 - Added some project files in sub-directory `win32-devcpp` for _Dev-C++_ 4.9.6
-  using _gcc_ (_See http://www.bloodshed.net/_) and saved its generated
+  using _gcc_ (_See <http://www.bloodshed.net/>_) and saved its generated
   `Makefile`'s; left `tstheap`'s memory leaks
   (2002-11-18, HA)
 

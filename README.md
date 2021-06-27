@@ -28,48 +28,50 @@ A Red-Zone memory allocator
 
 <!-- toc -->
 
-- [Description](#description)
-- [Installation](#installation)
-  - [Binary Packages](#binary-packages)
-  - [Building from source](#building-from-source)
-    - [Compiling with GNU Make](#gnu-make)
-    - [Compiling with CMake](#cmake)
-    - [Compiling with Visual Studio](#visual-studio)
-  - [Environment Notes](#environment-notes)
-    - [Solaris](#solaris)
-    - [BSD](#bsd)
-    - [ARM CPUs](#arm-cpus)
-    - [MIPS CPUs](#mips-cpus)
-    - [RISC-V CPUs](#risc-v-cpus)
-- [Usage](#usage)
-  - [Static linking](#static-linking)
-  - [Dynamic linking](#dynamic-linking)
-  - [Recommended Usage](#recommended-usage)
-  - [Global and Environment Variables](#global-and-environment-variables)
-  - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
-  - [Catching the Erroneous Line](#catching-the-erroneous-line)
-    - [Live (debugger control)](#live-debugger-control)
-    - [Post-mortem (core analysis)](#post-mortem-core-analysis)
-  - [Debugging your Program](#debugging-your-program)
-    - [General Debugging Instructions](#general-debugging-instructions)
-    - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
-- [Memory Usage and Execution Speed](#memory-usage-and-execution-speed)
-- [Memory Leak Detection](#memory-leak-detection)
-- [C++ Memory Operators and Leak Detection](#c-memory-operators-and-leak-detection)
-  - [Definition of own member new / delete Operators](#definition-of-own-member-newdelete-operators)
-- [Compilation Notes for Release / Production](#compilation-notes-for-releaseproduction)
-- [NO WARRANTY](#no-warranty)
-- [Diagnostics](#diagnostics)
-  - [Bugs](#bugs)
-- [Comparison with other tools](#comparison-with-other-tools)
-- [Availability](#availability)
-  - [Releases](#releases)
-  - [Git Repositories](#git-repositories)
-- [Issue Tracking](#issue-tracking)
-- [Security Policy](#security-policy)
-- [Authors](#authors)
-- [License](#license)
-- [Version History](#version-history)
+- [DUMA](#duma)
+  - [Detect Unintended Memory Access](#detect-unintended-memory-access)
+    - [Description](#description)
+    - [Installation](#installation)
+      - [Binary Packages](#binary-packages)
+      - [Building from source](#building-from-source)
+        - [GNU Make](#gnu-make)
+        - [CMake](#cmake)
+        - [Visual Studio](#visual-studio)
+      - [Environment Notes](#environment-notes)
+        - [Solaris](#solaris)
+        - [BSD](#bsd)
+        - [ARM CPUs](#arm-cpus)
+        - [MIPS CPUs](#mips-cpus)
+        - [RISC-V CPUs](#risc-v-cpus)
+    - [Usage](#usage)
+      - [Static linking](#static-linking)
+      - [Dynamic linking](#dynamic-linking)
+      - [Recommended Usage](#recommended-usage)
+      - [Global and Environment Variables](#global-and-environment-variables)
+      - [Word-Alignment and Overrun Detection](#word-alignment-and-overrun-detection)
+    - [Catching the Erroneous Line](#catching-the-erroneous-line)
+      - [Live (debugger control)](#live-debugger-control)
+      - [Post-mortem (core analysis)](#post-mortem-core-analysis)
+    - [Debugging your Program](#debugging-your-program)
+      - [General Debugging Instructions](#general-debugging-instructions)
+      - [Word-Alignment and Overrun Debugging](#word-alignment-and-overrun-debugging)
+    - [Memory Usage and Execution Speed](#memory-usage-and-execution-speed)
+    - [Memory Leak Detection](#memory-leak-detection)
+    - [C++ Memory Operators and Leak Detection](#c-memory-operators-and-leak-detection)
+      - [Definition of own member new/delete Operators](#definition-of-own-member-newdelete-operators)
+    - [Compilation Notes for Release/Production](#compilation-notes-for-releaseproduction)
+    - [NO WARRANTY](#no-warranty)
+    - [Diagnostics](#diagnostics)
+      - [Bugs](#bugs)
+    - [Comparison with other tools](#comparison-with-other-tools)
+    - [Availability](#availability)
+      - [Releases](#releases)
+      - [Git Repositories](#git-repositories)
+    - [Issue Tracking](#issue-tracking)
+    - [Security Policy](#security-policy)
+    - [Authors](#authors)
+    - [License](#license)
+    - [Version History](#version-history)
 
 <!-- tocstop -->
 
@@ -362,7 +364,7 @@ important that you know how to use them.
   environment variables only for the program you are going to debug. This is
   useful especially if you are using the shared **DUMA** library.
 
-* `DUMA_ALIGNMENT` - This is an integer that specifies the alignment for any
+- `DUMA_ALIGNMENT` - This is an integer that specifies the alignment for any
   memory allocations that will be returned by malloc(), calloc(), and realloc().
   The value is specified in bytes, thus a value of 4 will cause memory to be
   aligned to 32-bit boundaries unless your system doesn't have a 8-bit
@@ -396,7 +398,7 @@ important that you know how to use them.
   some special buffers. In this case you may use the function
   `memalign(alignment, userSize)`.
 
-* `DUMA_PROTECT_BELOW` - **DUMA** usually places an inaccessible page
+- `DUMA_PROTECT_BELOW` - **DUMA** usually places an inaccessible page
   immediately after each memory allocation, so that software that runs past the
   end of the allocation will be detected. Setting `DUMA_PROTECT_BELOW` to `1`
   causes **DUMA** to place the inaccessible page before the allocation in the
@@ -406,14 +408,14 @@ important that you know how to use them.
   integer value, or call the macro function `DUMA_SET_PROTECT_BELOW()` from your
   code.
 
-* `DUMA_SKIPCOUNT_INIT` - **DUMA** usually does its initialization with the
+- `DUMA_SKIPCOUNT_INIT` - **DUMA** usually does its initialization with the
   first memory allocation. On some systems this may collide with initialization
   of pthreads or other libraries and produce a hang. To get **DUMA** work even in
   these situations you can control (with this environment variable) after how
   many allocations the full internal initialization of **DUMA** is done. Default
   is `0`.
 
-* `DUMA_REPORT_ALL_LEAKS` - **DUMA** usually reports only memory leaks where the
+- `DUMA_REPORT_ALL_LEAKS` - **DUMA** usually reports only memory leaks where the
   source file-name with line number of the allocating instruction is known.
   Setting this variable to `1` in shell environment reports all memory leaks.
   The default is `0` to avoid reporting of irrelevant memory leaks from
@@ -421,7 +423,7 @@ important that you know how to use them.
   which by default is no real problem as the system frees up all memory on
   program exit.
 
-* `DUMA_FILL` - When set to a value between `0` and `255`, every byte of
+- `DUMA_FILL` - When set to a value between `0` and `255`, every byte of
   allocated memory is initialized to that value. This can help detect reads of
   uninitialized memory. When set to `-1`, **DUMA** does not initialize memory on
   allocation, so some memory may filled with zeroes (the operating system
@@ -432,7 +434,7 @@ important that you know how to use them.
   To change this value, set `DUMA_FILL` in the shell environment to an integer
   value, or call the macro function `DUMA_SET_FILL()` from your code.
 
-* `DUMA_SLACKFILL` - As **DUMA** internally allocates memory in whole pages,
+- `DUMA_SLACKFILL` - As **DUMA** internally allocates memory in whole pages,
   there retains an unused and unprotectable piece of memory: the slack or
   _no-mans-land_. Per default **DUMA** will initialize this area to `170`
   (`0xAA`), which is `10101010` in binary representation.
@@ -445,8 +447,8 @@ important that you know how to use them.
   memory block. With the macro function `DUMA_CHECKALL()` all memory blocks get
   checked.
 
-* `DUMA_CHECK_FREQ` - First see `DUMA_SLACKFILL` above for definition of
-  _no-mans-land_. Checking the integrity of the* no-mans-land* costs
+- `DUMA_CHECK_FREQ` - First see `DUMA_SLACKFILL` above for definition of
+  _no-mans-land_. Checking the integrity of the*no-mans-land* costs
   performance. This is why this is usually done only at deallocation of a memory
   block. Set this variable to let **DUMA** check all memory blocks
   _no-mans-land_ every *value*th allocation or deallocation. Set this variable
@@ -454,13 +456,13 @@ important that you know how to use them.
 
   Per default the value `0` is used, which means to check only at deallocation.
 
-* `DUMA_ALLOW_MALLOC_0` - Memory allocation of size zero is _ANSI_ conforming,
+- `DUMA_ALLOW_MALLOC_0` - Memory allocation of size zero is _ANSI_ conforming,
   but, often this is the result of a software bug. For this reason **DUMA** may
   trap such calls to malloc() with size zero. I leave this option disabled by
   default, but you are free to trap these calls setting the
   `DUMA_ALLOC_MALLOC_0` in the shell environment to an integer value.
 
-* `DUMA_MALLOC_0_STRATEGY` - This environment variable controls **DUMA**'s
+- `DUMA_MALLOC_0_STRATEGY` - This environment variable controls **DUMA**'s
   behavior on `malloc(0)`:
 
   - `0` - abort program with segfault (previously `ALLOW_MALLOC_0 = 0`)
@@ -472,7 +474,7 @@ important that you know how to use them.
     will break most programs, and value `3` strategy most system libraries
     use/implement. All returned pointers can be passed to `free()`.
 
-* `DUMA_NEW_0_STRATEGY` - This environment variable controls **DUMA**'s
+- `DUMA_NEW_0_STRATEGY` - This environment variable controls **DUMA**'s
   behavior on C++ operator new with size zero:
 
   - `2` - return always the same pointer to some protected page
@@ -482,12 +484,12 @@ important that you know how to use them.
     some, but will work for most programs. With value `2` you may reduce the
     memory consumption.
 
-* `DUMA_MALLOC_FAILEXIT` - Many programs do not check for allocation failure.
+- `DUMA_MALLOC_FAILEXIT` - Many programs do not check for allocation failure.
   This often leads to delayed errors, no more understandable. Set this variable
   to a positive integer in the shell environment to exit the program immediately
   when memory allocation fails. This option is set by default.
 
-* `DUMA_PROTECT_FREE` - **DUMA** usually returns free memory to a pool from
+- `DUMA_PROTECT_FREE` - **DUMA** usually returns free memory to a pool from
   which it may be re-allocated. If you suspect that a program may be touching
   free memory, set `DUMA_PROTECT_FREE` shell environment to `-1`. This is the
   default and will cause **DUMA** not to re-allocate any memory.
@@ -504,56 +506,56 @@ important that you know how to use them.
 
   A value of `0` will disable protection of freed memory.
 
-* `DUMA_MAX_ALLOC` - This shell environment variable limits the total memory
+- `DUMA_MAX_ALLOC` - This shell environment variable limits the total memory
   print of a program. This is another way to indirectly limit the sum of freed
   protected memory (see `DUMA_PROTECT_FREE`). By default there is no limit
   (`-1`). A positive value is interpreted in **kB**, which stands for the sum of
   allocated and freed protected memory.
 
-* `DUMA_FREE_ACCESS` - This is a debugging enhancer to catch deallocation of a
+- `DUMA_FREE_ACCESS` - This is a debugging enhancer to catch deallocation of a
   memory block using watch expressions. **DUMA** does a write access to the
   first byte, which may lead a debugger to stop on a watch expression. You have
   to enable this by setting the shell environment variable to non zero. Default
   is disabled.
 
-* `DUMA_SHOW_ALLOC` - Set this shell environment variable to non-zero to let
+- `DUMA_SHOW_ALLOC` - Set this shell environment variable to non-zero to let
   DUMA print all allocations and de-allocations to the console. Although this
   generates a lot of messages, this option can be useful to detect inefficient
   code containing many (de)allocations. This is switched off by default.
 
-* `DUMA_SUPPRESS_ATEXIT` - Set this shell environment variable to non-zero when
+- `DUMA_SUPPRESS_ATEXIT` - Set this shell environment variable to non-zero when
   DUMA should skip the installation of its exit handler. The exit handler is
   called at the end of the main program and checks for memory leaks, so the
   handler's installation should **_usually_** not be suppressed. One reason for
   doing so regardless are some buggy environments, where calls to the standard C
   library's `atexit()`-function hangs.
 
-* `DUMA_DISABLE_BANNER` - Set this shell environment variable to non-zero to
+- `DUMA_DISABLE_BANNER` - Set this shell environment variable to non-zero to
   suppress the usual start-up message on console. Default is `0`.
 
-* `DUMA_OUTPUT_DEBUG` - Set this shell environment variable to non-zero to
+- `DUMA_OUTPUT_DEBUG` - Set this shell environment variable to non-zero to
   output all DUMA messages to the debugging console. This option is only
   available on Windows and is off by default.
 
-* `DUMA_OUTPUT_STDOUT` - Set this shell environment variable to non-zero to
+- `DUMA_OUTPUT_STDOUT` - Set this shell environment variable to non-zero to
   output all DUMA messages to _STDOUT_. This option is off by default.
 
-* `DUMA_OUTPUT_STDERR` - Set this shell environment variable to non-zero to
+- `DUMA_OUTPUT_STDERR` - Set this shell environment variable to non-zero to
   output all DUMA messages to _STDERR_. This option is on by default.
 
-* `DUMA_OUTPUT_FILE` - Set this shell environment variable to a file-name where
+- `DUMA_OUTPUT_FILE` - Set this shell environment variable to a file-name where
   all DUMA messages should be written to. This option is off by default.
 
-* `DUMA_OUTPUT_STACKTRACE` - Set this shell environment variable to non-zero to
+- `DUMA_OUTPUT_STACKTRACE` - Set this shell environment variable to non-zero to
   output a stacktrace of the allocation that is not freed. This option is
   available only on Windows and is off by default. This option also requires a
   map file generated by the linker.
 
-* `DUMA_OUTPUT_STACKTRACE_MAPFILE` - Set this shell environment variable to the
+- `DUMA_OUTPUT_STACKTRACE_MAPFILE` - Set this shell environment variable to the
   map file, when it isn't found. This is very useful when using detours version
   of DUMA. This option is available only on Windows.
 
-* `DUMA_MEMCPY_OVERLAP` - Set this shell environment variable to allow
+- `DUMA_MEMCPY_OVERLAP` - Set this shell environment variable to allow
   overlapping of memcpy regions if the destination address is less than source
   address. (workaround for _ARM_ `memmove`/`memcpy` implementation).
 
@@ -656,7 +658,7 @@ offending line(s) of your source code responsible for causing an error.
 7. Optionally, read and install `gdbinit.rc` as `~/.gdbinit` if you are using
    the `gdb` debugger
 
-#### Word-Alignment and Overrun Detection
+#### Word-Alignment and Overrun Debugging
 
 - See if you can set `DUMA_ALIGNMENT` to `1`, and repeat step 2.
   - Sometimes this will be too much work, or there will be problems with library
