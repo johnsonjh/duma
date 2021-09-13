@@ -113,8 +113,8 @@ memory-leak, some source modification is necessary - at the minimum, adding
 
 ### Installation
 
-**DUMA** may be installed from compiled binary packages or built
-from source code.
+**DUMA** may be installed from compiled binary packages or built from source
+code.
 
 ---
 
@@ -128,12 +128,12 @@ from source code.
 #### Building from source
 
 - The latest release version of **DUMA** is available to download from
-  [GitHub](https://github.com/johnsonjh/duma/releases/latest)
-  and [other mirrors](https://github.com/johnsonjh/duma#releases).
+  [GitHub](https://github.com/johnsonjh/duma/releases/latest) and
+  [other mirrors](https://github.com/johnsonjh/duma#releases).
 
-- You can use the _Git_ distributed version control tool to download
-  the latest release version, the current development version, or the
-  entire history, from any of several
+- You can use the _Git_ distributed version control tool to download the latest
+  release version, the current development version, or the entire history, from
+  any of several
   [source code repositories](https://github.com/johnsonjh/duma#git-repositories).
 
 ---
@@ -142,42 +142,40 @@ from source code.
 
 **DUMA** may be built using **_GNU_** **Make**.
 
-**_GNU_** **Make** is available for many operating systems, including
-_SunOS_ / _Solaris_, _GNU/Hurd_, _AIX_, _HP-UX_, _BSD_, _GNU/Linux_, and
-_Microsoft Windows_ (using _Cygwin_ or _UWIN_ for POSIX compatibility, or
-natively with the _MSYS_ / _MINGW_ environment.)
+**_GNU_** **Make** is available for many operating systems, including _SunOS_ /
+_Solaris_, _GNU/Hurd_, _AIX_, _HP-UX_, _BSD_, _GNU/Linux_, and _Microsoft
+Windows_ (using _Cygwin_ or _UWIN_ for POSIX compatibility, or natively with the
+_MSYS_ / _MINGW_ environment.)
 
-**_GNU_** **Make** is often installed as `gmake`, but may be installed under
-a different name, such as `mingw32-make`, `mingw64-gmake`, or simply `make`
+**_GNU_** **Make** is often installed as `gmake`, but may be installed under a
+different name, such as `mingw32-make`, `mingw64-gmake`, or simply `make`
 (_especially on_ **_GNU_** _systems such as Linux_).
 
 Some **_non_**-**_GNU_** "**Make**" systems **_may_** work, but are
 **_untested_** and **not** **recommended** for building **DUMA**.
 
-- Inside the unpacked **DUMA** source directory, create and change to a
-  new `build` directory
+- Inside the unpacked **DUMA** source directory, create and change to a new
+  `build` directory
   - `mkdir build && cd build`
-- (_Optionally_) review `GNUmakefile` for configuration, compilation,
-  and installation options
-  - Check the `OS` and `OSTYPE` options
-    (_necessary if automated detection is unsuccessful_)
+- (_Optionally_) review `GNUmakefile` for configuration, compilation, and
+  installation options
+  - Check the `OS` and `OSTYPE` options (_necessary if automated detection is
+    unsuccessful_)
   - Check any other options or variables that may be available
 - Build **DUMA**
-  - `gmake -f ../GNUmakefile`
-    (_for automatic OS detection and defaults_)
-  - `gmake -f ../GNUmakefile OSTYPE=cygwin`
-    (_for Microsoft Windows with Cygwin_)
-  - `mingw32-make -f ../GNUmakefile OSTYPE=msys`
-    (_for Microsoft Windows with MSYS / MINGW via Command Prompt (CMD)_)
-  - `make -f ../GNUmakefile OS=linux`
-    (_for most GNU/Linux systems_)
+  - `gmake -f ../GNUmakefile` (_for automatic OS detection and defaults_)
+  - `gmake -f ../GNUmakefile OSTYPE=cygwin` (_for Microsoft Windows with
+    Cygwin_)
+  - `mingw32-make -f ../GNUmakefile OSTYPE=msys` (_for Microsoft Windows with
+    MSYS / MINGW via Command Prompt (CMD)_)
+  - `make -f ../GNUmakefile OS=linux` (_for most GNU/Linux systems_)
 - Test **DUMA**
   - `gmake -f ../GNUmakefile check`
 - Install **DUMA**
   - `gmake -f ../GNUmakefile install DESTDIR=/opt/duma`
-    - It may be necessary to prefix this command with
-      **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
-      depending on the specified `DESTDIR` or `prefix`
+    - It may be necessary to prefix this command with **_su_**, **_sudo_**,
+      **_doas_**, _etc._ to elevate privileges, depending on the specified
+      `DESTDIR` or `prefix`
 - Test **DUMA** installation
   - `gmake -f ../GNUmakefile installcheck`
 
@@ -185,13 +183,13 @@ Some **_non_**-**_GNU_** "**Make**" systems **_may_** work, but are
 
 ##### CMake
 
-**CMake** is a portable suite of tools to automate the configuration,
-building, testing, packaging, and installation of software.
+**CMake** is a portable suite of tools to automate the configuration, building,
+testing, packaging, and installation of software.
 
 **DUMA** may be built using **CMake** 3.1 (_December 2014_) or later.
 
-- Inside the unpacked **DUMA** source directory, create and change to a
-  new `build` directory
+- Inside the unpacked **DUMA** source directory, create and change to a new
+  `build` directory
   - `mkdir build && cd build`
 - (_Optionally_) interactively configure compilation and installation options
   - `ccmake ..` _or_
@@ -204,8 +202,7 @@ building, testing, packaging, and installation of software.
     - `cmake -DCMAKE_INSTALL_PREFIX="/opt/duma" ..`
     - `cmake -DCMAKE_TOOLCHAIN_FILE=/opt/gcc/toolchain_gcc-8.cmake ..`
     - `cmake -G "Visual Studio 16 2019" -A "x64" ..`
-      - _Refer to the
-        [CMake Manual](https://cmake.org/cmake/help/latest/manual)
+      - _Refer to the [CMake Manual](https://cmake.org/cmake/help/latest/manual)
         for full details_
 - Build **DUMA**
   - `cmake --build .`
@@ -213,9 +210,9 @@ building, testing, packaging, and installation of software.
   - `ctest` (_add_ `-V` _or_ `-VV` _for more verbose output_)
 - Install **DUMA**
   - `cmake --build . --target "install"`
-    - It may be necessary to prefix this command with
-      **_su_**, **_sudo_**, **_doas_**, _etc._ to elevate privileges,
-      depending on the configured `CMAKE_INSTALL_PREFIX`
+    - It may be necessary to prefix this command with **_su_**, **_sudo_**,
+      **_doas_**, _etc._ to elevate privileges, depending on the configured
+      `CMAKE_INSTALL_PREFIX`
 
 ---
 
@@ -224,8 +221,8 @@ building, testing, packaging, and installation of software.
 - Compile and execute `createconf`
   - Verify the `duma_config.h` header file generated by `createconf`
 - Compile `dumalib`
-  - Customize your project's `INCLUDE` and `LIBS` variables, as required
-    for your environment
+  - Customize your project's `INCLUDE` and `LIBS` variables, as required for
+    your environment
 
 ---
 
@@ -241,15 +238,15 @@ consideration.
 
 - Both _SPARC_ and _Intel_ processors are supported.
 
-- **DUMA** is tested on _Solaris_ using the GNU toolchain
-  (_GNU CC, G++, ld, binutils, etc._)
+- **DUMA** is tested on _Solaris_ using the GNU toolchain (_GNU CC, G++, ld,
+  binutils, etc._)
 
-  - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from
-    the _Companion CD_ should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to
-    the `PATH`.
+  - Older _Solaris_ systems, such as _Solaris 10_, using the GNU tools from the
+    _Companion CD_ should add `/opt/sfw/bin` and `/opt/sfw/lib/bin` to the
+    `PATH`.
 
-  - Newer _Solaris_ systems, such as _Solaris 11.next_ or _OpenIndiana_,
-    require similar configuration.
+  - Newer _Solaris_ systems, such as _Solaris 11.next_ or _OpenIndiana_, require
+    similar configuration.
 
 - The _Solaris Studio_ toolchain has not been tested.
 
@@ -259,16 +256,17 @@ consideration.
 
 - **FreeBSD**
 
-  - On _FreeBSD_ 6.2, it is necessary to set `DUMA_DISABLE_BANNER=1`
-    before running any program linked with **DUMA**.
-    * NOTE: On _FreeBSD_ 7.0 and later, there appears to be an incompatability with the new libthr, which is currently being investigated.
+  - On _FreeBSD_ 6.2, it is necessary to set `DUMA_DISABLE_BANNER=1` before
+    running any program linked with **DUMA**.
+    - NOTE: On _FreeBSD_ 7.0 and later, there appears to be an incompatability
+      with the new libthr, which is currently being investigated.
 
 ---
 
 - **NetBSD**
 
-  - On _NetBSD_ 3.1 (`HOSTTYPE=i386` / `OSTYPE=netbsdelf`), one (`1`)
-    memory leak is always detected.
+  - On _NetBSD_ 3.1 (`HOSTTYPE=i386` / `OSTYPE=netbsdelf`), one (`1`) memory
+    leak is always detected.
 
   - Installation on _NetBSD_ is untested.
 
@@ -277,8 +275,8 @@ consideration.
 ##### ARM CPUs
 
 - On systems with _ARM_ processors, it may be necessary to set the
-  `DUMA_MEMCPY_OVERLAP` variable, which allows overlapping of `memcpy()`
-  regions when the destination address is less than the source address.
+  `DUMA_MEMCPY_OVERLAP` variable, which allows overlapping of `memcpy()` regions
+  when the destination address is less than the source address.
 
 ---
 
@@ -296,13 +294,15 @@ consideration.
   fixed-length 32-bit instructions that must be aligned on four (`4`) byte
   (_32-bit_) boundaries.
 
-- However, the standard _RISC-V_ encoding scheme supports _compressed_
-  and _variable-length_ instructions. These instructions can be any
-  number of 16-bit _"instruction parcels"_ in length, and are always
-  aligned on two (`2`) byte (_16-bit_) boundaries.
+- However, the standard _RISC-V_ encoding scheme supports _compressed_ and
+  _variable-length_ instructions. These instructions can be any number of 16-bit
+  _"instruction parcels"_ in length, and are always aligned on two (`2`) byte
+  (_16-bit_) boundaries.
 
 - The _RISC-V_ processor will not fault when accessing an invalid (_unaligned_)
-  address. Instead, it will simply use the next valid address. The `DUMA_ALIGNMENT` environment variable should be set to a value greater than one (`1`) on systems using _RISC-V_ processors.
+  address. Instead, it will simply use the next valid address. The
+  `DUMA_ALIGNMENT` environment variable should be set to a value greater than
+  one (`1`) on systems using _RISC-V_ processors.
 
 ---
 
@@ -322,19 +322,19 @@ consideration.
 
 #### Dynamic linking
 
-- If you're using a Bourne-style shell on
-  most _UNIX_ systems, the statement `export LD_PRELOAD=libduma.so` will cause
-  **DUMA** to be loaded to run all dynamic executables.
+- If you're using a Bourne-style shell on most _UNIX_ systems, the statement
+  `export LD_PRELOAD=libduma.so` will cause **DUMA** to be loaded to run all
+  dynamic executables.
 
-- For _Darwin_-based
-  systems such as macOS X, use `export DYLD_INSERT_LIBRARIES=libduma.dylib`
-  and `export DYLD_FORCE_FLAT_NAMESPACE=1`.
+- For _Darwin_-based systems such as macOS X, use
+  `export DYLD_INSERT_LIBRARIES=libduma.dylib` and
+  `export DYLD_FORCE_FLAT_NAMESPACE=1`.
 
-- The included helper command `duma <command>` will run a single command
-  under **DUMA**.
+- The included helper command `duma <command>` will run a single command under
+  **DUMA**.
 
-- For more details, review the documentation for the dynamic linking
-  facility provided by your operating system vendor.
+- For more details, review the documentation for the dynamic linking facility
+  provided by your operating system vendor.
 
 ---
 
@@ -411,8 +411,8 @@ important that you know how to use them.
 
 - `DUMA_SKIPCOUNT_INIT` - **DUMA** usually does its initialization with the
   first memory allocation. On some systems this may collide with initialization
-  of pthreads or other libraries and produce a hang. To get **DUMA** work even in
-  these situations you can control (with this environment variable) after how
+  of pthreads or other libraries and produce a hang. To get **DUMA** work even
+  in these situations you can control (with this environment variable) after how
   many allocations the full internal initialization of **DUMA** is done. Default
   is `0`.
 
@@ -449,11 +449,11 @@ important that you know how to use them.
   checked.
 
 - `DUMA_CHECK_FREQ` - First see `DUMA_SLACKFILL` above for definition of
-  _no-mans-land_. Checking the integrity of the*no-mans-land* costs
-  performance. This is why this is usually done only at deallocation of a memory
-  block. Set this variable to let **DUMA** check all memory blocks
-  _no-mans-land_ every *value*th allocation or deallocation. Set this variable
-  to 1, to let **DUMA** check at each allocation and deallocation.
+  _no-mans-land_. Checking the integrity of the*no-mans-land* costs performance.
+  This is why this is usually done only at deallocation of a memory block. Set
+  this variable to let **DUMA** check all memory blocks _no-mans-land_ every
+  *value*th allocation or deallocation. Set this variable to 1, to let **DUMA**
+  check at each allocation and deallocation.
 
   Per default the value `0` is used, which means to check only at deallocation.
 
@@ -471,19 +471,19 @@ important that you know how to use them.
   - `2` - return always the same pointer to some protected page
   - `3` - return mid address of a unique protected page (**_default_**)
 
-    **_ATTENTION_**: Only `1` and `3` are _ANSI_ conforming. But value `1`
-    will break most programs, and value `3` strategy most system libraries
+    **_ATTENTION_**: Only `1` and `3` are _ANSI_ conforming. But value `1` will
+    break most programs, and value `3` strategy most system libraries
     use/implement. All returned pointers can be passed to `free()`.
 
-- `DUMA_NEW_0_STRATEGY` - This environment variable controls **DUMA**'s
-  behavior on C++ operator new with size zero:
+- `DUMA_NEW_0_STRATEGY` - This environment variable controls **DUMA**'s behavior
+  on C++ operator new with size zero:
 
   - `2` - return always the same pointer to some protected page
   - `3` - return mid address of a unique protected page (**_default_**)
 
-    **_ATTENTION_**: Only `3` is standard conforming. Value `2` may break
-    some, but will work for most programs. With value `2` you may reduce the
-    memory consumption.
+    **_ATTENTION_**: Only `3` is standard conforming. Value `2` may break some,
+    but will work for most programs. With value `2` you may reduce the memory
+    consumption.
 
 - `DUMA_MALLOC_FAILEXIT` - Many programs do not check for allocation failure.
   This often leads to delayed errors, no more understandable. Set this variable
@@ -607,13 +607,13 @@ If word references are made to un-aligned buffers, you will see a bus error
 re-write the offending code to make byte references or not make odd-sized
 allocations, or to set `DUMA_ALIGNMENT` to the word size.
 
-Another example of software incompatible with `DUMA_ALIGNMENT` set less than
-the system _word-size_ is the `strcmp()` function and other string functions
-on _SunOS_ 4, which make _word-sized_ accesses to character strings, and may
+Another example of software incompatible with `DUMA_ALIGNMENT` set less than the
+system _word-size_ is the `strcmp()` function and other string functions on
+_SunOS_ 4, which make _word-sized_ accesses to character strings, and may
 attempt to access up to three bytes **_beyond_** the end of a string. These
 result in a segmentation fault (`SIGSEGV`). The only way around this is to use
-versions of the string functions that perform _byte references_ instead of
-_word references_.
+versions of the string functions that perform _byte references_ instead of _word
+references_.
 
 ---
 
@@ -684,16 +684,16 @@ offending line(s) of your source code responsible for causing an error.
     `sysctl -w vm.max_map_count=1000000`
 
 - **Don't** leave `libduma.a` enabled and linked in production software. Use it
-  only for debugging. See the section '_Compilation Notes for
-  Release / Production_' below.
+  only for debugging. See the section '_Compilation Notes for Release /
+  Production_' below.
 
 ---
 
 ### Memory Leak Detection
 
 - All memory allocation is protocol-ed from **DUMA** together with the file-name
-  and line number of the calling function. The `atexit()` function checks if each
-  allocated memory block was freed. To disable leak detection add the
+  and line number of the calling function. The `atexit()` function checks if
+  each allocated memory block was freed. To disable leak detection add the
   preprocessor definition `DUMA_SO_NO_LEAKDETECTION` or
   `DUMA_LIB_NO_LEAKDETECTION` to `DUMA_OPTIONS` in the Makefile.
 
@@ -708,8 +708,8 @@ offending line(s) of your source code responsible for causing an error.
 
 - Macros for "`new`" and "`delete`" are defined in `dumapp.h`. These macros give
   file-name and line number of the calling functions to **DUMA**, thus allowing
-  the same leak detection reports as for `malloc()` and `free()`. `dumapp.h` needs to be
-  included from your source file(s).
+  the same leak detection reports as for `malloc()` and `free()`. `dumapp.h`
+  needs to be included from your source file(s).
 
   - To disable the C++ `new`, `delete`, `new[]`, and `delete[]` operators, add
     the preprocessor definition `DUMA_NO_CPP_SUPPORT` to `DUMA_OPTIONS` in
@@ -771,9 +771,9 @@ operator delete[](ptr, file,line);
 
   - **_See the [license](#license) for complete details._**
 
-- Much effort has been expended to ensure the correctness of **DUMA**,
-  however, it is (in all likelihood) not theoretically possible to make
-  software of this nature **_bug-free_**.
+- Much effort has been expended to ensure the correctness of **DUMA**, however,
+  it is (in all likelihood) not theoretically possible to make software of this
+  nature **_bug-free_**.
 
   - **DUMA** **_may not_** report all bugs that exist in your code.
 
@@ -796,12 +796,12 @@ operator delete[](ptr, file,line);
 - Explanation of alignment issues could be improved.
 
 - Some **Sun** systems running **SunOS** **4.1** were reported to signal an
-  access to a protected page with `SIGBUS` rather than `SIGSEGV`. This is
-  most likely an undocumented "_feature_" of particular _Sun_ hardware
-  versions, and not an operating system anomaly.
+  access to a protected page with `SIGBUS` rather than `SIGSEGV`. This is most
+  likely an undocumented "_feature_" of particular _Sun_ hardware versions, and
+  not an operating system anomaly.
   - On these systems **DUMA** tests will fail with a _bus error_ unless the
-    `Makefile` is modified to define `PAGE_PROTECTION_VIOLATED_SIGNAL`
-    as `SIGBUS`.
+    `Makefile` is modified to define `PAGE_PROTECTION_VIOLATED_SIGNAL` as
+    `SIGBUS`.
 
 ---
 
