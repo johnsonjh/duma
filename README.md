@@ -261,6 +261,7 @@ consideration.
 
   - On _FreeBSD_ 6.2, it is necessary to set `DUMA_DISABLE_BANNER=1`
     before running any program linked with **DUMA**.
+    * NOTE: On _FreeBSD_ 7.0 and later, there appears to be an incompatability with the new libthr, which is currently being investigated.
 
 ---
 
