@@ -261,7 +261,10 @@ consideration.
 
   - On _FreeBSD_ 6.2, it is necessary to set `DUMA_DISABLE_BANNER=1`
     before running any program linked with **DUMA**.
-    * NOTE: On _FreeBSD_ 7.0 and later, there appears to be an incompatability with the new libthr, which is currently being investigated.
+    
+  - NOTE: On _FreeBSD_ 7.0 and later, there appears to be an
+    incompatability with the new libthr, which is currently being
+    investigated.
 
 ---
 
@@ -302,7 +305,9 @@ consideration.
   aligned on two (`2`) byte (_16-bit_) boundaries.
 
 - The _RISC-V_ processor will not fault when accessing an invalid (_unaligned_)
-  address. Instead, it will simply use the next valid address. The `DUMA_ALIGNMENT` environment variable should be set to a value greater than one (`1`) on systems using _RISC-V_ processors.
+  address. Instead, it will simply use the next valid address. The `DUMA_ALIGNMENT`
+  environment variable should be set to a value greater than one (`1`)
+  on systems using _RISC-V_ processors.
 
 ---
 
