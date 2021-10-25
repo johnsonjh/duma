@@ -1043,7 +1043,7 @@ endif
 
 createconf.o:
 	$(CC_FOR_BUILD) $(HOST_CFLAGS) $(DUMA_OPTIONS) \
-	  -c "$(srcdir)createconf.c" \
+	  -c "$(srcdir)"createconf.c \
 	  -o $@
 
 ############################################################################

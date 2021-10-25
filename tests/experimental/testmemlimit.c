@@ -4,7 +4,7 @@
 /* #include "duma.h" */
 
 int
-main(int argc, char **argv)
+main(void)
 {
   int *ptr1 = NULL;
   int *ptr2 = NULL;
