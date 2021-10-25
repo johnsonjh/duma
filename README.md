@@ -130,6 +130,11 @@ from source code.
 - The latest release version of **DUMA** is available to download from
   [GitHub](https://github.com/johnsonjh/duma/releases/latest)
   and [other mirrors](https://github.com/johnsonjh/duma#releases).
+  * *NOTE*: If the latest release version is more than a few dozen commits
+    behind the master branch, you may wish to try the master branch instead
+    of the last release.  While there are no guarantees made (for any release
+    of **DUMA**), best efforts are put forth to ensure the master branch
+    is functional and passes tests on Linux and Solaris.
 
 - You can use the _Git_ distributed version control tool to download
   the latest release version, the current development version, or the
