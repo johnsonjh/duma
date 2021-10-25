@@ -163,13 +163,13 @@ Some **_non_**-**_GNU_** "**Make**" systems **_may_** work, but are
     (_necessary if automated detection is unsuccessful_)
   - Check any other options or variables that may be available
 - Build **DUMA**
-  - `gmake -f ../GNUmakefile`
-    (_for automatic OS detection and defaults_)
-  - `gmake -f ../GNUmakefile OSTYPE=cygwin`
+  - `gmake -f ../GNUmakefile srcdir=../`
+    (_for automatic OS detection and defaults; assumes gmake is GNU Make_)
+  - `make -f ../GNUmakefile srcdir=../ OSTYPE=cygwin`
     (_for Microsoft Windows with Cygwin_)
-  - `mingw32-make -f ../GNUmakefile OSTYPE=msys`
+  - `mingw32-make -f ../GNUmakefile srcdir=../ OSTYPE=msys`
     (_for Microsoft Windows with MSYS / MINGW via Command Prompt (CMD)_)
-  - `make -f ../GNUmakefile OS=linux`
+  - `make -f ../GNUmakefile srcdir=../ OS=linux`
     (_for most GNU/Linux systems_)
 - Test **DUMA**
   - `gmake -f ../GNUmakefile check`
