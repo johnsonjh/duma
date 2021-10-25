@@ -135,6 +135,8 @@ from source code.
     of the last release.  While there are no guarantees made (for any release
     of **DUMA**), best efforts are put forth to ensure the master branch
     is functional and passes tests on Linux and Solaris.
+  * Pre-release versions are also available from
+    [GitHub](https://github.com/johnsonjh/duma/releases) and others mirrors.
 
 - You can use the _Git_ distributed version control tool to download
   the latest release version, the current development version, or the
