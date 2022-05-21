@@ -1,7 +1,7 @@
 /*
  * DUMA - Red-Zone memory allocator.
  *
- * Copyright (C) 2010-2021 Jeffrey H. Johnson <trnsz@pobox.com>
+ * Copyright (C) 2010-2022 Jeffrey H. Johnson <trnsz@pobox.com>
  * Copyright (C) 2006 Michael Eddington <meddington@gmail.com>
  * Copyright (C) 2002-2021 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  * Copyright (C) 1987-1999 Bruce Perens <bruce@perens.com>
