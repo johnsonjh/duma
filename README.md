@@ -121,7 +121,10 @@ from source code.
 #### Binary Packages
 
 - [***TODO: Binary packages***]
-- [***TODO: Distro packages***]
+- Packages available for installation via the distribution's package manager:\
+[![Available distro packages](
+https://repology.org/badge/vertical-allrepos/duma.svg?header=)](
+https://repology.org/project/duma/packages)
 
 ---
 
