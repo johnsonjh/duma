@@ -485,7 +485,7 @@ ifdef DUMASO_LINK2
 	ln -s $(DUMASO) $(DESTDIR)$(libdir)/$(DUMASO_LINK2)
 endif
 	- mkdir -p $(DESTDIR)$(MAN_INSTALL_DIR)
-	$(INSTALL) -m 644 duma.3 $(DESTDIR)/$(MAN_INSTALL_DIR)/duma.3
+	$(INSTALL) -m 644 duma.3 $(DESTDIR)$(MAN_INSTALL_DIR)/duma.3
 
 # Delete all the installed files that the `install' target would create
 uninstall:
