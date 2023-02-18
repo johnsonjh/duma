@@ -8,9 +8,6 @@
 [![loccount](https://img.shields.io/tokei/lines/github/johnsonjh/duma.svg)](https://github.com/XAMPPRocky/tokei)
 [![codesize](https://img.shields.io/github/languages/code-size/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma)
 [![release](https://img.shields.io/github/release/johnsonjh/duma.svg)](https://github.com/johnsonjh/duma/releases/)
-[![lgtm](https://img.shields.io/lgtm/alerts/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/alerts/)
-[![languagegrade-c](https://img.shields.io/lgtm/grade/cpp/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/context:cpp)
-[![languagegrade-javascript](https://img.shields.io/lgtm/grade/javascript/g/johnsonjh/duma.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/johnsonjh/duma/context:javascript)
 [![codacy](https://api.codacy.com/project/badge/Grade/f777934d666b4a6a9672d89b404c4953)](https://app.codacy.com/gh/johnsonjh/duma?utm_source=github.com&utm_medium=referral&utm_content=johnsonjh/duma&utm_campaign=Badge_Grade)
 [![codebeat](https://codebeat.co/badges/a0be6809-acda-41a7-96a8-0d46698dc42c)](https://codebeat.co/projects/github-com-johnsonjh-duma-master)
 [![deepscan](https://deepscan.io/api/teams/12184/projects/15170/branches/299583/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=12184&pid=15170&bid=299583)
@@ -122,9 +119,7 @@ from source code.
 
 - [***TODO: Binary packages***]
 - Packages available for installation via the distribution's package manager:\
-[![Available distro packages](
-https://repology.org/badge/vertical-allrepos/duma.svg?header=)](
-https://repology.org/project/duma/packages)
+  [![Available distro packages](https://repology.org/badge/vertical-allrepos/duma.svg?header=)](https://repology.org/project/duma/packages)
 
 ---
 
@@ -133,12 +128,13 @@ https://repology.org/project/duma/packages)
 - The latest release version of **DUMA** is available to download from
   [GitHub](https://github.com/johnsonjh/duma/releases/latest)
   and [other mirrors](https://github.com/johnsonjh/duma#releases).
-  * *NOTE*: If the latest release version is more than a few dozen commits
+
+  - _NOTE_: If the latest release version is more than a few dozen commits
     behind the master branch, you may wish to try the master branch instead
-    of the last release.  While there are no guarantees made (for any release
+    of the last release. While there are no guarantees made (for any release
     of **DUMA**), best efforts are put forth to ensure the master branch
     is functional and passes tests on Linux and Solaris.
-  * Pre-release versions are also available from
+  - Pre-release versions are also available from
     [GitHub](https://github.com/johnsonjh/duma/releases) and others mirrors.
 
 - You can use the _Git_ distributed version control tool to download
@@ -271,7 +267,6 @@ consideration.
 
   - On _FreeBSD_ 6.2, it is necessary to set `DUMA_DISABLE_BANNER=1`
     before running any program linked with **DUMA**.
-    
   - NOTE: On _FreeBSD_ 7.0 and later, there appears to be an
     incompatability with the new libthr, which is currently being
     investigated.
