@@ -118,6 +118,7 @@ from source code.
 #### Binary Packages
 
 - [***TODO: Binary packages***]
+
 - Packages available for installation via the distribution's package manager:\
   [![Available distro packages](https://repology.org/badge/vertical-allrepos/duma.svg?header=)](https://repology.org/project/duma/packages)
 
@@ -835,7 +836,6 @@ operator delete[](ptr, file,line);
 - [GitLab](https://gitlab.com/johnsonjh/duma)
 - [SourceHut](https://sr.ht/~trn/duma)
 - [NotABug](https://notabug.org/trn/duma)
-- [trnsz](https://gitlab.trnsz.com/johnsonjh/duma)
 
 ---
 
@@ -864,9 +864,11 @@ operator delete[](ptr, file,line);
 
 ### License
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[![FOSSASmallStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_small)
+
 - [GNU General Public License v2.0 (GPLv2)](https://tldrlegal.com/license/gnu-general-public-license-v2)
+
 - [GNU Lesser General Public License v2.1 (LGPLv2.1)](<https://tldrlegal.com/license/gnu-lesser-general-public-license-v2.1-(lgpl-2.1)>)
-  - [![FOSSASmallStatus](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjohnsonjh%2Fduma?ref=badge_small)
 
 ---
 
