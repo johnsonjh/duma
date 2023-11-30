@@ -164,6 +164,10 @@ BUILD_UTC="$(get_utc_date)" ||
 			"Error: get_utc_date() failed."
 		exit 1
 	}
+test "${REPRODUCIBLE:-}" = "1" &&
+	{
+		BUILD_UTC=""
+	}
 
 # shellcheck disable=SC1003
 printf '%s\n' \
