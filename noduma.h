@@ -77,6 +77,10 @@
 #undef valloc
 #endif
 
+#ifdef malloc_usable_size
+#undef malloc_usable_size
+#endif
+
 #ifdef strdup
 #undef strdup
 #endif
