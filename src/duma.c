@@ -2176,6 +2176,40 @@ void *_duma_valloc(size_t size DUMA_PARAMLIST_FL) {
                         DUMA_FAIL_ENV DUMA_PARAMS_FL);
 }
 
+/* Function: _duma_malloc_usable_size
+ *
+ * A version of malloc_usable_size.
+ */
+size_t _duma_malloc_usable_size(void *ptr DUMA_PARAMLIST_FL) {
+  struct _DUMA_Slot *slot;
+  size_t size;
+
+  if (0 == ptr || _duma_g.null_addr == ptr)
+    return 0;
+
+  if (0 == _duma_g.allocList) {
+#ifdef DUMA_DETOURS
+    /* Odd things happen with detours sometimes... */
+    DUMA_Print("DUMA_Warning: malloc_usable_size() called before first malloc().");
+    return 0;
+#else
+    DUMA_Abort("malloc_usable_size() called before first malloc().");
+#endif
+  }
+
+  Page_AllowAccess(_duma_g.allocList, _duma_s.allocListSize);
+
+  if (!(slot = slotForUserAddress(ptr))) {
+    DUMA_Abort("malloc_usable_size(%a): address not from malloc.",
+      (DUMA_ADDR)ptr);
+  }
+  size = slot->userSize;
+
+  Page_DenyAccess(_duma_g.allocList, _duma_s.allocListSize);
+
+  return size;
+}
+
 /* Function: _duma_strdup
  *
  * A version of strdup.
@@ -2450,6 +2484,10 @@ void *realloc(void *oldBuffer, size_t newSize) {
 }
 
 void *valloc(size_t size) { return _duma_valloc(size DUMA_PARAMS_UK); }
+
+size_t malloc_usable_size(void *ptr) {
+  return _duma_malloc_usable_size(ptr DUMA_PARAMS_UK);
+}
 
 char *strdup(const char *str) { return _duma_strdup(str DUMA_PARAMS_UK); }
 

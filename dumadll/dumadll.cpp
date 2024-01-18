@@ -46,6 +46,12 @@ void * duma_valloc(size_t size)
 }
 
 
+size_t duma_malloc_usable_size(void *ptr)
+{
+  return _duma_malloc_usable_size(ptr  DUMA_PARAMS_UK);
+}
+
+
 char * duma_strdup(const char * str)
 {
   return _duma_strdup(str  DUMA_PARAMS_UK);

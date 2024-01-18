@@ -7,6 +7,7 @@ EXPORTS
   duma_memalign
   duma_realloc
   duma_valloc
+  duma_malloc_usable_size
   duma_strdup
   duma_memcpy
   duma_memmove
