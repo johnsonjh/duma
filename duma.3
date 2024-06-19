@@ -118,7 +118,7 @@ argument to the linker, otherwise you'll have to put the path-name for
 .B libduma.a
 in the linker's command line.
 You can also use dynamic linking. If you're using a Bourne shell, the
-statement 
+statement
 .B export LD_PRELOAD=libduma.so
 will cause DUMA to be loaded to run all dynamic executables.
 The command
@@ -130,7 +130,7 @@ Some systems will require special arguments to the linker to assure that
 you are using the DUMA malloc() and not the one from your C library.
 .LP
 Run your program
-.I using a debugger. 
+.I using a debugger.
 It's easier to work this way than to create a
 .B core
 file and post-mortem debug it. DUMA can create
@@ -219,7 +219,7 @@ the values written to it during its last use.
 DUMA_MEMCPY_OVERLAP
 Setting this variable to 1 will make DUMA to ignore memcpy region overlapping when
 the destination address is less than source address. It was added as a workaround
-for ARM port where memmove implementation calls memcpy if the overlapping 
+for ARM port where memmove implementation calls memcpy if the overlapping
 destination is safe and produces in false aborts.
 .SH WORD-ALIGNMENT AND OVERRUN DETECTION
 There is a conflict between the alignment restrictions that malloc() operates
