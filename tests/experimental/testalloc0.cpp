@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
   int test = 0;
   int strategy;
 
-  if ( argc >= 1 )
+  if ( argc >= 2 )
 	test = atoi( argv[1] );
 
   switch (test)
