@@ -263,6 +263,8 @@ DUMA_EXTERN_C int _duma_posix_memalign(void **memptr, size_t alignment,
 DUMA_EXTERN_C void *_duma_realloc(void *baseAdr, size_t newSize,
                                   const char *filename, int lineno);
 DUMA_EXTERN_C void *_duma_valloc(size_t size, const char *filename, int lineno);
+DUMA_EXTERN_C size_t _duma_malloc_usable_size(void *ptr, const char *filename,
+                                              int lineno);
 DUMA_EXTERN_C char *_duma_strdup(const char *str, const char *filename,
                                  int lineno);
 DUMA_EXTERN_C void *_duma_memcpy(void *dest, const void *src, size_t size,
@@ -294,6 +296,7 @@ DUMA_EXTERN_C int _duma_posix_memalign(void **memptr, size_t alignment,
                                        size_t userSize);
 DUMA_EXTERN_C void *_duma_realloc(void *baseAdr, size_t newSize);
 DUMA_EXTERN_C void *_duma_valloc(size_t size);
+DUMA_EXTERN_C size_t _duma_malloc_usable_size(void *ptr);
 DUMA_EXTERN_C char *_duma_strdup(const char *str);
 DUMA_EXTERN_C void *_duma_memcpy(void *dest, const void *src, size_t size);
 DUMA_EXTERN_C void *_duma_memmove(void *dest, const void *src, size_t size);
@@ -318,6 +321,8 @@ DUMA_EXTERN_C char *_duma_strncat(char *dest, const char *src, size_t size);
 #define realloc(BASEADR, NEWSIZE)                                              \
   _duma_realloc(BASEADR, NEWSIZE, __FILE__, __LINE__)
 #define valloc(SIZE) _duma_valloc(SIZE, __FILE__, __LINE__)
+#define malloc_usable_size(PTR) \
+  _duma_malloc_usable_size(PTR, __FILE__, __LINE__)
 #define strdup(STR) _duma_strdup(STR, __FILE__, __LINE__)
 #define memcpy(DEST, SRC, SIZE)                                                \
   _duma_memcpy(DEST, SRC, SIZE, __FILE__, __LINE__)
