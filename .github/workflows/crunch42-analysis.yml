@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: 42Crunch REST API Static Security Testing
-        uses: 42Crunch/api-security-audit-action@v3
+        uses: 42Crunch/api-security-audit-action@v4
         with:
           api-token: ${{ secrets.API_TOKEN }}
           min-score: 75
