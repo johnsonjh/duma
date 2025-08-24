@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
 project(DUMA_CONF)
 
 # See README.md for help building and using DUMA
