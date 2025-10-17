@@ -2475,6 +2475,10 @@ void *memalign(size_t alignment, size_t size) {
   return _duma_memalign(alignment, size DUMA_PARAMS_UK);
 }
 
+void *aligned_alloc(size_t alignment, size_t size) {
+  return _duma_memalign(alignment, size DUMA_PARAMS_UK);
+}
+
 int posix_memalign(void **memptr, size_t alignment, size_t size) {
   return _duma_posix_memalign(memptr, alignment, size DUMA_PARAMS_UK);
 }

@@ -65,6 +65,10 @@
 #undef memalign
 #endif
 
+#ifdef aligned_alloc
+#undef aligned_alloc
+#endif
+
 #ifdef posix_memalign
 #undef posix_memalign
 #endif
