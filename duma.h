@@ -316,6 +316,8 @@ DUMA_EXTERN_C char *_duma_strncat(char *dest, const char *src, size_t size);
 #define free(BASEADR) _duma_free(BASEADR, __FILE__, __LINE__)
 #define memalign(ALIGNMENT, SIZE)                                              \
   _duma_memalign(ALIGNMENT, SIZE, __FILE__, __LINE__)
+#define aligned_alloc(ALIGNMENT, SIZE)                                         \
+  _duma_memalign(ALIGNMENT, SIZE, __FILE__, __LINE__)
 #define posix_memalign(MEMPTR, ALIGNMENT, SIZE)                                \
   _duma_posix_memalign(MEMPTR, ALIGNMENT, SIZE, __FILE__, __LINE__)
 #define realloc(BASEADR, NEWSIZE)                                              \
