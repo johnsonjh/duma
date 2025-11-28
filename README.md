@@ -850,7 +850,7 @@ operator delete[](ptr, file,line);
 ### Authors
 
 ```text
- Copyright © 2020‑2022 Jeffrey H. Johnson <trnsz@pobox.com>
+ Copyright © 2020‑2022 Jeffrey H. Johnson <johnsonjh.dev@gmail.com>
  Copyright © 2006 Michael Eddington <meddington@gmail.com>
  Copyright © 2002‑2021 Hayati Ayguen <h_ayguen@web.de>, Procitec GmbH
  Copyright © 1987‑1999 Bruce Perens <bruce@perens.com>
