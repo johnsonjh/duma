@@ -13,7 +13,7 @@ jobs:
     - run: git checkout HEAD^2
       if: ${{ github.event_name == 'pull_request' }}
     - name: Run OSSAR
-      uses: github/ossar-action@v1
+      uses: github/ossar-action@v2
       id: ossar
     - name: Upload OSSAR results
       uses: github/codeql-action/upload-sarif@v4
